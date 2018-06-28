@@ -6,13 +6,78 @@
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Parameters>
     <Parameter Name="ESFA.DC.ILR1819.ReportService.Stateless_InstanceCount" DefaultValue="-1" />
+    <Parameter Name="AuditQueueName" DefaultValue="audit-queue" />
+    <Parameter Name="TopicName" DefaultValue="TopicName" />
+    <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
+    <Parameter Name="ReportingSubscriptionName" DefaultValue="" />
+    <Parameter Name="ILRDataStoreConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
+    <Parameter Name="LoggerConnectionstring" DefaultValue="Server=localhost;Database=logs;User Id=loguser;Password=password1;" />
+    <Parameter Name="MaxMessageSize" DefaultValue="1073741824" />
+    <Parameter Name="AzureBlobConnectionString" DefaultValue="UseDevelopmentStorage=true" />
+    <Parameter Name="AzureBlobContainerName" DefaultValue="ilr-files" />
+    <Parameter Name="RedisConnectionString" DefaultValue="" />
+    <Parameter Name="DataServicePlacementConstraints" DefaultValue="" />
+    <Parameter Name="ServiceReleaseVersion" DefaultValue="" />
+
+    <Parameter Name="JobStatusQueueName" DefaultValue="" />
+    <Parameter Name="JobStatusConnectionString" DefaultValue="" />
+
+    <!-- Topic Names -->
+    <Parameter Name="TopicValidation" DefaultValue="Validation" />
+    <Parameter Name="TopicFunding" DefaultValue="Funding" />
+    <Parameter Name="TopicDeds" DefaultValue="Deds" />
+    <Parameter Name="TopicReports" DefaultValue="Reports" />
+    <Parameter Name="TopicDeds_TaskGenerateValidationReport" DefaultValue="GenerateValidationReport" />
+    <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
        ServiceManifest.xml file. -->
   <ServiceManifestImport>
     <ServiceManifestRef ServiceManifestName="ESFA.DC.ILR1819.ReportService.StatelessPkg" ServiceManifestVersion="1.0.0" />
-    <ConfigOverrides />
+    <ConfigOverrides>
+      <ConfigOverride Name="Config">
+        <Settings>
+          <Section Name="DataStoreSection">
+            <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
+          </Section>
+          <Section Name="ServiceBusSettings">
+            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="ReportingSubscriptionName" Value="[ReportingSubscriptionName]" />
+          </Section>
+          <Section Name="DataTransportSettings">
+            <Parameter Name="MaxMessageSize" Value="[MaxMessageSize]" />
+          </Section>
+          <Section Name="LoggerSection">
+            <Parameter Name="LoggerConnectionstring" Value="[LoggerConnectionstring]" />
+          </Section>
+          <Section Name="AzureStorageSection">
+            <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
+            <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
+          </Section>
+          <Section Name="RedisSection">
+            <Parameter Name="RedisConnectionString" Value="[RedisConnectionString]" />
+          </Section>
+          <Section Name="VersionSection">
+            <Parameter Name="ServiceReleaseVersion" Value="[ServiceReleaseVersion]" />
+          </Section>
+          <Section Name="JobStatusSection">
+            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
+            <Parameter Name="JobStatusConnectionString" Value="[JobStatusConnectionString]" />
+          </Section>
+          <Section Name="TopicAndTaskSection">
+            <Parameter Name="TopicValidation" Value="[TopicValidation]" />
+            <Parameter Name="TopicFunding" Value="[TopicFunding]" />
+            <Parameter Name="TopicDeds" Value="[TopicDeds]" />
+            <Parameter Name="TopicReports" Value="[TopicReports]" />
+            <Parameter Name="TopicDeds_TaskGenerateValidationReport" Value="[TopicDeds_TaskGenerateValidationReport]" />
+            <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
+          </Section>
+        </Settings>
+      </ConfigOverride>
+    </ConfigOverrides>
   </ServiceManifestImport>
   <DefaultServices>
     <!-- The section below creates instances of service types, when an instance of this 

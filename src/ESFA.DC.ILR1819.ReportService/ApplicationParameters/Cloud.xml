@@ -2,5 +2,28 @@
 <Application Name="fabric:/ESFA.DC.ILR1819.ReportService" xmlns="http://schemas.microsoft.com/2011/01/fabric" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <Parameters>
     <Parameter Name="ESFA.DC.ILR1819.ReportService.Stateless_InstanceCount" Value="-1" />
+    <Parameter Name="ILRDataStoreConnectionString" Value="__ILR1819DataStoreConnectionString__" />
+    <Parameter Name="AuditQueueName" Value="__AuditQueueName__" />
+    <Parameter Name="TopicName" Value="__TopicName__" />
+    <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionString__" />
+    <Parameter Name="DataStoreSubscriptionName" Value="__DataStoreSubscriptionName__" />
+    <Parameter Name="LoggerConnectionstring" Value="__LoggerConnectionstring__" />
+    <Parameter Name="AzureBlobConnectionString" Value="__AzureBlobConnectionString__" />
+    <Parameter Name="AzureBlobContainerName" Value="__AzureBlobContainerName__" />
+    <Parameter Name="RedisConnectionString" Value="__RedisCacheConnectionString__" />
+    <Parameter Name="DataServicePlacementConstraints" Value="__DataServicePlacementConstraints__" />
+
+    <Parameter Name="JobStatusQueueName" Value="__JobStatusQueueName__" />
+    <Parameter Name="JobStatusConnectionString" Value="__JobStatusConnectionString__" />
+
+    <Parameter Name="ServiceReleaseVersion" Value="__ServiceReleaseVersion__" />
+
+    <!-- Topic Names -->
+    <Parameter Name="TopicValidation" Value="__TopicValidation__" />
+    <Parameter Name="TopicFunding" Value="__TopicFunding__" />
+    <Parameter Name="TopicDeds" Value="__TopicDeds__" />
+    <Parameter Name="TopicReports" Value="__TopicReports__" />
+    <Parameter Name="TopicDeds_TaskGenerateValidationReport" Value="__TopicDeds_TaskGenerateValidationReport__" />
+    <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="__TopicDeds_TaskPersistDataToDeds__" />
   </Parameters>
 </Application>
