@@ -34,11 +34,11 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                     var executionContext = (Logging.ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
                     executionContext.JobId = jobContextMessage.JobId.ToString();
                     var logger = childLifeTimeScope.Resolve<ILogger>();
-                    logger.LogDebug("started Data store");
+                    logger.LogDebug("Started Report Service");
 
                     var entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
                     var result = await entryPoint.Callback(jobContextMessage, cancellationToken);
-                    logger.LogDebug("completed Data store");
+                    logger.LogDebug("Completed Report Service");
                     return result;
                 }
             }

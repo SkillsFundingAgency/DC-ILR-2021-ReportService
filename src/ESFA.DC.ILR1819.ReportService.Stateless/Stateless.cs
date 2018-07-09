@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Fabric;
 using Autofac;
-using DC.JobContextManager.Interface;
+using ESFA.DC.JobContext;
+using ESFA.DC.JobContextManager.Interface;
 using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 
@@ -27,7 +28,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
         {
             yield return new ServiceInstanceListener(
-                context => _parentLifetimeScope.Resolve<IJobContextManager>(),
+                context => _parentLifetimeScope.Resolve<IJobContextManager<JobContextMessage>>(),
                 "ReportService-SBTopicListener");
         }
     }

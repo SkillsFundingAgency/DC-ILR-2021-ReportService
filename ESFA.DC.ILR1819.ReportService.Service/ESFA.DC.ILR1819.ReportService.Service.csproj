@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ESFA.DC.ILR1819.ReportService.Service.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,18 +29,65 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>ESFA.DC.ILR1819.ReportService.Service.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.IO.Interfaces, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.IO.Interfaces.0.1.2-beta0001\lib\netstandard2.0\ESFA.DC.IO.Interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.JobContext, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.JobContext.0.1.11-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContext.Interface, Version=0.1.11.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobContext.Interface.0.1.11-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContext.Interface, Version=0.1.13.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobContext.Interface.0.1.13-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Logging, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.0.1.1-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Mapping.Interface, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Mapping.Interface.0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.Mapping.Interface.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Serialization.Json, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Serialization.Json.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Serialization.Xml, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Serialization.Xml.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Xml.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.2.6.0\lib\net46\Serilog.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Environment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Environment.2.1.2\lib\net45\Serilog.Enrichers.Environment.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Process, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Process.2.0.1\lib\net45\Serilog.Enrichers.Process.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Enrichers.Thread, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Enrichers.Thread.3.0.0\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.Console, Version=3.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.MSSqlServer, Version=5.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.MSSqlServer.5.1.1\lib\net452\Serilog.Sinks.MSSqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.1.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -53,7 +101,20 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ESFA.DC.ILR1819.ReportService.Service.ruleset">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\StyleCop.Analyzers.1.0.2\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj">
+      <Project>{CCF12AA1-F533-4225-8D3D-546D63A7B139}</Project>
+      <Name>ESFA.DC.ILR1819.ReportService.Interface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

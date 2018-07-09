@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Features.AttributeFilters;
 using Autofac.Integration.ServiceFabric;
-using DC.JobContextManager;
-using DC.JobContextManager.Interface;
 using ESFA.DC.Auditing;
 using ESFA.DC.Auditing.Dto;
 using ESFA.DC.Auditing.Interface;
@@ -23,6 +21,8 @@ using ESFA.DC.IO.Redis;
 using ESFA.DC.IO.Redis.Config.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager;
+using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobStatus.Dto;
 using ESFA.DC.JobStatus.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -37,12 +37,12 @@ using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless
 {
-    internal static class Program
+    public static class Program
     {
         /// <summary>
         /// This is the entry point of the service host process.
         /// </summary>
-        private static void Main()
+        public static void Main()
         {
             try
             {
@@ -184,7 +184,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<JobContextManagerForTopics<JobContextMessage>>().As<IJobContextManager>()
+            containerBuilder.RegisterType<JobContextManagerForTopics<JobContextMessage>>().As<IJobContextManager<JobContextMessage>>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
