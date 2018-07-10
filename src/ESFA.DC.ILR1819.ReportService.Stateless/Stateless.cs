@@ -11,7 +11,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.
     /// </summary>
-    internal sealed class Stateless : StatelessService
+    public class Stateless : StatelessService
     {
         private readonly ILifetimeScope _parentLifetimeScope;
 

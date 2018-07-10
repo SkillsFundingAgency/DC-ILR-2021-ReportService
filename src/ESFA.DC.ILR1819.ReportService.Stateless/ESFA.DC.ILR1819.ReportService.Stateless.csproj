@@ -77,17 +77,17 @@
     <Reference Include="ESFA.DC.JobContext.Interface, Version=0.1.13.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ESFA.DC.JobContext.Interface.0.1.13-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContextManager, Version=0.1.11.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\ESFA.DC.JobContextManager.0.1.11-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContextManager, Version=0.1.15.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\ESFA.DC.JobContextManager.0.1.15-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContextManager.Interface, Version=0.1.10.0, Culture=neutral, processorArchitecture=AMD64">
-      <HintPath>..\..\packages\ESFA.DC.JobContextManager.Interface.0.1.10-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContextManager.Interface, Version=0.1.13.0, Culture=neutral, processorArchitecture=AMD64">
+      <HintPath>..\packages\ESFA.DC.JobContextManager.Interface.0.1.13-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobStatus, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ESFA.DC.JobStatus.0.1.7-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.dll</HintPath>
+    <Reference Include="ESFA.DC.JobStatus, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobStatus.Dto, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\ESFA.DC.JobStatus.0.1.7-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Dto.dll</HintPath>
+    <Reference Include="ESFA.DC.JobStatus.Dto, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Dto.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\..\packages\ESFA.DC.JobStatus.Interface.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
@@ -312,12 +312,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj">
-      <Project>{CCF12AA1-F533-4225-8D3D-546D63A7B139}</Project>
+    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj">
+      <Project>{ccf12aa1-f533-4225-8d3d-546d63a7b139}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ESFA.DC.ILR1819.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj">
-      <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
+    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj">
+      <Project>{7e327d70-d514-40a0-ac07-35176660149c}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Service</Name>
     </ProjectReference>
   </ItemGroup>
