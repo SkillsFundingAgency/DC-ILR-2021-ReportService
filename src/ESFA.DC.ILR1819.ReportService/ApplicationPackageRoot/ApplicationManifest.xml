@@ -21,7 +21,7 @@
     <Parameter Name="TopicFunding" DefaultValue="Funding" />
     <Parameter Name="TopicDeds" DefaultValue="Deds" />
     <Parameter Name="TopicReports" DefaultValue="Reports" />
-    <Parameter Name="TopicDeds_TaskGenerateValidationReport" DefaultValue="GenerateValidationReport" />
+    <Parameter Name="TopicReports_TaskGenerateValidationReport" DefaultValue="GenerateValidationReport" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
@@ -66,7 +66,7 @@
             <Parameter Name="TopicFunding" Value="[TopicFunding]" />
             <Parameter Name="TopicDeds" Value="[TopicDeds]" />
             <Parameter Name="TopicReports" Value="[TopicReports]" />
-            <Parameter Name="TopicDeds_TaskGenerateValidationReport" Value="[TopicDeds_TaskGenerateValidationReport]" />
+            <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="[TopicReports_TaskGenerateValidationReport]" />
             <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
           </Section>
         </Settings>

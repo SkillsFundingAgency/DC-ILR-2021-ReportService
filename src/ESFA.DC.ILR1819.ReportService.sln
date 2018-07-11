@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27703.2035
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{DFC66ED8-5F9E-4A4A-816A-6CCC054E8845}"
 	ProjectSection(SolutionItems) = preProject
-		README.md = README.md
+		..\README.md = ..\README.md
 	EndProjectSection
 EndProject
 Project("{A07B5EB6-E848-4116-A8D0-A826331D98C6}") = "ESFA.DC.ILR1819.ReportService", "ESFA.DC.ILR1819.ReportService\ESFA.DC.ILR1819.ReportService.sfproj", "{298F6F4F-3528-43E9-AF20-D4AFA5E4A6E8}"

@@ -51,7 +51,7 @@
     <Parameter Name="TopicFunding" Value="" />
     <Parameter Name="TopicDeds" Value="" />
     <Parameter Name="TopicReports" Value="" />
-    <Parameter Name="TopicDeds_TaskGenerateValidationReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
   </Section>
 </Settings>
