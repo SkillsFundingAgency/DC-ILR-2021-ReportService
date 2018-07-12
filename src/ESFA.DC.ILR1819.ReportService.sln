@@ -16,6 +16,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR1819.ReportServi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR1819.ReportService.Interface", "ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj", "{CCF12AA1-F533-4225-8D3D-546D63A7B139}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR1819.ReportService.Tests", "ESFA.DC.ILR1819.ReportService.Tests\ESFA.DC.ILR1819.ReportService.Tests.csproj", "{DAE090BB-2C20-4449-B0A1-A412D6A382EF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,14 @@ Global
 		{CCF12AA1-F533-4225-8D3D-546D63A7B139}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CCF12AA1-F533-4225-8D3D-546D63A7B139}.Release|x64.ActiveCfg = Release|Any CPU
 		{CCF12AA1-F533-4225-8D3D-546D63A7B139}.Release|x64.Build.0 = Release|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Debug|x64.Build.0 = Debug|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Release|x64.ActiveCfg = Release|Any CPU
+		{DAE090BB-2C20-4449-B0A1-A412D6A382EF}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
