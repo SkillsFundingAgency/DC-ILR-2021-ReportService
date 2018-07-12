@@ -9,7 +9,11 @@ using ESFA.DC.Auditing;
 using ESFA.DC.Auditing.Dto;
 using ESFA.DC.Auditing.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service;
+using ESFA.DC.ILR1819.ReportService.Service.Reports;
+using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Handlers;
 using ESFA.DC.ILR1819.ReportService.Stateless.Mappers;
@@ -72,6 +76,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         public static ContainerBuilder BuildContainer(IConfigurationHelper configHelper)
         {
             var containerBuilder = new ContainerBuilder();
+
+            var topicAndTaskOptions = configHelper.GetSectionValues<TopicAndTaskSectionOptions>("TopicAndTaskSection");
+            containerBuilder.RegisterInstance(topicAndTaskOptions).As<ITopicAndTaskSectionOptions>().SingleInstance();
 
             // register Cosmos config
             var azureRedisOptions = configHelper.GetSectionValues<RedisOptions>("RedisSection");
@@ -188,6 +195,12 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ValidationErrorsReport>().As<IValidationErrorsReport>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
                 .InstancePerLifetimeScope();
 
             return containerBuilder;

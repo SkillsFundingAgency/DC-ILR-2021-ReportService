@@ -292,6 +292,7 @@
     <Compile Include="Configuration\ServiceBusOptions.cs" />
     <Compile Include="Configuration\ServiceBusQueueConfig.cs" />
     <Compile Include="Configuration\ServiceBusTopicConfig.cs" />
+    <Compile Include="Configuration\TopicAndTaskSectionOptions.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="Handlers\IMessageHandler.cs" />
     <Compile Include="Handlers\MessageHandler.cs" />
