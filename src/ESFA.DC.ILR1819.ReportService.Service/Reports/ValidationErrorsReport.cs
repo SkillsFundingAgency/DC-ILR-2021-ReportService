@@ -129,12 +129,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         learningDelivery.SWSupAimId,
                         learningDelivery.FundModel,
                         learningDelivery.PartnerUKPRNNullable,
-                        learner.ProviderSpecLearnerMonitorings.FirstOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
-                        learner.ProviderSpecLearnerMonitorings.FirstOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
-                        learningDelivery.ProviderSpecDeliveryMonitorings.FirstOrDefault(x => x.ProvSpecDelMonOccur == "A")?.ProvSpecDelMon,
-                        learningDelivery.ProviderSpecDeliveryMonitorings.FirstOrDefault(x => x.ProvSpecDelMonOccur == "B")?.ProvSpecDelMon,
-                        learningDelivery.ProviderSpecDeliveryMonitorings.FirstOrDefault(x => x.ProvSpecDelMonOccur == "C")?.ProvSpecDelMon,
-                        learningDelivery.ProviderSpecDeliveryMonitorings.FirstOrDefault(x => x.ProvSpecDelMonOccur == "D")?.ProvSpecDelMon));
+                        learner.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                        learner.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                        learningDelivery.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur == "A")?.ProvSpecDelMon,
+                        learningDelivery.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur == "B")?.ProvSpecDelMon,
+                        learningDelivery.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur == "C")?.ProvSpecDelMon,
+                        learningDelivery.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur == "D")?.ProvSpecDelMon));
                 }
             }
 
@@ -146,6 +146,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     csvWriter.Configuration.RegisterClassMap<ValidationErrorMapper>();
                     csvWriter.WriteHeader<ValidationErrorModel>();
+                    csvWriter.NextRecord();
                     csvWriter.WriteRecords(validationErrors);
                 }
             }
