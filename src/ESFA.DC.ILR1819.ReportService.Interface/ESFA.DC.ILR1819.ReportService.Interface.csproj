@@ -70,6 +70,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ITopicAndTaskSectionOptions.cs" />
+    <Compile Include="Reports\IAllbOccupancyReport.cs" />
     <Compile Include="Reports\IValidationErrorsReport.cs" />
     <Compile Include="PersistenceStorageKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
