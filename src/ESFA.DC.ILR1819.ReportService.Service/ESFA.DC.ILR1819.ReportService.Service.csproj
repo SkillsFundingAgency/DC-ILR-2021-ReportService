@@ -141,6 +141,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Mapper\AllbOccupancyMapper.cs" />
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Model\AllbOccupancyModel.cs" />
     <Compile Include="Model\ValidationErrorModel.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Reports\AllbOccupancyReport.cs" />
     <Compile Include="Reports\ValidationErrorsReport.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
+    <Compile Include="Service\LarsProviderService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -164,6 +166,10 @@
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj">
       <Project>{CCF12AA1-F533-4225-8D3D-546D63A7B139}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Interface</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj">
+      <Project>{5692A430-9FEB-4262-B364-12EE83712042}</Project>
+      <Name>ESFA.DC.ILR1819.ReportService.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup />

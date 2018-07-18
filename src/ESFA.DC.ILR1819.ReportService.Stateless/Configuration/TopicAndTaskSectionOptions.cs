@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface;
+﻿using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
 {
@@ -13,6 +13,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
         public string TopicReports { get; set; }
 
         public string TopicReports_TaskGenerateValidationReport { get; set; }
+
+        public string TopicReports_TaskGenerateAllbOccupancyReport { get; set; }
 
         public string TopicDeds_TaskPersistDataToDeds { get; set; }
     }

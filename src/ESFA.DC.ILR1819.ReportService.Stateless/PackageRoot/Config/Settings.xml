@@ -52,6 +52,11 @@
     <Parameter Name="TopicDeds" Value="" />
     <Parameter Name="TopicReports" Value="" />
     <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
+  </Section>
+  
+  <Section Name="LarsSection">
+    <Parameter Name="LarsConnectionString" Value=""/>
   </Section>
 </Settings>

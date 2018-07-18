@@ -21,6 +21,9 @@
     <Parameter Name="TopicDeds" Value="__TopicDeds__" />
     <Parameter Name="TopicReports" Value="__TopicReports__" />
     <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="__TopicReports_TaskGenerateValidationReport__" />
+    <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="__TopicReports_TaskGenerateAllbOccupancyReport__" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="__TopicDeds_TaskPersistDataToDeds__" />
+    <!-- LARS -->
+    <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__"/>
   </Parameters>
 </Application>

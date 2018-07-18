@@ -16,7 +16,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     public sealed class IlrProviderService : IIlrProviderService
     {
         private readonly ILogger _logger;
+
         private readonly IKeyValuePersistenceService _storage;
+
         private readonly IXmlSerializationService _xmlSerializationService;
 
         private readonly SemaphoreSlim _getIlrLock = new SemaphoreSlim(1, 1);

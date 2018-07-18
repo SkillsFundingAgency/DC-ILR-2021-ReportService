@@ -22,7 +22,10 @@
     <Parameter Name="TopicDeds" DefaultValue="Deds" />
     <Parameter Name="TopicReports" DefaultValue="Reports" />
     <Parameter Name="TopicReports_TaskGenerateValidationReport" DefaultValue="GenerateValidationReport" />
+    <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" DefaultValue="GenerateAlbOccupancyReport" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
+    <!-- LARS -->
+    <Parameter Name="LarsConnectionString" DefaultValue=""/>
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -67,7 +70,11 @@
             <Parameter Name="TopicDeds" Value="[TopicDeds]" />
             <Parameter Name="TopicReports" Value="[TopicReports]" />
             <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="[TopicReports_TaskGenerateValidationReport]" />
+            <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="[TopicReports_TaskGenerateAllbOccupancyReport]" />
             <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
+          </Section>
+          <Section Name="LarsSection">
+            <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]"/>
           </Section>
         </Settings>
       </ConfigOverride>

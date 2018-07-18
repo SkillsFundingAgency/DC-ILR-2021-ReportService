@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace ESFA.DC.ILR1819.ReportService.Service.Model
+﻿namespace ESFA.DC.ILR1819.ReportService.Service.Model
 {
     public sealed class AllbOccupancyModel
     {
@@ -8,7 +6,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Model
 
         public long Uln { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+        public string DateOfBirth { get; set; }
 
         public int? PreMergerUkprn { get; set; }
 
@@ -30,9 +28,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Model
 
         public string ApplicProgWeightFact { get; set; }
 
-        public int NotionalNvqLevelV2 { get; set; }
+        public string NotionalNvqLevelV2 { get; set; }
 
-        public int SectorSubjectAreaTier2 { get; set; }
+        public decimal? SectorSubjectAreaTier2 { get; set; }
 
         public int AimType { get; set; }
 
@@ -42,15 +40,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Model
 
         public int? OtherFundAdj { get; set; }
 
-        public DateTime? OrigLearnStartDate { get; set; }
+        public string OrigLearnStartDate { get; set; }
 
-        public DateTime LearnStartDate { get; set; }
+        public string LearnStartDate { get; set; }
 
-        public DateTime LearnPlanEndDate { get; set; }
+        public string LearnPlanEndDate { get; set; }
 
         public int CompStatus { get; set; }
 
-        public DateTime? LearnActEndDate { get; set; }
+        public string LearnActEndDate { get; set; }
 
         public int? Outcome { get; set; }
 
@@ -58,9 +56,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Model
 
         public string AlbBursaryFunding { get; set; }
 
-        public DateTime? AlbDateFrom { get; set; }
+        public string AlbDateFrom { get; set; }
 
-        public DateTime? AlbDateTo { get; set; }
+        public string AlbDateTo { get; set; }
 
         public string LearnDelMonA { get; set; }
 
@@ -86,11 +84,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Model
 
         public string FundLine { get; set; }
 
-        public DateTime? LiabilityDate { get; set; }
+        public string LiabilityDate { get; set; }
 
         public int? PlannedNumOnProgInstalm { get; set; }
 
-        public DateTime? ApplicFactDate { get; set; }
+        public string ApplicFactDate { get; set; }
 
         public decimal? Period1AlbCode { get; set; }
 

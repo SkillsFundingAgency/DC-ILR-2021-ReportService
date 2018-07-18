@@ -9,8 +9,11 @@ using ESFA.DC.Auditing;
 using ESFA.DC.Auditing.Dto;
 using ESFA.DC.Auditing.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -79,6 +82,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             var topicAndTaskOptions = configHelper.GetSectionValues<TopicAndTaskSectionOptions>("TopicAndTaskSection");
             containerBuilder.RegisterInstance(topicAndTaskOptions).As<ITopicAndTaskSectionOptions>().SingleInstance();
+
+            var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
+            containerBuilder.RegisterInstance(larsConfiguration).As<ILarsConfiguration>().SingleInstance();
 
             // register Cosmos config
             var azureRedisOptions = configHelper.GetSectionValues<RedisOptions>("RedisSection");
@@ -201,6 +207,11 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<IAllbOccupancyReport>().As<IAllbOccupancyReport>().InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
                 .InstancePerLifetimeScope();
 
             return containerBuilder;

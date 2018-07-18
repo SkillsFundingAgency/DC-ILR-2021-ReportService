@@ -69,12 +69,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ITopicAndTaskSectionOptions.cs" />
+    <Compile Include="Configuration\ITopicAndTaskSectionOptions.cs" />
+    <Compile Include="Model\ILarsConfiguration.cs" />
+    <Compile Include="Model\ILarsLearningDelivery.cs" />
     <Compile Include="Reports\IAllbOccupancyReport.cs" />
     <Compile Include="Reports\IValidationErrorsReport.cs" />
     <Compile Include="PersistenceStorageKeys.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\IIlrProviderService.cs" />
+    <Compile Include="Service\ILarsProviderService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ESFA.DC.ILR1819.ReportService.Interface.ruleset">

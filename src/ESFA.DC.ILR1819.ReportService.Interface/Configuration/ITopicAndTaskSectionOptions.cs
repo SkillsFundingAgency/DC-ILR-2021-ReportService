@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Interface
+﻿namespace ESFA.DC.ILR1819.ReportService.Interface.Configuration
 {
     public interface ITopicAndTaskSectionOptions
     {
@@ -11,6 +11,8 @@
         string TopicReports { get; set; }
 
         string TopicReports_TaskGenerateValidationReport { get; set; }
+
+        string TopicReports_TaskGenerateAllbOccupancyReport { get; set; }
 
         string TopicDeds_TaskPersistDataToDeds { get; set; }
     }
