@@ -14,6 +14,8 @@
 
         string TopicReports_TaskGenerateAllbOccupancyReport { get; set; }
 
+        string TopicReports_TaskGenerateFundingSummaryReport { get; set; }
+
         string TopicDeds_TaskPersistDataToDeds { get; set; }
     }
 }

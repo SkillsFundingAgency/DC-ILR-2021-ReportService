@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR1819.ReportService.Model;
+﻿using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 
@@ -15,7 +15,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
                 case "LarsSection":
                     return (T)(object)new LarsConfiguration();
                 case "TopicAndTaskSection":
-                    return (T) (object) new TopicAndTaskSectionOptions();
+                    return (T)(object)new TopicAndTaskSectionOptions();
                 case "AzureStorageSection":
                     return (T)(object)new AzureStorageOptions();
                 case "ServiceBusSettings":
@@ -26,8 +26,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
                     return (T)(object)new LoggerOptions();
                 case "JobStatusSection":
                     return (T)(object)new JobStatusQueueOptions();
+                case "OrgSection":
+                    return (T)(object)new OrgConfiguration();
             }
-
 
             return default(T);
         }

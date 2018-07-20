@@ -49,6 +49,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Model
 
         public string ProviderSpecDelOccurD { get; set; }
 
-        public string SecurityClassification { get; set; }
+        public string SecurityClassification { get; }
     }
 }

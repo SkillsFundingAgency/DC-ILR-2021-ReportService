@@ -16,6 +16,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
 
         public string TopicReports_TaskGenerateAllbOccupancyReport { get; set; }
 
+        public string TopicReports_TaskGenerateFundingSummaryReport { get; set; }
+
         public string TopicDeds_TaskPersistDataToDeds { get; set; }
     }
 }

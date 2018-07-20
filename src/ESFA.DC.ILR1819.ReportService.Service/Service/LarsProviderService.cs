@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.Data.LARS.Model.Interfaces;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
@@ -28,6 +29,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         {
             _logger = logger;
             _larsConfiguration = larsConfiguration;
+            _loadedData = null;
         }
 
         public async Task<Dictionary<string, ILarsLearningDelivery>> GetLarsData(List<string> validLearnersList)

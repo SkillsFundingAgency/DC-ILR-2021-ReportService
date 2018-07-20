@@ -23,9 +23,14 @@
     <Parameter Name="TopicReports" DefaultValue="Reports" />
     <Parameter Name="TopicReports_TaskGenerateValidationReport" DefaultValue="GenerateValidationReport" />
     <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" DefaultValue="GenerateAlbOccupancyReport" />
+    <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" DefaultValue="GenerateFundingSummaryReport"/>
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue=""/>
+    <!-- Org -->
+    <Parameter Name="OrgConnectionString" DefaultValue="" />
+    <!-- Collections Management -->
+    <Parameter Name="CollectionsManagementConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -71,10 +76,17 @@
             <Parameter Name="TopicReports" Value="[TopicReports]" />
             <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="[TopicReports_TaskGenerateValidationReport]" />
             <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="[TopicReports_TaskGenerateAllbOccupancyReport]" />
+            <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="[TopicReports_TaskGenerateFundingSummaryReport]"/>
             <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
           </Section>
           <Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]"/>
+          </Section>
+          <Section Name="OrgSection">
+            <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />
+          </Section>
+          <Section Name="CollectionsManagementSection">
+            <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />
           </Section>
         </Settings>
       </ConfigOverride>

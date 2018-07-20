@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,12 +9,15 @@ using Autofac.Integration.ServiceFabric;
 using ESFA.DC.Auditing;
 using ESFA.DC.Auditing.Dto;
 using ESFA.DC.Auditing.Interface;
+using ESFA.DC.CollectionsManagement.Services;
+using ESFA.DC.CollectionsManagement.Services.Interface;
+using ESFA.DC.DateTime.Provider;
+using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
-using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -41,6 +45,7 @@ using ESFA.DC.Serialization.Json;
 using ESFA.DC.Serialization.Xml;
 using ESFA.DC.ServiceFabric.Helpers;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless
 {
@@ -86,6 +91,14 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
             containerBuilder.RegisterInstance(larsConfiguration).As<ILarsConfiguration>().SingleInstance();
 
+            var orgConfiguration = configHelper.GetSectionValues<OrgConfiguration>("OrgSection");
+            containerBuilder.RegisterInstance(orgConfiguration).As<IOrgConfiguration>().SingleInstance();
+
+            var collectionsManagementConfiguration =
+                configHelper.GetSectionValues<CollectionsManagementConfiguration>("CollectionsManagementSection");
+            containerBuilder.RegisterInstance(collectionsManagementConfiguration)
+                .As<ICollectionsManagementConfiguration>().SingleInstance();
+
             // register Cosmos config
             var azureRedisOptions = configHelper.GetSectionValues<RedisOptions>("RedisSection");
             containerBuilder.Register(c => new RedisKeyValuePersistenceConfig(
@@ -121,7 +134,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             // Version info
             var versionInfo = configHelper.GetSectionValues<VersionInfo>("VersionSection");
-            containerBuilder.RegisterInstance(versionInfo).As<VersionInfo>().SingleInstance();
+            containerBuilder.RegisterInstance(versionInfo).As<IVersionInfo>().SingleInstance();
 
             // register logger
             var loggerOptions =
@@ -213,6 +226,32 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
                 .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<AllbProviderService>().As<IAllbProviderService>().InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ValidLearnersService>().As<IValidLearnersService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<StringUtilitiesService>().As<IStringUtilitiesService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.Register(context =>
+                {
+                    var settings = context.Resolve<ICollectionsManagementConfiguration>();
+                    var optionsBuilder = new DbContextOptionsBuilder();
+                    optionsBuilder.UseSqlServer(
+                        settings.CollectionsManagementConnectionString,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ReturnCalendarService>().As<IReturnCalendarService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
 
             return containerBuilder;
         }

@@ -62,8 +62,20 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.CollectionsManagement.Services.Interface, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Services.Interface.0.1.2-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Services.Interface.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.Data.LARS.Model, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Data.LARS.Model.0.1.2-beta0001\lib\net461\ESFA.DC.Data.LARS.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Data.Organisatons.Model, Version=0.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Data.Organisations.Model.0.1.3-beta0001\lib\net461\ESFA.DC.Data.Organisatons.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.DateTime.Provider.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.DateTime.Provider.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.DateTime.Provider.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.0.1.2-beta0001\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
@@ -142,14 +154,26 @@
   <ItemGroup>
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
+    <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
+    <Compile Include="Mapper\FundingSummaryHeaderMapper.cs" />
+    <Compile Include="Mapper\FundingSummaryMapper.cs" />
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Model\AllbOccupancyModel.cs" />
+    <Compile Include="Model\FundingSummaryFooterModel.cs" />
+    <Compile Include="Model\FundingSummaryHeaderModel.cs" />
+    <Compile Include="Model\FundingSummaryModel.cs" />
     <Compile Include="Model\ValidationErrorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AllbOccupancyReport.cs" />
+    <Compile Include="Reports\FundingSummaryReport.cs" />
     <Compile Include="Reports\ValidationErrorsReport.cs" />
+    <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
     <Compile Include="Service\LarsProviderService.cs" />
+    <Compile Include="Service\OrgProviderService.cs" />
+    <Compile Include="Service\PeriodProviderService.cs" />
+    <Compile Include="Service\StringUtilitiesService.cs" />
+    <Compile Include="Service\ValidLearnersService.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

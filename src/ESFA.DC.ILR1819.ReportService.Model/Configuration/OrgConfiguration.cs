@@ -2,8 +2,8 @@
 
 namespace ESFA.DC.ILR1819.ReportService.Model.Configuration
 {
-    public sealed class LarsConfiguration : ILarsConfiguration
+    public sealed class OrgConfiguration : IOrgConfiguration
     {
-        public string LarsConnectionString { get; set; }
+        public string OrgConnectionString { get; set; }
     }
 }

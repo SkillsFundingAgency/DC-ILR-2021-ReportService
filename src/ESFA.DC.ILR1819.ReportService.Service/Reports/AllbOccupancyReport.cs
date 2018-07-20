@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using CsvHelper;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
@@ -39,6 +38,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly ILarsProviderService _larsProviderService;
+        private readonly IAllbProviderService _allbProviderService;
+        private readonly IValidLearnersService _validLearnersService;
+        private readonly IStringUtilitiesService _stringUtilitiesService;
 
         public AllbOccupancyReport(
             ILogger logger,
@@ -47,7 +49,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IXmlSerializationService xmlSerializationService,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
-            ILarsProviderService larsProviderService)
+            ILarsProviderService larsProviderService,
+            IAllbProviderService allbProviderService,
+            IValidLearnersService validLearnersService,
+            IStringUtilitiesService stringUtilitiesService)
         {
             _logger = logger;
             _storage = storage;
@@ -56,6 +61,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _larsProviderService = larsProviderService;
+            _allbProviderService = allbProviderService;
+            _validLearnersService = validLearnersService;
+            _stringUtilitiesService = stringUtilitiesService;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage)
@@ -65,10 +73,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage)
         {
-            List<string> validLearners = await ReadAndDeserialiseValidLearnersAsync(jobContextMessage);
+            List<string> validLearners = await _validLearnersService.GetValidLearnersAsync(jobContextMessage);
 
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
-            Task<FundingOutputs> albDataTask = ReadAndDeserialiseAlbAsync(jobContextMessage);
+            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
             Task<Dictionary<string, ILarsLearningDelivery>> larsTask = _larsProviderService.GetLarsData(validLearners);
 
             await Task.WhenAll(ilrFileTask, albDataTask, larsTask);
@@ -240,17 +248,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             if (ilrError.Any())
             {
-                _logger.LogWarning($"Failed to get one or more ILR learners while generating Allb Occupancy Report: {JoinWithMaxLength(ilrError)}");
+                _logger.LogWarning($"Failed to get one or more ILR learners while generating Allb Occupancy Report: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
             }
 
             if (larsError.Any())
             {
-                _logger.LogWarning($"Failed to get one or more LARS learners while generating Allb Occupancy Report: {JoinWithMaxLength(larsError)}");
+                _logger.LogWarning($"Failed to get one or more LARS learners while generating Allb Occupancy Report: {_stringUtilitiesService.JoinWithMaxLength(larsError)}");
             }
 
             if (albLearnerError.Any())
             {
-                _logger.LogWarning($"Failed to get one or more ALB learners while generating Allb Occupancy Report: {JoinWithMaxLength(albLearnerError)}");
+                _logger.LogWarning($"Failed to get one or more ALB learners while generating Allb Occupancy Report: {_stringUtilitiesService.JoinWithMaxLength(albLearnerError)}");
             }
 
             StringBuilder sb = new StringBuilder();
@@ -267,45 +275,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             return sb.ToString();
-        }
-
-        private async Task<FundingOutputs> ReadAndDeserialiseAlbAsync(IJobContextMessage jobContextMessage)
-        {
-            FundingOutputs fundingOutputs = null;
-
-            try
-            {
-                string albFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString();
-                string alb = await _redis.GetAsync(albFilename);
-
-                fundingOutputs = _jsonSerializationService.Deserialize<FundingOutputs>(alb);
-            }
-            catch (Exception ex)
-            {
-                // Todo: Check behaviour
-                _logger.LogError("Failed to get & deserialise ALB funding data", ex);
-            }
-
-            return fundingOutputs;
-        }
-
-        private async Task<List<string>> ReadAndDeserialiseValidLearnersAsync(IJobContextMessage jobContextMessage)
-        {
-            string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers].ToString());
-            List<string> validLearners = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
-            return validLearners;
-        }
-
-        private string JoinWithMaxLength(IEnumerable<string> list)
-        {
-            string ret = string.Join(", ", list);
-
-            if (ret.Length > 200)
-            {
-                ret = ret.Substring(0, 200) + ";(message was truncated)";
-            }
-
-            return ret;
         }
     }
 }

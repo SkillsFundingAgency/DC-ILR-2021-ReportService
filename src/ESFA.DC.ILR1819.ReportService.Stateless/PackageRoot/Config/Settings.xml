@@ -53,10 +53,19 @@
     <Parameter Name="TopicReports" Value="" />
     <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
   </Section>
   
   <Section Name="LarsSection">
     <Parameter Name="LarsConnectionString" Value=""/>
+  </Section>
+
+  <Section Name="OrgSection">
+    <Parameter Name="OrgConnectionString" Value="" />
+  </Section>
+
+  <Section Name="CollectionsManagementSection">
+    <Parameter Name="CollectionsManagementConnectionString" Value="" />
   </Section>
 </Settings>
