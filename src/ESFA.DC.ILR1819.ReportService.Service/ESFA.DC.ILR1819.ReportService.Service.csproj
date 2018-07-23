@@ -162,10 +162,13 @@
     <Compile Include="Model\FundingSummaryFooterModel.cs" />
     <Compile Include="Model\FundingSummaryHeaderModel.cs" />
     <Compile Include="Model\FundingSummaryModel.cs" />
+    <Compile Include="Model\MainOccupancyFM25Model.cs" />
+    <Compile Include="Model\MainOccupancyFM35Model.cs" />
     <Compile Include="Model\ValidationErrorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AllbOccupancyReport.cs" />
     <Compile Include="Reports\FundingSummaryReport.cs" />
+    <Compile Include="Reports\MainOccupancyReport.cs" />
     <Compile Include="Reports\ValidationErrorsReport.cs" />
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />

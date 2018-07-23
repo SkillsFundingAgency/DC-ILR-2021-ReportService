@@ -73,21 +73,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage)
         {
-            Task<List<string>> validLearnersTask = _validLearnersService.GetValidLearnersAsync(jobContextMessage);
-            Task<IMessage> messageTask = _ilrProviderService.GetIlrFile(jobContextMessage);
-            Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
             Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            await Task.WhenAll(validLearnersTask, messageTask, providerNameTask, albDataTask);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetValidLearnersAsync(jobContextMessage);
+            Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage);
+            Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage);
+
+            await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask, providerNameTask, periodTask);
 
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
 
-            int period = await _periodProviderService.GetPeriod(jobContextMessage);
-
             List<FundingSummaryModel> fundingSummaryModels = new List<FundingSummaryModel>();
             foreach (string validLearnerRefNum in validLearnersTask.Result)
             {
-                var learner = messageTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
                 if (learner == null)
                 {
                     ilrError.Add(validLearnerRefNum);
@@ -135,7 +135,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                                 (albSupportPaymentObj?.Period7 ?? 0) + (albSupportPaymentObj?.Period8 ?? 0),
                     Period9_12 = (albSupportPaymentObj?.Period9 ?? 0) + (albSupportPaymentObj?.Period10 ?? 0) +
                                  (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0),
-                    YearToDate = GetYearToDateTotal(albSupportPaymentObj, period),
+                    YearToDate = GetYearToDateTotal(albSupportPaymentObj, periodTask.Result),
                     Total = (albSupportPaymentObj?.Period1 ?? 0) + (albSupportPaymentObj?.Period2 ?? 0) +
                             (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) +
                             (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) +
@@ -171,7 +171,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                             (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) +
                             (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0) +
                             (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0),
-                    YearToDate = GetYearToDateTotal(albAreaUpliftBalPaymentObj, albAreaUpliftOnProgPaymentObj, period),
+                    YearToDate = GetYearToDateTotal(albAreaUpliftBalPaymentObj, albAreaUpliftOnProgPaymentObj, periodTask.Result),
                     Total = (albAreaUpliftBalPaymentObj?.Period1 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) +
                             (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) +
                             (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) +
@@ -188,7 +188,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 //}
             }
 
-            FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, messageTask, providerNameTask);
+            FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, ilrFileTask, providerNameTask);
             FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(jobContextMessage);
 
             LogWarnings(ilrError, albLearnerError);

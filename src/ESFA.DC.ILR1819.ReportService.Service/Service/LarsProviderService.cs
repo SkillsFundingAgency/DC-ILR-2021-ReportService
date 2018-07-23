@@ -20,11 +20,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly ILarsConfiguration _larsConfiguration;
 
-        private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _getLearningDeliveriesLock = new SemaphoreSlim(1, 1);
 
-        private bool _loadedDataAlready;
+        private readonly SemaphoreSlim _getFrameworkAimsLock = new SemaphoreSlim(1, 1);
 
-        private Dictionary<string, ILarsLearningDelivery> _loadedData;
+        private readonly SemaphoreSlim _getVersionLock = new SemaphoreSlim(1, 1);
+
+        private Dictionary<string, ILarsLearningDelivery> _loadedLearningDeliveries;
+
+        private Dictionary<string, ILarsFrameworkAim> _loadedFrameworkAims;
 
         private string _version;
 
@@ -32,30 +36,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         {
             _logger = logger;
             _larsConfiguration = larsConfiguration;
-            _loadedData = null;
+            _loadedLearningDeliveries = null;
+            _loadedFrameworkAims = null;
         }
 
-        public async Task<Dictionary<string, ILarsLearningDelivery>> GetLarsData(List<string> validLearnersList)
+        public async Task<Dictionary<string, ILarsLearningDelivery>> GetLarsData(List<string> validLearnerAimRefs)
         {
-            await _getDataLock.WaitAsync();
+            await _getLearningDeliveriesLock.WaitAsync();
 
             try
             {
-                if (_loadedDataAlready)
+                if (_loadedLearningDeliveries == null)
                 {
-                    return _loadedData;
+                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    _loadedLearningDeliveries = await larsContext.LARS_LearningDelivery
+                        .Where(x => validLearnerAimRefs.Contains(x.LearnAimRef)).ToDictionaryAsync(
+                            k => k.LearnAimRef, v => (ILarsLearningDelivery)new LarsLearningDelivery
+                            {
+                                LearningAimTitle = v.LearnAimRefTitle,
+                                NotionalNvqLevel = v.NotionalNVQLevel,
+                                Tier2SectorSubjectArea = v.SectorSubjectAreaTier2
+                            });
                 }
-
-                _loadedDataAlready = true;
-                ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
-                _loadedData = larsContext.LARS_LearningDelivery.Where(x => validLearnersList.Contains(x.LearnAimRef)).ToDictionary(
-                    k => k.LearnAimRef, v => (ILarsLearningDelivery)new LarsLearningDelivery
-                    {
-                        LearningAimTitle = v.LearnAimRefTitle,
-                        NotionalNvqLevel = v.NotionalNVQLevel,
-                        Tier2SectorSubjectArea = v.SectorSubjectAreaTier2
-                    });
-                _version = (await larsContext.Current_Version.SingleAsync()).CurrentVersion;
             }
             catch (Exception ex)
             {
@@ -63,15 +65,44 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             finally
             {
-                _getDataLock.Release();
+                _getLearningDeliveriesLock.Release();
             }
 
-            return _loadedData;
+            return _loadedLearningDeliveries;
+        }
+
+        public async Task<Dictionary<string, ILarsFrameworkAim>> GetFrameworkAims(List<string> validLearnerAimRefs)
+        {
+            await _getFrameworkAimsLock.WaitAsync();
+
+            try
+            {
+                if (_loadedLearningDeliveries == null)
+                {
+                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    _loadedFrameworkAims = await larsContext.LARS_FrameworkAims
+                        .Where(x => validLearnerAimRefs.Contains(x.LearnAimRef)).ToDictionaryAsync(
+                            k => k.LearnAimRef, v => (ILarsFrameworkAim)new LarsFrameworkAim()
+                            {
+                                FrameworkComponentType = v.FrameworkComponentType
+                            });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to read ILR", ex);
+            }
+            finally
+            {
+                _getFrameworkAimsLock.Release();
+            }
+
+            return _loadedFrameworkAims;
         }
 
         public async Task<string> GetVersionAsync()
         {
-            await _getDataLock.WaitAsync();
+            await _getVersionLock.WaitAsync();
 
             try
             {
@@ -87,7 +118,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             finally
             {
-                _getDataLock.Release();
+                _getVersionLock.Release();
             }
 
             return _version;

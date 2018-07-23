@@ -73,19 +73,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage)
         {
-            List<string> validLearners = await _validLearnersService.GetValidLearnersAsync(jobContextMessage);
-
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
             Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            Task<Dictionary<string, ILarsLearningDelivery>> larsTask = _larsProviderService.GetLarsData(validLearners);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetValidLearnersAsync(jobContextMessage);
 
-            await Task.WhenAll(ilrFileTask, albDataTask, larsTask);
+            await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
+
+            List<string> learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
+                .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
+
+            Dictionary<string, ILarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLarsData(learnAimRefs);
+
             List<string> ilrError = new List<string>();
             List<string> larsError = new List<string>();
             List<string> albLearnerError = new List<string>();
 
-            List<AllbOccupancyModel> models = new List<AllbOccupancyModel>(validLearners.Count);
-            foreach (string validLearnerRefNum in validLearners)
+            List<AllbOccupancyModel> models = new List<AllbOccupancyModel>(validLearnersTask.Result.Count);
+            foreach (string validLearnerRefNum in validLearnersTask.Result)
             {
                 var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
                 if (learner == null)
@@ -94,7 +98,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                if (!larsTask.Result.TryGetValue(validLearnerRefNum, out ILarsLearningDelivery larsModel))
+                if (!larsLearningDeliveriesTask.TryGetValue(validLearnerRefNum, out ILarsLearningDelivery larsModel))
                 {
                     larsError.Add(validLearnerRefNum);
                     continue;
