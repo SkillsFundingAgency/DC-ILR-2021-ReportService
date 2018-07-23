@@ -12,6 +12,6 @@
 
         public string LastEasUpdate { get; set; }
 
-        public string SecurityClassification { get; }
+        public string SecurityClassification { get; set; }
     }
 }

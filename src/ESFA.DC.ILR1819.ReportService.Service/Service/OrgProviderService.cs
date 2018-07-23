@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +23,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private string _loadedData;
 
+        private string _version;
+
         public OrgProviderService(ILogger logger, IOrgConfiguration orgConfiguration)
         {
             _logger = logger;
@@ -44,6 +47,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 long ukPrn = Convert.ToInt64(ukPrnStr);
                 Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
                 _loadedData = organisations.Org_Details.Where(x => x.UKPRN == ukPrn).Select(x => x.Name).SingleOrDefault();
+                _version = (await organisations.Current_Version.SingleAsync()).CurrentVersion;
             }
             catch (Exception ex)
             {
@@ -55,6 +59,30 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _loadedData;
+        }
+
+        public async Task<string> GetVersionAsync()
+        {
+            await _getDataLock.WaitAsync();
+
+            try
+            {
+                if (string.IsNullOrEmpty(_version))
+                {
+                    Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
+                    _version = (await organisations.Current_Version.SingleAsync()).CurrentVersion;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to read ILR", ex);
+            }
+            finally
+            {
+                _getDataLock.Release();
+            }
+
+            return _version;
         }
     }
 }

@@ -17,17 +17,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service
         private readonly ITopicAndTaskSectionOptions _topicAndTaskSectionOptions;
         private readonly IValidationErrorsReport _validationErrorsReport;
         private readonly IAllbOccupancyReport _albAllbOccupancyReport;
+        private readonly IFundingSummaryReport _fundingSummaryReport;
 
         public EntryPoint(
             ILogger logger,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationErrorsReport validationErrorsReport,
-            IAllbOccupancyReport albAllbOccupancyReport)
+            IAllbOccupancyReport albAllbOccupancyReport,
+            IFundingSummaryReport fundingSummaryReport)
         {
             _logger = logger;
             _topicAndTaskSectionOptions = topicAndTaskSectionOptions;
             _validationErrorsReport = validationErrorsReport;
             _albAllbOccupancyReport = albAllbOccupancyReport;
+            _fundingSummaryReport = fundingSummaryReport;
         }
 
         public async Task<bool> Callback(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
@@ -73,6 +76,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service
             {
                 await _albAllbOccupancyReport.GenerateReport(jobContextMessage);
                 _logger.LogDebug($"Persisted Alb occupancy report to csv in: {stopWatch.ElapsedMilliseconds}");
+            }
+            else if (task == _topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport)
+            {
+                await _fundingSummaryReport.GenerateReport(jobContextMessage);
+                _logger.LogDebug($"Persisted funding summary report to csv in: {stopWatch.ElapsedMilliseconds}");
             }
 
             stopWatch.Stop();

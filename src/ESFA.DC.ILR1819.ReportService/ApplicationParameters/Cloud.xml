@@ -25,7 +25,7 @@
     <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="__TopicReports_TaskGenerateFundingSummaryReport__" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="__TopicDeds_TaskPersistDataToDeds__" />
     <!-- LARS -->
-    <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__"/>
+    <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- Org -->
     <Parameter Name="OrgConnectionString" Value="__OrganisationConnectionString__" />
     <!-- Collections Management -->

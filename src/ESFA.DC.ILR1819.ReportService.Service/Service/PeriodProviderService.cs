@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTime.Provider.Interface;
@@ -37,9 +38,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _returnCalendarService = returnCalendarService;
         }
 
-        public int GetPeriod(IJobContextMessage jobContextMessage)
+        public async Task<int> GetPeriod(IJobContextMessage jobContextMessage)
         {
-            ReturnPeriod returnPeriod = _returnCalendarService.GetCurrentPeriod(CurrentCollection);
+            ReturnPeriod returnPeriod = await _returnCalendarService.GetCurrentPeriodAsync(CurrentCollection);
 
             System.DateTime dateTimeNowUtc = jobContextMessage.SubmissionDateTimeUtc;
             System.DateTime returnPeriodEndDateTimeUk = _dateTimeProvider.ConvertUtcToUk(returnPeriod.EndDateTimeUtc);

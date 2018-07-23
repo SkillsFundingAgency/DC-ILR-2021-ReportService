@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
             Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
+            Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
@@ -52,7 +53,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
                     "3fm9901",
                     "5fm9901"
                 }));
-            periodProviderService.Setup(x => x.GetPeriod(It.IsAny<IJobContextMessage>())).Returns(12);
+            periodProviderService.Setup(x => x.GetPeriod(It.IsAny<IJobContextMessage>())).ReturnsAsync(12);
 
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
                 logger.Object,
@@ -65,6 +66,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
                 stringUtilitiesService,
                 periodProviderService.Object,
                 dateTimeProvider,
+                larsProviderService.Object,
                 versionInfo);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);

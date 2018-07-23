@@ -28,6 +28,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
                     return (T)(object)new JobStatusQueueOptions();
                 case "OrgSection":
                     return (T)(object)new OrgConfiguration();
+                case "CollectionsManagementSection":
+                    return (T)(object)new CollectionsManagementConfiguration();
             }
 
             return default(T);

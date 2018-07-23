@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTime.Provider;
@@ -18,7 +19,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
         [Theory]
         [InlineData("2018-07-04 18:05:00", "2018-07-01 12:01:00", 11)]
         [InlineData("2018-07-04 18:05:00", "2018-07-04 18:06:00", 12)]
-        public void TestPeriodProviderService(string collectionEndDateTimeUtcStr, string nowDateTimeUtcStr, int expectedPeriod)
+        public async Task TestPeriodProviderService(string collectionEndDateTimeUtcStr, string nowDateTimeUtcStr, int expectedPeriod)
         {
             System.DateTime collectionEndDateTimeUtc = System.DateTime.ParseExact(collectionEndDateTimeUtcStr, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             System.DateTime nowDateTimeUtc = System.DateTime.ParseExact(nowDateTimeUtcStr, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
@@ -26,7 +27,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
             IDateTimeProvider dateTimeProvider = new DateTimeProvider();
             Mock<IReturnCalendarService> returnCalendarService = new Mock<IReturnCalendarService>();
 
-            returnCalendarService.Setup(x => x.GetCurrentPeriod("ILR1819")).Returns(new ReturnPeriod()
+            returnCalendarService.Setup(x => x.GetCurrentPeriodAsync("ILR1819")).ReturnsAsync(new ReturnPeriod()
             {
                 EndDateTimeUtc = collectionEndDateTimeUtc,
             });
@@ -35,7 +36,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], "ukPrn", "Container", "Filename", "Username", 0, nowDateTimeUtc);
 
-            int period = periodProviderService.GetPeriod(jobContextMessage);
+            int period = await periodProviderService.GetPeriod(jobContextMessage);
 
             period.Should().Be(expectedPeriod);
         }

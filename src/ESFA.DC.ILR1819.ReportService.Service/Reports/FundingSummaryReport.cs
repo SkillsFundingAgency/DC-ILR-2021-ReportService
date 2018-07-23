@@ -11,6 +11,7 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Model;
@@ -39,6 +40,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IPeriodProviderService _periodProviderService;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly ILarsProviderService _larsProviderService;
         private readonly IVersionInfo _versionInfo;
 
         public FundingSummaryReport(
@@ -52,6 +54,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStringUtilitiesService stringUtilitiesService,
             IPeriodProviderService periodProviderService,
             IDateTimeProvider dateTimeProvider,
+            ILarsProviderService larsProviderService,
             IVersionInfo versionInfo)
         {
             _logger = logger;
@@ -64,6 +67,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _stringUtilitiesService = stringUtilitiesService;
             _periodProviderService = periodProviderService;
             _dateTimeProvider = dateTimeProvider;
+            _larsProviderService = larsProviderService;
             _versionInfo = versionInfo;
         }
 
@@ -78,7 +82,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
 
-            int period = _periodProviderService.GetPeriod(jobContextMessage);
+            int period = await _periodProviderService.GetPeriod(jobContextMessage);
 
             List<FundingSummaryModel> fundingSummaryModels = new List<FundingSummaryModel>();
             foreach (string validLearnerRefNum in validLearnersTask.Result)
@@ -185,7 +189,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, messageTask, providerNameTask);
-            FundingSummaryFooterModel fundingSummaryFooterModel = GetFooter();
+            FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(jobContextMessage);
 
             LogWarnings(ilrError, albLearnerError);
 
@@ -235,27 +239,37 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private static FundingSummaryHeaderModel GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<string> providerNameTask)
+        private FundingSummaryHeaderModel GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<string> providerNameTask)
         {
             string ilrFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
             FundingSummaryHeaderModel fundingSummaryHeaderModel = new FundingSummaryHeaderModel()
             {
                 IlrFile = ilrFilename,
                 Ukprn = messageTask.Result.HeaderEntity.SourceEntity.UKPRN,
-                ProviderName = providerNameTask.Result
+                ProviderName = providerNameTask.Result,
+                LastEasUpdate = "Todo", // Todo
+                LastIlrFileUpdate = _stringUtilitiesService.GetIlrFileDate(ilrFilename).ToString("yyyy-MM-dd HH:mm:ssy"),
+                SecurityClassification = "OFFICIAL-SENSITIVE"
             };
             return fundingSummaryHeaderModel;
         }
 
-        private FundingSummaryFooterModel GetFooter()
+        private async Task<FundingSummaryFooterModel> GetFooterAsync(IJobContextMessage jobContextMessage)
         {
             var dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             var dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
+            string ilrFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
             FundingSummaryFooterModel fundingSummaryFooterModel = new FundingSummaryFooterModel()
             {
                 ReportGeneratedAt = "Report generated at " + dateTimeNowUk.ToString("HH:mm:ss") + " on " + dateTimeNowUk.ToString("dd/MM/yyyy"),
-                ApplicationVersion = _versionInfo.ServiceReleaseVersion
+                ApplicationVersion = _versionInfo.ServiceReleaseVersion,
+                ComponentSetVersion = "NA",
+                FilePreparationDate = _stringUtilitiesService.GetIlrFileDate(ilrFilename).ToString("dd/MM/yyyy"),
+                OrganisationData = await _orgProviderService.GetVersionAsync(),
+                LargeEmployerData = "Todo", // Todo
+                LarsData = await _larsProviderService.GetVersionAsync(),
+                PostcodeData = "Todo" // Todo
             };
 
             return fundingSummaryFooterModel;

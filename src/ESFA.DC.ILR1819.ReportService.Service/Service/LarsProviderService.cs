@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,6 +25,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private bool _loadedDataAlready;
 
         private Dictionary<string, ILarsLearningDelivery> _loadedData;
+
+        private string _version;
 
         public LarsProviderService(ILogger logger, ILarsConfiguration larsConfiguration)
         {
@@ -52,6 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         NotionalNvqLevel = v.NotionalNVQLevel,
                         Tier2SectorSubjectArea = v.SectorSubjectAreaTier2
                     });
+                _version = (await larsContext.Current_Version.SingleAsync()).CurrentVersion;
             }
             catch (Exception ex)
             {
@@ -63,6 +67,30 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _loadedData;
+        }
+
+        public async Task<string> GetVersionAsync()
+        {
+            await _getDataLock.WaitAsync();
+
+            try
+            {
+                if (string.IsNullOrEmpty(_version))
+                {
+                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    _version = (await larsContext.Current_Version.SingleAsync()).CurrentVersion;
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to read ILR", ex);
+            }
+            finally
+            {
+                _getDataLock.Release();
+            }
+
+            return _version;
         }
     }
 }
