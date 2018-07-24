@@ -194,11 +194,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         HigherApprentishipHeAim = "Todo", // Todo albLearningDeliveryAttributeDatas?.PrscHEAim ? "Yes" : "No",
                         ApplicEmpFactDate = "Todo", // Todo albLearningDeliveryAttributeDatas?.ApplicEmpFactDate,
                         ApplicFactDate = albLearningDeliveryAttributeDatas?.ApplicFactDate,
-                        Period1OnProgPayment = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35OnProgPayment)?.Period1,
-                        Period1BalancePayment = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35BalPayment)?.Period1,
-                        Period1AchievePayment = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35AchievePayment)?.Period1,
-                        Period1EmpOutcomePay = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35EmpOutcomePay)?.Period1,
-                        Period1LearnSuppFundCash = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35LearnSuppFundCash)?.Period1,
+                        Period1OnProgPayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35OnProgPayment)?.Period1,
+                        Period1BalancePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35BalPayment)?.Period1,
+                        Period1AchievePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35AchievePayment)?.Period1,
+                        Period1EmpOutcomePay = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35EmpOutcomePay)?.Period1,
+                        Period1LearnSuppFundCash = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35LearnSuppFundCash)?.Period1,
+
+                        Period2OnProgPayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35OnProgPayment)?.Period2,
+                        Period2BalancePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35BalPayment)?.Period2,
+                        Period2AchievePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35AchievePayment)?.Period2,
+                        Period2EmpOutcomePay = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35EmpOutcomePay)?.Period2,
+                        Period2LearnSuppFundCash = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35LearnSuppFundCash)?.Period2,
                     });
 
                     mainOccupancyFM25Models.Add(new MainOccupancyFM25Model()

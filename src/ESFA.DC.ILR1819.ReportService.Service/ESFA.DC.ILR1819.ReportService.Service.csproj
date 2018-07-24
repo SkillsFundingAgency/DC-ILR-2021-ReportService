@@ -157,6 +157,8 @@
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
     <Compile Include="Mapper\FundingSummaryHeaderMapper.cs" />
     <Compile Include="Mapper\FundingSummaryMapper.cs" />
+    <Compile Include="Mapper\MainOccupancyFM25Mapper.cs" />
+    <Compile Include="Mapper\MainOccupancyFM35Mapper.cs" />
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Model\AllbOccupancyModel.cs" />
     <Compile Include="Model\FundingSummaryFooterModel.cs" />

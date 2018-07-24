@@ -57,5 +57,7 @@
         public decimal? PeriodOnProgPaymentTotal { get; set; }
 
         public decimal? Total { get; set; }
+
+        public string OfficalSensitive { get; }
     }
 }

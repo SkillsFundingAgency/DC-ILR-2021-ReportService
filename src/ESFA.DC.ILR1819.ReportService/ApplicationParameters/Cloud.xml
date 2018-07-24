@@ -19,11 +19,12 @@
     <Parameter Name="TopicValidation" Value="__TopicValidation__" />
     <Parameter Name="TopicFunding" Value="__TopicFunding__" />
     <Parameter Name="TopicDeds" Value="__TopicDeds__" />
+    <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="__TopicDeds_TaskPersistDataToDeds__" />
     <Parameter Name="TopicReports" Value="__TopicReports__" />
     <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="__TopicReports_TaskGenerateValidationReport__" />
     <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="__TopicReports_TaskGenerateAllbOccupancyReport__" />
     <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="__TopicReports_TaskGenerateFundingSummaryReport__" />
-    <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="__TopicDeds_TaskPersistDataToDeds__" />
+    <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="__TopicReports_TaskGenerateMainOccupancyReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- Org -->
