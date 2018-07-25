@@ -30,6 +30,6 @@
     <!-- Org -->
     <Parameter Name="OrgConnectionString" Value="__OrganisationConnectionString__" />
     <!-- Collections Management -->
-    <Parameter Name="CollectionsManagementConnectionString" Value="__CollectionsManagementConnectionString__" />
+    <Parameter Name="CollectionsManagementConnectionString" Value="__CollectionsManagementDbConnectionString__" />
   </Parameters>
 </Application>
