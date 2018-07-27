@@ -30,5 +30,8 @@
     <Parameter Name="OrgConnectionString" Value="__OrganisationConnectionString__" />
     <!-- Collections Management -->
     <Parameter Name="CollectionsManagementConnectionString" Value="__CollectionsManagementDbConnectionString__" />
+
+    <Parameter Name="ProcessingServicePlacementConstraints" Value="__ProcessingServicePlacementConstraints__" />
+
   </Parameters>
 </Application>
