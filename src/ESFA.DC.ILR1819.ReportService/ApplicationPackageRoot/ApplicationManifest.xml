@@ -32,7 +32,6 @@
     <Parameter Name="OrgConnectionString" DefaultValue="" />
     <!-- Collections Management -->
     <Parameter Name="CollectionsManagementConnectionString" DefaultValue="" />
-
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
