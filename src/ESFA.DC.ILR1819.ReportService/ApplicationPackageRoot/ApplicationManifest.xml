@@ -2,6 +2,7 @@
 <ApplicationManifest xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" ApplicationTypeName="ESFA.DC.ILR1819.ReportServiceType" ApplicationTypeVersion="1.0.0" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
     <Parameter Name="ESFA.DC.ILR1819.ReportService.Stateless_InstanceCount" DefaultValue="1" />
+    <Parameter Name="ProcessingServicePlacementConstraints" DefaultValue="" />
     <Parameter Name="AuditQueueName" DefaultValue="audit-queue" />
     <Parameter Name="TopicName" DefaultValue="TopicName" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
@@ -105,6 +106,7 @@
     <Service Name="ESFA.DC.ILR1819.ReportService.Stateless" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="ESFA.DC.ILR1819.ReportService.StatelessType" InstanceCount="[ESFA.DC.ILR1819.ReportService.Stateless_InstanceCount]">
         <SingletonPartition />
+        <PlacementConstraints>[ProcessingServicePlacementConstraints]</PlacementConstraints>
       </StatelessService>
     </Service>
   </DefaultServices>
