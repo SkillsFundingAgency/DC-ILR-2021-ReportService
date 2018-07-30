@@ -24,6 +24,8 @@
     <Parameter Name="TopicReports_TaskGenerateValidationReport" DefaultValue="GenerateValidationReport" />
     <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" DefaultValue="GenerateAlbOccupancyReport" />
     <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" DefaultValue="GenerateFundingSummaryReport" />
+    <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" DefaultValue="GenerateSummaryOfFunding1619Report" />    
+    <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" DefaultValue="GenerateMathsAndEnglishReport"/>
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
@@ -77,6 +79,8 @@
             <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="[TopicReports_TaskGenerateValidationReport]" />
             <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="[TopicReports_TaskGenerateAllbOccupancyReport]" />
             <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="[TopicReports_TaskGenerateFundingSummaryReport]" />
+            <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="[TopicReports_TaskGenerateSummaryOfFunding1619Report]" />            
+            <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="[TopicReports_TaskGenerateMathsAndEnglishReport]"/>
             <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
           </Section>
           <Section Name="LarsSection">

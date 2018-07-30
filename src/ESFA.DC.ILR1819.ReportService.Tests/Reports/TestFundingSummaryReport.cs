@@ -19,7 +19,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests
+namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 {
     public sealed class TestFundingSummaryReport
     {

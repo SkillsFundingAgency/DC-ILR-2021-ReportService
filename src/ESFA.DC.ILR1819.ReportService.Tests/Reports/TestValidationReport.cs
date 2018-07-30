@@ -1,10 +1,11 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
@@ -16,7 +17,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests
+namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 {
     public sealed class TestValidationReport
     {
@@ -37,17 +38,17 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
 
-            IValidationErrorsReport validationErrorsReport = new ValidationErrorsReport(logger.Object, storage.Object, redis.Object, xmlSerializationService, jsonSerializationService, ilrProviderService);
+            IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, storage.Object, redis.Object, xmlSerializationService, jsonSerializationService, ilrProviderService);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors] = "ValidationErrors";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups] = "ValidationErrorsLookup";
 
-            var validationErrors = await validationErrorsReport.ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
-            await validationErrorsReport.PeristValuesToStorage(jobContextMessage, validationErrors);
+            await validationErrorsReport.GenerateReport(jobContextMessage);
 
             csv.Should().NotBeNullOrEmpty();
+            TestHelper.CheckCsv(csv, new ValidationErrorMapper());
         }
     }
 }

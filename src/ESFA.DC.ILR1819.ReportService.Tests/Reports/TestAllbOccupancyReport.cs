@@ -5,8 +5,10 @@ using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
+using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
@@ -18,7 +20,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests
+namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 {
     public sealed class TestAllbOccupancyReport
     {
@@ -45,7 +47,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
-            larsProviderService.Setup(x => x.GetLarsData(It.IsAny<List<string>>()))
+            larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<List<string>>()))
                 .ReturnsAsync(new Dictionary<string, ILarsLearningDelivery>()
                 {
                     { "3fm9901", new LarsLearningDelivery { LearningAimTitle = "A", NotionalNvqLevel = "B", Tier2SectorSubjectArea = 3 } },
@@ -58,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
 
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
-            IAllbOccupancyReport allbOccupancyReport = new AllbOccupancyReport(
+            IReport allbOccupancyReport = new AllbOccupancyReport(
                 logger.Object,
                 storage.Object,
                 redis.Object,
@@ -78,6 +80,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests
             await allbOccupancyReport.GenerateReport(jobContextMessage);
 
             csv.Should().NotBeNullOrEmpty();
+            TestHelper.CheckCsv(csv, new AllbOccupancyMapper());
         }
     }
 }

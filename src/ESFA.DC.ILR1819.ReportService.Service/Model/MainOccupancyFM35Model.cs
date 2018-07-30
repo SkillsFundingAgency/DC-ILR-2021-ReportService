@@ -256,6 +256,18 @@
 
         public decimal? Period12LearnSuppFundCash { get; set; }
 
+        public decimal? TotalOnProgPayment { get; set; }
+
+        public decimal? TotalBalancePayment { get; set; }
+
+        public decimal? TotalAchievePayment { get; set; }
+
+        public decimal? TotalEmpOutcomePay { get; set; }
+
+        public decimal? TotalLearnSuppFundCash { get; set; }
+
+        public decimal? TotalEarnedCash { get; set; }
+
         public string OfficalSensitive { get; }
     }
 }

@@ -135,6 +135,39 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.Period8AchievePayment).Index(94).Name("January aim achievement earned cash");
             Map(m => m.Period8EmpOutcomePay).Index(95).Name("January job outcome earned cash");
             Map(m => m.Period8LearnSuppFundCash).Index(96).Name("January learning support earned cash");
+
+            Map(m => m.Period9OnProgPayment).Index(97).Name("February on programme earned cash");
+            Map(m => m.Period9BalancePayment).Index(98).Name("February balancing payment earned cash");
+            Map(m => m.Period9AchievePayment).Index(99).Name("February aim achievement earned cash");
+            Map(m => m.Period9EmpOutcomePay).Index(100).Name("February job outcome earned cash");
+            Map(m => m.Period9LearnSuppFundCash).Index(101).Name("February learning support earned cash");
+
+            Map(m => m.Period10OnProgPayment).Index(102).Name("March on programme earned cash");
+            Map(m => m.Period10BalancePayment).Index(103).Name("March balancing payment earned cash");
+            Map(m => m.Period10AchievePayment).Index(104).Name("March aim achievement earned cash");
+            Map(m => m.Period10EmpOutcomePay).Index(105).Name("March job outcome earned cash");
+            Map(m => m.Period10LearnSuppFundCash).Index(106).Name("March learning support earned cash");
+
+            Map(m => m.Period11OnProgPayment).Index(107).Name("April on programme earned cash");
+            Map(m => m.Period11BalancePayment).Index(108).Name("April balancing payment earned cash");
+            Map(m => m.Period11AchievePayment).Index(109).Name("April aim achievement earned cash");
+            Map(m => m.Period11EmpOutcomePay).Index(110).Name("April job outcome earned cash");
+            Map(m => m.Period11LearnSuppFundCash).Index(111).Name("April learning support earned cash");
+
+            Map(m => m.Period12OnProgPayment).Index(112).Name("May on programme earned cash");
+            Map(m => m.Period12BalancePayment).Index(113).Name("May balancing payment earned cash");
+            Map(m => m.Period12AchievePayment).Index(114).Name("May aim achievement earned cash");
+            Map(m => m.Period12EmpOutcomePay).Index(115).Name("May job outcome earned cash");
+            Map(m => m.Period12LearnSuppFundCash).Index(116).Name("May learning support earned cash");
+
+            Map(m => m.TotalOnProgPayment).Index(117).Name("Total on programme earned cash");
+            Map(m => m.TotalBalancePayment).Index(118).Name("Total balancing payment earned cash");
+            Map(m => m.TotalAchievePayment).Index(119).Name("Total aim achievement earned cash");
+            Map(m => m.TotalEmpOutcomePay).Index(120).Name("Total job outcome earned cash");
+            Map(m => m.TotalLearnSuppFundCash).Index(121).Name("Total learning support earned cash");
+            Map(m => m.TotalEarnedCash).Index(122).Name("Total earned cash");
+
+            Map(m => m.OfficalSensitive).Index(123).Name("OFFICIAL – SENSITIVE");
         }
     }
 }

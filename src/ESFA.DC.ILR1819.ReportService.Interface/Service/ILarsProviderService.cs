@@ -6,9 +6,9 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
     public interface ILarsProviderService
     {
-        Task<Dictionary<string, ILarsLearningDelivery>> GetLarsData(List<string> validLearnersList);
+        Task<Dictionary<string, ILarsLearningDelivery>> GetLearningDeliveries(List<string> validLearnerAimRefs);
 
-        Task<Dictionary<string, ILarsFrameworkAim>> GetFrameworkAims(List<string> validLearners);
+        Task<Dictionary<string, ILarsFrameworkAim>> GetFrameworkAims(List<string> validLearnerAimRefs);
 
         Task<string> GetVersionAsync();
     }

@@ -11,6 +11,7 @@ using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
@@ -20,7 +21,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class ValidationErrorsReport : IValidationErrorsReport
+    public sealed class ValidationErrorsReport : IReport
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
@@ -45,7 +46,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
         }
 
-        public async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage)
+        public ReportType ReportType { get; } = ReportType.ValidationErrors;
+
+        public async Task GenerateReport(IJobContextMessage jobContextMessage)
+        {
+            List<ValidationErrorDto> validationErrors = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
+            await PeristValuesToStorage(jobContextMessage, validationErrors);
+        }
+
+        private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage)
         {
             string validationErrorsStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors]
                 .ToString());
@@ -86,7 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return result;
         }
 
-        public async Task PeristValuesToStorage(IJobContextMessage jobContextMessage, List<ValidationErrorDto> validationErrorDtos)
+        private async Task PeristValuesToStorage(IJobContextMessage jobContextMessage, List<ValidationErrorDto> validationErrorDtos)
         {
             string key = jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors]
                 .ToString();

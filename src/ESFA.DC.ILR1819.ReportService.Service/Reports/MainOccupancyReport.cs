@@ -12,6 +12,8 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Report;
+using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -19,7 +21,7 @@ using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class MainOccupancyReport : IMainOccupancyReport
+    public sealed class MainOccupancyReport : IReport
     {
         private const string Fm25OnProgPayment = "OnProgPayment";
 
@@ -59,6 +61,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _larsProviderService = larsProviderService;
         }
 
+        public ReportType ReportType { get; } = ReportType.MainOccupancy;
+
         public async Task GenerateReport(IJobContextMessage jobContextMessage)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
@@ -77,7 +81,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             List<string> learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
 
-            Task<Dictionary<string, ILarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLarsData(learnAimRefs);
+            Task<Dictionary<string, ILarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs);
             Task<Dictionary<string, ILarsFrameworkAim>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs);
 
             await Task.WhenAll(larsLearningDeliveriesTask, larsFrameworkAimsTask);
@@ -86,7 +90,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<string> albLearnerError = new List<string>();
 
             List<MainOccupancyFM25Model> mainOccupancyFM25Models = new List<MainOccupancyFM25Model>(learnAimRefs.Count);
-            List <MainOccupancyFM35Model> mainOccupancyFM35Models = new List<MainOccupancyFM35Model>(learnAimRefs.Count);
+            List<MainOccupancyFM35Model> mainOccupancyFM35Models = new List<MainOccupancyFM35Model>(learnAimRefs.Count);
             foreach (var learner in learners)
             {
                 if (!larsLearningDeliveriesTask.Result.TryGetValue(learner.LearnRefNumber, out ILarsLearningDelivery larsModel))
@@ -112,6 +116,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 var albLearnerOnProgPayment =
                     albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm25OnProgPayment);
 
+                var onProgPayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35OnProgPayment);
+                var balancePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35BalPayment);
+                var achievePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35AchievePayment);
+                var empOutcomePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35EmpOutcomePay);
+                var learnSuppFundCash = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35LearnSuppFundCash);
+
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
                     var albLearningDeliveryAttributeDatas = albLearner.LearningDeliveryAttributes
@@ -121,7 +131,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
                         ?.LearningDeliveryPeriodisedAttributes;
 
-                    var alb = learningDelivery.LearningDeliveryFAMs.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
+                    // var alb = learningDelivery.LearningDeliveryFAMs.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
 
                     mainOccupancyFM35Models.Add(new MainOccupancyFM35Model()
                     {
@@ -194,17 +204,99 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         HigherApprentishipHeAim = "Todo", // Todo albLearningDeliveryAttributeDatas?.PrscHEAim ? "Yes" : "No",
                         ApplicEmpFactDate = "Todo", // Todo albLearningDeliveryAttributeDatas?.ApplicEmpFactDate,
                         ApplicFactDate = albLearningDeliveryAttributeDatas?.ApplicFactDate,
-                        Period1OnProgPayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35OnProgPayment)?.Period1,
-                        Period1BalancePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35BalPayment)?.Period1,
-                        Period1AchievePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35AchievePayment)?.Period1,
-                        Period1EmpOutcomePay = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35EmpOutcomePay)?.Period1,
-                        Period1LearnSuppFundCash = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35LearnSuppFundCash)?.Period1,
+                        Period1OnProgPayment = onProgPayment?.Period1,
+                        Period1BalancePayment = balancePayment?.Period1,
+                        Period1AchievePayment = achievePayment?.Period1,
+                        Period1EmpOutcomePay = empOutcomePayment?.Period1,
+                        Period1LearnSuppFundCash = learnSuppFundCash?.Period1,
 
-                        Period2OnProgPayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35OnProgPayment)?.Period2,
-                        Period2BalancePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35BalPayment)?.Period2,
-                        Period2AchievePayment = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35AchievePayment)?.Period2,
-                        Period2EmpOutcomePay = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35EmpOutcomePay)?.Period2,
-                        Period2LearnSuppFundCash = albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == Fm35LearnSuppFundCash)?.Period2,
+                        Period2OnProgPayment = onProgPayment?.Period2,
+                        Period2BalancePayment = balancePayment?.Period2,
+                        Period2AchievePayment = achievePayment?.Period2,
+                        Period2EmpOutcomePay = empOutcomePayment?.Period2,
+                        Period2LearnSuppFundCash = learnSuppFundCash?.Period2,
+
+                        Period3OnProgPayment = onProgPayment?.Period3,
+                        Period3BalancePayment = balancePayment?.Period3,
+                        Period3AchievePayment = achievePayment?.Period3,
+                        Period3EmpOutcomePay = empOutcomePayment?.Period3,
+                        Period3LearnSuppFundCash = learnSuppFundCash?.Period3,
+
+                        Period4OnProgPayment = onProgPayment?.Period4,
+                        Period4BalancePayment = balancePayment?.Period4,
+                        Period4AchievePayment = achievePayment?.Period4,
+                        Period4EmpOutcomePay = empOutcomePayment?.Period4,
+                        Period4LearnSuppFundCash = learnSuppFundCash?.Period4,
+
+                        Period5OnProgPayment = onProgPayment?.Period5,
+                        Period5BalancePayment = balancePayment?.Period5,
+                        Period5AchievePayment = achievePayment?.Period5,
+                        Period5EmpOutcomePay = empOutcomePayment?.Period5,
+                        Period5LearnSuppFundCash = learnSuppFundCash?.Period5,
+
+                        Period6OnProgPayment = onProgPayment?.Period6,
+                        Period6BalancePayment = balancePayment?.Period6,
+                        Period6AchievePayment = achievePayment?.Period6,
+                        Period6EmpOutcomePay = empOutcomePayment?.Period6,
+                        Period6LearnSuppFundCash = learnSuppFundCash?.Period6,
+
+                        Period7OnProgPayment = onProgPayment?.Period7,
+                        Period7BalancePayment = balancePayment?.Period7,
+                        Period7AchievePayment = achievePayment?.Period7,
+                        Period7EmpOutcomePay = empOutcomePayment?.Period7,
+                        Period7LearnSuppFundCash = learnSuppFundCash?.Period7,
+
+                        Period8OnProgPayment = onProgPayment?.Period8,
+                        Period8BalancePayment = balancePayment?.Period8,
+                        Period8AchievePayment = achievePayment?.Period8,
+                        Period8EmpOutcomePay = empOutcomePayment?.Period8,
+                        Period8LearnSuppFundCash = learnSuppFundCash?.Period8,
+
+                        Period9OnProgPayment = onProgPayment?.Period9,
+                        Period9BalancePayment = balancePayment?.Period9,
+                        Period9AchievePayment = achievePayment?.Period9,
+                        Period9EmpOutcomePay = empOutcomePayment?.Period9,
+                        Period9LearnSuppFundCash = learnSuppFundCash?.Period9,
+
+                        Period10OnProgPayment = onProgPayment?.Period10,
+                        Period10BalancePayment = balancePayment?.Period10,
+                        Period10AchievePayment = achievePayment?.Period10,
+                        Period10EmpOutcomePay = empOutcomePayment?.Period10,
+                        Period10LearnSuppFundCash = learnSuppFundCash?.Period10,
+
+                        Period11OnProgPayment = onProgPayment?.Period11,
+                        Period11BalancePayment = balancePayment?.Period11,
+                        Period11AchievePayment = achievePayment?.Period11,
+                        Period11EmpOutcomePay = empOutcomePayment?.Period11,
+                        Period11LearnSuppFundCash = learnSuppFundCash?.Period11,
+
+                        Period12OnProgPayment = onProgPayment?.Period12,
+                        Period12BalancePayment = balancePayment?.Period12,
+                        Period12AchievePayment = achievePayment?.Period12,
+                        Period12EmpOutcomePay = empOutcomePayment?.Period12,
+                        Period12LearnSuppFundCash = learnSuppFundCash?.Period12,
+
+                        TotalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) + (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) + (onProgPayment?.Period5 ?? 0) + (onProgPayment?.Period6 ?? 0)
+                                              + (onProgPayment?.Period7 ?? 0) + (onProgPayment?.Period8 ?? 0) + (onProgPayment?.Period9 ?? 0) + (onProgPayment?.Period10 ?? 0) + (onProgPayment?.Period11 ?? 0) + (onProgPayment?.Period12 ?? 0),
+                        TotalBalancePayment = (balancePayment?.Period1 ?? 0) + (balancePayment?.Period2 ?? 0) + (balancePayment?.Period3 ?? 0) + (balancePayment?.Period4 ?? 0) + (balancePayment?.Period5 ?? 0) + (balancePayment?.Period6 ?? 0)
+                                              + (balancePayment?.Period7 ?? 0) + (balancePayment?.Period8 ?? 0) + (balancePayment?.Period9 ?? 0) + (balancePayment?.Period10 ?? 0) + (balancePayment?.Period11 ?? 0) + (balancePayment?.Period12 ?? 0),
+                        TotalAchievePayment = (achievePayment?.Period1 ?? 0) + (achievePayment?.Period2 ?? 0) + (achievePayment?.Period3 ?? 0) + (achievePayment?.Period4 ?? 0) + (achievePayment?.Period5 ?? 0) + (achievePayment?.Period6 ?? 0)
+                                              + (achievePayment?.Period7 ?? 0) + (achievePayment?.Period8 ?? 0) + (achievePayment?.Period9 ?? 0) + (achievePayment?.Period10 ?? 0) + (achievePayment?.Period11 ?? 0) + (achievePayment?.Period12 ?? 0),
+                        TotalEmpOutcomePay = (empOutcomePayment?.Period1 ?? 0) + (empOutcomePayment?.Period2 ?? 0) + (empOutcomePayment?.Period3 ?? 0) + (empOutcomePayment?.Period4 ?? 0) + (empOutcomePayment?.Period5 ?? 0) + (empOutcomePayment?.Period6 ?? 0)
+                                             + (empOutcomePayment?.Period7 ?? 0) + (empOutcomePayment?.Period8 ?? 0) + (empOutcomePayment?.Period9 ?? 0) + (empOutcomePayment?.Period10 ?? 0) + (empOutcomePayment?.Period11 ?? 0) + (empOutcomePayment?.Period12 ?? 0),
+                        TotalLearnSuppFundCash = (learnSuppFundCash?.Period1 ?? 0) + (learnSuppFundCash?.Period2 ?? 0) + (learnSuppFundCash?.Period3 ?? 0) + (learnSuppFundCash?.Period4 ?? 0) + (learnSuppFundCash?.Period5 ?? 0) + (learnSuppFundCash?.Period6 ?? 0)
+                                                 + (learnSuppFundCash?.Period7 ?? 0) + (learnSuppFundCash?.Period8 ?? 0) + (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) + (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0),
+
+                        TotalEarnedCash = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) + (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) + (onProgPayment?.Period5 ?? 0) + (onProgPayment?.Period6 ?? 0)
+                                              + (onProgPayment?.Period7 ?? 0) + (onProgPayment?.Period8 ?? 0) + (onProgPayment?.Period9 ?? 0) + (onProgPayment?.Period10 ?? 0) + (onProgPayment?.Period11 ?? 0) + (onProgPayment?.Period12 ?? 0)
+                                            + (balancePayment?.Period1 ?? 0) + (balancePayment?.Period2 ?? 0) + (balancePayment?.Period3 ?? 0) + (balancePayment?.Period4 ?? 0) + (balancePayment?.Period5 ?? 0) + (balancePayment?.Period6 ?? 0)
+                                              + (balancePayment?.Period7 ?? 0) + (balancePayment?.Period8 ?? 0) + (balancePayment?.Period9 ?? 0) + (balancePayment?.Period10 ?? 0) + (balancePayment?.Period11 ?? 0) + (balancePayment?.Period12 ?? 0)
+                                            + (achievePayment?.Period1 ?? 0) + (achievePayment?.Period2 ?? 0) + (achievePayment?.Period3 ?? 0) + (achievePayment?.Period4 ?? 0) + (achievePayment?.Period5 ?? 0) + (achievePayment?.Period6 ?? 0)
+                                              + (achievePayment?.Period7 ?? 0) + (achievePayment?.Period8 ?? 0) + (achievePayment?.Period9 ?? 0) + (achievePayment?.Period10 ?? 0) + (achievePayment?.Period11 ?? 0) + (achievePayment?.Period12 ?? 0)
+                                            + (empOutcomePayment?.Period1 ?? 0) + (empOutcomePayment?.Period2 ?? 0) + (empOutcomePayment?.Period3 ?? 0) + (empOutcomePayment?.Period4 ?? 0) + (empOutcomePayment?.Period5 ?? 0) + (empOutcomePayment?.Period6 ?? 0)
+                                             + (empOutcomePayment?.Period7 ?? 0) + (empOutcomePayment?.Period8 ?? 0) + (empOutcomePayment?.Period9 ?? 0) + (empOutcomePayment?.Period10 ?? 0) + (empOutcomePayment?.Period11 ?? 0) + (empOutcomePayment?.Period12 ?? 0)
+                                            + (learnSuppFundCash?.Period1 ?? 0) + (learnSuppFundCash?.Period2 ?? 0) + (learnSuppFundCash?.Period3 ?? 0) + (learnSuppFundCash?.Period4 ?? 0) + (learnSuppFundCash?.Period5 ?? 0) + (learnSuppFundCash?.Period6 ?? 0)
+                                            + (learnSuppFundCash?.Period7 ?? 0) + (learnSuppFundCash?.Period8 ?? 0) + (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) + (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0),
                     });
 
                     mainOccupancyFM25Models.Add(new MainOccupancyFM25Model()
@@ -266,9 +358,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 using (CsvWriter csvWriter = new CsvWriter(textWriter))
                 {
-                    // Todo Add header
-                    // csvWriter.Configuration.RegisterClassMap<FundingSummaryHeaderMapper>();
-                    // csvWriter.Configuration.RegisterClassMap<FundingSummaryFooterMapper>();
+                    csvWriter.Configuration.RegisterClassMap<MainOccupancyFM25Mapper>();
+                    csvWriter.Configuration.RegisterClassMap<MainOccupancyFM35Mapper>();
 
                     csvWriter.WriteHeader<MainOccupancyFM25Model>();
                     csvWriter.NextRecord();

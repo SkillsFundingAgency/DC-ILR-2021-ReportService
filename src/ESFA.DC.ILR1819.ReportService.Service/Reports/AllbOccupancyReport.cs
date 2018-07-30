@@ -12,6 +12,7 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
@@ -21,7 +22,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class AllbOccupancyReport : IAllbOccupancyReport
+    public sealed class AllbOccupancyReport : IReport
     {
         private const string AlbCode = "ALBCode";
 
@@ -44,7 +45,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public AllbOccupancyReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
             IXmlSerializationService xmlSerializationService,
             IJsonSerializationService jsonSerializationService,
@@ -55,7 +56,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStringUtilitiesService stringUtilitiesService)
         {
             _logger = logger;
-            _storage = storage;
+            _storage = blob;
             _redis = redis;
             _xmlSerializationService = xmlSerializationService;
             _jsonSerializationService = jsonSerializationService;
@@ -65,6 +66,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
         }
+
+        public ReportType ReportType { get; } = ReportType.AllbOccupancy;
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage)
         {
@@ -82,7 +85,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<string> learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
                 .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
 
-            Dictionary<string, ILarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLarsData(learnAimRefs);
+            Dictionary<string, ILarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLearningDeliveries(learnAimRefs);
 
             List<string> ilrError = new List<string>();
             List<string> larsError = new List<string>();
@@ -252,17 +255,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             if (ilrError.Any())
             {
-                _logger.LogWarning($"Failed to get one or more ILR learners while generating Allb Occupancy Report: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
+                _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
             }
 
             if (larsError.Any())
             {
-                _logger.LogWarning($"Failed to get one or more LARS learners while generating Allb Occupancy Report: {_stringUtilitiesService.JoinWithMaxLength(larsError)}");
+                _logger.LogWarning($"Failed to get one or more LARS learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(larsError)}");
             }
 
             if (albLearnerError.Any())
             {
-                _logger.LogWarning($"Failed to get one or more ALB learners while generating Allb Occupancy Report: {_stringUtilitiesService.JoinWithMaxLength(albLearnerError)}");
+                _logger.LogWarning($"Failed to get one or more ALB learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(albLearnerError)}");
             }
 
             StringBuilder sb = new StringBuilder();

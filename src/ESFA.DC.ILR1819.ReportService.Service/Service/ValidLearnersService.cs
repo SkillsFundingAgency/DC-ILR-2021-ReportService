@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IKeyValuePersistenceService _redis;
         private readonly IJsonSerializationService _jsonSerializationService;
 
-        private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _getDataLock;
 
         private bool _loadedDataAlready;
 
@@ -33,6 +33,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _redis = redis;
             _jsonSerializationService = jsonSerializationService;
             _loadedData = null;
+            _getDataLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<List<string>> GetValidLearnersAsync(IJobContextMessage jobContextMessage)

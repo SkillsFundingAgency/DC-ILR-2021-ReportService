@@ -216,23 +216,48 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<ValidationErrorsReport>().As<IValidationErrorsReport>()
+            containerBuilder.RegisterType<ValidationErrorsReport>().As<IReport>()
+                .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
+                .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<IAllbOccupancyReport>().As<IAllbOccupancyReport>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AllbOccupancyReport>().As<IReport>().WithAttributeFiltering().InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<MainOccupancyReport>().As<IReport>().WithAttributeFiltering().InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<AllbProviderService>().As<IAllbProviderService>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AllbProviderService>().As<IAllbProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FundingSummaryReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<SummaryOfFunding1619Report>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<MathsAndEnglishReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<ValidLearnersService>().As<IValidLearnersService>()
+                .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<StringUtilitiesService>().As<IStringUtilitiesService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<OrgProviderService>().As<IOrgProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<PeriodProviderService>().As<IPeriodProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.Register(context =>

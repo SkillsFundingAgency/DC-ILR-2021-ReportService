@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -14,23 +15,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service
     public sealed class EntryPoint
     {
         private readonly ILogger _logger;
-        private readonly ITopicAndTaskSectionOptions _topicAndTaskSectionOptions;
-        private readonly IValidationErrorsReport _validationErrorsReport;
-        private readonly IAllbOccupancyReport _albAllbOccupancyReport;
-        private readonly IFundingSummaryReport _fundingSummaryReport;
+
+        private readonly IReport[] _reports;
+
+        private readonly Dictionary<string, ReportType> reportsAvailable;
 
         public EntryPoint(
             ILogger logger,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            IValidationErrorsReport validationErrorsReport,
-            IAllbOccupancyReport albAllbOccupancyReport,
-            IFundingSummaryReport fundingSummaryReport)
+            IReport[] reports)
         {
             _logger = logger;
-            _topicAndTaskSectionOptions = topicAndTaskSectionOptions;
-            _validationErrorsReport = validationErrorsReport;
-            _albAllbOccupancyReport = albAllbOccupancyReport;
-            _fundingSummaryReport = fundingSummaryReport;
+            _reports = reports;
+
+            reportsAvailable = new Dictionary<string, ReportType>()
+            {
+                { topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport, ReportType.ValidationErrors },
+                { topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport, ReportType.AllbOccupancy },
+                { topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport, ReportType.FundingSummary },
+                { topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport, ReportType.MainOccupancy },
+                { topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport, ReportType.MathsAndEnglish },
+                { topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report, ReportType.SummaryOfFunding1619 }
+            };
         }
 
         public async Task<bool> Callback(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
@@ -61,29 +67,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service
             return true;
         }
 
-        private async Task GenerateReportAsync(string task, JobContextMessage jobContextMessage)
+        private async Task GenerateReportAsync(string task, IJobContextMessage jobContextMessage)
         {
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            if (task == _topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport)
+            if (!reportsAvailable.TryGetValue(task, out var reportType))
             {
-                List<ValidationErrorDto> validationErrorDtos =
-                    await _validationErrorsReport.ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
-                await _validationErrorsReport.PeristValuesToStorage(jobContextMessage, validationErrorDtos);
-                _logger.LogDebug($"Persisted validation errors to csv in: {stopWatch.ElapsedMilliseconds}");
-            }
-            else if (task == _topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport)
-            {
-                await _albAllbOccupancyReport.GenerateReport(jobContextMessage);
-                _logger.LogDebug($"Persisted Alb occupancy report to csv in: {stopWatch.ElapsedMilliseconds}");
-            }
-            else if (task == _topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport)
-            {
-                await _fundingSummaryReport.GenerateReport(jobContextMessage);
-                _logger.LogDebug($"Persisted funding summary report to csv in: {stopWatch.ElapsedMilliseconds}");
+                _logger.LogDebug($"Unknown report task '{task}'");
+                return;
             }
 
+            IReport report = _reports.Single(x => x.ReportType == reportType);
+
             stopWatch.Stop();
+
+            if (report == null)
+            {
+                _logger.LogDebug($"Unknown to find report '{task}'");
+                return;
+            }
+
+            await report.GenerateReport(jobContextMessage);
+            _logger.LogDebug($"Persisted {report.GetType().Name} to csv/json in: {stopWatch.ElapsedMilliseconds}");
         }
     }
 }

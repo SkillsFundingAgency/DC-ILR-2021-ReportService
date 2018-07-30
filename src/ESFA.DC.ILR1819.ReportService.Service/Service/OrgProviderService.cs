@@ -51,7 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to read ILR", ex);
+                _logger.LogError("Failed to get org provider name", ex);
             }
             finally
             {
@@ -75,7 +75,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to read ILR", ex);
+                _logger.LogError("Failed to get org version", ex);
             }
             finally
             {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.Logging;
 using ESFA.DC.Logging.Config;
@@ -16,7 +17,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Modules
             builder.Register(c =>
             {
                 var loggerOptions = c.Resolve<LoggerOptions>();
-                var versionInfo = c.Resolve<VersionInfo>();
+                var versionInfo = c.Resolve<IVersionInfo>();
                 return new ApplicationLoggerSettings
                 {
                     ApplicationLoggerOutputSettingsCollection = new List<IApplicationLoggerOutputSettings>()

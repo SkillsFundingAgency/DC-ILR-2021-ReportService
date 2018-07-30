@@ -21,11 +21,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly IJsonSerializationService _jsonSerializationService;
 
-        private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _getDataLock;
 
         private bool _loadedDataAlready;
 
-        private IFundingOutputs _loadedData;
+        private IFundingOutputs _fundingOutputs;
 
         public AllbProviderService(
             ILogger logger,
@@ -35,7 +35,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _logger = logger;
             _redis = redis;
             _jsonSerializationService = jsonSerializationService;
-            _loadedData = null;
+            _fundingOutputs = null;
+            _getDataLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<IFundingOutputs> GetAllbData(IJobContextMessage jobContextMessage)
@@ -46,14 +47,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             {
                 if (_loadedDataAlready)
                 {
-                    return _loadedData;
+                    return _fundingOutputs;
                 }
 
                 _loadedDataAlready = true;
                 string albFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString();
                 string alb = await _redis.GetAsync(albFilename);
 
-                _loadedData = _jsonSerializationService.Deserialize<FundingOutputs>(alb);
+                _fundingOutputs = _jsonSerializationService.Deserialize<FundingOutputs>(alb);
             }
             catch (Exception ex)
             {
@@ -65,7 +66,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _getDataLock.Release();
             }
 
-            return _loadedData;
+            return _fundingOutputs;
         }
     }
 }

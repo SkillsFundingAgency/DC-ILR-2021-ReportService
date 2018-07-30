@@ -20,11 +20,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly ILarsConfiguration _larsConfiguration;
 
-        private readonly SemaphoreSlim _getLearningDeliveriesLock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _getLearningDeliveriesLock;
 
-        private readonly SemaphoreSlim _getFrameworkAimsLock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _getFrameworkAimsLock;
 
-        private readonly SemaphoreSlim _getVersionLock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _getVersionLock;
 
         private Dictionary<string, ILarsLearningDelivery> _loadedLearningDeliveries;
 
@@ -38,9 +38,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _larsConfiguration = larsConfiguration;
             _loadedLearningDeliveries = null;
             _loadedFrameworkAims = null;
-        }
+            _version = null;
+            _getLearningDeliveriesLock = new SemaphoreSlim(1, 1);
+            _getFrameworkAimsLock = new SemaphoreSlim(1, 1);
+            _getVersionLock = new SemaphoreSlim(1, 1);
+    }
 
-        public async Task<Dictionary<string, ILarsLearningDelivery>> GetLarsData(List<string> validLearnerAimRefs)
+        public async Task<Dictionary<string, ILarsLearningDelivery>> GetLearningDeliveries(List<string> validLearnerAimRefs)
         {
             await _getLearningDeliveriesLock.WaitAsync();
 
@@ -61,7 +65,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to read ILR", ex);
+                _logger.LogError("Failed to get LARS learning deliveries", ex);
             }
             finally
             {
@@ -90,7 +94,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to read ILR", ex);
+                _logger.LogError("Failed to get LARS framework aims", ex);
             }
             finally
             {
@@ -114,7 +118,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to read ILR", ex);
+                _logger.LogError("Failed to get LARS version information", ex);
             }
             finally
             {

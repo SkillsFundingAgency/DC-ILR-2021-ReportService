@@ -13,6 +13,7 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
@@ -22,7 +23,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class FundingSummaryReport : IFundingSummaryReport
+    public sealed class FundingSummaryReport : AbstractReportBuilder, IReport
     {
         private const string AlbSupportPayment = "ALBSupportPayment";
 
@@ -70,6 +71,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _larsProviderService = larsProviderService;
             _versionInfo = versionInfo;
         }
+
+        public ReportType ReportType { get; } = ReportType.FundingSummary;
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage)
         {
@@ -197,8 +200,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             await _storage.SaveAsync("Funding_Summary_Report.json", _jsonSerializationService.Serialize(fundingSummaryModels));
         }
 
-        private static string GetReportCsv(List<FundingSummaryModel> fundingSummaryModels, FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)
+        private string GetReportCsv(List<FundingSummaryModel> fundingSummaryModels, FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)
         {
+            //using (MemoryStream ms = new MemoryStream())
+            //{
+            //    BuildReport<FundingSummaryHeaderMapper, FundingSummaryHeaderModel>(ms, fundingSummaryHeaderModel);
+            //    BuildReport<FundingSummaryMapper, FundingSummaryModel>(ms, fundingSummaryModels);
+            //    BuildReport<FundingSummaryFooterMapper, FundingSummaryFooterModel>(ms, fundingSummaryFooterModel);
+            //    return ms.ToString();
+            //}
+
             StringBuilder sb = new StringBuilder();
 
             using (TextWriter textWriter = new StringWriter(sb))
@@ -206,17 +217,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 using (CsvWriter csvWriter = new CsvWriter(textWriter))
                 {
                     csvWriter.Configuration.RegisterClassMap<FundingSummaryHeaderMapper>();
-                    csvWriter.Configuration.RegisterClassMap<FundingSummaryFooterMapper>();
-                    csvWriter.Configuration.RegisterClassMap<FundingSummaryMapper>();
-
                     csvWriter.WriteHeader<FundingSummaryHeaderModel>();
                     csvWriter.NextRecord();
                     csvWriter.WriteRecord(fundingSummaryHeaderModel);
 
+                    csvWriter.Configuration.RegisterClassMap<FundingSummaryFooterMapper>();
                     csvWriter.WriteHeader<FundingSummaryModel>();
                     csvWriter.NextRecord();
                     csvWriter.WriteRecords(fundingSummaryModels);
 
+                    csvWriter.Configuration.RegisterClassMap<FundingSummaryMapper>();
                     csvWriter.WriteHeader<FundingSummaryFooterModel>();
                     csvWriter.NextRecord();
                     csvWriter.WriteRecord(fundingSummaryFooterModel);

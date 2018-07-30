@@ -21,9 +21,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly IXmlSerializationService _xmlSerializationService;
 
-        private readonly SemaphoreSlim _getIlrLock = new SemaphoreSlim(1, 1);
-
-        private bool _loadedIlr;
+        private readonly SemaphoreSlim _getIlrLock;
 
         private Message _message;
 
@@ -35,6 +33,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _logger = logger;
             _storage = storage;
             _xmlSerializationService = xmlSerializationService;
+            _message = null;
+            _getIlrLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<IMessage> GetIlrFile(IJobContextMessage jobContextMessage)
@@ -43,12 +43,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             try
             {
-                if (_loadedIlr)
+                if (_message != null)
                 {
                     return _message;
                 }
 
-                _loadedIlr = true;
                 string ilr =
                     await _storage.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString());
 
@@ -56,7 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to read ILR", ex);
+                _logger.LogError("Failed to get and deserialise ILR from storage", ex);
             }
             finally
             {
