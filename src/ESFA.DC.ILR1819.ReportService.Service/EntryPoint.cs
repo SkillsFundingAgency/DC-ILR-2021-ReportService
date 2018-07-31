@@ -28,7 +28,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service
             _logger = logger;
             _reports = reports;
 
-            reportsAvailable = new Dictionary<string, ReportType>()
+            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport}");
+            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport}");
+            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport}");
+            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport}");
+            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport}");
+            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report}");
+
+            reportsAvailable = new Dictionary<string, ReportType>
             {
                 { topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport, ReportType.ValidationErrors },
                 { topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport, ReportType.AllbOccupancy },
@@ -41,6 +48,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         public async Task<bool> Callback(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
+            _logger.LogInfo("Callback invoked");
             foreach (ITaskItem taskItem in jobContextMessage.Topics[jobContextMessage.TopicPointer].Tasks)
             {
                 if (taskItem.SupportsParallelExecution)
@@ -69,8 +77,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private async Task GenerateReportAsync(string task, IJobContextMessage jobContextMessage)
         {
-            Stopwatch stopWatch = new Stopwatch();
-            stopWatch.Start();
             if (!reportsAvailable.TryGetValue(task, out var reportType))
             {
                 _logger.LogDebug($"Unknown report task '{task}'");
@@ -79,15 +85,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
             IReport report = _reports.Single(x => x.ReportType == reportType);
 
-            stopWatch.Stop();
-
             if (report == null)
             {
                 _logger.LogDebug($"Unknown to find report '{task}'");
                 return;
             }
 
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            _logger.LogDebug($"Attempting to generate {report.GetType().Name}");
             await report.GenerateReport(jobContextMessage);
+            stopWatch.Stop();
             _logger.LogDebug($"Persisted {report.GetType().Name} to csv/json in: {stopWatch.ElapsedMilliseconds}");
         }
     }

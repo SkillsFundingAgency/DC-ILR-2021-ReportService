@@ -56,6 +56,7 @@
     <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="" />
     <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
   </Section>
   
