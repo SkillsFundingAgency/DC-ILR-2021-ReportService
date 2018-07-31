@@ -28,13 +28,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service
             _logger = logger;
             _reports = reports;
 
-            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport}");
-            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport}");
-            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport}");
-            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport}");
-            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport}");
-            _logger.LogWarning($"{nameof(topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report)} : {topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report}");
-
             reportsAvailable = new Dictionary<string, ReportType>
             {
                 { topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport, ReportType.ValidationErrors },

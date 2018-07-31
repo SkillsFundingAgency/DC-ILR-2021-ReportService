@@ -38,7 +38,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
 
-            IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, storage.Object, redis.Object, xmlSerializationService, jsonSerializationService, ilrProviderService);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
+
+            IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, storage.Object, redis.Object, xmlSerializationService, jsonSerializationService, ilrProviderService, validLearnersService);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
