@@ -1,9 +1,10 @@
 ﻿using CsvHelper.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Service.Model;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
 {
-    public sealed class MainOccupancyFM25Mapper : ClassMap<MainOccupancyFM25Model>
+    public sealed class MainOccupancyFM25Mapper : ClassMap<MainOccupancyFM25Model>, IClassMapper
     {
         public MainOccupancyFM25Mapper()
         {

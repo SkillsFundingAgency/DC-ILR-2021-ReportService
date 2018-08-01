@@ -8,13 +8,13 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
-    public sealed class ValidLearnersService : BaseLearnersService, IValidLearnersService
+    public sealed class InvalidLearnersService : BaseLearnersService, IInvalidLearnersService
     {
-        public ValidLearnersService(
+        public InvalidLearnersService(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
             IJsonSerializationService jsonSerializationService)
-        : base(JobContextMessageKey.ValidLearnRefNumbers, logger, redis, jsonSerializationService)
+        : base(JobContextMessageKey.InvalidLearnRefNumbers, logger, redis, jsonSerializationService)
         {
         }
     }

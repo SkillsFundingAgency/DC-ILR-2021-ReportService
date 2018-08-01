@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             await allbOccupancyReport.GenerateReport(jobContextMessage);
 
             csv.Should().NotBeNullOrEmpty();
-            TestHelper.CheckCsv(csv, new AllbOccupancyMapper());
+            TestCsvHelper.CheckCsv(csv, new AllbOccupancyMapper());
         }
     }
 }

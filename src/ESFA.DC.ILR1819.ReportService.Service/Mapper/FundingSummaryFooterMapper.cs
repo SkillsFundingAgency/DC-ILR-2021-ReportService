@@ -1,9 +1,10 @@
 ﻿using CsvHelper.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Service.Model;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
 {
-    public sealed class FundingSummaryFooterMapper : ClassMap<FundingSummaryFooterModel>
+    public sealed class FundingSummaryFooterMapper : ClassMap<FundingSummaryFooterModel>, IClassMapper
     {
         public FundingSummaryFooterMapper()
         {

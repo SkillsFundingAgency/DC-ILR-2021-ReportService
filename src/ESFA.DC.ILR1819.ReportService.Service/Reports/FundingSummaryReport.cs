@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using CsvHelper;
 using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
@@ -78,7 +77,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
             Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetValidLearnersAsync(jobContextMessage);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage);
             Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage);
 
@@ -202,38 +201,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private string GetReportCsv(List<FundingSummaryModel> fundingSummaryModels, FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)
         {
-            //using (MemoryStream ms = new MemoryStream())
-            //{
-            //    BuildReport<FundingSummaryHeaderMapper, FundingSummaryHeaderModel>(ms, fundingSummaryHeaderModel);
-            //    BuildReport<FundingSummaryMapper, FundingSummaryModel>(ms, fundingSummaryModels);
-            //    BuildReport<FundingSummaryFooterMapper, FundingSummaryFooterModel>(ms, fundingSummaryFooterModel);
-            //    return ms.ToString();
-            //}
-
-            StringBuilder sb = new StringBuilder();
-
-            using (TextWriter textWriter = new StringWriter(sb))
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                {
-                    csvWriter.Configuration.RegisterClassMap<FundingSummaryHeaderMapper>();
-                    csvWriter.WriteHeader<FundingSummaryHeaderModel>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecord(fundingSummaryHeaderModel);
-
-                    csvWriter.Configuration.RegisterClassMap<FundingSummaryFooterMapper>();
-                    csvWriter.WriteHeader<FundingSummaryModel>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecords(fundingSummaryModels);
-
-                    csvWriter.Configuration.RegisterClassMap<FundingSummaryMapper>();
-                    csvWriter.WriteHeader<FundingSummaryFooterModel>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecord(fundingSummaryFooterModel);
-                }
+                BuildReport<FundingSummaryHeaderMapper, FundingSummaryHeaderModel>(ms, fundingSummaryHeaderModel);
+                BuildReport<FundingSummaryMapper, FundingSummaryModel>(ms, fundingSummaryModels);
+                BuildReport<FundingSummaryFooterMapper, FundingSummaryFooterModel>(ms, fundingSummaryFooterModel);
+                return Encoding.UTF8.GetString(ms.ToArray());
             }
-
-            return sb.ToString();
         }
 
         private void LogWarnings(List<string> ilrError, List<string> albLearnerError)

@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             await summaryOfFunding1619Report.GenerateReport(jobContextMessage);
 
             csv.Should().NotBeNullOrEmpty();
-            TestHelper.CheckCsv(csv, new MathsAndEnglishMapper());
+            TestCsvHelper.CheckCsv(csv, new MathsAndEnglishMapper());
         }
     }
 }

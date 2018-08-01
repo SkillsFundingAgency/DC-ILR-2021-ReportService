@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using CsvHelper;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -19,7 +18,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class SummaryOfFunding1619Report : IReport
+    public sealed class SummaryOfFunding1619Report : AbstractReportBuilder, IReport
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
@@ -60,7 +59,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetValidLearnersAsync(jobContextMessage);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
 
             await Task.WhenAll(ilrFileTask, validLearnersTask);
 
@@ -99,20 +98,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 _logger.LogWarning($"Failed to get one or more ILR learners while generating S{nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
             }
 
-            StringBuilder sb = new StringBuilder();
-
-            using (TextWriter textWriter = new StringWriter(sb))
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                {
-                    csvWriter.Configuration.RegisterClassMap<SummaryOfFunding1619Mapper>();
-                    csvWriter.WriteHeader<SummaryOfFunding1619Model>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecords(summaryOfFunding1619Models);
-                }
+                BuildReport<SummaryOfFunding1619Mapper, SummaryOfFunding1619Model>(ms, summaryOfFunding1619Models);
+                return Encoding.UTF8.GetString(ms.ToArray());
             }
-
-            return sb.ToString();
         }
     }
 }

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using CsvHelper;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
 using ESFA.DC.ILR.Model.Interface;
@@ -21,7 +20,7 @@ using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class MainOccupancyReport : IReport
+    public sealed class MainOccupancyReport : AbstractReportBuilder, IReport
     {
         private const string Fm25OnProgPayment = "OnProgPayment";
 
@@ -67,7 +66,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
             Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetValidLearnersAsync(jobContextMessage);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
 
@@ -352,26 +351,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private string GetReportCsv(List<MainOccupancyFM25Model> mainOccupancyFm25Models, List<MainOccupancyFM35Model> mainOccupancyFm35Models)
         {
-            StringBuilder sb = new StringBuilder();
-
-            using (TextWriter textWriter = new StringWriter(sb))
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                {
-                    csvWriter.Configuration.RegisterClassMap<MainOccupancyFM25Mapper>();
-                    csvWriter.Configuration.RegisterClassMap<MainOccupancyFM35Mapper>();
-
-                    csvWriter.WriteHeader<MainOccupancyFM25Model>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecord(mainOccupancyFm25Models);
-
-                    csvWriter.WriteHeader<MainOccupancyFM35Model>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecords(mainOccupancyFm35Models);
-                }
+                BuildReport<MainOccupancyFM25Mapper, MainOccupancyFM25Model>(ms, mainOccupancyFm25Models);
+                BuildReport<MainOccupancyFM35Mapper, MainOccupancyFM35Model>(ms, mainOccupancyFm35Models);
+                return Encoding.UTF8.GetString(ms.ToArray());
             }
-
-            return sb.ToString();
         }
 
         private void LogWarnings(List<string> larsError, List<string> albLearnerError)

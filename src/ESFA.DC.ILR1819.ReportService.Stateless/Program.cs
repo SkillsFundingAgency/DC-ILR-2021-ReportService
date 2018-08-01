@@ -251,6 +251,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<InvalidLearnersService>().As<IInvalidLearnersService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<StringUtilitiesService>().As<IStringUtilitiesService>()
                 .InstancePerLifetimeScope();
 

@@ -25,6 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         public async Task TestValidationReportGeneration()
         {
             string csv = string.Empty;
+            string json = string.Empty;
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IKeyValuePersistenceService> storage = new Mock<IKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
@@ -33,12 +34,13 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
             storage.Setup(x => x.SaveAsync("ValidationErrors.csv", It.IsAny<string>())).Callback<string, string>((key, value) => csv = value).Returns(Task.CompletedTask);
+            storage.Setup(x => x.SaveAsync("ValidationErrors.json", It.IsAny<string>())).Callback<string, string>((key, value) => json = value).Returns(Task.CompletedTask);
             redis.Setup(x => x.GetAsync("ValidationErrors")).ReturnsAsync(File.ReadAllText("ValidationErrors.json"));
             redis.Setup(x => x.GetAsync("ValidationErrorsLookup")).ReturnsAsync(File.ReadAllText("ValidationErrorsLookup.json"));
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
 
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
+            IInvalidLearnersService validLearnersService = new InvalidLearnersService(logger.Object, redis.Object, jsonSerializationService);
 
             IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, storage.Object, redis.Object, xmlSerializationService, jsonSerializationService, ilrProviderService, validLearnersService);
 
@@ -49,8 +51,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             await validationErrorsReport.GenerateReport(jobContextMessage);
 
+            json.Should().NotBeNullOrEmpty();
             csv.Should().NotBeNullOrEmpty();
-            TestHelper.CheckCsv(csv, new ValidationErrorMapper());
+            TestCsvHelper.CheckCsv(csv, new ValidationErrorMapper());
         }
     }
 }

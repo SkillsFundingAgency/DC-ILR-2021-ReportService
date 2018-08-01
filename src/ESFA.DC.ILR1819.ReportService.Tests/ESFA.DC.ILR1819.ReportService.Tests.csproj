@@ -193,7 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoFac\AutoFacTest.cs" />
-    <Compile Include="Helpers\TestHelper.cs" />
+    <Compile Include="Helpers\TestCsvHelper.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
     <Compile Include="Reports\TestSummaryOfFunding1619Report.cs" />
     <Compile Include="Service\PeriodProviderServiceTest.cs" />

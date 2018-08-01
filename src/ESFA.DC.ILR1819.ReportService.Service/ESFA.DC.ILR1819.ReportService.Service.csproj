@@ -187,7 +187,9 @@
     <Compile Include="Reports\MainOccupancyReport.cs" />
     <Compile Include="Reports\ValidationErrorsReport.cs" />
     <Compile Include="Service\AllbProviderService.cs" />
+    <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
+    <Compile Include="Service\InvalidLearnersService.cs" />
     <Compile Include="Service\LarsProviderService.cs" />
     <Compile Include="Service\OrgProviderService.cs" />
     <Compile Include="Service\PeriodProviderService.cs" />

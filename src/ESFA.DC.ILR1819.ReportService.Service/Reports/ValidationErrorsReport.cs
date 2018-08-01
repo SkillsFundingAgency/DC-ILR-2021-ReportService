@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using CsvHelper;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
@@ -23,7 +22,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class ValidationErrorsReport : IReport
+    public sealed class ValidationErrorsReport : AbstractReportBuilder, IReport
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
@@ -31,7 +30,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IXmlSerializationService _xmlSerializationService;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
-        private readonly IValidLearnersService _validLearnersService;
+        private readonly IInvalidLearnersService _invalidLearnersService;
 
         public ValidationErrorsReport(
             ILogger logger,
@@ -40,7 +39,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IXmlSerializationService xmlSerializationService,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
-            IValidLearnersService validLearnersService)
+            IInvalidLearnersService invalidLearnersService)
         {
             _logger = logger;
             _storage = storage;
@@ -48,7 +47,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _xmlSerializationService = xmlSerializationService;
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
-            _validLearnersService = validLearnersService;
+            _invalidLearnersService = invalidLearnersService;
         }
 
         public ReportType ReportType { get; } = ReportType.ValidationErrors;
@@ -63,11 +62,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             List<ValidationErrorDto> validationErrorDtos = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(validationErrorDtos, message);
-            IlrValidationReport ilrValidationReport = PersistFrontEndValidationReport(jobContextMessage, message, validationErrorDtos);
+            IlrValidationReport ilrValidationReport = PersistFrontEndValidationReport(validationErrorDtos);
             await PeristValuesToStorage(key, validationErrors, ilrValidationReport);
         }
 
-        private IlrValidationReport PersistFrontEndValidationReport(IJobContextMessage jobContextMessage, IMessage message, List<ValidationErrorDto> validationErrorDtos)
+        private IlrValidationReport PersistFrontEndValidationReport(List<ValidationErrorDto> validationErrorDtos)
         {
             //int validLearners = Convert.ToInt32(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount]);
             //int invalidLearners = Convert.ToInt32(jobContextMessage.KeyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount]);
@@ -109,7 +108,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         LearnerReferenceNumber = x.LearnerReferenceNumber,
                         RuleName = x.RuleName,
                         Severity = x.Severity,
-                        ErrorMessage = validationErrorMessageLookups.Single(y => x.RuleName == y.RuleName).Message,
+                        ErrorMessage = validationErrorMessageLookups.SingleOrDefault(y => x.RuleName == y.RuleName)?.Message,
                         FieldValues = x.ValidationErrorParameters == null ? string.Empty : GetValidationErrorParameters(x.ValidationErrorParameters.ToList()),
                     }));
             }
@@ -129,26 +128,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task PeristValuesToStorage(string key, List<ValidationErrorModel> validationErrorModels, IlrValidationReport ilrValidationReport)
         {
-            await _storage.SaveAsync($"{key}.json", _jsonSerializationService.Serialize(ilrValidationReport));
+            await _storage.SaveAsync($"{key}.json", _jsonSerializationService.Serialize(validationErrorModels));
             await _storage.SaveAsync($"{key}.csv", GetCsv(validationErrorModels));
         }
 
         private string GetCsv(List<ValidationErrorModel> validationErrorModels)
         {
-            StringBuilder sb = new StringBuilder();
-
-            using (TextWriter textWriter = new StringWriter(sb))
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                {
-                    csvWriter.Configuration.RegisterClassMap<ValidationErrorMapper>();
-                    csvWriter.WriteHeader<ValidationErrorModel>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecords(validationErrorModels);
-                }
+                BuildReport<ValidationErrorMapper, ValidationErrorModel>(ms, validationErrorModels);
+                return Encoding.UTF8.GetString(ms.ToArray());
             }
-
-            return sb.ToString();
         }
 
         private List<ValidationErrorModel> ValidationErrorModels(List<ValidationErrorDto> validationErrorDtos, IMessage message)
@@ -178,7 +168,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     if (learningDelivery == null)
                     {
                         _logger.LogWarning(
-                            $"Can't find learning delivery {validationErrorDto.AimSequenceNumber} for learner {validationErrorDto.LearnerReferenceNumber}");
+                            $"Can't find learning delivery {validationErrorDto.AimSequenceNumber} for learner {validationErrorDto.LearnerReferenceNumber}. This may be ok for some validation rules.");
                     }
 
                     validationErrors.Add(new ValidationErrorModel(

@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using CsvHelper;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
 using ESFA.DC.ILR.Model.Interface;
@@ -22,7 +21,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    public sealed class AllbOccupancyReport : IReport
+    public sealed class AllbOccupancyReport : AbstractReportBuilder, IReport
     {
         private const string AlbCode = "ALBCode";
 
@@ -78,7 +77,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
             Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetValidLearnersAsync(jobContextMessage);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
 
@@ -268,20 +267,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 _logger.LogWarning($"Failed to get one or more ALB learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(albLearnerError)}");
             }
 
-            StringBuilder sb = new StringBuilder();
-
-            using (TextWriter textWriter = new StringWriter(sb))
+            using (MemoryStream ms = new MemoryStream())
             {
-                using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                {
-                    csvWriter.Configuration.RegisterClassMap<AllbOccupancyMapper>();
-                    csvWriter.WriteHeader<AllbOccupancyModel>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecords(models);
-                }
+                BuildReport<AllbOccupancyMapper, AllbOccupancyModel>(ms, models);
+                return Encoding.UTF8.GetString(ms.ToArray());
             }
-
-            return sb.ToString();
         }
     }
 }

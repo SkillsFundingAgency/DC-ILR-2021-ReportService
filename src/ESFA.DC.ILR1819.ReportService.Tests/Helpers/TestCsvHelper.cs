@@ -8,7 +8,7 @@ using Xunit;
 
 namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
 {
-    public static class TestHelper
+    public static class TestCsvHelper
     {
         public static void CheckCsv(string csv, ClassMap classMap)
         {
