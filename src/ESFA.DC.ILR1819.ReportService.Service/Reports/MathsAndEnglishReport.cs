@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -28,6 +31,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public MathsAndEnglishReport(
             ILogger logger,
@@ -37,7 +41,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
-            IStringUtilitiesService stringUtilitiesService)
+            IStringUtilitiesService stringUtilitiesService,
+            IDateTimeProvider dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -47,21 +52,36 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public ReportType ReportType { get; } = ReportType.MathsAndEnglish;
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage)
+        public string GetReportFilename()
         {
-            await _storage.SaveAsync("Maths and English Report.csv", await GetCsv(jobContextMessage));
+            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            return $"Maths and English Report {dateTime:yyyyMMdd-HHmmss}";
         }
 
-        private async Task<string> GetCsv(IJobContextMessage jobContextMessage)
+        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
+            string filename = GetReportFilename();
+            string csv = await GetCsv(jobContextMessage, cancellationToken);
+            await _storage.SaveAsync($"{filename}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{filename}.csv", csv);
+        }
+
+        private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        {
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, validLearnersTask);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
 
             List<string> ilrError = new List<string>();
 
@@ -97,7 +117,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildReport<MathsAndEnglishMapper, MathsAndEnglishModel>(ms, mathsAndEnglishModels);
+                BuildCsvReport<MathsAndEnglishMapper, MathsAndEnglishModel>(ms, mathsAndEnglishModels);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }

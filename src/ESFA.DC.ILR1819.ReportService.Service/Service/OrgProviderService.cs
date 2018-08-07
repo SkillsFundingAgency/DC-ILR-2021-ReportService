@@ -31,9 +31,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _orgConfiguration = orgConfiguration;
         }
 
-        public async Task<string> GetProviderName(IJobContextMessage jobContextMessage)
+        public async Task<string> GetProviderName(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
-            await _getDataLock.WaitAsync();
+            await _getDataLock.WaitAsync(cancellationToken);
 
             try
             {
@@ -42,12 +42,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return _loadedData;
                 }
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 _loadedDataAlready = true;
                 string ukPrnStr = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
                 long ukPrn = Convert.ToInt64(ukPrnStr);
                 Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
                 _loadedData = organisations.Org_Details.Where(x => x.UKPRN == ukPrn).Select(x => x.Name).SingleOrDefault();
-                _version = (await organisations.Current_Version.SingleAsync()).CurrentVersion;
+                _version = (await organisations.Current_Version.SingleAsync(cancellationToken)).CurrentVersion;
             }
             catch (Exception ex)
             {
@@ -61,16 +66,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedData;
         }
 
-        public async Task<string> GetVersionAsync()
+        public async Task<string> GetVersionAsync(CancellationToken cancellationToken)
         {
-            await _getDataLock.WaitAsync();
+            await _getDataLock.WaitAsync(cancellationToken);
 
             try
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 if (string.IsNullOrEmpty(_version))
                 {
                     Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
-                    _version = (await organisations.Current_Version.SingleAsync()).CurrentVersion;
+                    _version = (await organisations.Current_Version.SingleAsync(cancellationToken)).CurrentVersion;
                 }
             }
             catch (Exception ex)

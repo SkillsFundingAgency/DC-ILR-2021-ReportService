@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
@@ -25,6 +27,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         public async Task TestMathsAndEnglishReportGeneration()
         {
             string csv = string.Empty;
+            System.DateTime dateTime = System.DateTime.UtcNow;
+            string filename = $"Maths and English Report {dateTime:yyyyMMdd-HHmmss}";
+
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IKeyValuePersistenceService> storage = new Mock<IKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
@@ -33,15 +38,18 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
+            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
 
-            storage.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
-            storage.Setup(x => x.SaveAsync("Maths and English Report.csv", It.IsAny<string>())).Callback<string, string>((key, value) => csv = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("ValidLearners")).ReturnsAsync(jsonSerializationService.Serialize(
+            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
+            storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
+            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {
                     "3fm9901",
                     "5fm9901"
                 }));
+            dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
             MathsAndEnglishReport summaryOfFunding1619Report = new MathsAndEnglishReport(
                 logger.Object,
@@ -51,13 +59,14 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 jsonSerializationService,
                 ilrProviderService,
                 validLearnersService,
-                stringUtilitiesService);
+                stringUtilitiesService,
+                dateTimeProviderMock.Object);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
 
-            await summaryOfFunding1619Report.GenerateReport(jobContextMessage);
+            await summaryOfFunding1619Report.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
             TestCsvHelper.CheckCsv(csv, new MathsAndEnglishMapper());

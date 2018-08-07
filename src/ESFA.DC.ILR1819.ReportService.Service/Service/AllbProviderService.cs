@@ -39,9 +39,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<IFundingOutputs> GetAllbData(IJobContextMessage jobContextMessage)
+        public async Task<IFundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
-            await _getDataLock.WaitAsync();
+            await _getDataLock.WaitAsync(cancellationToken);
 
             try
             {
@@ -50,9 +50,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return _fundingOutputs;
                 }
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 _loadedDataAlready = true;
                 string albFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString();
-                string alb = await _redis.GetAsync(albFilename);
+                string alb = await _redis.GetAsync(albFilename, cancellationToken);
 
                 _fundingOutputs = _jsonSerializationService.Deserialize<FundingOutputs>(alb);
             }

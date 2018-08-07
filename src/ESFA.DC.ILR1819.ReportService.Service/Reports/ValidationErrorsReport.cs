@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
@@ -25,21 +28,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
     public sealed class ValidationErrorsReport : AbstractReportBuilder, IReport
     {
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _storage;
+        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IKeyValuePersistenceService _redis;
         private readonly IXmlSerializationService _xmlSerializationService;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IInvalidLearnersService _invalidLearnersService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public ValidationErrorsReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            IStreamableKeyValuePersistenceService storage,
             IXmlSerializationService xmlSerializationService,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
-            IInvalidLearnersService invalidLearnersService)
+            IInvalidLearnersService invalidLearnersService,
+            IDateTimeProvider dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -48,13 +53,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _invalidLearnersService = invalidLearnersService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public ReportType ReportType { get; } = ReportType.ValidationErrors;
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage)
+        public string GetReportFilename()
         {
-            IMessage message = await _ilrProviderService.GetIlrFile(jobContextMessage);
+            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            return $"Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        {
+            IMessage message = await _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             string key = jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors].ToString();
             //string validLearnersStr = await _redis.GetAsync(jobContextMessage
             //    .KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers]
@@ -62,11 +74,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             List<ValidationErrorDto> validationErrorDtos = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(validationErrorDtos, message);
-            IlrValidationReport ilrValidationReport = PersistFrontEndValidationReport(validationErrorDtos);
-            await PeristValuesToStorage(key, validationErrors, ilrValidationReport);
+            IlrValidationResult ilrValidationReport = PersistFrontEndValidationReport(validationErrorDtos, message);
+            await PeristValuesToStorage(key, archive, validationErrors, ilrValidationReport, cancellationToken);
         }
 
-        private IlrValidationReport PersistFrontEndValidationReport(List<ValidationErrorDto> validationErrorDtos)
+        private IlrValidationResult PersistFrontEndValidationReport(List<ValidationErrorDto> validationErrorDtos, IMessage message)
         {
             //int validLearners = Convert.ToInt32(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount]);
             //int invalidLearners = Convert.ToInt32(jobContextMessage.KeyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount]);
@@ -74,12 +86,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase)).ToArray();
             var warnings = validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            IlrValidationReport validationReport = new IlrValidationReport
+            IlrValidationResult validationReport = new IlrValidationResult
             {
+                TotalLearners = message.Learners.Count,
                 TotalErrors = errors.Length,
                 TotalWarnings = warnings.Length,
-                WarningLearners = warnings.DistinctBy(x => x.LearnerReferenceNumber).Count(),
-                ErrorLearners = errors.DistinctBy(x => x.LearnerReferenceNumber).Count()
+                TotalWarningLearners = warnings.DistinctBy(x => x.LearnerReferenceNumber).Count(),
+                TotalErrorLearners = errors.DistinctBy(x => x.LearnerReferenceNumber).Count()
             };
 
             return validationReport;
@@ -126,17 +139,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return result;
         }
 
-        private async Task PeristValuesToStorage(string key, List<ValidationErrorModel> validationErrorModels, IlrValidationReport ilrValidationReport)
+        private async Task PeristValuesToStorage(string key, ZipArchive archive, List<ValidationErrorModel> validationErrorModels, IlrValidationResult ilrValidationReport, CancellationToken cancellationToken)
         {
-            await _storage.SaveAsync($"{key}.json", _jsonSerializationService.Serialize(validationErrorModels));
-            await _storage.SaveAsync($"{key}.csv", GetCsv(validationErrorModels));
+            string filename = GetReportFilename();
+            string csv = GetCsv(validationErrorModels);
+            await _storage.SaveAsync($"{key}.json", _jsonSerializationService.Serialize(ilrValidationReport), cancellationToken);
+            await _storage.SaveAsync($"{filename}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{filename}.csv", csv);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BuildXlsReport(ms, new ValidationErrorMapper(), validationErrorModels);
+                await _storage.SaveAsync($"{filename}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{filename}.xlsx", ms, cancellationToken);
+            }
         }
 
         private string GetCsv(List<ValidationErrorModel> validationErrorModels)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildReport<ValidationErrorMapper, ValidationErrorModel>(ms, validationErrorModels);
+                BuildCsvReport<ValidationErrorMapper, ValidationErrorModel>(ms, validationErrorModels);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }

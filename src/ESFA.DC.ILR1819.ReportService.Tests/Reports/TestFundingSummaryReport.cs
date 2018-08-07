@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTime.Provider;
 using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -27,7 +27,10 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         public async Task TestFundingSummaryReportGeneration()
         {
             string csv = string.Empty;
-            string json = string.Empty;
+            //string json = string.Empty;
+            System.DateTime dateTime = System.DateTime.UtcNow;
+            string filename = $"Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
+
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IKeyValuePersistenceService> storage = new Mock<IKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
@@ -40,20 +43,22 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
-            IDateTimeProvider dateTimeProvider = new DateTimeProvider();
+            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             IVersionInfo versionInfo = new VersionInfo() { ServiceReleaseVersion = "1.2.3.4.5" };
 
-            storage.Setup(x => x.GetAsync(It.IsAny<string>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
-            storage.Setup(x => x.SaveAsync("Funding_Summary_Report.csv", It.IsAny<string>())).Callback<string, string>((key, value) => csv = value).Returns(Task.CompletedTask);
-            storage.Setup(x => x.SaveAsync("Funding_Summary_Report.json", It.IsAny<string>())).Callback<string, string>((key, value) => json = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("FundingAlbOutput")).ReturnsAsync(File.ReadAllText("FundingAlbOutput.json"));
-            redis.Setup(x => x.GetAsync("ValidLearners")).ReturnsAsync(jsonSerializationService.Serialize(
+            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
+            storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
+            //storage.Setup(x => x.SaveAsync("Funding_Summary_Report.json", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => json = value).Returns(Task.CompletedTask);
+            redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("FundingAlbOutput.json"));
+            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {
                     "3fm9901",
                     "5fm9901"
                 }));
             periodProviderService.Setup(x => x.GetPeriod(It.IsAny<IJobContextMessage>())).ReturnsAsync(12);
+            dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
                 logger.Object,
@@ -65,7 +70,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 validLearnersService,
                 stringUtilitiesService,
                 periodProviderService.Object,
-                dateTimeProvider,
+                dateTimeProviderMock.Object,
                 larsProviderService.Object,
                 versionInfo);
 
@@ -74,10 +79,10 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
 
-            await fundingSummaryReport.GenerateReport(jobContextMessage);
+            await fundingSummaryReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
-            json.Should().NotBeNullOrEmpty();
+            //json.Should().NotBeNullOrEmpty();
         }
     }
 }

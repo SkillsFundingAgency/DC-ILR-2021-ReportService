@@ -37,9 +37,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getIlrLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<IMessage> GetIlrFile(IJobContextMessage jobContextMessage)
+        public async Task<IMessage> GetIlrFile(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
-            await _getIlrLock.WaitAsync();
+            await _getIlrLock.WaitAsync(cancellationToken);
 
             try
             {
@@ -48,8 +48,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return _message;
                 }
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 string ilr =
-                    await _storage.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString());
+                    await _storage.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString(), cancellationToken);
 
                 _message = _xmlSerializationService.Deserialize<Message>(ilr);
             }

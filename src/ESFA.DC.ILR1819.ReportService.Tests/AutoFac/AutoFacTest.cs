@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
@@ -18,8 +19,13 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
             try
             {
                 JobContextMessage jobContextMessage =
-                    new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
+                    new JobContextMessage(
+                        1,
+                        new ITopicItem[] { new TopicItem("SubscriptionName", "SubscriptionSqlFilterValue", new List<ITaskItem>()) },
+                        0,
+                        System.DateTime.UtcNow);
                 CancellationTokenSource cts = new CancellationTokenSource();
+                cts.Cancel();
 
                 ContainerBuilder containerBuilder = Program.BuildContainer(new TestConfigurationHelper());
 

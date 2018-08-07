@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR1819.ReportService.Model.Configuration;
+﻿using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 
@@ -15,19 +16,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 case "LarsSection":
                     return (T)(object)new LarsConfiguration();
                 case "TopicAndTaskSection":
-                    return (T)(object)new TopicAndTaskSectionOptions()
-                    {
-                        TopicReports_TaskGenerateAllbOccupancyReport = "TopicReports_TaskGenerateAllbOccupancyReport",
-                        TopicReports_TaskGenerateValidationReport = "TopicReports_TaskGenerateValidationReport",
-                        TopicReports_TaskGenerateFundingSummaryReport = "TopicReports_TaskGenerateFundingSummaryReport",
-                        TopicDeds = "TopicDeds",
-                        TopicDeds_TaskPersistDataToDeds = "TopicDeds_TaskPersistDataToDeds",
-                        TopicFunding = "TopicFunding",
-                        TopicReports = "TopicReports",
-                        TopicReports_TaskGenerateMainOccupancyReport = "TopicReports_TaskGenerateMainOccupancyReport",
-                        TopicReports_TaskGenerateSummaryOfFunding1619Report = "TopicReports_TaskGenerateSummaryOfFunding1619Report",
-                        TopicValidation = "TopicValidation"
-                    };
+                    return (T)GetTopicsAndTasks();
                 case "AzureStorageSection":
                     return (T)(object)new AzureStorageOptions()
                     {
@@ -64,6 +53,24 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
             }
 
             return default(T);
+        }
+
+        public static ITopicAndTaskSectionOptions GetTopicsAndTasks()
+        {
+            return new TopicAndTaskSectionOptions()
+            {
+                TopicReports_TaskGenerateAllbOccupancyReport = "TopicReports_TaskGenerateAllbOccupancyReport",
+                TopicReports_TaskGenerateValidationReport = "TopicReports_TaskGenerateValidationReport",
+                TopicReports_TaskGenerateFundingSummaryReport = "TopicReports_TaskGenerateFundingSummaryReport",
+                TopicDeds = "TopicDeds",
+                TopicDeds_TaskPersistDataToDeds = "TopicDeds_TaskPersistDataToDeds",
+                TopicFunding = "TopicFunding",
+                TopicReports = "TopicReports",
+                TopicReports_TaskGenerateMainOccupancyReport = "TopicReports_TaskGenerateMainOccupancyReport",
+                TopicReports_TaskGenerateSummaryOfFunding1619Report = "TopicReports_TaskGenerateSummaryOfFunding1619Report",
+                TopicValidation = "TopicValidation",
+                TopicReports_TaskGenerateMathsAndEnglishReport = "TopicReports_TaskGenerateMathsAndEnglishReport"
+            };
         }
     }
 }

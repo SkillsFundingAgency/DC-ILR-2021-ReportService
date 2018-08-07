@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
 using ESFA.DC.ILR.Model.Interface;
@@ -41,6 +44,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IAllbProviderService _allbProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public AllbOccupancyReport(
             ILogger logger,
@@ -52,7 +56,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ILarsProviderService larsProviderService,
             IAllbProviderService allbProviderService,
             IValidLearnersService validLearnersService,
-            IStringUtilitiesService stringUtilitiesService)
+            IStringUtilitiesService stringUtilitiesService,
+            IDateTimeProvider dateTimeProvider)
         {
             _logger = logger;
             _storage = blob;
@@ -64,27 +69,47 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _allbProviderService = allbProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public ReportType ReportType { get; } = ReportType.AllbOccupancy;
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage)
+        public string GetReportFilename()
         {
-            await _storage.SaveAsync("ALLB_Occupancy_Report.csv", await GetCsv(jobContextMessage));
+            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            return $"ALLB Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
         }
 
-        private async Task<string> GetCsv(IJobContextMessage jobContextMessage)
+        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
-            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
+            string reportName = GetReportFilename();
+            string csv = await GetCsv(jobContextMessage, cancellationToken);
+            await _storage.SaveAsync($"{reportName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{reportName}.csv", csv);
+        }
+
+        private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        {
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
 
             List<string> learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
                 .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
 
-            Dictionary<string, ILarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLearningDeliveries(learnAimRefs);
+            Dictionary<string, ILarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return null;
+            }
 
             List<string> ilrError = new List<string>();
             List<string> larsError = new List<string>();
@@ -128,7 +153,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     var alb = learningDelivery.LearningDeliveryFAMs.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
 
-                    models.Add(new AllbOccupancyModel()
+                    models.Add(new AllbOccupancyModel
                     {
                         LearnRefNumber = learner.LearnRefNumber,
                         Uln = learner.ULN,
@@ -252,6 +277,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 }
             }
 
+            CheckWarnings(ilrError, larsError, albLearnerError);
+            return WriteResults(models);
+        }
+
+        private string WriteResults(List<AllbOccupancyModel> models)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BuildCsvReport<AllbOccupancyMapper, AllbOccupancyModel>(ms, models);
+                return Encoding.UTF8.GetString(ms.ToArray());
+            }
+        }
+
+        private void CheckWarnings(List<string> ilrError, List<string> larsError, List<string> albLearnerError)
+        {
             if (ilrError.Any())
             {
                 _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
@@ -265,12 +305,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             if (albLearnerError.Any())
             {
                 _logger.LogWarning($"Failed to get one or more ALB learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(albLearnerError)}");
-            }
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                BuildReport<AllbOccupancyMapper, AllbOccupancyModel>(ms, models);
-                return Encoding.UTF8.GetString(ms.ToArray());
             }
         }
     }

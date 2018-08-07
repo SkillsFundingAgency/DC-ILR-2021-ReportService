@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTime.Provider.Interface;
@@ -73,15 +75,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public ReportType ReportType { get; } = ReportType.FundingSummary;
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage)
+        public string GetReportFilename()
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
-            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
-            Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage);
+            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            return $"Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        {
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+            Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask, providerNameTask, periodTask);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
@@ -191,21 +204,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, ilrFileTask, providerNameTask);
-            FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(jobContextMessage);
+            FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(jobContextMessage, cancellationToken);
 
             LogWarnings(ilrError, albLearnerError);
 
-            await _storage.SaveAsync("Funding_Summary_Report.csv", GetReportCsv(fundingSummaryModels, fundingSummaryHeaderModel, fundingSummaryFooterModel));
-            await _storage.SaveAsync("Funding_Summary_Report.json", _jsonSerializationService.Serialize(fundingSummaryModels));
+            string reportName = GetReportFilename();
+            string csv = GetReportCsv(fundingSummaryModels, fundingSummaryHeaderModel, fundingSummaryFooterModel);
+            await _storage.SaveAsync($"{reportName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{reportName}.csv", csv);
         }
 
         private string GetReportCsv(List<FundingSummaryModel> fundingSummaryModels, FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildReport<FundingSummaryHeaderMapper, FundingSummaryHeaderModel>(ms, fundingSummaryHeaderModel);
-                BuildReport<FundingSummaryMapper, FundingSummaryModel>(ms, fundingSummaryModels);
-                BuildReport<FundingSummaryFooterMapper, FundingSummaryFooterModel>(ms, fundingSummaryFooterModel);
+                BuildCsvReport<FundingSummaryHeaderMapper, FundingSummaryHeaderModel>(ms, fundingSummaryHeaderModel);
+                BuildCsvReport<FundingSummaryMapper, FundingSummaryModel>(ms, fundingSummaryModels);
+                BuildCsvReport<FundingSummaryFooterMapper, FundingSummaryFooterModel>(ms, fundingSummaryFooterModel);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }
@@ -226,7 +241,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private FundingSummaryHeaderModel GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<string> providerNameTask)
         {
             string ilrFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
-            FundingSummaryHeaderModel fundingSummaryHeaderModel = new FundingSummaryHeaderModel()
+            FundingSummaryHeaderModel fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
                 IlrFile = ilrFilename,
                 Ukprn = messageTask.Result.HeaderEntity.SourceEntity.UKPRN,
@@ -235,24 +250,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 LastIlrFileUpdate = _stringUtilitiesService.GetIlrFileDate(ilrFilename).ToString("yyyy-MM-dd HH:mm:ssy"),
                 SecurityClassification = "OFFICIAL-SENSITIVE"
             };
+
             return fundingSummaryHeaderModel;
         }
 
-        private async Task<FundingSummaryFooterModel> GetFooterAsync(IJobContextMessage jobContextMessage)
+        private async Task<FundingSummaryFooterModel> GetFooterAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             var dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             var dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
             string ilrFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
-            FundingSummaryFooterModel fundingSummaryFooterModel = new FundingSummaryFooterModel()
+            FundingSummaryFooterModel fundingSummaryFooterModel = new FundingSummaryFooterModel
             {
                 ReportGeneratedAt = "Report generated at " + dateTimeNowUk.ToString("HH:mm:ss") + " on " + dateTimeNowUk.ToString("dd/MM/yyyy"),
                 ApplicationVersion = _versionInfo.ServiceReleaseVersion,
                 ComponentSetVersion = "NA",
                 FilePreparationDate = _stringUtilitiesService.GetIlrFileDate(ilrFilename).ToString("dd/MM/yyyy"),
-                OrganisationData = await _orgProviderService.GetVersionAsync(),
+                OrganisationData = await _orgProviderService.GetVersionAsync(cancellationToken),
                 LargeEmployerData = "Todo", // Todo
-                LarsData = await _larsProviderService.GetVersionAsync(),
+                LarsData = await _larsProviderService.GetVersionAsync(cancellationToken),
                 PostcodeData = "Todo" // Todo
             };
 

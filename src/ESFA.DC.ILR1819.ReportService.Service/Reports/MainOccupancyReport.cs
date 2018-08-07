@@ -1,9 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using ESFA.DC.DateTime.Provider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
 using ESFA.DC.ILR.Model.Interface;
@@ -41,6 +44,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IValidLearnersService _validLearnersService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly ILarsProviderService _larsProviderService;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         public MainOccupancyReport(
             ILogger logger,
@@ -49,7 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStringUtilitiesService stringUtilitiesService,
             IValidLearnersService validLearnersService,
             IAllbProviderService allbProviderService,
-            ILarsProviderService larsProviderService)
+            ILarsProviderService larsProviderService,
+            IDateTimeProvider dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -58,17 +63,29 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _allbProviderService = allbProviderService;
             _larsProviderService = larsProviderService;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public ReportType ReportType { get; } = ReportType.MainOccupancy;
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage)
+        public string GetReportFilename()
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage);
-            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage);
+            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            return $"Main Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        {
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             List<ILearner> learners =
                 ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber)).ToList();
@@ -80,10 +97,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             List<string> learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
 
-            Task<Dictionary<string, ILarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs);
-            Task<Dictionary<string, ILarsFrameworkAim>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs);
+            Task<Dictionary<string, ILarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
+            Task<Dictionary<string, ILarsFrameworkAim>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs, cancellationToken);
 
             await Task.WhenAll(larsLearningDeliveriesTask, larsFrameworkAimsTask);
+
+            if (cancellationToken.IsCancellationRequested)
+            {
+                return;
+            }
 
             List<string> larsError = new List<string>();
             List<string> albLearnerError = new List<string>();
@@ -346,15 +368,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             LogWarnings(larsError, albLearnerError);
 
-            await _storage.SaveAsync("Funding_Summary_Report.csv", GetReportCsv(mainOccupancyFM25Models, mainOccupancyFM35Models));
+            string csv = GetReportCsv(mainOccupancyFM25Models, mainOccupancyFM35Models);
+            await _storage.SaveAsync("Main-Occupancy-Report.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, "Main-Occupancy-Report.csv", csv);
         }
 
         private string GetReportCsv(List<MainOccupancyFM25Model> mainOccupancyFm25Models, List<MainOccupancyFM35Model> mainOccupancyFm35Models)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildReport<MainOccupancyFM25Mapper, MainOccupancyFM25Model>(ms, mainOccupancyFm25Models);
-                BuildReport<MainOccupancyFM35Mapper, MainOccupancyFM35Model>(ms, mainOccupancyFm35Models);
+                BuildCsvReport<MainOccupancyFM25Mapper, MainOccupancyFM25Model>(ms, mainOccupancyFm25Models);
+                BuildCsvReport<MainOccupancyFM35Mapper, MainOccupancyFM35Model>(ms, mainOccupancyFm35Models);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }

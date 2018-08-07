@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.IO.Compression;
+using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.JobContext.Interface;
 
@@ -8,6 +10,9 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Reports
     {
         ReportType ReportType { get; }
 
-        Task GenerateReport(IJobContextMessage jobContextMessage);
+        string GetReportFilename();
+
+        Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive,
+            CancellationToken cancellationToken);
     }
 }

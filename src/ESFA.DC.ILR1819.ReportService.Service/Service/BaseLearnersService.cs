@@ -38,9 +38,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<List<string>> GetLearnersAsync(IJobContextMessage jobContextMessage)
+        public async Task<List<string>> GetLearnersAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
-            await _getDataLock.WaitAsync();
+            await _getDataLock.WaitAsync(cancellationToken);
 
             try
             {
@@ -49,8 +49,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return _loadedData;
                 }
 
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 _loadedDataAlready = true;
-                string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[_messageKey].ToString());
+                string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[_messageKey].ToString(), cancellationToken);
                 _loadedData = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
             }
             catch (Exception ex)

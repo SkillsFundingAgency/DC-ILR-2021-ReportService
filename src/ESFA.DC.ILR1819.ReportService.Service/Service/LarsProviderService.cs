@@ -44,23 +44,30 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getVersionLock = new SemaphoreSlim(1, 1);
     }
 
-        public async Task<Dictionary<string, ILarsLearningDelivery>> GetLearningDeliveries(List<string> validLearnerAimRefs)
+        public async Task<Dictionary<string, ILarsLearningDelivery>> GetLearningDeliveries(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
         {
-            await _getLearningDeliveriesLock.WaitAsync();
+            await _getLearningDeliveriesLock.WaitAsync(cancellationToken);
 
             try
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 if (_loadedLearningDeliveries == null)
                 {
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
-                    _loadedLearningDeliveries = await larsContext.LARS_LearningDelivery
-                        .Where(x => validLearnerAimRefs.Contains(x.LearnAimRef)).ToDictionaryAsync(
-                            k => k.LearnAimRef, v => (ILarsLearningDelivery)new LarsLearningDelivery
+                    _loadedLearningDeliveries = await larsContext.LARS_LearningDelivery.Where(
+                            x => validLearnerAimRefs.Contains(x.LearnAimRef)).ToDictionaryAsync(
+                            k => k.LearnAimRef,
+                            v => (ILarsLearningDelivery)new LarsLearningDelivery
                             {
                                 LearningAimTitle = v.LearnAimRefTitle,
                                 NotionalNvqLevel = v.NotionalNVQLevel,
                                 Tier2SectorSubjectArea = v.SectorSubjectAreaTier2
-                            });
+                            },
+                            cancellationToken);
                 }
             }
             catch (Exception ex)
@@ -75,12 +82,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedLearningDeliveries;
         }
 
-        public async Task<Dictionary<string, ILarsFrameworkAim>> GetFrameworkAims(List<string> validLearnerAimRefs)
+        public async Task<Dictionary<string, ILarsFrameworkAim>> GetFrameworkAims(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
         {
-            await _getFrameworkAimsLock.WaitAsync();
+            await _getFrameworkAimsLock.WaitAsync(cancellationToken);
 
             try
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 if (_loadedLearningDeliveries == null)
                 {
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
@@ -104,16 +116,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedFrameworkAims;
         }
 
-        public async Task<string> GetVersionAsync()
+        public async Task<string> GetVersionAsync(CancellationToken cancellationToken)
         {
-            await _getVersionLock.WaitAsync();
+            await _getVersionLock.WaitAsync(cancellationToken);
 
             try
             {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
                 if (string.IsNullOrEmpty(_version))
                 {
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
-                    _version = (await larsContext.Current_Version.SingleAsync()).CurrentVersion;
+                    _version = (await larsContext.Current_Version.SingleAsync(cancellationToken)).CurrentVersion;
                 }
             }
             catch (Exception ex)
