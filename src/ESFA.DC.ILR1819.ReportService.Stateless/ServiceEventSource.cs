@@ -45,7 +45,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         [NonEvent]
         public void Message(string message, params object[] args)
         {
-            if (this.IsEnabled())
+            if (IsEnabled())
             {
                 string finalMessage = string.Format(message, args);
                 Message(finalMessage);
@@ -56,7 +56,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         [Event(MessageEventId, Level = EventLevel.Informational, Message = "{0}")]
         public void Message(string message)
         {
-            if (this.IsEnabled())
+            if (IsEnabled())
             {
                 WriteEvent(MessageEventId, message);
             }
@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         [NonEvent]
         public void ServiceMessage(StatelessServiceContext serviceContext, string message, params object[] args)
         {
-            if (this.IsEnabled())
+            if (IsEnabled())
             {
                 string finalMessage = string.Format(message, args);
                 ServiceMessage(

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.DateTime.Provider.Interface;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
 using ESFA.DC.ILR.Model.Interface;

@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.DateTime.Provider.Interface;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public string GetReportFilename()
         {
-            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
             return $"Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
         }
 

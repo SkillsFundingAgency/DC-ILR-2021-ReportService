@@ -11,8 +11,7 @@ using ESFA.DC.Auditing.Dto;
 using ESFA.DC.Auditing.Interface;
 using ESFA.DC.CollectionsManagement.Services;
 using ESFA.DC.CollectionsManagement.Services.Interface;
-using ESFA.DC.DateTime.Provider;
-using ESFA.DC.DateTime.Provider.Interface;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -281,7 +280,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<ReturnCalendarService>().As<IReturnCalendarService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
 
             return containerBuilder;
         }

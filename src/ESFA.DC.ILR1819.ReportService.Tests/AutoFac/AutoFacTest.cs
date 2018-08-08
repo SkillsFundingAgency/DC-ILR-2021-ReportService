@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                         1,
                         new ITopicItem[] { new TopicItem("SubscriptionName", "SubscriptionSqlFilterValue", new List<ITaskItem>()) },
                         0,
-                        System.DateTime.UtcNow);
+                        DateTime.UtcNow);
                 CancellationTokenSource cts = new CancellationTokenSource();
                 cts.Cancel();
 

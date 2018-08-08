@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                     1,
                     new ITopicItem[] { new TopicItem("SubscriptionName", "SubscriptionSqlFilterValue", new List<ITaskItem> { new TaskItem(new List<string> { topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport }, false) }) },
                     0,
-                    System.DateTime.UtcNow);
+                    DateTime.UtcNow);
 
             EntryPoint entryPoint = new EntryPoint(
                 logger.Object,

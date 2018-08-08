@@ -2,8 +2,7 @@
 using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.CollectionsManagement.Services.Interface;
-using ESFA.DC.DateTime.Provider;
-using ESFA.DC.DateTime.Provider.Interface;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.JobContext;
@@ -24,7 +23,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
             System.DateTime collectionEndDateTimeUtc = System.DateTime.ParseExact(collectionEndDateTimeUtcStr, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
             System.DateTime nowDateTimeUtc = System.DateTime.ParseExact(nowDateTimeUtcStr, "yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
-            IDateTimeProvider dateTimeProvider = new DateTimeProvider();
+            IDateTimeProvider dateTimeProvider = new DateTimeProvider.DateTimeProvider();
             Mock<IReturnCalendarService> returnCalendarService = new Mock<IReturnCalendarService>();
 
             returnCalendarService.Setup(x => x.GetCurrentPeriodAsync("ILR1819")).ReturnsAsync(new ReturnPeriod()
