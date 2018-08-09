@@ -143,7 +143,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             string filename = GetReportFilename();
             string csv = GetCsv(validationErrorModels);
-            await _storage.SaveAsync($"{key}.json", _jsonSerializationService.Serialize(ilrValidationReport), cancellationToken);
+            await _storage.SaveAsync($"{key}.json", _jsonSerializationService.Serialize(validationErrorModels), cancellationToken); // Todo: Change back to ilrValidationReport
             await _storage.SaveAsync($"{filename}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{filename}.csv", csv);
             using (MemoryStream ms = new MemoryStream())
