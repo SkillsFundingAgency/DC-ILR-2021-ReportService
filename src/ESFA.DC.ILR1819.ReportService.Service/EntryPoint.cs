@@ -62,7 +62,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
                     return false;
                 }
 
-                await _streamableKeyValuePersistenceService.SaveAsync("Reports.zip", memoryStream, cancellationToken);
+                await _streamableKeyValuePersistenceService.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId}_Reports.zip", memoryStream, cancellationToken);
             }
 
             return true;
