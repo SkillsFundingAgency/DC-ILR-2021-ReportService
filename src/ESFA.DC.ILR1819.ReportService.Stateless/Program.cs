@@ -182,7 +182,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     new TopicSubscriptionSevice<JobContextDto>(
                         topicConfig,
                         c.Resolve<IJsonSerializationService>(),
-                        c.Resolve<ILogger>());
+                        c.Resolve<ILogger>(),
+                        c.Resolve<IDateTimeProvider>());
                 return topicSubscriptionSevice;
             }).As<ITopicSubscriptionService<JobContextDto>>();
 
