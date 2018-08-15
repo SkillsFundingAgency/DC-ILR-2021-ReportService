@@ -44,7 +44,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IValidLearnersService _validLearnersService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly ILarsProviderService _larsProviderService;
-        private readonly IDateTimeProvider _dateTimeProvider;
 
         public MainOccupancyReport(
             ILogger logger,
@@ -55,6 +54,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IAllbProviderService allbProviderService,
             ILarsProviderService larsProviderService,
             IDateTimeProvider dateTimeProvider)
+        : base(dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -63,16 +63,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _allbProviderService = allbProviderService;
             _larsProviderService = larsProviderService;
-            _dateTimeProvider = dateTimeProvider;
+
+            ReportName = "Main Occupancy Report";
         }
 
         public ReportType ReportType { get; } = ReportType.MainOccupancy;
-
-        public string GetReportFilename()
-        {
-            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-            return $"Main Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
-        }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
@@ -151,8 +146,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     var albLearningDeliveryPeriodisedValues = albLearner.LearningDeliveryAttributes
                         .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
                         ?.LearningDeliveryPeriodisedAttributes;
-
-                    // var alb = learningDelivery.LearningDeliveryFAMs.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
 
                     mainOccupancyFM35Models.Add(new MainOccupancyFM35Model()
                     {

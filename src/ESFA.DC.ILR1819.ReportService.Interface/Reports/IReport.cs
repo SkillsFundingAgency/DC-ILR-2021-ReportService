@@ -10,7 +10,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Reports
     {
         ReportType ReportType { get; }
 
-        string GetReportFilename();
+        string GetReportFilename(string ukPrn, long jobId);
 
         Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive,
             CancellationToken cancellationToken);

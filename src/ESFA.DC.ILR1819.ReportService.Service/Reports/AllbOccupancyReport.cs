@@ -20,7 +20,6 @@ using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -36,56 +35,45 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IXmlSerializationService _xmlSerializationService;
-        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly ILarsProviderService _larsProviderService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
-        private readonly IDateTimeProvider _dateTimeProvider;
 
         public AllbOccupancyReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
-            IXmlSerializationService xmlSerializationService,
-            IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
             ILarsProviderService larsProviderService,
             IAllbProviderService allbProviderService,
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider)
+        : base(dateTimeProvider)
         {
             _logger = logger;
             _storage = blob;
-            _redis = redis;
-            _xmlSerializationService = xmlSerializationService;
-            _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _larsProviderService = larsProviderService;
             _allbProviderService = allbProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
-            _dateTimeProvider = dateTimeProvider;
+
+            ReportName = "ALLB Occupancy Report";
         }
 
         public ReportType ReportType { get; } = ReportType.AllbOccupancy;
 
-        public string GetReportFilename()
-        {
-            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-            return $"ALLB Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
-        }
-
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            string reportName = GetReportFilename();
+            var jobId = jobContextMessage.JobId;
+            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            var fileName = GetReportFilename(ukPrn, jobId);
+
             string csv = await GetCsv(jobContextMessage, cancellationToken);
-            await _storage.SaveAsync($"{reportName}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{reportName}.csv", csv);
+            await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
@@ -281,16 +269,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return WriteResults(models);
         }
 
-        private string WriteResults(List<AllbOccupancyModel> models)
+        private string WriteResults(IReadOnlyCollection<AllbOccupancyModel> models)
         {
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
                 BuildCsvReport<AllbOccupancyMapper, AllbOccupancyModel>(ms, models);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }
 
-        private void CheckWarnings(List<string> ilrError, List<string> larsError, List<string> albLearnerError)
+        private void CheckWarnings(IReadOnlyCollection<string> ilrError, IReadOnlyCollection<string> larsError, List<string> albLearnerError)
         {
             if (ilrError.Any())
             {

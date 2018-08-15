@@ -31,7 +31,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
-        private readonly IDateTimeProvider _dateTimeProvider;
 
         public MathsAndEnglishReport(
             ILogger logger,
@@ -43,6 +42,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider)
+        : base(dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -52,23 +52,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
-            _dateTimeProvider = dateTimeProvider;
+
+            ReportName = "Maths and English Report";
         }
 
         public ReportType ReportType { get; } = ReportType.MathsAndEnglish;
 
-        public string GetReportFilename()
-        {
-            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-            return $"Maths and English Report {dateTime:yyyyMMdd-HHmmss}";
-        }
-
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            string filename = GetReportFilename();
+            var jobId = jobContextMessage.JobId;
+            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            var fileName = GetReportFilename(ukPrn, jobId);
+
             string csv = await GetCsv(jobContextMessage, cancellationToken);
-            await _storage.SaveAsync($"{filename}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{filename}.csv", csv);
+            await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
