@@ -62,6 +62,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                     0,
                     DateTime.UtcNow);
 
+            jobContextMessage.KeyValuePairs.Add(JobContextMessageKey.UkPrn, 1234);
+
             EntryPoint entryPoint = new EntryPoint(
                 logger.Object,
                 topicsAndTasks,
