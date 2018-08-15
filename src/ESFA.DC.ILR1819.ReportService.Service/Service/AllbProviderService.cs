@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.IO.Interfaces;
@@ -25,7 +24,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private bool _loadedDataAlready;
 
-        private IFundingOutputs _fundingOutputs;
+        private FundingOutputs _fundingOutputs;
 
         public AllbProviderService(
             ILogger logger,
@@ -39,7 +38,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<IFundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<FundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
