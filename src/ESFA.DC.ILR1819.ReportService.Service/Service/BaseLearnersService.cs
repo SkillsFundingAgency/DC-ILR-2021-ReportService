@@ -13,7 +13,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
     public abstract class BaseLearnersService
     {
-        private readonly JobContextMessageKey _messageKey;
+        private readonly string _messageKey;
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _redis;
         private readonly IJsonSerializationService _jsonSerializationService;
@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private List<string> _loadedData;
 
         protected BaseLearnersService(
-            JobContextMessageKey key,
+            string key,
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
             IJsonSerializationService jsonSerializationService)
