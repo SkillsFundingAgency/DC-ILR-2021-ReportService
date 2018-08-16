@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface;
-using ESFA.DC.ILR1819.ReportService.Service.Model;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
 {

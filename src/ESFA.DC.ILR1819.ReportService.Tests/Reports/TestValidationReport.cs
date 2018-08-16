@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string json = string.Empty;
             byte[] xlsx = null;
             System.DateTime dateTime = System.DateTime.UtcNow;
-            string filename = $"Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10033670_1_Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
@@ -40,8 +40,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
-            storage.Setup(x => x.SaveAsync($"ValidationErrors.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            storage.Setup(x => x.SaveAsync("ValidationErrors.json", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => json = value).Returns(Task.CompletedTask);
+            storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
+            storage.Setup(x => x.SaveAsync($"{filename}.json", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => json = value).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.xlsx", It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>(
                 (key, value, ct) =>
                 {
@@ -60,11 +60,10 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
 
-            IInvalidLearnersService validLearnersService = new InvalidLearnersService(logger.Object, redis.Object, jsonSerializationService);
-
-            IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, redis.Object, storage.Object, xmlSerializationService, jsonSerializationService, ilrProviderService, validLearnersService, dateTimeProviderMock.Object);
+            IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, redis.Object, storage.Object, jsonSerializationService, ilrProviderService, dateTimeProviderMock.Object);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors] = "ValidationErrors";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups] = "ValidationErrorsLookup";

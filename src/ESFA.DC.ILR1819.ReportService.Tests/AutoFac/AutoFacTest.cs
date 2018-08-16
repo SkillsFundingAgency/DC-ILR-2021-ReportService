@@ -27,7 +27,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 CancellationTokenSource cts = new CancellationTokenSource();
                 cts.Cancel();
 
-                ContainerBuilder containerBuilder = Program.BuildContainer(new TestConfigurationHelper());
+                ContainerBuilder containerBuilder = DIComposition.BuildContainer(new TestConfigurationHelper());
 
                 IContainer c = containerBuilder.Build();
                 using (var lifeTime = c.BeginLifetimeScope())
