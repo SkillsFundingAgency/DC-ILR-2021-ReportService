@@ -89,6 +89,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return null;
             }
 
+            if (validLearnersTask.Result == null)
+            {
+                return null;
+            }
+
             List<string> learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
                 .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
 
@@ -125,6 +130,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     albLearnerError.Add(validLearnerRefNum);
                     continue;
+                }
+
+                if (learner.LearningDeliveries == null)
+                {
+                    ilrError.Add(validLearnerRefNum);
                 }
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
