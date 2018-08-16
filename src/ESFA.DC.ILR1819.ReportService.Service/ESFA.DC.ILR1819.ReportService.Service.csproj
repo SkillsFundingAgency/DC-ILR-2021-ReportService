@@ -83,6 +83,12 @@
     <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.1.104.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.0.1.104\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model, Version=0.1.104.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM25.FundingOutput.Model.0.1.104\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.1.97.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.0.1.97\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.Model, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1819.Model.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
     </Reference>
@@ -167,6 +173,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
+    <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
@@ -178,15 +187,6 @@
     <Compile Include="Mapper\MathsAndEnglishMapper.cs" />
     <Compile Include="Mapper\SummaryOfFunding1619Mapper.cs" />
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
-    <Compile Include="Model\AllbOccupancyModel.cs" />
-    <Compile Include="Model\FundingSummaryFooterModel.cs" />
-    <Compile Include="Model\FundingSummaryHeaderModel.cs" />
-    <Compile Include="Model\FundingSummaryModel.cs" />
-    <Compile Include="Model\MainOccupancyFM25Model.cs" />
-    <Compile Include="Model\MainOccupancyFM35Model.cs" />
-    <Compile Include="Model\MathsAndEnglishModel.cs" />
-    <Compile Include="Model\SummaryOfFunding1619Model.cs" />
-    <Compile Include="Model\ValidationErrorModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
@@ -198,6 +198,7 @@
     <Compile Include="Reports\ValidationErrorsReport.cs" />
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
+    <Compile Include="Service\FM25ProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
     <Compile Include="Service\InvalidLearnersService.cs" />
     <Compile Include="Service\LarsProviderService.cs" />

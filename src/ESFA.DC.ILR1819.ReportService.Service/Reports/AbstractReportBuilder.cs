@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -9,6 +10,7 @@ using System.Threading.Tasks;
 using Aspose.Cells;
 using CsvHelper;
 using CsvHelper.Configuration;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
 
@@ -16,6 +18,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public abstract class AbstractReportBuilder
     {
+        protected string ReportName;
+
+        private readonly IDateTimeProvider _dateTimeProvider;
+
+        protected AbstractReportBuilder(IDateTimeProvider dateTimeProvider)
+        {
+            _dateTimeProvider = dateTimeProvider;
+        }
+
+        public string GetReportFilename(string ukPrn, long jobId)
+        {
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            return $"{ukPrn}_{jobId.ToString()}_{ReportName} {dateTime:yyyyMMdd-HHmmss}";
+        }
+
         /// <summary>
         /// Builds a CSV report using the specified mapper as the list of column names.
         /// </summary>

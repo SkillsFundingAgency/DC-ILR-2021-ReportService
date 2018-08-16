@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         {
             string csv = string.Empty;
             System.DateTime dateTime = System.DateTime.UtcNow;
-            string filename = $"16-19 Summary of Funding by Student Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10033670_1_16-19 Summary of Funding by Student Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IKeyValuePersistenceService> storage = new Mock<IKeyValuePersistenceService>();
@@ -63,6 +63,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 dateTimeProviderMock.Object);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
 

@@ -31,7 +31,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         {
             string csv = string.Empty;
             System.DateTime dateTime = System.DateTime.UtcNow;
-            string filename = $"ALLB Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10033670_1_ALLB Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
 
@@ -71,9 +71,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IReport allbOccupancyReport = new AllbOccupancyReport(
                 logger.Object,
                 storage.Object,
-                redis.Object,
-                xmlSerializationService,
-                jsonSerializationService,
                 ilrProviderService,
                 larsProviderService.Object,
                 allbProviderService,
@@ -82,6 +79,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 dateTimeProviderMock.Object);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";

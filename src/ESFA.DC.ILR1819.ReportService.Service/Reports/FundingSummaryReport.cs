@@ -15,12 +15,11 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -34,7 +33,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
-        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
@@ -48,7 +46,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public FundingSummaryReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
-            IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
@@ -58,28 +55,24 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             ILarsProviderService larsProviderService,
             IVersionInfo versionInfo)
+            : base(dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
-            _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
             _periodProviderService = periodProviderService;
-            _dateTimeProvider = dateTimeProvider;
             _larsProviderService = larsProviderService;
             _versionInfo = versionInfo;
+            _dateTimeProvider = dateTimeProvider;
+
+            ReportName = "Funding Summary Report";
         }
 
         public ReportType ReportType { get; } = ReportType.FundingSummary;
-
-        public string GetReportFilename()
-        {
-            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-            return $"Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
-        }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
@@ -195,7 +188,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                             + (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0)
                             + (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0)
                 });
-                //}
             }
 
             FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, ilrFileTask, providerNameTask);
@@ -203,10 +195,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             LogWarnings(ilrError, albLearnerError);
 
-            string reportName = GetReportFilename();
+            var jobId = jobContextMessage.JobId;
+            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            var fileName = GetReportFilename(ukPrn, jobId);
+
             string csv = GetReportCsv(fundingSummaryModels, fundingSummaryHeaderModel, fundingSummaryFooterModel);
-            await _storage.SaveAsync($"{reportName}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{reportName}.csv", csv);
+            await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
         private string GetReportCsv(List<FundingSummaryModel> fundingSummaryModels, FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)

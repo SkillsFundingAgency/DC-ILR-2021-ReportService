@@ -27,9 +27,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         public async Task TestFundingSummaryReportGeneration()
         {
             string csv = string.Empty;
-            //string json = string.Empty;
             System.DateTime dateTime = System.DateTime.UtcNow;
-            string filename = $"Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10033670_1_Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IKeyValuePersistenceService> storage = new Mock<IKeyValuePersistenceService>();
@@ -48,7 +47,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            //storage.Setup(x => x.SaveAsync("Funding_Summary_Report.json", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => json = value).Returns(Task.CompletedTask);
             redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("FundingAlbOutput.json"));
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
@@ -63,7 +61,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
                 logger.Object,
                 storage.Object,
-                jsonSerializationService,
                 ilrProviderService,
                 orgProviderService.Object,
                 allbProviderService,
@@ -75,6 +72,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 versionInfo);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
+
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
@@ -82,7 +81,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             await fundingSummaryReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
-            //json.Should().NotBeNullOrEmpty();
         }
     }
 }

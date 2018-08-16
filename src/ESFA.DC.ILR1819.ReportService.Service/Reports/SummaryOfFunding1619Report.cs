@@ -12,8 +12,8 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -31,7 +31,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
-        private readonly IDateTimeProvider _dateTimeProvider;
 
         public SummaryOfFunding1619Report(
             ILogger logger,
@@ -43,6 +42,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider)
+        : base(dateTimeProvider)
         {
             _logger = logger;
             _storage = blob;
@@ -52,23 +52,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
-            _dateTimeProvider = dateTimeProvider;
+
+            ReportName = "16-19 Summary of Funding by Student Report";
         }
 
         public ReportType ReportType { get; } = ReportType.SummaryOfFunding1619;
 
-        public string GetReportFilename()
-        {
-            System.DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-            return $"16-19 Summary of Funding by Student Report {dateTime:yyyyMMdd-HHmmss}";
-        }
-
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            string filename = GetReportFilename();
+            var jobId = jobContextMessage.JobId;
+            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            var fileName = GetReportFilename(ukPrn, jobId);
+
             string csv = await GetCsv(jobContextMessage, cancellationToken);
-            await _storage.SaveAsync($"{filename}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{filename}.csv", csv);
+            await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
