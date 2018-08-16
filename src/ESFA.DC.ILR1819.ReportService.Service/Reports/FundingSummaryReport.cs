@@ -117,11 +117,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                //foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
-                //{
-                //var albAttribs = albLearner?.LearningDeliveryAttributes
-                //    .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
-                //    ?.LearningDeliveryAttributeDatas;
                 var albSupportPaymentObj =
                     albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
                 var albAreaUpliftOnProgPaymentObj =
