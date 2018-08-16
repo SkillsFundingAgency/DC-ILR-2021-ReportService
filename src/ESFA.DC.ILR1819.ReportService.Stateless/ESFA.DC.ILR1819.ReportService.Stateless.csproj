@@ -383,6 +383,7 @@
     <Compile Include="Configuration\ServiceBusTopicConfig.cs" />
     <Compile Include="Configuration\TopicAndTaskSectionOptions.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
+    <Compile Include="DIComposition.cs" />
     <Compile Include="Handlers\IMessageHandler.cs" />
     <Compile Include="Handlers\MessageHandler.cs" />
     <Compile Include="Mappers\JobContextMessageMapper.cs" />

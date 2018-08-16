@@ -7,17 +7,19 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+
 using ESFA.DC.ILR1819.ReportService.Service.Model;
+
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -25,33 +27,30 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IXmlSerializationService _xmlSerializationService;
-        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IFM25ProviderService _fm25ProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
+        private readonly IMathsAndEnglishFm25Rules _mathsAndEnglishFm25Rules;
 
         public MathsAndEnglishReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
-            IXmlSerializationService xmlSerializationService,
-            IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
+            IFM25ProviderService fm25ProviderService,
             IStringUtilitiesService stringUtilitiesService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules)
         : base(dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
-            _redis = redis;
-            _xmlSerializationService = xmlSerializationService;
-            _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
+            _fm25ProviderService = fm25ProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
+            _mathsAndEnglishFm25Rules = mathsAndEnglishFm25Rules;
 
             ReportName = "Maths and English Report";
         }
@@ -73,6 +72,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+            Task<Learner> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, validLearnersTask);
 
@@ -81,30 +81,37 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return null;
             }
 
-            List<string> ilrError = new List<string>();
+            var ilrError = new List<string>();
 
-            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>(validLearnersTask.Result.Count);
+            var mathsAndEnglishModels = new List<MathsAndEnglishModel>(validLearnersTask.Result.Count);
             foreach (string validLearnerRefNum in validLearnersTask.Result)
             {
                 var learner =
                     ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-                if (learner == null)
+
+                var fm25Data = fm25Task.Result;
+                if (learner == null || fm25Data == null)
                 {
                     ilrError.Add(validLearnerRefNum);
                     continue;
                 }
 
+                if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Data))
+                {
+                    continue;
+                }
+
                 mathsAndEnglishModels.Add(new MathsAndEnglishModel()
                 {
-                    FundLine = "Todo", // Todo
+                    FundLine = fm25Data.FundLine,
                     LearnRefNumber = learner.LearnRefNumber,
                     FamilyName = learner.FamilyName,
                     GivenNames = learner.GivenNames,
                     DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
                     CampId = learner.CampId,
-                    ConditionOfFundingMaths = "Todo", // Todo
-                    ConditionOfFundingEnglish = "Todo", // Todo
-                    RateBand = "Todo" // Todo
+                    ConditionOfFundingMaths = fm25Data.ConditionOfFundingMaths,
+                    ConditionOfFundingEnglish = fm25Data.ConditionOfFundingEnglish,
+                    RateBand = fm25Data.RateBand
                 });
             }
 

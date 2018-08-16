@@ -173,6 +173,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
@@ -203,6 +205,7 @@
     <Compile Include="Reports\ValidationErrorsReport.cs" />
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
+    <Compile Include="Service\FM25ProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
     <Compile Include="Service\InvalidLearnersService.cs" />
     <Compile Include="Service\LarsProviderService.cs" />
