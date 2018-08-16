@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -84,7 +84,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<FundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage);
@@ -109,7 +109,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                ILearnerAttribute albLearner =
+                LearnerAttribute albLearner =
                     albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
                 if (albLearner == null)
                 {
@@ -117,11 +117,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                //foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
-                //{
-                //var albAttribs = albLearner?.LearningDeliveryAttributes
-                //    .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
-                //    ?.LearningDeliveryAttributeDatas;
                 var albSupportPaymentObj =
                     albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
                 var albAreaUpliftOnProgPaymentObj =
@@ -275,7 +270,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return fundingSummaryFooterModel;
         }
 
-        private decimal? GetYearToDateTotal(ILearnerPeriodisedAttribute albSupportPaymentObj, int period)
+        private decimal? GetYearToDateTotal(LearnerPeriodisedAttribute albSupportPaymentObj, int period)
         {
             decimal total = 0;
             for (int i = 0; i < period; i++)
@@ -324,7 +319,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return total;
         }
 
-        private decimal? GetYearToDateTotal(ILearnerPeriodisedAttribute albAreaUpliftBalPaymentObj, ILearnerPeriodisedAttribute albAreaUpliftOnProgPaymentObj, int period)
+        private decimal? GetYearToDateTotal(LearnerPeriodisedAttribute albAreaUpliftBalPaymentObj, LearnerPeriodisedAttribute albAreaUpliftOnProgPaymentObj, int period)
         {
             decimal total = 0;
             for (int i = 0; i < period; i++)

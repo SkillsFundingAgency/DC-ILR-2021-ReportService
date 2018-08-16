@@ -7,8 +7,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Interface.Attribute;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
@@ -77,7 +77,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<IFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<FundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
@@ -126,7 +126,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                ILearnerAttribute albLearner =
+                LearnerAttribute albLearner =
                     albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == learner.LearnRefNumber);
                 if (albLearner == null)
                 {
@@ -396,7 +396,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private decimal GetMaxPeriod(ILearningDeliveryPeriodisedAttribute learningDeliveryPeriodisedAttribute)
+        private decimal GetMaxPeriod(LearningDeliveryPeriodisedAttribute learningDeliveryPeriodisedAttribute)
         {
             decimal max = int.MinValue;
             if (learningDeliveryPeriodisedAttribute.Period1 > max)
