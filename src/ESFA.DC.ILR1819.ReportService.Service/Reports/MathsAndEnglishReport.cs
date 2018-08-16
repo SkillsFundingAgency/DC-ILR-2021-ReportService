@@ -13,10 +13,8 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-
-using ESFA.DC.ILR1819.ReportService.Service.Model;
-
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -32,6 +30,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IMathsAndEnglishFm25Rules _mathsAndEnglishFm25Rules;
+        private readonly IMathsAndEnglishModelBuilder _mathsAndEnglishModelBuilder;
 
         public MathsAndEnglishReport(
             ILogger logger,
@@ -41,7 +40,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM25ProviderService fm25ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
-            IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules)
+            IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules,
+            IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -51,6 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
             _mathsAndEnglishFm25Rules = mathsAndEnglishFm25Rules;
+            _mathsAndEnglishModelBuilder = mathsAndEnglishModelBuilder;
 
             ReportName = "Maths and English Report";
         }
@@ -101,18 +102,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                mathsAndEnglishModels.Add(new MathsAndEnglishModel()
-                {
-                    FundLine = fm25Data.FundLine,
-                    LearnRefNumber = learner.LearnRefNumber,
-                    FamilyName = learner.FamilyName,
-                    GivenNames = learner.GivenNames,
-                    DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
-                    CampId = learner.CampId,
-                    ConditionOfFundingMaths = fm25Data.ConditionOfFundingMaths,
-                    ConditionOfFundingEnglish = fm25Data.ConditionOfFundingEnglish,
-                    RateBand = fm25Data.RateBand
-                });
+                mathsAndEnglishModels.Add((MathsAndEnglishModel)_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Data));
             }
 
             if (ilrError.Any())

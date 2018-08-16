@@ -14,9 +14,9 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-using ESFA.DC.ILR1819.ReportService.Service.Model;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Jobs.Model.Reports.ValidationReport;
@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private List<ValidationErrorDto> _validationErrorDtos;
         private List<ValidationErrorModel> _validationErrors;
+        private IlrValidationResult _ilrValidationResult;
         private string _fileName;
 
         public ValidationErrorsReport(
@@ -66,7 +67,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             _validationErrorDtos = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
             _validationErrors = ValidationErrorModels(message);
-            PersistFrontEndValidationReport(message);
+            _ilrValidationResult = PersistFrontEndValidationReport(message);
             await PeristValuesToStorage(archive, cancellationToken);
         }
 
@@ -131,7 +132,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task PeristValuesToStorage(ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(_validationErrors);
-            await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_validationErrors), cancellationToken); // Todo: Change back to ilrValidationReport
+            await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
             await _storage.SaveAsync($"{_fileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
             using (MemoryStream ms = new MemoryStream())
