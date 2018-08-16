@@ -7,6 +7,7 @@
         MainOccupancy,
         MathsAndEnglish,
         SummaryOfFunding1619,
-        ValidationErrors
+        ValidationErrors,
+        SummaryOfFM35Funding
     }
 }

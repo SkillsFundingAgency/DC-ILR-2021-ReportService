@@ -190,6 +190,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
+    <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\SummaryOfFunding1619Report.cs" />
     <Compile Include="Reports\AllbOccupancyReport.cs" />
     <Compile Include="Reports\FundingSummaryReport.cs" />
