@@ -14,7 +14,6 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
@@ -75,8 +74,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportFileName = "Funding Summary Report";
             ReportTaskName = Constants.FundingSummaryReport;
         }
-
-        public ReportType ReportType { get; } = ReportType.FundingSummary;
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {

@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.IO.Interfaces;
