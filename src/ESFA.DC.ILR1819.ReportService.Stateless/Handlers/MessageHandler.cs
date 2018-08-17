@@ -3,9 +3,7 @@ using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Service;
-using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -43,13 +41,22 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                     c.RegisterInstance(jobContextMessage).As<IJobContextMessage>();
                 }))
                 {
-                      var executionContext = (Logging.ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
+                    var executionContext = (Logging.ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
                     executionContext.JobId = jobContextMessage.JobId.ToString();
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
 
                     var entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
-                    var result = await entryPoint.Callback(jobContextMessage, cancellationToken);
+                    var result = false;
+                    try
+                    {
+                        result = await entryPoint.Callback(jobContextMessage, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.Message, ex);
+                    }
+
                     logger.LogDebug("Completed Report Service");
                     return result;
                 }
@@ -57,6 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
             catch (Exception ex)
             {
                 ServiceEventSource.Current.ServiceMessage(_context, "Exception-{0}", ex.ToString());
+
                 throw;
             }
         }

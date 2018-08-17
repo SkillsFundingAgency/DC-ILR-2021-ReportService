@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 
@@ -19,11 +20,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         }
 
         // ILR-90000064-1819-20180619-120127-02.xml
-        public System.DateTime GetIlrFileDate(string ilrFilename)
+        public DateTime? GetIlrFileDate(string ilrFilename)
         {
             string[] tokens = ilrFilename.Split('-');
-            System.DateTime date = System.DateTime.ParseExact(tokens[3] + "-" + tokens[4], "yyyyMMdd-HHmmss", DateTimeFormatInfo.InvariantInfo);
-            return date;
+
+            return DateTime.TryParseExact(
+                tokens[3] + "-" + tokens[4],
+                "yyyyMMdd-HHmmss",
+                DateTimeFormatInfo.InvariantInfo,
+                DateTimeStyles.None,
+                out var date) ? date : (DateTime?)null;
         }
     }
 }

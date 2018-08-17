@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
@@ -21,21 +22,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
 
-        private readonly IReport[] _reports;
+        private readonly IList<IReport> _reports;
 
-        private readonly Dictionary<string, ReportType> reportsAvailable;
+        private readonly Dictionary<string, ReportType> _reportsAvailable;
+
+        private readonly IIlrFileHelper _ilrFileHelper;
 
         public EntryPoint(
             ILogger logger,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
-            IReport[] reports)
+            IList<IReport> reports,
+            IIlrFileHelper ilrFileHelper)
         {
             _logger = logger;
             _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
             _reports = reports;
+            _ilrFileHelper = ilrFileHelper;
 
-            reportsAvailable = new Dictionary<string, ReportType>
+            _reportsAvailable = new Dictionary<string, ReportType>
             {
                 { topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport, ReportType.ValidationErrors },
                 { topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport, ReportType.AllbOccupancy },
@@ -50,9 +55,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service
         {
             _logger.LogInfo("Reporting callback invoked");
 
-            using (MemoryStream memoryStream = new MemoryStream())
+            using (var memoryStream = new MemoryStream())
             {
-                using (ZipArchive archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
                 {
                     await ExecuteTasks(jobContextMessage, archive, cancellationToken);
                 }
@@ -70,6 +75,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private async Task ExecuteTasks(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
+            if (!_ilrFileHelper.CheckIlrFileNameIsValid(jobContextMessage))
+            {
+                return;
+            }
+
             foreach (ITaskItem taskItem in jobContextMessage.Topics[jobContextMessage.TopicPointer].Tasks)
             {
                 if (taskItem.SupportsParallelExecution)
@@ -96,7 +106,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private async Task GenerateReportAsync(string task, IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            if (!reportsAvailable.TryGetValue(task, out var reportType))
+            if (!_reportsAvailable.TryGetValue(task, out var reportType))
             {
                 _logger.LogDebug($"Unknown report task '{task}'");
                 return;
@@ -106,7 +116,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
             if (report == null)
             {
-                _logger.LogDebug($"Unknown to find report '{task}'");
+                _logger.LogDebug($"Unable to find report '{task}'");
                 return;
             }
 
