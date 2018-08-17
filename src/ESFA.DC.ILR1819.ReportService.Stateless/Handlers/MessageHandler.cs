@@ -47,7 +47,16 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                     logger.LogDebug("Started Report Service");
 
                     var entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
-                    var result = await entryPoint.Callback(jobContextMessage, cancellationToken);
+                    var result = false;
+                    try
+                    {
+                        result = await entryPoint.Callback(jobContextMessage, cancellationToken);
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.LogError(ex.Message, ex);
+                    }
+
                     logger.LogDebug("Completed Report Service");
                     return result;
                 }
@@ -55,6 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
             catch (Exception ex)
             {
                 ServiceEventSource.Current.ServiceMessage(_context, "Exception-{0}", ex.ToString());
+
                 throw;
             }
         }

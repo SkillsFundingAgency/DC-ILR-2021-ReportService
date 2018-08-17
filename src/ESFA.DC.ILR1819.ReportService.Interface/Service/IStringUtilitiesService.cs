@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
@@ -6,6 +7,6 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
     {
         string JoinWithMaxLength(IEnumerable<string> list);
 
-        System.DateTime GetIlrFileDate(string ilrFilename);
+        DateTime? GetIlrFileDate(string ilrFilename);
     }
 }
