@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
-using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.JobContext.Interface;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
@@ -17,10 +16,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public SummaryOfFM35FundingReport(IDateTimeProvider dateTimeProvider)
             : base(dateTimeProvider)
         {
-            ReportName = "foo";
+            ReportTaskName = "foo";
         }
-
-        public ReportType ReportType => ReportType.SummaryOfFM35Funding;
 
         public Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
