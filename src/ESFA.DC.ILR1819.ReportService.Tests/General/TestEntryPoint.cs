@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.IO.Interfaces;
@@ -41,7 +40,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                 })
                 .Returns(Task.CompletedTask);
             Mock<IReport> report = new Mock<IReport>();
-            report.SetupGet(x => x.ReportType).Returns(ReportType.AllbOccupancy);
+            report.SetupGet(x => x.ReportTaskName).Returns(Constants.AllbOccupancyReport);
             report.Setup(x =>
                     x.GenerateReport(It.IsAny<IJobContextMessage>(), It.IsAny<ZipArchive>(), It.IsAny<CancellationToken>()))
                 .Callback<IJobContextMessage, ZipArchive, CancellationToken>((j, z, c) =>
@@ -53,6 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                     }
                 })
                 .Returns(Task.CompletedTask);
+            report.Setup(x => x.IsMatch(It.IsAny<string>())).Returns(true);
 
             Mock<IIlrFileHelper> ilrFileHelper = new Mock<IIlrFileHelper>();
             ilrFileHelper.Setup(x => x.CheckIlrFileNameIsValid(It.IsAny<IJobContextMessage>())).Returns(true);
@@ -70,7 +70,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
 
             EntryPoint entryPoint = new EntryPoint(
                 logger.Object,
-                topicsAndTasks,
+
                 streamableKeyValuePersistenceService.Object,
                 new[] { report.Object },
                 ilrFileHelper.Object);

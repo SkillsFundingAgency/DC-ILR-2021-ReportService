@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public abstract class AbstractReportBuilder
     {
-        protected string ReportName;
+        protected string ReportFileName;
 
         private readonly IDateTimeProvider _dateTimeProvider;
 
@@ -27,10 +27,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _dateTimeProvider = dateTimeProvider;
         }
 
+        public string ReportTaskName { get; set; }
+
+        public bool IsMatch(string reportTaskName)
+        {
+            return reportTaskName == ReportTaskName;
+        }
+
         public string GetReportFilename(string ukPrn, long jobId)
         {
             DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-            return $"{ukPrn}_{jobId.ToString()}_{ReportName} {dateTime:yyyyMMdd-HHmmss}";
+            return $"{ukPrn}_{jobId.ToString()}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
 
         /// <summary>

@@ -13,7 +13,6 @@ using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
@@ -53,10 +52,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
 
-            ReportName = "Validation Errors Report";
+            ReportFileName = "Validation Errors Report";
+            ReportTaskName = Constants.ValidationReport;
         }
-
-        public ReportType ReportType { get; } = ReportType.ValidationErrors;
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {

@@ -12,7 +12,6 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
@@ -53,10 +52,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _mathsAndEnglishFm25Rules = mathsAndEnglishFm25Rules;
             _mathsAndEnglishModelBuilder = mathsAndEnglishModelBuilder;
 
-            ReportName = "Maths and English Report";
+            ReportFileName = "Maths and English Report";
+            ReportTaskName = Constants.MathsAndEnglishReport;
         }
-
-        public ReportType ReportType { get; } = ReportType.MathsAndEnglish;
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
