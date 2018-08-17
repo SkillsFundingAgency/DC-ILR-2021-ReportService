@@ -3,10 +3,12 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
@@ -51,6 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
+            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+
             SummaryOfFunding1619Report summaryOfFunding1619Report = new SummaryOfFunding1619Report(
                 logger.Object,
                 storage.Object,
@@ -60,7 +64,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 ilrProviderService,
                 validLearnersService,
                 stringUtilitiesService,
-                dateTimeProviderMock.Object);
+                dateTimeProviderMock.Object,
+                topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";

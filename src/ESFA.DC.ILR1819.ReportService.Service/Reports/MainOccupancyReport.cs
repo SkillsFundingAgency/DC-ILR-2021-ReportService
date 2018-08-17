@@ -11,6 +11,7 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -52,7 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             IAllbProviderService allbProviderService,
             ILarsProviderService larsProviderService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -64,7 +66,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _larsProviderService = larsProviderService;
 
             ReportFileName = "Main Occupancy Report";
-            ReportTaskName = Constants.MainOccupancyReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
