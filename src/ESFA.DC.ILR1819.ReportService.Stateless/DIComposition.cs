@@ -18,6 +18,7 @@ using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
+using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
@@ -205,6 +206,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             RegisterServices(containerBuilder);
             RegisterBuilders(containerBuilder);
             RegisterRules(containerBuilder);
+            RegisterHelpers(containerBuilder);
 
             return containerBuilder;
         }
@@ -286,6 +288,12 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         private static void RegisterRules(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<MathsAndEnglishFm25Rules>().As<IMathsAndEnglishFm25Rules>()
+                .InstancePerLifetimeScope();
+        }
+
+        private static void RegisterHelpers(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<IlrFileHelper>().As<IIlrFileHelper>()
                 .InstancePerLifetimeScope();
         }
     }
