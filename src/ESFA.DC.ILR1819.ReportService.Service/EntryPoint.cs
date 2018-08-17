@@ -127,7 +127,5 @@ namespace ESFA.DC.ILR1819.ReportService.Service
             stopWatch.Stop();
             _logger.LogDebug($"Persisted {report.GetType().Name} to csv/json in: {stopWatch.ElapsedMilliseconds}");
         }
-
-
     }
 }

@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
@@ -53,6 +54,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                 })
                 .Returns(Task.CompletedTask);
 
+            Mock<IIlrFileHelper> ilrFileHelper = new Mock<IIlrFileHelper>();
+            ilrFileHelper.Setup(x => x.CheckIlrFileNameIsValid(It.IsAny<IJobContextMessage>())).Returns(true);
+
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
             JobContextMessage jobContextMessage =
@@ -68,7 +72,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                 logger.Object,
                 topicsAndTasks,
                 streamableKeyValuePersistenceService.Object,
-                new[] { report.Object });
+                new[] { report.Object },
+                ilrFileHelper.Object);
 
             await entryPoint.Callback(jobContextMessage, CancellationToken.None);
 
