@@ -20,14 +20,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
     {
         protected string ReportFileName;
 
-        protected string ReportTaskName;
-
         private readonly IDateTimeProvider _dateTimeProvider;
 
         protected AbstractReportBuilder(IDateTimeProvider dateTimeProvider)
         {
             _dateTimeProvider = dateTimeProvider;
         }
+
+        public string ReportTaskName { get; set; }
 
         public bool IsMatch(string reportTaskName)
         {
