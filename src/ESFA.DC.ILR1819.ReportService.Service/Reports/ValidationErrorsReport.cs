@@ -133,7 +133,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task PeristValuesToStorage(ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(_validationErrors);
-            await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
+            await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_validationErrorDtos), cancellationToken);
             await _storage.SaveAsync($"{_fileName}.csv", csv, cancellationToken);
 
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
