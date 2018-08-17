@@ -53,7 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
 
-            ReportName = "16-19 Summary of Funding by Student Report";
+            ReportFileName = "16-19 Summary of Funding by Student Report";
+            ReportTaskName = Constants.SummaryOfFunding1619Report;
         }
 
         public ReportType ReportType { get; } = ReportType.SummaryOfFunding1619;

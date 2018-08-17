@@ -53,7 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
 
-            ReportName = "Validation Errors Report";
+            ReportFileName = "Validation Errors Report";
+            ReportTaskName = Constants.ValidationReport;
         }
 
         public ReportType ReportType { get; } = ReportType.ValidationErrors;

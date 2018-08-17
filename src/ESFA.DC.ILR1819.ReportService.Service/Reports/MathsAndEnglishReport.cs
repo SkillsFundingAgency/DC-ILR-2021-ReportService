@@ -53,7 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _mathsAndEnglishFm25Rules = mathsAndEnglishFm25Rules;
             _mathsAndEnglishModelBuilder = mathsAndEnglishModelBuilder;
 
-            ReportName = "Maths and English Report";
+            ReportFileName = "Maths and English Report";
+            ReportTaskName = Constants.MathsAndEnglishReport;
         }
 
         public ReportType ReportType { get; } = ReportType.MathsAndEnglish;

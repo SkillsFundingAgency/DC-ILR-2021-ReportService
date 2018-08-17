@@ -69,7 +69,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _versionInfo = versionInfo;
             _dateTimeProvider = dateTimeProvider;
 
-            ReportName = "Funding Summary Report";
+            ReportFileName = "Funding Summary Report";
+            ReportTaskName = Constants.FundingSummaryReport;
         }
 
         public ReportType ReportType { get; } = ReportType.FundingSummary;

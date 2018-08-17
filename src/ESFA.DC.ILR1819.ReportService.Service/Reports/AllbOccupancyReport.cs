@@ -60,7 +60,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
 
-            ReportName = "ALLB Occupancy Report";
+            ReportFileName = "ALLB Occupancy Report";
+            ReportTaskName = Constants.AllbOccupancyReport;
         }
 
         public ReportType ReportType { get; } = ReportType.AllbOccupancy;

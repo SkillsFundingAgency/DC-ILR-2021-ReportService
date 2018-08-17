@@ -64,7 +64,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _allbProviderService = allbProviderService;
             _larsProviderService = larsProviderService;
 
-            ReportName = "Main Occupancy Report";
+            ReportFileName = "Main Occupancy Report";
+            ReportTaskName = Constants.MainOccupancyReport;
         }
 
         public ReportType ReportType { get; } = ReportType.MainOccupancy;
