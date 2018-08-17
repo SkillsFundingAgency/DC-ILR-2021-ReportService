@@ -43,6 +43,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly ILarsProviderService _larsProviderService;
         private readonly IVersionInfo _versionInfo;
 
+        private string _ilrFileName;
+        private string _ilrFileDateTime;
+
         public FundingSummaryReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
@@ -111,13 +114,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 }
 
                 var albSupportPaymentObj =
-                    albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
+                    albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
                 var albAreaUpliftOnProgPaymentObj =
-                    albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
+                    albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
                 var albAreaUpliftBalPaymentObj =
-                    albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
+                    albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
 
-                fundingSummaryModels.Add(new FundingSummaryModel()
+                fundingSummaryModels.Add(new FundingSummaryModel
                 {
                     Title = "ILR Advanced Loans Bursary Funding (£)",
                     Period1 = albSupportPaymentObj?.Period1 ?? 0,
@@ -190,8 +193,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 });
             }
 
-            FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, ilrFileTask, providerNameTask);
-            FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(jobContextMessage, cancellationToken);
+            FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(ilrFileTask, providerNameTask);
+            FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(cancellationToken);
 
             LogWarnings(ilrError, albLearnerError);
 
@@ -228,34 +231,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private FundingSummaryHeaderModel GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<string> providerNameTask)
+        private FundingSummaryHeaderModel GetHeader(Task<IMessage> messageTask, Task<string> providerNameTask)
         {
-            string ilrFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
             FundingSummaryHeaderModel fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
-                IlrFile = ilrFilename,
+                IlrFile = _ilrFileName,
                 Ukprn = messageTask.Result.HeaderEntity.SourceEntity.UKPRN,
                 ProviderName = providerNameTask.Result,
                 LastEasUpdate = "Todo", // Todo
-                LastIlrFileUpdate = _stringUtilitiesService.GetIlrFileDate(ilrFilename).ToString("yyyy-MM-dd HH:mm:ssy"),
+                LastIlrFileUpdate = _ilrFileDateTime,
                 SecurityClassification = "OFFICIAL-SENSITIVE"
             };
 
             return fundingSummaryHeaderModel;
         }
 
-        private async Task<FundingSummaryFooterModel> GetFooterAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        private async Task<FundingSummaryFooterModel> GetFooterAsync(CancellationToken cancellationToken)
         {
             var dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             var dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
-            string ilrFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
             FundingSummaryFooterModel fundingSummaryFooterModel = new FundingSummaryFooterModel
             {
                 ReportGeneratedAt = "Report generated at " + dateTimeNowUk.ToString("HH:mm:ss") + " on " + dateTimeNowUk.ToString("dd/MM/yyyy"),
                 ApplicationVersion = _versionInfo.ServiceReleaseVersion,
                 ComponentSetVersion = "NA",
-                FilePreparationDate = _stringUtilitiesService.GetIlrFileDate(ilrFilename).ToString("dd/MM/yyyy"),
+                FilePreparationDate = _ilrFileDateTime,
                 OrganisationData = await _orgProviderService.GetVersionAsync(cancellationToken),
                 LargeEmployerData = "Todo", // Todo
                 LarsData = await _larsProviderService.GetVersionAsync(cancellationToken),
