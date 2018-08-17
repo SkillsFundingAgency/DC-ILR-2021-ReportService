@@ -8,11 +8,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.BusinessRules
     {
         private readonly List<string> _applicableFundlines = new List<string>
         {
-            Constants.DirectFundedStudents1416,
-            Constants.Students1619,
-            Constants.HighNeedsStudents1619,
-            Constants.StudentsWithEHCP1924,
-            Constants.ContinuingStudents19Plus
+            Constants.DirectFundedStudents1416FundLine,
+            Constants.Students1619FundLine,
+            Constants.HighNeedsStudents1619FundLine,
+            Constants.StudentsWithEHCP1924FundLine,
+            Constants.ContinuingStudents19PlusFundLine
         };
 
         /// <summary>

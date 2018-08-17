@@ -14,7 +14,6 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Report;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
@@ -64,10 +63,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _allbProviderService = allbProviderService;
             _larsProviderService = larsProviderService;
 
-            ReportName = "Main Occupancy Report";
+            ReportFileName = "Main Occupancy Report";
+            ReportTaskName = Constants.MainOccupancyReport;
         }
-
-        public ReportType ReportType { get; } = ReportType.MainOccupancy;
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
