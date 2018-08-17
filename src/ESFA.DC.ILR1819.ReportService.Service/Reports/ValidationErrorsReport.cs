@@ -63,7 +63,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IMessage message = await _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            _fileName = GetReportFilename(ukPrn, jobId);
+            //_fileName = GetReportFilename(ukPrn, jobId);
+            _fileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
 
             _validationErrorDtos = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
             _validationErrors = ValidationErrorModels(message);
@@ -134,6 +135,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             string csv = GetCsv(_validationErrors);
             await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
             await _storage.SaveAsync($"{_fileName}.csv", csv, cancellationToken);
+
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
             using (MemoryStream ms = new MemoryStream())
             {

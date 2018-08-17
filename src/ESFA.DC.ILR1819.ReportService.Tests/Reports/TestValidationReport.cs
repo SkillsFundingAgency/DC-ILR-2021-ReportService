@@ -32,7 +32,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string json = string.Empty;
             byte[] xlsx = null;
             System.DateTime dateTime = System.DateTime.UtcNow;
-            string filename = $"10033670_1_Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
+            //string filename = $"10033670_1_Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10033670_1_ValidationErrors";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
