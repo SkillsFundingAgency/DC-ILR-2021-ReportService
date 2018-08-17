@@ -21,21 +21,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
 
-        private readonly IReport[] _reports;
+        private readonly IList<IReport> _reports;
 
-        private readonly Dictionary<string, ReportType> reportsAvailable;
+        private readonly Dictionary<string, ReportType> _reportsAvailable;
 
         public EntryPoint(
             ILogger logger,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
-            IReport[] reports)
+            IList<IReport> reports)
         {
             _logger = logger;
             _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
             _reports = reports;
 
-            reportsAvailable = new Dictionary<string, ReportType>
+            _reportsAvailable = new Dictionary<string, ReportType>
             {
                 { topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport, ReportType.ValidationErrors },
                 { topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport, ReportType.AllbOccupancy },
@@ -96,7 +96,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private async Task GenerateReportAsync(string task, IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            if (!reportsAvailable.TryGetValue(task, out var reportType))
+            if (!_reportsAvailable.TryGetValue(task, out var reportType))
             {
                 _logger.LogDebug($"Unknown report task '{task}'");
                 return;

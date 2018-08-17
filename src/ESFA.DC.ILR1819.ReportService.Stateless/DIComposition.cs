@@ -186,26 +186,36 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<ValidationErrorsReport>().As<IReport>()
+            containerBuilder.Register(context =>
+            {
+                var settings = context.Resolve<ICollectionsManagementConfiguration>();
+                var optionsBuilder = new DbContextOptionsBuilder();
+                optionsBuilder.UseSqlServer(
+                    settings.CollectionsManagementConnectionString,
+                    options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                return optionsBuilder.Options;
+            })
+                .As<DbContextOptions>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
+
+            RegisterReports(containerBuilder);
+            RegisterServices(containerBuilder);
+            RegisterBuilders(containerBuilder);
+            RegisterRules(containerBuilder);
+
+            return containerBuilder;
+        }
+
+        private static void RegisterReports(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<AllbOccupancyReport>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
-                .WithAttributeFiltering()
-                .InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<AllbOccupancyReport>().As<IReport>().WithAttributeFiltering().InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<MainOccupancyReport>().As<IReport>().WithAttributeFiltering().InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
-                .InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<AllbProviderService>().As<IAllbProviderService>()
-                .WithAttributeFiltering()
-                .InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<FM25ProviderService>().As<IFM25ProviderService>()
+            containerBuilder.RegisterType<MainOccupancyReport>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
@@ -221,10 +231,32 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<MathsAndEnglishFm25Rules>().As<IMathsAndEnglishFm25Rules>()
+            containerBuilder.RegisterType<ValidationErrorsReport>().As<IReport>()
+                .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<MathsAndEnglishModelBuilder>().As<IMathsAndEnglishModelBuilder>()
+            containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
+                .As<IList<IReport>>();
+        }
+
+        private static void RegisterServices(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<AllbProviderService>().As<IAllbProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FM25ProviderService>().As<IFM25ProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ReturnCalendarService>().As<IReturnCalendarService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<ValidLearnersService>().As<IValidLearnersService>()
@@ -243,26 +275,18 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.RegisterType<PeriodProviderService>().As<IPeriodProviderService>()
                 .InstancePerLifetimeScope();
+        }
 
-            containerBuilder.Register(context =>
-            {
-                var settings = context.Resolve<ICollectionsManagementConfiguration>();
-                var optionsBuilder = new DbContextOptionsBuilder();
-                optionsBuilder.UseSqlServer(
-                    settings.CollectionsManagementConnectionString,
-                    options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
-
-                return optionsBuilder.Options;
-            })
-                .As<DbContextOptions>()
+        private static void RegisterBuilders(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<MathsAndEnglishModelBuilder>().As<IMathsAndEnglishModelBuilder>()
                 .InstancePerLifetimeScope();
+        }
 
-            containerBuilder.RegisterType<ReturnCalendarService>().As<IReturnCalendarService>()
+        private static void RegisterRules(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<MathsAndEnglishFm25Rules>().As<IMathsAndEnglishFm25Rules>()
                 .InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
-
-            return containerBuilder;
         }
     }
 }
