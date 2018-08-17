@@ -9,6 +9,7 @@
         public const string MainOccupancyReport = "TopicReports_TaskGenerateMainOccupancyReport";
         public const string SummaryOfFunding1619Report = "TopicReports_TaskGenerateSummaryOfFunding1619Report";
         public const string MathsAndEnglishReport = "TopicReports_TaskGenerateMathsAndEnglishReport";
+        public const string SummaryOfFM35FundingReport = "TopicReports_TaskGenerateSummaryOfFM35FundingReport";
 
         // FM25 FundLines
         public const string DirectFundedStudents1416FundLine = "14-16 Direct Funded Students";

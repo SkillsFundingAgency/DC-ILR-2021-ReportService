@@ -9,6 +9,7 @@ using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
@@ -40,7 +41,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -53,7 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _stringUtilitiesService = stringUtilitiesService;
 
             ReportFileName = "16-19 Summary of Funding by Student Report";
-            ReportTaskName = Constants.SummaryOfFunding1619Report;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
