@@ -3,6 +3,7 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -10,6 +11,7 @@ using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
@@ -68,6 +70,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
+            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+
             IReport allbOccupancyReport = new AllbOccupancyReport(
                 logger.Object,
                 storage.Object,
@@ -76,7 +80,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 allbProviderService,
                 validLearnersService,
                 stringUtilitiesService,
-                dateTimeProviderMock.Object);
+                dateTimeProviderMock.Object,
+                topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";

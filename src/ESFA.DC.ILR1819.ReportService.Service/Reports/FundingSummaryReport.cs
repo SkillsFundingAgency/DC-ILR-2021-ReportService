@@ -56,7 +56,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IPeriodProviderService periodProviderService,
             IDateTimeProvider dateTimeProvider,
             ILarsProviderService larsProviderService,
-            IVersionInfo versionInfo)
+            IVersionInfo versionInfo,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
             : base(dateTimeProvider)
         {
             _logger = logger;
@@ -72,7 +73,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _dateTimeProvider = dateTimeProvider;
 
             ReportFileName = "Funding Summary Report";
-            ReportTaskName = Constants.FundingSummaryReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)

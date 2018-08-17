@@ -2,11 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
@@ -60,7 +62,16 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
 
-            IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, redis.Object, storage.Object, jsonSerializationService, ilrProviderService, dateTimeProviderMock.Object);
+            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+
+            IReport validationErrorsReport = new ValidationErrorsReport(
+                logger.Object,
+                redis.Object,
+                storage.Object,
+                jsonSerializationService,
+                ilrProviderService,
+                dateTimeProviderMock.Object,
+                topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";

@@ -11,6 +11,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
@@ -43,7 +44,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -53,7 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
 
             ReportFileName = "Validation Errors Report";
-            ReportTaskName = Constants.ValidationReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
