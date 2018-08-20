@@ -12,11 +12,11 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
-using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Lars;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-using ESFA.DC.ILR1819.ReportService.Service.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -92,8 +92,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             List<string> learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
 
-            Task<Dictionary<string, ILarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
-            Task<Dictionary<string, ILarsFrameworkAim>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs, cancellationToken);
+            Task<Dictionary<string, LarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
+            Task<Dictionary<string, LarsFrameworkAim>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs, cancellationToken);
 
             await Task.WhenAll(larsLearningDeliveriesTask, larsFrameworkAimsTask);
 
@@ -109,13 +109,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<MainOccupancyFM35Model> mainOccupancyFM35Models = new List<MainOccupancyFM35Model>(learnAimRefs.Count);
             foreach (var learner in learners)
             {
-                if (!larsLearningDeliveriesTask.Result.TryGetValue(learner.LearnRefNumber, out ILarsLearningDelivery larsModel))
+                if (!larsLearningDeliveriesTask.Result.TryGetValue(learner.LearnRefNumber, out LarsLearningDelivery larsModel))
                 {
                     larsError.Add(learner.LearnRefNumber);
                     continue;
                 }
 
-                if (!larsFrameworkAimsTask.Result.TryGetValue(learner.LearnRefNumber, out ILarsFrameworkAim frameworkAim))
+                if (!larsFrameworkAimsTask.Result.TryGetValue(learner.LearnRefNumber, out LarsFrameworkAim frameworkAim))
                 {
                     larsError.Add(learner.LearnRefNumber);
                     continue;

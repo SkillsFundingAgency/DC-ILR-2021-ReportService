@@ -1,6 +1,6 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service.Models
+﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 {
-    public sealed class MathsAndEnglishModel
+    public sealed class SummaryOfFunding1619Model
     {
         public string FundLine { get; set; }
 
@@ -14,11 +14,17 @@
 
         public string CampId { get; set; }
 
-        public string ConditionOfFundingMaths { get; set; }
+        public int? PlanLearnHours { get; set; }
 
-        public string ConditionOfFundingEnglish { get; set; }
+        public int? PlanEepHours { get; set; }
+
+        public int TotalPlannedHours { get; set; }
 
         public string RateBand { get; set; }
+
+        public string StartFund { get; set; }
+
+        public string OnProgPayment { get; set; }
 
         public string OfficalSensitive { get; }
     }

@@ -12,11 +12,11 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
-using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Lars;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-using ESFA.DC.ILR1819.ReportService.Service.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -97,7 +97,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<string> learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
                 .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
 
-            Dictionary<string, ILarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
+            Dictionary<string, LarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -118,7 +118,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                if (!larsLearningDeliveriesTask.TryGetValue(validLearnerRefNum, out ILarsLearningDelivery larsModel))
+                if (!larsLearningDeliveriesTask.TryGetValue(validLearnerRefNum, out LarsLearningDelivery larsModel))
                 {
                     larsError.Add(validLearnerRefNum);
                     continue;

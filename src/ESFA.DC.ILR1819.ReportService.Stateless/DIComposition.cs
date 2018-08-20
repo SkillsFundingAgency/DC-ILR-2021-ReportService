@@ -58,15 +58,15 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterInstance(topicAndTaskOptions).As<ITopicAndTaskSectionOptions>().SingleInstance();
 
             var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
-            containerBuilder.RegisterInstance(larsConfiguration).As<ILarsConfiguration>().SingleInstance();
+            containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
 
             var orgConfiguration = configHelper.GetSectionValues<OrgConfiguration>("OrgSection");
-            containerBuilder.RegisterInstance(orgConfiguration).As<IOrgConfiguration>().SingleInstance();
+            containerBuilder.RegisterInstance(orgConfiguration).As<OrgConfiguration>().SingleInstance();
 
             var collectionsManagementConfiguration =
                 configHelper.GetSectionValues<CollectionsManagementConfiguration>("CollectionsManagementSection");
             containerBuilder.RegisterInstance(collectionsManagementConfiguration)
-                .As<ICollectionsManagementConfiguration>().SingleInstance();
+                .As<CollectionsManagementConfiguration>().SingleInstance();
 
             // register Cosmos config
             var azureRedisOptions = configHelper.GetSectionValues<RedisOptions>("RedisSection");
@@ -189,7 +189,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.Register(context =>
             {
-                var settings = context.Resolve<ICollectionsManagementConfiguration>();
+                var settings = context.Resolve<CollectionsManagementConfiguration>();
                 var optionsBuilder = new DbContextOptionsBuilder();
                 optionsBuilder.UseSqlServer(
                     settings.CollectionsManagementConnectionString,
