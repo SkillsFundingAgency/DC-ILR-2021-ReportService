@@ -11,6 +11,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
@@ -43,7 +44,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -53,7 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
 
             ReportFileName = "Validation Errors Report";
-            ReportTaskName = Constants.ValidationReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
@@ -61,7 +63,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IMessage message = await _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            _fileName = GetReportFilename(ukPrn, jobId);
+            //_fileName = GetReportFilename(ukPrn, jobId);
+            _fileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
 
             _validationErrorDtos = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
             _validationErrors = ValidationErrorModels(message);
@@ -130,8 +133,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task PeristValuesToStorage(ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(_validationErrors);
-            await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
+            await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_validationErrorDtos), cancellationToken);
             await _storage.SaveAsync($"{_fileName}.csv", csv, cancellationToken);
+
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
             using (MemoryStream ms = new MemoryStream())
             {

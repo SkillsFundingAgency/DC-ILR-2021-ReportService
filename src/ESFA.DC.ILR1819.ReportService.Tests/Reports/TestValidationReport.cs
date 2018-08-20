@@ -2,11 +2,13 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
@@ -30,7 +32,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string json = string.Empty;
             byte[] xlsx = null;
             System.DateTime dateTime = System.DateTime.UtcNow;
-            string filename = $"10033670_1_Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
+            //string filename = $"10033670_1_Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10033670_1_ValidationErrors";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
@@ -60,7 +63,16 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
 
-            IReport validationErrorsReport = new ValidationErrorsReport(logger.Object, redis.Object, storage.Object, jsonSerializationService, ilrProviderService, dateTimeProviderMock.Object);
+            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+
+            IReport validationErrorsReport = new ValidationErrorsReport(
+                logger.Object,
+                redis.Object,
+                storage.Object,
+                jsonSerializationService,
+                ilrProviderService,
+                dateTimeProviderMock.Object,
+                topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";

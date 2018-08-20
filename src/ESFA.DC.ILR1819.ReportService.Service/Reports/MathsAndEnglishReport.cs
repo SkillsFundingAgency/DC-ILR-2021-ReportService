@@ -10,6 +10,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
@@ -40,7 +41,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules,
-            IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder)
+            IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -53,7 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _mathsAndEnglishModelBuilder = mathsAndEnglishModelBuilder;
 
             ReportFileName = "Maths and English Report";
-            ReportTaskName = Constants.MathsAndEnglishReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)

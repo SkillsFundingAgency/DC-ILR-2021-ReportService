@@ -11,6 +11,7 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -48,7 +49,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IAllbProviderService allbProviderService,
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -60,7 +62,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _stringUtilitiesService = stringUtilitiesService;
 
             ReportFileName = "ALLB Occupancy Report";
-            ReportTaskName = Constants.AllbOccupancyReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)

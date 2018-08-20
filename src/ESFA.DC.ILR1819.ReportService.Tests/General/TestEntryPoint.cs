@@ -27,6 +27,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
             string csv = $"A,B,C,D{Environment.NewLine}1,2,3,4";
             byte[] zipBytes = null;
 
+            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> streamableKeyValuePersistenceService =
                 new Mock<IStreamableKeyValuePersistenceService>();
@@ -40,7 +42,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                 })
                 .Returns(Task.CompletedTask);
             Mock<IReport> report = new Mock<IReport>();
-            report.SetupGet(x => x.ReportTaskName).Returns(Constants.AllbOccupancyReport);
+            report.SetupGet(x => x.ReportTaskName).Returns(topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport);
             report.Setup(x =>
                     x.GenerateReport(It.IsAny<IJobContextMessage>(), It.IsAny<ZipArchive>(), It.IsAny<CancellationToken>()))
                 .Callback<IJobContextMessage, ZipArchive, CancellationToken>((j, z, c) =>
@@ -56,8 +58,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
 
             Mock<IIlrFileHelper> ilrFileHelper = new Mock<IIlrFileHelper>();
             ilrFileHelper.Setup(x => x.CheckIlrFileNameIsValid(It.IsAny<IJobContextMessage>())).Returns(true);
-
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
             JobContextMessage jobContextMessage =
                 new JobContextMessage(
