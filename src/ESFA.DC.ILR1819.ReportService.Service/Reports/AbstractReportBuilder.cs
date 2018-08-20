@@ -34,9 +34,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return reportTaskName == ReportTaskName;
         }
 
-        public string GetReportFilename(string ukPrn, long jobId)
+        public string GetReportFilename(string ukPrn, long jobId, DateTime submissionDateTime)
         {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(submissionDateTime);
             return $"{ukPrn}_{jobId.ToString()}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
 

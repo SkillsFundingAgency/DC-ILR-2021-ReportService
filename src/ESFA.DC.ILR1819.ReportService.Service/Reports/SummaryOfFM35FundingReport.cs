@@ -52,7 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var fileName = GetReportFilename(ukPrn, jobId);
+            var fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
             var summaryOfFm35FundingModels = await GetSummaryOfFm35FundingModels(jobContextMessage, cancellationToken);
 
