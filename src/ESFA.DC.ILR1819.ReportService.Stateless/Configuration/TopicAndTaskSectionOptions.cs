@@ -25,5 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
         public string TopicReports_TaskGenerateSummaryOfFunding1619Report { get; set; }
 
         public string TopicReports_TaskGenerateMathsAndEnglishReport { get; set; }
+
+        public string TopicReports_TaskGenerateSummaryOfFM35FundingReport { get; set; }
     }
 }

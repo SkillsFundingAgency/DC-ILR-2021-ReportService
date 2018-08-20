@@ -13,8 +13,9 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+using ESFA.DC.ILR1819.ReportService.Service.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -75,7 +76,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
             Task<Learner> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
 
-            await Task.WhenAll(ilrFileTask, validLearnersTask);
+            await Task.WhenAll(ilrFileTask, validLearnersTask, fm25Task);
 
             if (cancellationToken.IsCancellationRequested)
             {

@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
+﻿namespace ESFA.DC.ILR1819.ReportService.Service.Models
 {
     public sealed class MainOccupancyFM35Model
     {

@@ -237,6 +237,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<SummaryOfFm35FundingReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
                 .As<IList<IReport>>();
         }
@@ -255,6 +259,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<FM25ProviderService>().As<IFM25ProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FM35ProviderService>().As<IFM35ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
@@ -282,6 +290,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         private static void RegisterBuilders(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<MathsAndEnglishModelBuilder>().As<IMathsAndEnglishModelBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<SummaryOfFM35FundingModelBuilder>().As<ISummaryOfFM35FundingModelBuilder>()
                 .InstancePerLifetimeScope();
         }
 

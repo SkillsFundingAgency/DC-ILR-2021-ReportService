@@ -1,14 +1,13 @@
 ﻿using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Models;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public class MathsAndEnglishModelBuilder : IMathsAndEnglishModelBuilder
     {
-        public IMathsAndEnglishModel BuildModel(ILearner learner, Learner fm25Data)
+        public MathsAndEnglishModel BuildModel(ILearner learner, Learner fm25Data)
         {
             return new MathsAndEnglishModel
             {
