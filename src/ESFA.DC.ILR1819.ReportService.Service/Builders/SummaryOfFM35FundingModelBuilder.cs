@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         {
             var summaryOfFm35Funding = new List<SummaryOfFm35FundingModel>();
 
-            for (var period = 0; period < 12; period++)
+            for (var period = 1; period < 13; period++)
             {
                 var onProgramme = fundLineData.LearningDeliveryPeriodisedAttributes
                     .Where(x => x.AttributeName == OnProgrammeAttributeName)
@@ -44,7 +44,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 summaryOfFm35Funding.Add(new SummaryOfFm35FundingModel
                 {
                     FundingLineType = fundLineData.LearningDeliveryAttributeDatas.FundLine,
-                    Period = period + 1,
+                    Period = period,
                     OnProgramme = onProgramme,
                     Balancing = balancing,
                     JobOutcomeAchievement = jobOutcomeAchievement,

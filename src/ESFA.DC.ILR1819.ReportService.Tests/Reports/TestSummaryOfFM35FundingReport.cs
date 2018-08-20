@@ -1,5 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -7,7 +10,6 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
@@ -25,61 +27,52 @@ using Xunit;
 
 namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 {
-    public sealed class TestMathsAndEnglishReport
+    public class TestSummaryOfFM35FundingReport
     {
         [Fact]
-        public async Task TestMathsAndEnglishReportGeneration()
+        public async Task TestSummaryOfFM35FundingReportGeneration()
         {
             string csv = string.Empty;
-            System.DateTime dateTime = System.DateTime.UtcNow;
-            string filename = $"10033670_1_Maths and English Report {dateTime:yyyyMMdd-HHmmss}";
+            DateTime dateTime = DateTime.UtcNow;
+            string filename = $"10033670_1_Summary of Funding Model 35 Funding Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IKeyValuePersistenceService> storage = new Mock<IKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
-            IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, jsonSerializationService);
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
-            IMathsAndEnglishFm25Rules reportFm25Rules = new MathsAndEnglishFm25Rules();
-            IMathsAndEnglishModelBuilder builder = new MathsAndEnglishModelBuilder();
+            ISummaryOfFM35FundingModelBuilder builder = new SummaryOfFM35FundingModelBuilder();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
-                new List<string>
-                {
-                    "3fm9901",
-                    "5fm9901"
-                }));
+                    TestFM35Builder.Build()));
+
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
-            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
-            var mathsAndEnglishReport = new MathsAndEnglishReport(
+            var summaryOfFm35FundingReport = new SummaryOfFm35FundingReport(
                 logger.Object,
                 storage.Object,
-                ilrProviderService,
-                validLearnersService,
-                fm25ProviderService,
+                fm35ProviderService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
-                reportFm25Rules,
-                builder,
-                topicsAndTasks);
+                topicsAndTasks,
+                builder);
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
+            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output] = "ValidLearners";
 
-            await mathsAndEnglishReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await summaryOfFm35FundingReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
+
             // TestCsvHelper.CheckCsv(csv, new MathsAndEnglishMapper());
         }
     }

@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -24,8 +23,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public class SummaryOfFm35FundingReport : AbstractReportBuilder, IReport
     {
-        private readonly IIlrProviderService _ilrProviderService;
-        private readonly IValidLearnersService _validLearnersService;
         private readonly IFM35ProviderService _fm35ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IKeyValuePersistenceService _storage;
@@ -35,8 +32,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public SummaryOfFm35FundingReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
-            IIlrProviderService ilrProviderService,
-            IValidLearnersService validLearnersService,
             IFM35ProviderService fm35ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
@@ -45,10 +40,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             : base(dateTimeProvider)
         {
             _logger = logger;
-            _ilrProviderService = ilrProviderService;
-            _validLearnersService = validLearnersService;
             _fm35ProviderService = fm35ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
+            _summaryOfFm35FundingModelBuilder = builder;
             _storage = storage;
 
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFM35FundingReport;
@@ -63,12 +57,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             var summaryOfFm35FundingModels = await GetSummaryOfFm35FundingModels(jobContextMessage, cancellationToken);
 
-            string csv = await GetCsv(summaryOfFm35FundingModels);
+            string csv = GetCsv(summaryOfFm35FundingModels);
             await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IList<SummaryOfFm35FundingModel> summaryOfFm35FundingModels)
+        private string GetCsv(IList<SummaryOfFm35FundingModel> summaryOfFm35FundingModels)
         {
             using (var ms = new MemoryStream())
             {
