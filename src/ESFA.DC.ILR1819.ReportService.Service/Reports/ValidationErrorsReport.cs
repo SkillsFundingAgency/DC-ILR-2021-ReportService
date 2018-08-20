@@ -63,7 +63,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IMessage message = await _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            //_fileName = GetReportFilename(ukPrn, jobId);
+            // _fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
             _fileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
 
             _validationErrorDtos = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);

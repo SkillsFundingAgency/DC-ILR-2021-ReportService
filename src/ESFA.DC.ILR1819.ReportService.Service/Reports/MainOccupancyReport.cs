@@ -362,8 +362,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             LogWarnings(larsError, albLearnerError);
 
             string csv = GetReportCsv(mainOccupancyFM25Models, mainOccupancyFM35Models);
-            await _storage.SaveAsync("Main-Occupancy-Report.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, "Main-Occupancy-Report.csv", csv);
+
+            var jobId = jobContextMessage.JobId;
+            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            var fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+
+            await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
         private string GetReportCsv(List<MainOccupancyFM25Model> mainOccupancyFm25Models, List<MainOccupancyFM35Model> mainOccupancyFm35Models)

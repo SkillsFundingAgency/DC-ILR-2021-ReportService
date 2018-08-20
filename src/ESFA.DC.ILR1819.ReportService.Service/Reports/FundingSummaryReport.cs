@@ -199,7 +199,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var fileName = GetReportFilename(ukPrn, jobId);
+            var fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
             string csv = GetReportCsv(fundingSummaryModels, fundingSummaryHeaderModel, fundingSummaryFooterModel);
             await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
@@ -376,3 +376,4 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         }
     }
 }
+
