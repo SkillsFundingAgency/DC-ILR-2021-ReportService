@@ -23,5 +23,7 @@
         string TopicReports_TaskGenerateSummaryOfFunding1619Report { get; set; }
 
         string TopicReports_TaskGenerateMathsAndEnglishReport { get; set; }
+
+        string TopicReports_TaskGenerateSummaryOfFM35FundingReport { get; set; }
     }
 }

@@ -291,6 +291,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             containerBuilder.RegisterType<MathsAndEnglishModelBuilder>().As<IMathsAndEnglishModelBuilder>()
                 .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<SummaryOfFM35FundingModelBuilder>().As<ISummaryOfFM35FundingModelBuilder>()
+                .InstancePerLifetimeScope();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)

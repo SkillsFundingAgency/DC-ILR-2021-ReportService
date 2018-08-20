@@ -7,13 +7,15 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+using ESFA.DC.ILR1819.ReportService.Service.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -28,6 +30,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IKeyValuePersistenceService _storage;
         private readonly ILogger _logger;
+        private readonly ISummaryOfFM35FundingModelBuilder _summaryOfFm35FundingModelBuilder;
 
         public SummaryOfFm35FundingReport(
             ILogger logger,
@@ -36,7 +39,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             IFM35ProviderService fm35ProviderService,
             IStringUtilitiesService stringUtilitiesService,
-            IDateTimeProvider dateTimeProvider)
+            IDateTimeProvider dateTimeProvider,
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            ISummaryOfFM35FundingModelBuilder builder)
             : base(dateTimeProvider)
         {
             _logger = logger;
@@ -46,7 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _stringUtilitiesService = stringUtilitiesService;
             _storage = storage;
 
-            ReportTaskName = Constants.SummaryOfFM35FundingReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFM35FundingReport;
             ReportFileName = "Summary of Funding Model 35 Funding Report";
         }
 
@@ -56,18 +61,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
             var fileName = GetReportFilename(ukPrn, jobId);
 
-            string csv = await GetCsv(jobContextMessage, cancellationToken);
+            var summaryOfFm35FundingModels = await GetSummaryOfFm35FundingModels(jobContextMessage, cancellationToken);
+
+            string csv = await GetCsv(summaryOfFm35FundingModels);
             await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(IList<SummaryOfFm35FundingModel> summaryOfFm35FundingModels)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<Learner> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
+            using (var ms = new MemoryStream())
+            {
+                BuildCsvReport<SummaryOfFM35FundingMapper, SummaryOfFm35FundingModel>(ms, summaryOfFm35FundingModels);
+                return Encoding.UTF8.GetString(ms.ToArray());
+            }
+        }
 
-            await Task.WhenAll(ilrFileTask, validLearnersTask, fm35Task);
+        private async Task<IList<SummaryOfFm35FundingModel>> GetSummaryOfFm35FundingModels(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        {
+            Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
+
+            await Task.WhenAll(fm35Task);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -76,19 +90,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             var ilrError = new List<string>();
 
-            var mathsAndEnglishModels = new List<MathsAndEnglishModel>(validLearnersTask.Result.Count);
-            // fm35Task.Result.
+            var fm35Data = fm35Task.Result;
+            if (fm35Data == null)
+            {
+                ilrError.Add("No FM35 Data");
+                return null;
+            }
+
+            var summaryOfFm35FundingModels = new List<SummaryOfFm35FundingModel>();
+            foreach (var learnerAttribute in fm35Data.Learners)
+            {
+                foreach (var fundlineData in learnerAttribute.LearningDeliveryAttributes)
+                {
+                    summaryOfFm35FundingModels.AddRange(_summaryOfFm35FundingModelBuilder.BuildModel(fundlineData));
+                }
+            }
 
             if (ilrError.Any())
             {
                 _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(SummaryOfFm35FundingReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
             }
 
-            using (var ms = new MemoryStream())
-            {
-                BuildCsvReport<MathsAndEnglishMapper, MathsAndEnglishModel>(ms, mathsAndEnglishModels);
-                return Encoding.UTF8.GetString(ms.ToArray());
-            }
+            return summaryOfFm35FundingModels;
         }
     }
 }
