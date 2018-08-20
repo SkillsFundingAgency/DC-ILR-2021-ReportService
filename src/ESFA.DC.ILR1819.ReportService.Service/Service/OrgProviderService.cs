@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.Organisatons.Model;
-using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
 
@@ -15,7 +15,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         private readonly ILogger _logger;
 
-        private readonly IOrgConfiguration _orgConfiguration;
+        private readonly OrgConfiguration _orgConfiguration;
 
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
 
@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private string _version;
 
-        public OrgProviderService(ILogger logger, IOrgConfiguration orgConfiguration)
+        public OrgProviderService(ILogger logger, OrgConfiguration orgConfiguration)
         {
             _logger = logger;
             _orgConfiguration = orgConfiguration;

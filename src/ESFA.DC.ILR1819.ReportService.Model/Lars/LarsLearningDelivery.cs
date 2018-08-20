@@ -1,8 +1,6 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Model;
-
-namespace ESFA.DC.ILR1819.ReportService.Model.Lars
+﻿namespace ESFA.DC.ILR1819.ReportService.Model.Lars
 {
-    public sealed class LarsLearningDelivery : ILarsLearningDelivery
+    public sealed class LarsLearningDelivery
     {
         public string LearningAimTitle { get; set; }
 

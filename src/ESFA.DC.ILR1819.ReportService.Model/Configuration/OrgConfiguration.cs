@@ -1,8 +1,6 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
-
-namespace ESFA.DC.ILR1819.ReportService.Model.Configuration
+﻿namespace ESFA.DC.ILR1819.ReportService.Model.Configuration
 {
-    public sealed class OrgConfiguration : IOrgConfiguration
+    public sealed class OrgConfiguration
     {
         public string OrgConnectionString { get; set; }
     }

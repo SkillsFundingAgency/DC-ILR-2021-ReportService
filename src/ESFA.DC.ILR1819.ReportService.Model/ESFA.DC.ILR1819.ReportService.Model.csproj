@@ -9,7 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj" />
+    <Folder Include="ReportModels\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
   </ItemGroup>
 
 </Project>

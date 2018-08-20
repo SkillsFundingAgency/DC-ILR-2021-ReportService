@@ -6,9 +6,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.Data.LARS.Model.Interfaces;
-using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
-using ESFA.DC.ILR1819.ReportService.Interface.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.Logging.Interfaces;
 
@@ -18,7 +17,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         private readonly ILogger _logger;
 
-        private readonly ILarsConfiguration _larsConfiguration;
+        private readonly LarsConfiguration _larsConfiguration;
 
         private readonly SemaphoreSlim _getLearningDeliveriesLock;
 
@@ -26,13 +25,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly SemaphoreSlim _getVersionLock;
 
-        private Dictionary<string, ILarsLearningDelivery> _loadedLearningDeliveries;
+        private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
 
-        private Dictionary<string, ILarsFrameworkAim> _loadedFrameworkAims;
+        private Dictionary<string, LarsFrameworkAim> _loadedFrameworkAims;
 
         private string _version;
 
-        public LarsProviderService(ILogger logger, ILarsConfiguration larsConfiguration)
+        public LarsProviderService(ILogger logger, LarsConfiguration larsConfiguration)
         {
             _logger = logger;
             _larsConfiguration = larsConfiguration;
@@ -44,7 +43,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getVersionLock = new SemaphoreSlim(1, 1);
     }
 
-        public async Task<Dictionary<string, ILarsLearningDelivery>> GetLearningDeliveries(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
+        public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveries(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
         {
             await _getLearningDeliveriesLock.WaitAsync(cancellationToken);
 
@@ -58,10 +57,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (_loadedLearningDeliveries == null)
                 {
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
-                    _loadedLearningDeliveries = await larsContext.LARS_LearningDelivery.Where(
-                            x => validLearnerAimRefs.Contains(x.LearnAimRef)).ToDictionaryAsync(
+                    _loadedLearningDeliveries = await larsContext.LARS_LearningDelivery
+                        .Where(
+                            x => validLearnerAimRefs.Contains(x.LearnAimRef))
+                        .ToDictionaryAsync(
                             k => k.LearnAimRef,
-                            v => (ILarsLearningDelivery)new LarsLearningDelivery
+                            v => new LarsLearningDelivery
                             {
                                 LearningAimTitle = v.LearnAimRefTitle,
                                 NotionalNvqLevel = v.NotionalNVQLevel,
@@ -82,7 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedLearningDeliveries;
         }
 
-        public async Task<Dictionary<string, ILarsFrameworkAim>> GetFrameworkAims(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
+        public async Task<Dictionary<string, LarsFrameworkAim>> GetFrameworkAims(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
         {
             await _getFrameworkAimsLock.WaitAsync(cancellationToken);
 
@@ -97,11 +98,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 {
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
                     _loadedFrameworkAims = await larsContext.LARS_FrameworkAims
-                        .Where(x => validLearnerAimRefs.Contains(x.LearnAimRef)).ToDictionaryAsync(
-                            k => k.LearnAimRef, v => (ILarsFrameworkAim)new LarsFrameworkAim()
+                        .Where(
+                            x => validLearnerAimRefs.Contains(x.LearnAimRef))
+                        .ToDictionaryAsync(
+                            k => k.LearnAimRef,
+                            v => (LarsFrameworkAim)new LarsFrameworkAim()
                             {
                                 FrameworkComponentType = v.FrameworkComponentType
-                            });
+                            },
+                            cancellationToken);
                 }
             }
             catch (Exception ex)
