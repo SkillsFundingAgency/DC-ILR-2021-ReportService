@@ -17,16 +17,19 @@
             LarsFrameworkAim frameworkAim,
             LearningDeliveryAttribute fm35Data)
         {
-            var onProgPayment = fm35Data.LearningDeliveryPeriodisedAttributes
-                .SingleOrDefault(attr => attr.AttributeName == Constants.Fm35OnProgrammeAttributeName);
-            var balancePayment = fm35Data.LearningDeliveryPeriodisedAttributes
-                .SingleOrDefault(attr => attr.AttributeName == Constants.Fm35BalancingAttributeName);
-            var achievePayment = fm35Data.LearningDeliveryPeriodisedAttributes
-                .SingleOrDefault(attr => attr.AttributeName == Constants.Fm35AimAchievementAttributeName);
-            var empOutcomePayment = fm35Data.LearningDeliveryPeriodisedAttributes
-                .SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
-            var learnSuppFundCash = fm35Data.LearningDeliveryPeriodisedAttributes
-                .SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
+            var onProgPayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35OnProgrammeAttributeName);
+            var balancePayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35BalancingAttributeName);
+            var achievePayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35AimAchievementAttributeName);
+            var empOutcomePayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
+            var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedAttributes
+                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
+
+            var aimPercent = fm35Data?.LearningDeliveryPeriodisedAttributes?.SingleOrDefault(attr =>
+                attr.AttributeName == Constants.Fm35AimAchievementPercentAttributeName);
 
             return new MainOccupancyFM35Model
             {
@@ -37,17 +40,17 @@
                 PmUkprn = learner.PMUKPRNNullable,
                 CampId = learner.CampId,
                 ProvSpecLearnMonA = learner.ProviderSpecLearnerMonitorings
-                    .SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
-                    .SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
                 AimSeqNumber = learningDelivery.AimSeqNumber,
                 LearnAimRef = learningDelivery.LearnAimRef,
                 LearnAimRefTitle = larsModel.LearningAimTitle,
                 SwSupAimId = learningDelivery.SWSupAimId,
-                WeightedRateFromEsol = fm35Data.LearningDeliveryAttributeDatas.WeightedRateFromESOL,
-                ApplicWeightFundRate = fm35Data.LearningDeliveryAttributeDatas.ApplicWeightFundRate,
-                ApplicProgWeightFact = fm35Data.LearningDeliveryAttributeDatas.ApplicProgWeightFact,
-                AimValue = fm35Data.LearningDeliveryAttributeDatas.AimValue,
+                WeightedRateFromEsol = fm35Data?.LearningDeliveryAttributeDatas?.WeightedRateFromESOL,
+                ApplicWeightFundRate = fm35Data?.LearningDeliveryAttributeDatas?.ApplicWeightFundRate,
+                ApplicProgWeightFact = fm35Data?.LearningDeliveryAttributeDatas?.ApplicProgWeightFact,
+                AimValue = fm35Data?.LearningDeliveryAttributeDatas?.AimValue,
                 NotionalNvqLevelV2 = larsModel.NotionalNvqLevel,
                 SectorSubjectAreaTier2 = larsModel.Tier2SectorSubjectArea,
                 ProgType = learningDelivery.ProgTypeNullable,
@@ -97,26 +100,25 @@
                     ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "C")?.ProvSpecDelMon,
                 ProvSpecDelMonD = learningDelivery.ProviderSpecDeliveryMonitorings
                     ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "D")?.ProvSpecDelMon,
-                FundLine = fm35Data.LearningDeliveryAttributeDatas.FundLine,
-                PlannedNumOnProgInstalm = fm35Data.LearningDeliveryAttributeDatas.PlannedNumOnProgInstalm,
-                PlannedNumOnProgInstalmTrans = fm35Data.LearningDeliveryAttributeDatas.PlannedNumOnProgInstalmTrans,
-                StartPropTrans = fm35Data.LearningDeliveryAttributeDatas.StartPropTrans,
-                AchieveElement = fm35Data.LearningDeliveryAttributeDatas.AchieveElement,
-                AchievePercentage = GetMaxPeriod(fm35Data.LearningDeliveryPeriodisedAttributes.
-                    SingleOrDefault(attr => attr.AttributeName == Constants.Fm35AimAchievementPercentAttributeName)),
-                NonGovCont = fm35Data.LearningDeliveryAttributeDatas.NonGovCont,
+                FundLine = fm35Data?.LearningDeliveryAttributeDatas?.FundLine,
+                PlannedNumOnProgInstalm = fm35Data?.LearningDeliveryAttributeDatas?.PlannedNumOnProgInstalm,
+                PlannedNumOnProgInstalmTrans = fm35Data?.LearningDeliveryAttributeDatas?.PlannedNumOnProgInstalmTrans,
+                StartPropTrans = fm35Data?.LearningDeliveryAttributeDatas?.StartPropTrans,
+                AchieveElement = fm35Data?.LearningDeliveryAttributeDatas?.AchieveElement,
+                AchievePercentage = aimPercent == null ? 0 : GetMaxPeriod(aimPercent),
+                NonGovCont = fm35Data?.LearningDeliveryAttributeDatas?.NonGovCont,
                 PartnerUkprn = learningDelivery.PartnerUKPRNNullable,
                 DelLocPostCode = learningDelivery.DelLocPostCode,
-                AreaCostFactAdj = fm35Data.LearningDeliveryAttributeDatas.AreaCostFactAdj,
-                DisUpFactAdj = fm35Data.LearningDeliveryAttributeDatas.DisUpFactAdj,
-                LargeEmployerID = fm35Data.LearningDeliveryAttributeDatas.LargeEmployerID,
-                LargeEmployerFM35Fctr = fm35Data.LearningDeliveryAttributeDatas.LargeEmployerFM35Fctr,
-                CapFactor = fm35Data.LearningDeliveryAttributeDatas.CapFactor,
-                TraineeWorkPlacement = (fm35Data.LearningDeliveryAttributeDatas.TrnWorkPlaceAim ?? false)
-                                       || (fm35Data.LearningDeliveryAttributeDatas.TrnWorkPrepAim ?? false),
-                HigherApprentishipHeAim = fm35Data.LearningDeliveryAttributeDatas.PrscHEAim ?? false,
-                ApplicEmpFactDate = fm35Data.LearningDeliveryAttributeDatas.ApplicEmpFactDate,
-                ApplicFactDate = fm35Data.LearningDeliveryAttributeDatas.ApplicFactDate,
+                AreaCostFactAdj = fm35Data?.LearningDeliveryAttributeDatas?.AreaCostFactAdj,
+                DisUpFactAdj = fm35Data?.LearningDeliveryAttributeDatas?.DisUpFactAdj,
+                LargeEmployerID = fm35Data?.LearningDeliveryAttributeDatas?.LargeEmployerID,
+                LargeEmployerFM35Fctr = fm35Data?.LearningDeliveryAttributeDatas?.LargeEmployerFM35Fctr,
+                CapFactor = fm35Data?.LearningDeliveryAttributeDatas?.CapFactor,
+                TraineeWorkPlacement = (fm35Data?.LearningDeliveryAttributeDatas?.TrnWorkPlaceAim ?? false)
+                                       || (fm35Data?.LearningDeliveryAttributeDatas?.TrnWorkPrepAim ?? false),
+                HigherApprentishipHeAim = fm35Data?.LearningDeliveryAttributeDatas?.PrscHEAim ?? false,
+                ApplicEmpFactDate = fm35Data?.LearningDeliveryAttributeDatas?.ApplicEmpFactDate,
+                ApplicFactDate = fm35Data?.LearningDeliveryAttributeDatas?.ApplicFactDate,
 
                 Period1OnProgPayment = onProgPayment?.Period1,
                 Period1BalancePayment = balancePayment?.Period1,
@@ -264,7 +266,7 @@
             Learner fm25Data)
         {
             // Waiting for periodised data
-            // var onProgPayment = fm25Data.Something.SingleOrDefault(attr => attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);
+            // var onProgPayment = fm25Data?.Something.SingleOrDefault(attr => attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);
             return new MainOccupancyFM25Model
             {
                 LearnRefNumber = learner.LearnRefNumber,
@@ -274,15 +276,15 @@
                 PmUkprn = learner.PMUKPRNNullable,
                 CampId = learner.CampId,
                 ProvSpecLearnMonA = learner.ProviderSpecLearnerMonitorings
-                    .SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
-                    .SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
-                NatRate = fm25Data.NatRate,
+                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                NatRate = fm25Data?.NatRate,
                 FundModel = learningDelivery.FundModel,
-                LearnerStartDate = fm25Data.LearnerStartDate,
-                LearnerPlanEndDate = fm25Data.LearnerPlanEndDate,
-                LearnerActEndDate = fm25Data.LearnerActEndDate,
-                FundLine = fm25Data.FundLine,
+                LearnerStartDate = fm25Data?.LearnerStartDate,
+                LearnerPlanEndDate = fm25Data?.LearnerPlanEndDate,
+                LearnerActEndDate = fm25Data?.LearnerActEndDate,
+                FundLine = fm25Data?.FundLine,
                 Period1OnProgPayment = 0,
                 Period2OnProgPayment = 0,
                 Period3OnProgPayment = 0,
