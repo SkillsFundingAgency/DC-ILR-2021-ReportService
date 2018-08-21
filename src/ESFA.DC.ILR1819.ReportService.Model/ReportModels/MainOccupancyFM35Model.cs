@@ -26,13 +26,13 @@
 
         public string SwSupAimId { get; set; }
 
-        public string WeightedRateFromEsol { get; set; }
+        public decimal? WeightedRateFromEsol { get; set; }
 
-        public string ApplicWeightFundRate { get; set; }
+        public decimal? ApplicWeightFundRate { get; set; }
 
         public string ApplicProgWeightFact { get; set; }
 
-        public string AimValue { get; set; }
+        public decimal? AimValue { get; set; }
 
         public string NotionalNvqLevelV2 { get; set; }
 
@@ -106,13 +106,13 @@
 
         public int? PlannedNumOnProgInstalmTrans { get; set; }
 
-        public string StartPropTrans { get; set; }
+        public decimal? StartPropTrans { get; set; }
 
-        public string AchieveElement { get; set; }
+        public decimal? AchieveElement { get; set; }
 
         public decimal AchievePercentage { get; set; }
 
-        public string NonGovCont { get; set; }
+        public decimal? NonGovCont { get; set; }
 
         public int? PartnerUkprn { get; set; }
 
@@ -120,17 +120,17 @@
 
         public decimal? AreaCostFactAdj { get; set; }
 
-        public string DisUpFactAdj { get; set; }
+        public decimal? DisUpFactAdj { get; set; }
 
-        public string LargeEmployerID { get; set; }
+        public int? LargeEmployerID { get; set; }
 
-        public string LargeEmployerFM35Fctr { get; set; }
+        public decimal? LargeEmployerFM35Fctr { get; set; }
 
-        public string CapFactor { get; set; }
+        public decimal? CapFactor { get; set; }
 
-        public string TraineeWorkPlacement { get; set; }
+        public bool TraineeWorkPlacement { get; set; }
 
-        public string HigherApprentishipHeAim { get; set; }
+        public bool HigherApprentishipHeAim { get; set; }
 
         public object ApplicEmpFactDate { get; set; }
 

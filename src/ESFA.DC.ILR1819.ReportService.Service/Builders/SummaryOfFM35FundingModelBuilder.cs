@@ -8,12 +8,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public class SummaryOfFM35FundingModelBuilder : ISummaryOfFM35FundingModelBuilder
     {
-        private const string OnProgrammeAttributeName = "OnProgPayment";
-        private const string BalancingAttributeName = "BalancePayment";
-        private const string JobOutcomeAchievementAttributeName = "EmpOutcomePay";
-        private const string AimAchievementAttributeName = "AchievePayment";
-        private const string LearningSupportAttributeName = "LearnSuppFundCash";
-
         public IList<SummaryOfFm35FundingModel> BuildModel(LearningDeliveryAttribute fundLineData)
         {
             var summaryOfFm35Funding = new List<SummaryOfFm35FundingModel>();
@@ -21,23 +15,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             for (var period = 1; period < 13; period++)
             {
                 var onProgramme = fundLineData.LearningDeliveryPeriodisedAttributes
-                    .Where(x => x.AttributeName == OnProgrammeAttributeName)
+                    .Where(x => x.AttributeName == Constants.Fm35OnProgrammeAttributeName)
                     .Sum(x => (decimal?)x.GetType().GetProperty($"Period{period}")?.GetValue(x) ?? 0);
 
                 var balancing = fundLineData.LearningDeliveryPeriodisedAttributes
-                    .Where(x => x.AttributeName == BalancingAttributeName)
+                    .Where(x => x.AttributeName == Constants.Fm35BalancingAttributeName)
                     .Sum(x => (decimal?)x.GetType().GetProperty($"Period{period}")?.GetValue(x) ?? 0);
 
                 var jobOutcomeAchievement = fundLineData.LearningDeliveryPeriodisedAttributes
-                    .Where(x => x.AttributeName == JobOutcomeAchievementAttributeName)
+                    .Where(x => x.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName)
                     .Sum(x => (decimal?)x.GetType().GetProperty($"Period{period}")?.GetValue(x) ?? 0);
 
                 var aimAchievement = fundLineData.LearningDeliveryPeriodisedAttributes
-                    .Where(x => x.AttributeName == AimAchievementAttributeName)
+                    .Where(x => x.AttributeName == Constants.Fm35AimAchievementAttributeName)
                     .Sum(x => (decimal?)x.GetType().GetProperty($"Period{period}")?.GetValue(x) ?? 0);
 
                 var learningSupport = fundLineData.LearningDeliveryPeriodisedAttributes
-                    .Where(x => x.AttributeName == LearningSupportAttributeName)
+                    .Where(x => x.AttributeName == Constants.Fm35LearningSupportAttributeName)
                     .Sum(x => (decimal?)x.GetType().GetProperty($"Period{period}")?.GetValue(x) ?? 0);
 
                 var totalAchievement = jobOutcomeAchievement + aimAchievement;
