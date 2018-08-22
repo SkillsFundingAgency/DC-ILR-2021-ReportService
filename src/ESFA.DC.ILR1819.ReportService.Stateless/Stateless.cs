@@ -1,9 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Fabric;
-using Autofac;
+using System.Threading;
+using System.Threading.Tasks;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContextManager.Interface;
-using Microsoft.ServiceFabric.Services.Communication.Runtime;
 using Microsoft.ServiceFabric.Services.Runtime;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless
@@ -13,23 +13,34 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
     /// </summary>
     public class Stateless : StatelessService
     {
-        private readonly ILifetimeScope _parentLifetimeScope;
+        private readonly IJobContextManager<JobContextMessage> _jobContextManager;
 
-        public Stateless(StatelessServiceContext context, ILifetimeScope parentLifetimeScope)
+        public Stateless(StatelessServiceContext context, IJobContextManager<JobContextMessage> jobContextManager)
             : base(context)
         {
-            _parentLifetimeScope = parentLifetimeScope;
+            _jobContextManager = jobContextManager;
         }
 
-        /// <summary>
-        /// Optional override to create listeners (e.g., TCP, HTTP) for this service replica to handle client or user requests.
-        /// </summary>
-        /// <returns>A collection of listeners.</returns>
-        protected override IEnumerable<ServiceInstanceListener> CreateServiceInstanceListeners()
+        protected override async Task RunAsync(CancellationToken cancellationToken)
         {
-            yield return new ServiceInstanceListener(
-                context => _parentLifetimeScope.Resolve<IJobContextManager<JobContextMessage>>(),
-                "ReportService-SBTopicListener");
+            bool initialised = false;
+            try
+            {
+                await _jobContextManager.OpenAsync(cancellationToken);
+                initialised = true;
+                await Task.Delay(Timeout.Infinite, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                // Ignore, as an exception is only really thrown on cancellation of the token.
+            }
+            finally
+            {
+                if (initialised)
+                {
+                    await _jobContextManager.CloseAsync(CancellationToken.None);
+                }
+            }
         }
     }
 }
