@@ -5,8 +5,8 @@
     using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Attribute;
     using ESFA.DC.ILR.Model.Interface;
     using ESFA.DC.ILR1819.ReportService.Interface.Service;
-    using ESFA.DC.ILR1819.ReportService.Model.Lars;
-    using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+    using Model.Lars;
+    using Model.ReportModels;
 
     public class MainOccupanyReportModelBuilder : IMainOccupanyReportModelBuilder
     {
@@ -27,6 +27,41 @@
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
             var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedAttributes
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
+
+            var totalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
+                                     (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) +
+                                     (onProgPayment?.Period5 ?? 0) + (onProgPayment?.Period6 ?? 0) +
+                                     (onProgPayment?.Period7 ?? 0) + (onProgPayment?.Period8 ?? 0) +
+                                     (onProgPayment?.Period9 ?? 0) + (onProgPayment?.Period10 ?? 0) +
+                                     (onProgPayment?.Period11 ?? 0) + (onProgPayment?.Period12 ?? 0);
+
+            var totalBalancePayment = (balancePayment?.Period1 ?? 0) + (balancePayment?.Period2 ?? 0) +
+                                      (balancePayment?.Period3 ?? 0) + (balancePayment?.Period4 ?? 0) +
+                                      (balancePayment?.Period5 ?? 0) + (balancePayment?.Period6 ?? 0) +
+                                      (balancePayment?.Period7 ?? 0) + (balancePayment?.Period8 ?? 0) +
+                                      (balancePayment?.Period9 ?? 0) + (balancePayment?.Period10 ?? 0) +
+                                      (balancePayment?.Period11 ?? 0) + (balancePayment?.Period12 ?? 0);
+
+            var totalAchievePayment = (achievePayment?.Period1 ?? 0) + (achievePayment?.Period2 ?? 0) +
+                                      (achievePayment?.Period3 ?? 0) + (achievePayment?.Period4 ?? 0) +
+                                      (achievePayment?.Period5 ?? 0) + (achievePayment?.Period6 ?? 0) +
+                                      (achievePayment?.Period7 ?? 0) + (achievePayment?.Period8 ?? 0) +
+                                      (achievePayment?.Period9 ?? 0) + (achievePayment?.Period10 ?? 0) +
+                                      (achievePayment?.Period11 ?? 0) + (achievePayment?.Period12 ?? 0);
+
+            var totalEmpOutcomePay = (empOutcomePayment?.Period1 ?? 0) + (empOutcomePayment?.Period2 ?? 0) +
+                                     (empOutcomePayment?.Period3 ?? 0) + (empOutcomePayment?.Period4 ?? 0) +
+                                     (empOutcomePayment?.Period5 ?? 0) + (empOutcomePayment?.Period6 ?? 0) +
+                                     (empOutcomePayment?.Period7 ?? 0) + (empOutcomePayment?.Period8 ?? 0) +
+                                     (empOutcomePayment?.Period9 ?? 0) + (empOutcomePayment?.Period10 ?? 0) +
+                                     (empOutcomePayment?.Period11 ?? 0) + (empOutcomePayment?.Period12 ?? 0);
+
+            var totalLearnSuppFundCash = (learnSuppFundCash?.Period1 ?? 0) + (learnSuppFundCash?.Period2 ?? 0) +
+                                         (learnSuppFundCash?.Period3 ?? 0) + (learnSuppFundCash?.Period4 ?? 0) +
+                                         (learnSuppFundCash?.Period5 ?? 0) + (learnSuppFundCash?.Period6 ?? 0) +
+                                         (learnSuppFundCash?.Period7 ?? 0) + (learnSuppFundCash?.Period8 ?? 0) +
+                                         (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) +
+                                         (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0);
 
             var aimPercent = fm35Data?.LearningDeliveryPeriodisedAttributes?.SingleOrDefault(attr =>
                 attr.AttributeName == Constants.Fm35AimAchievementPercentAttributeName);
@@ -80,7 +115,8 @@
                 LearnDelFamCodeLsfEarliest = learningDelivery.LearningDeliveryFAMs
                     ?.Where(x => x.LearnDelFAMType == "LSF").Min(x => x.LearnDelFAMDateFromNullable)
                     ?.ToString("dd/MM/yyyy"),
-                LearnDelFamCodeLsfLatest = learningDelivery.LearningDeliveryFAMs?.Where(x => x.LearnDelFAMType == "LSF")
+                LearnDelFamCodeLsfLatest = learningDelivery.LearningDeliveryFAMs
+                    ?.Where(x => x.LearnDelFAMType == "LSF")
                     .Min(x => x.LearnDelFAMDateToNullable)?.ToString("dd/MM/yyyy"),
                 LearnDelFamCodeLdm1 = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => x.LearnDelFAMType == "LDM1")?.LearnDelFAMCode,
@@ -192,71 +228,13 @@
                 Period12EmpOutcomePay = empOutcomePayment?.Period12,
                 Period12LearnSuppFundCash = learnSuppFundCash?.Period12,
 
-                TotalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
-                                     (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) +
-                                     (onProgPayment?.Period5 ?? 0) + (onProgPayment?.Period6 ?? 0)
-                                     + (onProgPayment?.Period7 ?? 0) + (onProgPayment?.Period8 ?? 0) +
-                                     (onProgPayment?.Period9 ?? 0) + (onProgPayment?.Period10 ?? 0) +
-                                     (onProgPayment?.Period11 ?? 0) + (onProgPayment?.Period12 ?? 0),
-
-                TotalBalancePayment = (balancePayment?.Period1 ?? 0) + (balancePayment?.Period2 ?? 0) +
-                                      (balancePayment?.Period3 ?? 0) + (balancePayment?.Period4 ?? 0) +
-                                      (balancePayment?.Period5 ?? 0) + (balancePayment?.Period6 ?? 0)
-                                      + (balancePayment?.Period7 ?? 0) + (balancePayment?.Period8 ?? 0) +
-                                      (balancePayment?.Period9 ?? 0) + (balancePayment?.Period10 ?? 0) +
-                                      (balancePayment?.Period11 ?? 0) + (balancePayment?.Period12 ?? 0),
-
-                TotalAchievePayment = (achievePayment?.Period1 ?? 0) + (achievePayment?.Period2 ?? 0) +
-                                      (achievePayment?.Period3 ?? 0) + (achievePayment?.Period4 ?? 0) +
-                                      (achievePayment?.Period5 ?? 0) + (achievePayment?.Period6 ?? 0)
-                                      + (achievePayment?.Period7 ?? 0) + (achievePayment?.Period8 ?? 0) +
-                                      (achievePayment?.Period9 ?? 0) + (achievePayment?.Period10 ?? 0) +
-                                      (achievePayment?.Period11 ?? 0) + (achievePayment?.Period12 ?? 0),
-
-                TotalEmpOutcomePay = (empOutcomePayment?.Period1 ?? 0) + (empOutcomePayment?.Period2 ?? 0) +
-                                     (empOutcomePayment?.Period3 ?? 0) + (empOutcomePayment?.Period4 ?? 0) +
-                                     (empOutcomePayment?.Period5 ?? 0) + (empOutcomePayment?.Period6 ?? 0)
-                                     + (empOutcomePayment?.Period7 ?? 0) + (empOutcomePayment?.Period8 ?? 0) +
-                                     (empOutcomePayment?.Period9 ?? 0) + (empOutcomePayment?.Period10 ?? 0) +
-                                     (empOutcomePayment?.Period11 ?? 0) + (empOutcomePayment?.Period12 ?? 0),
-
-                TotalLearnSuppFundCash = (learnSuppFundCash?.Period1 ?? 0) + (learnSuppFundCash?.Period2 ?? 0) +
-                                         (learnSuppFundCash?.Period3 ?? 0) + (learnSuppFundCash?.Period4 ?? 0) +
-                                         (learnSuppFundCash?.Period5 ?? 0) + (learnSuppFundCash?.Period6 ?? 0)
-                                         + (learnSuppFundCash?.Period7 ?? 0) + (learnSuppFundCash?.Period8 ?? 0) +
-                                         (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) +
-                                         (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0),
-
-                TotalEarnedCash = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
-                                  (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) +
-                                  (onProgPayment?.Period5 ?? 0) + (onProgPayment?.Period6 ?? 0)
-                                  + (onProgPayment?.Period7 ?? 0) + (onProgPayment?.Period8 ?? 0) +
-                                  (onProgPayment?.Period9 ?? 0) + (onProgPayment?.Period10 ?? 0) +
-                                  (onProgPayment?.Period11 ?? 0) + (onProgPayment?.Period12 ?? 0)
-                                  + (balancePayment?.Period1 ?? 0) + (balancePayment?.Period2 ?? 0) +
-                                  (balancePayment?.Period3 ?? 0) + (balancePayment?.Period4 ?? 0) +
-                                  (balancePayment?.Period5 ?? 0) + (balancePayment?.Period6 ?? 0)
-                                  + (balancePayment?.Period7 ?? 0) + (balancePayment?.Period8 ?? 0) +
-                                  (balancePayment?.Period9 ?? 0) + (balancePayment?.Period10 ?? 0) +
-                                  (balancePayment?.Period11 ?? 0) + (balancePayment?.Period12 ?? 0)
-                                  + (achievePayment?.Period1 ?? 0) + (achievePayment?.Period2 ?? 0) +
-                                  (achievePayment?.Period3 ?? 0) + (achievePayment?.Period4 ?? 0) +
-                                  (achievePayment?.Period5 ?? 0) + (achievePayment?.Period6 ?? 0)
-                                  + (achievePayment?.Period7 ?? 0) + (achievePayment?.Period8 ?? 0) +
-                                  (achievePayment?.Period9 ?? 0) + (achievePayment?.Period10 ?? 0) +
-                                  (achievePayment?.Period11 ?? 0) + (achievePayment?.Period12 ?? 0)
-                                  + (empOutcomePayment?.Period1 ?? 0) + (empOutcomePayment?.Period2 ?? 0) +
-                                  (empOutcomePayment?.Period3 ?? 0) + (empOutcomePayment?.Period4 ?? 0) +
-                                  (empOutcomePayment?.Period5 ?? 0) + (empOutcomePayment?.Period6 ?? 0)
-                                  + (empOutcomePayment?.Period7 ?? 0) + (empOutcomePayment?.Period8 ?? 0) +
-                                  (empOutcomePayment?.Period9 ?? 0) + (empOutcomePayment?.Period10 ?? 0) +
-                                  (empOutcomePayment?.Period11 ?? 0) + (empOutcomePayment?.Period12 ?? 0)
-                                  + (learnSuppFundCash?.Period1 ?? 0) + (learnSuppFundCash?.Period2 ?? 0) +
-                                  (learnSuppFundCash?.Period3 ?? 0) + (learnSuppFundCash?.Period4 ?? 0) +
-                                  (learnSuppFundCash?.Period5 ?? 0) + (learnSuppFundCash?.Period6 ?? 0)
-                                  + (learnSuppFundCash?.Period7 ?? 0) + (learnSuppFundCash?.Period8 ?? 0) +
-                                  (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) +
-                                  (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0),
+                TotalOnProgPayment = totalOnProgPayment,
+                TotalBalancePayment = totalBalancePayment,
+                TotalAchievePayment = totalAchievePayment,
+                TotalEmpOutcomePay = totalEmpOutcomePay,
+                TotalLearnSuppFundCash = totalLearnSuppFundCash,
+                TotalEarnedCash = totalOnProgPayment + totalBalancePayment + totalAchievePayment
+                                  + totalEmpOutcomePay + totalLearnSuppFundCash
             };
         }
 
@@ -265,8 +243,22 @@
             ILearningDelivery learningDelivery,
             Learner fm25Data)
         {
-            // Waiting for periodised data
-            // var onProgPayment = fm25Data?.Something.SingleOrDefault(attr => attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);
+            var onProgPayment = fm25Data?.LearnerPeriodisedValues.SingleOrDefault(attr =>
+                attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);
+
+            var onProgPaymentTotal = onProgPayment?.Period1
+                                     + onProgPayment?.Period2
+                                     + onProgPayment?.Period3
+                                     + onProgPayment?.Period4
+                                     + onProgPayment?.Period5
+                                     + onProgPayment?.Period6
+                                     + onProgPayment?.Period7
+                                     + onProgPayment?.Period8
+                                     + onProgPayment?.Period9
+                                     + onProgPayment?.Period10
+                                     + onProgPayment?.Period11
+                                     + onProgPayment?.Period12;
+
             return new MainOccupancyFM25Model
             {
                 LearnRefNumber = learner.LearnRefNumber,
@@ -285,59 +277,20 @@
                 LearnerPlanEndDate = fm25Data?.LearnerPlanEndDate,
                 LearnerActEndDate = fm25Data?.LearnerActEndDate,
                 FundLine = fm25Data?.FundLine,
-                Period1OnProgPayment = 0,
-                Period2OnProgPayment = 0,
-                Period3OnProgPayment = 0,
-                Period4OnProgPayment = 0,
-                Period5OnProgPayment = 0,
-                Period6OnProgPayment = 0,
-                Period7OnProgPayment = 0,
-                Period8OnProgPayment = 0,
-                Period9OnProgPayment = 0,
-                Period10OnProgPayment = 0,
-                Period11OnProgPayment = 0,
-                Period12OnProgPayment = 0,
-                PeriodOnProgPaymentTotal = 0,
-                Total = 0
-
-                // Period1OnProgPayment = onProgPayment?.Period1,
-                // Period2OnProgPayment = onProgPayment?.Period2,
-                // Period3OnProgPayment = onProgPayment?.Period3,
-                // Period4OnProgPayment = onProgPayment?.Period4,
-                // Period5OnProgPayment = onProgPayment?.Period5,
-                // Period6OnProgPayment = onProgPayment?.Period6,
-                // Period7OnProgPayment = onProgPayment?.Period7,
-                // Period8OnProgPayment = onProgPayment?.Period8,
-                // Period9OnProgPayment = onProgPayment?.Period9,
-                // Period10OnProgPayment = onProgPayment?.Period10,
-                // Period11OnProgPayment = onProgPayment?.Period11,
-                // Period12OnProgPayment = onProgPayment?.Period12,
-                // PeriodOnProgPaymentTotal =
-                //    onProgPayment?.Period1
-                //    + onProgPayment?.Period2
-                //    + onProgPayment?.Period3 +
-                //    onProgPayment?.Period4
-                //    + onProgPayment?.Period5 +
-                //    onProgPayment?.Period6
-                //    + onProgPayment?.Period7 +
-                //    onProgPayment?.Period8
-                //    + onProgPayment?.Period9 +
-                //    onProgPayment?.Period10
-                //    + onProgPayment?.Period11 +
-                //    onProgPayment?.Period12,
-                // Total =
-                //    onProgPayment?.Period1
-                //    + onProgPayment?.Period2
-                // + onProgPayment?.Period3 +
-                // onProgPayment?.Period4
-                // + onProgPayment?.Period5 +
-                // onProgPayment?.Period6
-                // + onProgPayment?.Period7 +
-                // onProgPayment?.Period8
-                // + onProgPayment?.Period9 +
-                // onProgPayment?.Period10
-                // + onProgPayment?.Period11 +
-                // onProgPayment?.Period12
+                Period1OnProgPayment = onProgPayment?.Period1,
+                Period2OnProgPayment = onProgPayment?.Period2,
+                Period3OnProgPayment = onProgPayment?.Period3,
+                Period4OnProgPayment = onProgPayment?.Period4,
+                Period5OnProgPayment = onProgPayment?.Period5,
+                Period6OnProgPayment = onProgPayment?.Period6,
+                Period7OnProgPayment = onProgPayment?.Period7,
+                Period8OnProgPayment = onProgPayment?.Period8,
+                Period9OnProgPayment = onProgPayment?.Period9,
+                Period10OnProgPayment = onProgPayment?.Period10,
+                Period11OnProgPayment = onProgPayment?.Period11,
+                Period12OnProgPayment = onProgPayment?.Period12,
+                PeriodOnProgPaymentTotal = onProgPaymentTotal,
+                Total = onProgPaymentTotal
             };
         }
 
