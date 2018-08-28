@@ -11,6 +11,7 @@
     <AssemblyName>ESFA.DC.ILR1819.ReportService.Service</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -213,7 +214,9 @@
     <Compile Include="Service\ValidLearnersService.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="ESFA.DC.ILR1819.ReportService.Service.ruleset">
       <SubType>Designer</SubType>
     </None>

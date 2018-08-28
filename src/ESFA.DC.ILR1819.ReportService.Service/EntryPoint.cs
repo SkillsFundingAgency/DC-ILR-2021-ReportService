@@ -59,11 +59,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private async Task ExecuteTasks(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            if (!_ilrFileHelper.CheckIlrFileNameIsValid(jobContextMessage))
-            {
-                return;
-            }
-
             foreach (ITaskItem taskItem in jobContextMessage.Topics[jobContextMessage.TopicPointer].Tasks)
             {
                 if (taskItem.SupportsParallelExecution)
