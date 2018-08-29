@@ -73,7 +73,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<Learner> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
+            Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, validLearnersTask, fm25Task);
 
@@ -90,19 +90,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 var learner =
                     ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                var fm25Data = fm25Task.Result;
-                if (learner == null || fm25Data == null)
+                var fm25Learner = fm25Task.Result?.Learners.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+
+                if (learner == null || fm25Learner == null)
                 {
                     ilrError.Add(validLearnerRefNum);
                     continue;
                 }
 
-                if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Data))
+                if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Learner))
                 {
                     continue;
                 }
 
-                mathsAndEnglishModels.Add((MathsAndEnglishModel)_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Data));
+                mathsAndEnglishModels.Add((MathsAndEnglishModel)_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
             }
 
             if (ilrError.Any())

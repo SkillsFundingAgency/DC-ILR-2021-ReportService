@@ -7,6 +7,6 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
     public interface IFM25ProviderService
     {
-        Task<Learner> GetFM25Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
+        Task<Global> GetFM25Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
     }
 }

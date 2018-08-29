@@ -66,7 +66,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<Learner> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
+            Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
             Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
@@ -135,10 +135,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         frameworkAim,
                         learnerFm35Data));
 
+                    var learnerFm25Data =
+                        fm25Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber);
+
                     mainOccupancyFm25Models.Add(_mainOccupanyReportModelBuilder.BuildFm25Model(
                         learner,
                         learningDelivery,
-                        fm25Data));
+                        learnerFm25Data));
                 }
             }
 
