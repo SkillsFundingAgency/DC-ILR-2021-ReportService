@@ -8,7 +8,7 @@
     using Model.Lars;
     using Model.ReportModels;
 
-    public class MainOccupanyReportModelBuilder : IMainOccupanyReportModelBuilder
+    public class MainOccupancyReportModelBuilder : IMainOccupancyReportModelBuilder
     {
         public MainOccupancyFM35Model BuildFm35Model(
             ILearner learner,
@@ -243,7 +243,7 @@
             ILearningDelivery learningDelivery,
             Learner fm25Data)
         {
-            var onProgPayment = fm25Data?.LearnerPeriodisedValues.SingleOrDefault(attr =>
+            var onProgPayment = fm25Data?.LearnerPeriodisedValues?.SingleOrDefault(attr =>
                 attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);
 
             var onProgPaymentTotal = onProgPayment?.Period1

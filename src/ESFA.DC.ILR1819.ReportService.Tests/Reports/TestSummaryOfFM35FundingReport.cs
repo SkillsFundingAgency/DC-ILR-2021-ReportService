@@ -1,26 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
-using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
+using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
-using ESFA.DC.Serialization.Xml;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -73,7 +70,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             csv.Should().NotBeNullOrEmpty();
 
-            // TestCsvHelper.CheckCsv(csv, new MathsAndEnglishMapper());
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new SummaryOfFM35FundingMapper(), 1));
         }
     }
 }

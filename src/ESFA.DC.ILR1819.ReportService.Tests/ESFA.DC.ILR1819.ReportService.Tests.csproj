@@ -207,6 +207,7 @@
     <Compile Include="Helpers\TestFM25Builder.cs" />
     <Compile Include="Helpers\TestFM35Builder.cs" />
     <Compile Include="Helpers\TestXlsxHelper.cs" />
+    <Compile Include="Models\CsvEntry.cs" />
     <Compile Include="Reports\TestMainOccupancyReport.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
     <Compile Include="Reports\TestSummaryOfFM35FundingReport.cs" />

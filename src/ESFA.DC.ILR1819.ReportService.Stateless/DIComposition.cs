@@ -293,7 +293,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<SummaryOfFM35FundingModelBuilder>().As<ISummaryOfFM35FundingModelBuilder>()
                 .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<MainOccupanyReportModelBuilder>().As<IMainOccupanyReportModelBuilder>()
+            containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IMainOccupancyReportModelBuilder>()
                 .InstancePerLifetimeScope();
         }
 

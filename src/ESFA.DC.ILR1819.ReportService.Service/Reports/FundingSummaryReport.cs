@@ -42,9 +42,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly ILarsProviderService _larsProviderService;
         private readonly IVersionInfo _versionInfo;
 
-        private string _ilrFileName;
-        private string _ilrFileDateTime;
-
         public FundingSummaryReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
@@ -192,8 +189,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 });
             }
 
-            FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(ilrFileTask, providerNameTask);
-            FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(cancellationToken);
+            FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, ilrFileTask, providerNameTask);
+            FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(ilrFileTask, cancellationToken);
 
             LogWarnings(ilrError, albLearnerError);
 
@@ -230,22 +227,22 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private FundingSummaryHeaderModel GetHeader(Task<IMessage> messageTask, Task<string> providerNameTask)
+        private FundingSummaryHeaderModel GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<string> providerNameTask)
         {
             FundingSummaryHeaderModel fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
-                IlrFile = _ilrFileName,
+                IlrFile = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString()),
                 Ukprn = messageTask.Result.HeaderEntity.SourceEntity.UKPRN,
                 ProviderName = providerNameTask.Result,
                 LastEasUpdate = "Todo", // Todo
-                LastIlrFileUpdate = _ilrFileDateTime,
+                LastIlrFileUpdate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy"),
                 SecurityClassification = "OFFICIAL-SENSITIVE"
             };
 
             return fundingSummaryHeaderModel;
         }
 
-        private async Task<FundingSummaryFooterModel> GetFooterAsync(CancellationToken cancellationToken)
+        private async Task<FundingSummaryFooterModel> GetFooterAsync(Task<IMessage> messageTask, CancellationToken cancellationToken)
         {
             var dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             var dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
@@ -255,7 +252,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 ReportGeneratedAt = "Report generated at " + dateTimeNowUk.ToString("HH:mm:ss") + " on " + dateTimeNowUk.ToString("dd/MM/yyyy"),
                 ApplicationVersion = _versionInfo.ServiceReleaseVersion,
                 ComponentSetVersion = "NA",
-                FilePreparationDate = _ilrFileDateTime,
+                FilePreparationDate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy"),
                 OrganisationData = await _orgProviderService.GetVersionAsync(cancellationToken),
                 LargeEmployerData = "Todo", // Todo
                 LarsData = await _larsProviderService.GetVersionAsync(cancellationToken),

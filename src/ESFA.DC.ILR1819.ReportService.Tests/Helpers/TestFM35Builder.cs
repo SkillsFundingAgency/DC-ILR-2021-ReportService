@@ -14,11 +14,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
                 {
                     new LearnerAttribute
                     {
-                        LearnRefNumber = "foo",
+                        LearnRefNumber = "3fm9901",
                         LearningDeliveryAttributes = new[]
                         {
                             new LearningDeliveryAttribute
                             {
+                                AimSeqNumber = 1,
                                 LearningDeliveryAttributeDatas = new LearningDeliveryAttributeData
                                 {
                                     FundLine = "12345"

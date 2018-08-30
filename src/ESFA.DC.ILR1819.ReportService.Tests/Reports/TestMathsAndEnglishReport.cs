@@ -12,6 +12,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
@@ -55,6 +56,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     "3fm9901",
                     "5fm9901"
                 }));
+            redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(
+                jsonSerializationService.Serialize(
+                    TestFM25Builder.Build()));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
@@ -76,11 +80,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output] = "FundingFm25Output";
 
             await mathsAndEnglishReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
-            // TestCsvHelper.CheckCsv(csv, new MathsAndEnglishMapper());
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MathsAndEnglishMapper(), 1));
         }
     }
 }

@@ -103,7 +103,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                mathsAndEnglishModels.Add((MathsAndEnglishModel)_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
+                mathsAndEnglishModels.Add(_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
             }
 
             if (ilrError.Any())

@@ -10,6 +10,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
@@ -75,7 +76,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             await summaryOfFunding1619Report.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
-            TestCsvHelper.CheckCsv(csv, new SummaryOfFunding1619Mapper());
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new SummaryOfFunding1619Mapper(), 1));
         }
     }
 }

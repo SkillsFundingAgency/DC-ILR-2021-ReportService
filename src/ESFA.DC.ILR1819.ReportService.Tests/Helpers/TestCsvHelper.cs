@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using FluentAssertions;
 using Microsoft.VisualBasic.FileIO;
 using Xunit;
@@ -10,7 +11,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
 {
     public static class TestCsvHelper
     {
-        public static void CheckCsv(string csv, ClassMap classMap)
+        public static void CheckCsv(string csv, params CsvEntry[] csvEntries)
         {
             try
             {
@@ -20,10 +21,16 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
                     {
                         textFieldParser.TextFieldType = FieldType.Delimited;
                         textFieldParser.Delimiters = new[] { "," };
-                        string[] currentRow = textFieldParser.ReadFields();
-                        CheckHeader(currentRow, classMap);
-                        currentRow = textFieldParser.ReadFields();
-                        CheckRow(currentRow, classMap);
+                        foreach (CsvEntry csvEntry in csvEntries)
+                        {
+                            string[] currentRow = textFieldParser.ReadFields();
+                            CheckHeader(currentRow, csvEntry.Mapper);
+                            for (int i = 0; i < csvEntry.DataRows; i++)
+                            {
+                                currentRow = textFieldParser.ReadFields();
+                                CheckRow(currentRow, csvEntry.Mapper);
+                            }
+                        }
                     }
                 }
             }

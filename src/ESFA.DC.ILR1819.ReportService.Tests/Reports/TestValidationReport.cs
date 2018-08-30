@@ -10,6 +10,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
@@ -87,7 +88,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             xlsx.Should().NotBeNullOrEmpty();
 
             ValidationErrorMapper helper = new ValidationErrorMapper();
-            TestCsvHelper.CheckCsv(csv, helper);
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(helper, 1));
             TestXlsxHelper.CheckXlsx(xlsx, helper, 6);
         }
     }

@@ -6,7 +6,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.BusinessRules
 {
     public class MathsAndEnglishFm25Rules : IMathsAndEnglishFm25Rules
     {
-        private readonly List<string> _applicableFundlines = new List<string>
+        private readonly List<string> _applicableFundLines = new List<string>
         {
             Constants.DirectFundedStudents1416FundLine,
             Constants.Students1619FundLine,
@@ -23,13 +23,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.BusinessRules
         public bool IsApplicableLearner(Learner learner)
         {
             // BR1 – Applicable Learners
-            if (learner.StartFund ?? 0 != 1)
+            if (!(learner.StartFund ?? false))
             {
                 return false;
             }
 
             // BR2 – Applicable Funding Line Types
-            return !_applicableFundlines.Contains(learner.FundLine);
+            return _applicableFundLines.Contains(learner.FundLine);
         }
     }
 }

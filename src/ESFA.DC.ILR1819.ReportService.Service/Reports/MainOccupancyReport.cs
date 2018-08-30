@@ -33,7 +33,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IFM25ProviderService _fm25ProviderService;
         private readonly IFM35ProviderService _fm35ProviderService;
         private readonly ILarsProviderService _larsProviderService;
-        private readonly IMainOccupanyReportModelBuilder _mainOccupanyReportModelBuilder;
+        private readonly IMainOccupancyReportModelBuilder _mainOccupancyReportModelBuilder;
 
         public MainOccupancyReport(
             ILogger logger,
@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ILarsProviderService larsProviderService,
             IDateTimeProvider dateTimeProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            IMainOccupanyReportModelBuilder mainOccupanyReportModelBuilder)
+            IMainOccupancyReportModelBuilder mainOccupancyReportModelBuilder)
         : base(dateTimeProvider)
         {
             _logger = logger;
@@ -57,7 +57,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _fm25ProviderService = fm25ProviderService;
             _fm35ProviderService = fm35ProviderService;
             _larsProviderService = larsProviderService;
-            _mainOccupanyReportModelBuilder = mainOccupanyReportModelBuilder;
+            _mainOccupancyReportModelBuilder = mainOccupancyReportModelBuilder;
 
             ReportFileName = "Main Occupancy Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport;
@@ -128,7 +128,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     var learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
                         ?.LearningDeliveryAttributes.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                    mainOccupancyFm35Models.Add(_mainOccupanyReportModelBuilder.BuildFm35Model(
+                    mainOccupancyFm35Models.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
                         learner,
                         learningDelivery,
                         larsModel,
@@ -138,7 +138,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     var learnerFm25Data =
                         fm25Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber);
 
-                    mainOccupancyFm25Models.Add(_mainOccupanyReportModelBuilder.BuildFm25Model(
+                    mainOccupancyFm25Models.Add(_mainOccupancyReportModelBuilder.BuildFm25Model(
                         learner,
                         learningDelivery,
                         learnerFm25Data));

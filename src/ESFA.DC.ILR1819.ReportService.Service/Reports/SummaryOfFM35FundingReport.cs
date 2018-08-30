@@ -93,9 +93,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var summaryOfFm35FundingModels = new List<SummaryOfFm35FundingModel>();
             foreach (var learnerAttribute in fm35Data.Learners)
             {
-                foreach (var fundlineData in learnerAttribute.LearningDeliveryAttributes)
+                foreach (var fundLineData in learnerAttribute.LearningDeliveryAttributes)
                 {
-                    summaryOfFm35FundingModels.AddRange(_summaryOfFm35FundingModelBuilder.BuildModel(fundlineData));
+                    summaryOfFm35FundingModels.AddRange(_summaryOfFm35FundingModelBuilder.BuildModel(fundLineData));
                 }
             }
 

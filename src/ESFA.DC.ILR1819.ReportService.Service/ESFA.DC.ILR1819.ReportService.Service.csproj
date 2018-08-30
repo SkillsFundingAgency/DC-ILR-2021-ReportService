@@ -174,7 +174,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Builders\MainOccupanyReportModelBuilder.cs" />
+    <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\SummaryOfFM35FundingModelBuilder.cs" />
     <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />

@@ -6,7 +6,7 @@
     using Model.Lars;
     using Model.ReportModels;
 
-    public interface IMainOccupanyReportModelBuilder
+    public interface IMainOccupancyReportModelBuilder
     {
         MainOccupancyFM35Model BuildFm35Model(
             ILearner learner,
