@@ -80,6 +80,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors] = "ValidationErrors";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups] = "ValidationErrorsLookup";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount] = 2;
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount] = 3;
 
             await validationErrorsReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
 

@@ -33,11 +33,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
 
-        private List<ValidationErrorDto> _validationErrorDtos;
-        private List<ValidationErrorModel> _validationErrors;
-        private IlrValidationResult _ilrValidationResult;
-        private string _fileName;
-
         public ValidationErrorsReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
@@ -60,26 +55,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
-            IMessage message = await _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            // _fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            _fileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
+            Task<IMessage> ilrTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
+            await Task.WhenAll(ilrTask, validationErrorDtosTask);
 
-            _validationErrorDtos = await ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
-            _validationErrors = ValidationErrorModels(message);
-            _ilrValidationResult = PersistFrontEndValidationReport(message);
-            await PeristValuesToStorage(archive, cancellationToken);
+            long jobId = jobContextMessage.JobId;
+            string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            // _fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            ReportFileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
+            List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
+            List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
+            IlrValidationResult ilrValidationResult = GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
+
+            await PeristValuesToStorage(validationErrorDtos, validationErrors, archive, cancellationToken);
         }
 
-        private IlrValidationResult PersistFrontEndValidationReport(IMessage message)
+        private IlrValidationResult GenerateFrontEndValidationReport(
+            IDictionary<string, object> keyValuePairs,
+            List<ValidationErrorDto> validationErrorDtos)
         {
-            var errors = _validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase)).ToArray();
-            var warnings = _validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
+            var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase)).ToArray();
+            var warnings = validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
 
             var validationReport = new IlrValidationResult
             {
-                TotalLearners = message.Learners.Count,
+                TotalLearners = GetNumberOfLearners(keyValuePairs),
                 TotalErrors = errors.Length,
                 TotalWarnings = warnings.Length,
                 TotalWarningLearners = warnings.DistinctBy(x => x.LearnerReferenceNumber).Count(),
@@ -130,18 +130,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return result;
         }
 
-        private async Task PeristValuesToStorage(ZipArchive archive, CancellationToken cancellationToken)
+        private async Task PeristValuesToStorage(List<ValidationErrorDto> validationErrorDtos, List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
-            string csv = GetCsv(_validationErrors);
-            await _storage.SaveAsync($"{_fileName}.json", _jsonSerializationService.Serialize(_validationErrorDtos), cancellationToken);
-            await _storage.SaveAsync($"{_fileName}.csv", csv, cancellationToken);
+            string csv = GetCsv(validationErrors);
+            await _storage.SaveAsync($"{ReportFileName}.json", _jsonSerializationService.Serialize(validationErrorDtos), cancellationToken);
+            await _storage.SaveAsync($"{ReportFileName}.csv", csv, cancellationToken);
 
-            await WriteZipEntry(archive, $"{_fileName}.csv", csv);
+            await WriteZipEntry(archive, $"{ReportFileName}.csv", csv);
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildXlsReport(ms, new ValidationErrorMapper(), _validationErrors);
-                await _storage.SaveAsync($"{_fileName}.xlsx", ms, cancellationToken);
-                await WriteZipEntry(archive, $"{_fileName}.xlsx", ms, cancellationToken);
+                BuildXlsReport(ms, new ValidationErrorMapper(), validationErrors);
+                await _storage.SaveAsync($"{ReportFileName}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{ReportFileName}.xlsx", ms, cancellationToken);
             }
         }
 
@@ -154,10 +154,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private List<ValidationErrorModel> ValidationErrorModels(IMessage message)
+        private List<ValidationErrorModel> ValidationErrorModels(IMessage message, List<ValidationErrorDto> validationErrorDtos)
         {
-            var validationErrors = new List<ValidationErrorModel>(_validationErrorDtos.Count);
-            foreach (ValidationErrorDto validationErrorDto in _validationErrorDtos)
+            var validationErrors = new List<ValidationErrorModel>(validationErrorDtos.Count);
+            foreach (ValidationErrorDto validationErrorDto in validationErrorDtos)
             {
                 if (message == null)
                 {
@@ -216,6 +216,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             });
 
             return result.ToString();
+        }
+
+        private int GetNumberOfLearners(IDictionary<string, object> keyValuePairs)
+        {
+            int ret = 0;
+            try
+            {
+                if (keyValuePairs.ContainsKey(JobContextMessageKey.ValidLearnRefNumbersCount))
+                {
+                    ret = Convert.ToInt32(keyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount]);
+                }
+
+                if (keyValuePairs.ContainsKey(JobContextMessageKey.InvalidLearnRefNumbersCount))
+                {
+                    ret = ret + Convert.ToInt32(keyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount]);
+                }
+
+                return ret == 0 ? -1 : ret;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Can't read number of learners", ex);
+            }
+
+            return ret;
         }
     }
 }
