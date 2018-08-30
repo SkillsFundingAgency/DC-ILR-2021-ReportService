@@ -103,18 +103,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var mainOccupancyFm35Models = new List<MainOccupancyFM35Model>();
             foreach (var learner in learners)
             {
-                if (!larsLearningDeliveriesTask.Result.TryGetValue(learner.LearnRefNumber, out LarsLearningDelivery larsModel))
-                {
-                    larsErrors.Add(learner.LearnRefNumber);
-                    continue;
-                }
-
-                if (!larsFrameworkAimsTask.Result.TryGetValue(learner.LearnRefNumber, out LarsFrameworkAim frameworkAim))
-                {
-                    larsErrors.Add(learner.LearnRefNumber);
-                    continue;
-                }
-
                 var fm25Data = fm25Task.Result;
                 var fm35Data = fm35Task.Result;
 
@@ -122,6 +110,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     if (!CheckIsApplicableLearner(learningDelivery))
                     {
+                        continue;
+                    }
+
+                    if (!larsLearningDeliveriesTask.Result.TryGetValue(learningDelivery.LearnAimRef, out LarsLearningDelivery larsModel))
+                    {
+                        larsErrors.Add(learner.LearnRefNumber);
+                        continue;
+                    }
+
+                    if (!larsFrameworkAimsTask.Result.TryGetValue(learningDelivery.LearnAimRef, out LarsFrameworkAim frameworkAim))
+                    {
+                        larsErrors.Add(learner.LearnRefNumber);
                         continue;
                     }
 

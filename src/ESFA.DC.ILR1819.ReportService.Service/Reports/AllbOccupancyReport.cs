@@ -118,12 +118,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                if (!larsLearningDeliveriesTask.TryGetValue(validLearnerRefNum, out LarsLearningDelivery larsModel))
-                {
-                    larsError.Add(validLearnerRefNum);
-                    continue;
-                }
-
                 LearnerAttribute albLearner =
                     albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
                 if (albLearner == null)
@@ -139,6 +133,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
+                    if (!larsLearningDeliveriesTask.TryGetValue(learningDelivery.LearnAimRef, out LarsLearningDelivery larsModel))
+                    {
+                        larsError.Add(validLearnerRefNum);
+                        continue;
+                    }
+
                     var albAttribs = albLearner?.LearningDeliveryAttributes
                         .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
                         ?.LearningDeliveryAttributeDatas;
