@@ -17,6 +17,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly ILogger _logger;
 
         private readonly IKeyValuePersistenceService _redis;
+        private readonly IKeyValuePersistenceService _blob;
 
         private readonly IJsonSerializationService _jsonSerializationService;
 
@@ -29,10 +30,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         public AllbProviderService(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService)
         {
             _logger = logger;
             _redis = redis;
+            _blob = blob;
             _jsonSerializationService = jsonSerializationService;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
@@ -57,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _loadedDataAlready = true;
                 string albFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString();
                 string alb = await _redis.GetAsync(albFilename, cancellationToken);
-
+                await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Alb.json", alb, cancellationToken);
                 _fundingOutputs = _jsonSerializationService.Deserialize<FundingOutputs>(alb);
             }
             catch (Exception ex)
