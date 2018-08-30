@@ -82,8 +82,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 TotalLearners = GetNumberOfLearners(keyValuePairs),
                 TotalErrors = errors.Length,
                 TotalWarnings = warnings.Length,
-                TotalWarningLearners = warnings.DistinctBy(x => x.LearnerReferenceNumber).Count(),
-                TotalErrorLearners = errors.DistinctBy(x => x.LearnerReferenceNumber).Count()
+                TotalWarningLearners = warnings.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count(),
+                TotalErrorLearners = errors.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count()
             };
 
             return validationReport;

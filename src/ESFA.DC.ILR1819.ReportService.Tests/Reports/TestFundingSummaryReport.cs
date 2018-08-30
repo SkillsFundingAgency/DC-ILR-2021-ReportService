@@ -43,6 +43,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService);
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, jsonSerializationService);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
@@ -58,6 +60,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     "3fm9901",
                     "5fm9901"
                 }));
+            redis.Setup(x => x.GetAsync("FundingFm35Output", It.IsAny<CancellationToken>())).ReturnsAsync(
+                jsonSerializationService.Serialize(
+                    TestFM35Builder.Build()));
+            redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(
+                jsonSerializationService.Serialize(
+                    TestFM25Builder.Build()));
             periodProviderService.Setup(x => x.GetPeriod(It.IsAny<IJobContextMessage>())).ReturnsAsync(12);
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
@@ -70,6 +78,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 ilrProviderService,
                 orgProviderService.Object,
                 allbProviderService,
+                fm25ProviderService,
+                fm35ProviderService,
                 validLearnersService,
                 stringUtilitiesService,
                 periodProviderService.Object,
@@ -84,12 +94,14 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output] = "FundingFm35Output";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output] = "FundingFm25Output";
 
             await fundingSummaryReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
 
-            TestCsvHelper.CheckCsv(csv, new CsvEntry(new FundingSummaryHeaderMapper(), 1), new CsvEntry(new FundingSummaryMapper(), 4), new CsvEntry(new FundingSummaryFooterMapper(), 1));
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new FundingSummaryHeaderMapper(), 1), new CsvEntry(new FundingSummaryMapper(), 2), new CsvEntry(new FundingSummaryFooterMapper(), 1));
         }
     }
 }

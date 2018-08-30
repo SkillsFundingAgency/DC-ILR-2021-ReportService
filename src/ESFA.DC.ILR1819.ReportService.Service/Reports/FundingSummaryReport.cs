@@ -9,6 +9,8 @@ using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
+using ESFA.DC.ILR.FundingService.FM25.Model.Output;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -35,6 +37,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
+        private readonly IFM25ProviderService _fm25ProviderService;
+        private readonly IFM35ProviderService _fm35ProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IPeriodProviderService _periodProviderService;
@@ -48,6 +52,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
+            IFM25ProviderService fm25ProviderService,
+            IFM35ProviderService fm35ProviderService,
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
             IPeriodProviderService periodProviderService,
@@ -62,6 +68,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
+            _fm25ProviderService = fm25ProviderService;
+            _fm35ProviderService = fm35ProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
             _periodProviderService = periodProviderService;
@@ -78,11 +86,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<FundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
+            Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage);
 
-            await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask, providerNameTask, periodTask);
+            await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, validLearnersTask, providerNameTask, periodTask);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -92,7 +102,22 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
 
-            List<FundingSummaryModel> fundingSummaryModels = new List<FundingSummaryModel>();
+            FundingSummaryModel fundingSummaryModelAlbFunding = new FundingSummaryModel()
+            {
+                Title = "ILR Advanced Loans Bursary Funding (£)"
+            };
+
+            FundingSummaryModel fundingSummaryModelAlbAreaCosts = new FundingSummaryModel()
+            {
+                Title = "ILR Advanced Loans Bursary Area Costs (£)"
+            };
+
+            List<FundingSummaryModel> fundingSummaryModels = new List<FundingSummaryModel>()
+            {
+                fundingSummaryModelAlbFunding,
+                fundingSummaryModelAlbAreaCosts
+            };
+
             foreach (string validLearnerRefNum in validLearnersTask.Result)
             {
                 var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
@@ -102,92 +127,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                LearnerAttribute albLearner =
-                    albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-                if (albLearner == null)
-                {
-                    albLearnerError.Add(validLearnerRefNum);
-                    continue;
-                }
-
-                var albSupportPaymentObj =
-                    albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
-                var albAreaUpliftOnProgPaymentObj =
-                    albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
-                var albAreaUpliftBalPaymentObj =
-                    albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
-
-                fundingSummaryModels.Add(new FundingSummaryModel
-                {
-                    Title = "ILR Advanced Loans Bursary Funding (£)",
-                    Period1 = albSupportPaymentObj?.Period1 ?? 0,
-                    Period2 = albSupportPaymentObj?.Period2 ?? 0,
-                    Period3 = albSupportPaymentObj?.Period3 ?? 0,
-                    Period4 = albSupportPaymentObj?.Period4 ?? 0,
-                    Period5 = albSupportPaymentObj?.Period5 ?? 0,
-                    Period6 = albSupportPaymentObj?.Period6 ?? 0,
-                    Period7 = albSupportPaymentObj?.Period7 ?? 0,
-                    Period8 = albSupportPaymentObj?.Period8 ?? 0,
-                    Period9 = albSupportPaymentObj?.Period9 ?? 0,
-                    Period10 = albSupportPaymentObj?.Period10 ?? 0,
-                    Period11 = albSupportPaymentObj?.Period11 ?? 0,
-                    Period12 = albSupportPaymentObj?.Period12 ?? 0,
-                    Period1_8 = (albSupportPaymentObj?.Period1 ?? 0) + (albSupportPaymentObj?.Period2 ?? 0) +
-                                (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) +
-                                (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) +
-                                (albSupportPaymentObj?.Period7 ?? 0) + (albSupportPaymentObj?.Period8 ?? 0),
-                    Period9_12 = (albSupportPaymentObj?.Period9 ?? 0) + (albSupportPaymentObj?.Period10 ?? 0) +
-                                 (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0),
-                    YearToDate = GetYearToDateTotal(albSupportPaymentObj, periodTask.Result),
-                    Total = (albSupportPaymentObj?.Period1 ?? 0) + (albSupportPaymentObj?.Period2 ?? 0) +
-                            (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) +
-                            (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) +
-                            (albSupportPaymentObj?.Period7 ?? 0) + (albSupportPaymentObj?.Period8 ?? 0) +
-                            (albSupportPaymentObj?.Period9 ?? 0) + (albSupportPaymentObj?.Period10 ?? 0) +
-                            (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0)
-                });
-
-                fundingSummaryModels.Add(new FundingSummaryModel()
-                {
-                    Title = "ILR Advanced Loans Bursary Area Costs (£)",
-                    Period1 = (albAreaUpliftBalPaymentObj?.Period1 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0),
-                    Period2 = (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0),
-                    Period3 = (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0),
-                    Period4 = (albAreaUpliftBalPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0),
-                    Period5 = (albAreaUpliftBalPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0),
-                    Period6 = (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0),
-                    Period7 = (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0),
-                    Period8 = (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0),
-                    Period9 = (albAreaUpliftBalPaymentObj?.Period9 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0),
-                    Period10 = (albAreaUpliftBalPaymentObj?.Period10 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0),
-                    Period11 = (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0),
-                    Period12 = (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0),
-                    Period9_12 = (albAreaUpliftBalPaymentObj?.Period9 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0)
-                            + (albAreaUpliftBalPaymentObj?.Period10 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0)
-                            + (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0)
-                            + (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0),
-                    Period1_8 = (albAreaUpliftBalPaymentObj?.Period1 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0),
-                    YearToDate = GetYearToDateTotal(albAreaUpliftBalPaymentObj, albAreaUpliftOnProgPaymentObj, periodTask.Result),
-                    Total = (albAreaUpliftBalPaymentObj?.Period1 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0) +
-                            (albAreaUpliftBalPaymentObj?.Period9 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0)
-                            + (albAreaUpliftBalPaymentObj?.Period10 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0)
-                            + (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0)
-                            + (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0)
-                });
+                TotalAlb(albDataTask, validLearnerRefNum, albLearnerError, fundingSummaryModelAlbFunding, periodTask, fundingSummaryModelAlbAreaCosts);
             }
 
             FundingSummaryHeaderModel fundingSummaryHeaderModel = GetHeader(jobContextMessage, ilrFileTask, providerNameTask);
@@ -202,6 +142,144 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             string csv = GetReportCsv(fundingSummaryModels, fundingSummaryHeaderModel, fundingSummaryFooterModel);
             await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
+        }
+
+        private void TotalAlb(
+            Task<FundingOutputs> albDataTask,
+            string validLearnerRefNum,
+            List<string> albLearnerError,
+            FundingSummaryModel fundingSummaryModelAlbFunding,
+            Task<int> periodTask,
+            FundingSummaryModel fundingSummaryModelAlbAreaCosts)
+        {
+            LearnerAttribute albLearner =
+                albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+            if (albLearner == null)
+            {
+                albLearnerError.Add(validLearnerRefNum);
+                return;
+            }
+
+            var albSupportPaymentObj =
+                albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
+            var albAreaUpliftOnProgPaymentObj =
+                albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
+            var albAreaUpliftBalPaymentObj =
+                albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
+
+            fundingSummaryModelAlbFunding.Period1 =
+                fundingSummaryModelAlbFunding.Period1 + albSupportPaymentObj?.Period1 ?? 0;
+            fundingSummaryModelAlbFunding.Period2 =
+                fundingSummaryModelAlbFunding.Period2 + albSupportPaymentObj?.Period2 ?? 0;
+            fundingSummaryModelAlbFunding.Period3 =
+                fundingSummaryModelAlbFunding.Period3 + albSupportPaymentObj?.Period3 ?? 0;
+            fundingSummaryModelAlbFunding.Period4 =
+                fundingSummaryModelAlbFunding.Period1 + albSupportPaymentObj?.Period4 ?? 0;
+            fundingSummaryModelAlbFunding.Period5 =
+                fundingSummaryModelAlbFunding.Period5 + albSupportPaymentObj?.Period5 ?? 0;
+            fundingSummaryModelAlbFunding.Period6 =
+                fundingSummaryModelAlbFunding.Period6 + albSupportPaymentObj?.Period6 ?? 0;
+            fundingSummaryModelAlbFunding.Period7 =
+                fundingSummaryModelAlbFunding.Period7 + albSupportPaymentObj?.Period7 ?? 0;
+            fundingSummaryModelAlbFunding.Period8 =
+                fundingSummaryModelAlbFunding.Period8 + albSupportPaymentObj?.Period8 ?? 0;
+            fundingSummaryModelAlbFunding.Period9 =
+                fundingSummaryModelAlbFunding.Period9 + albSupportPaymentObj?.Period9 ?? 0;
+            fundingSummaryModelAlbFunding.Period10 =
+                fundingSummaryModelAlbFunding.Period10 + albSupportPaymentObj?.Period10 ?? 0;
+            fundingSummaryModelAlbFunding.Period11 =
+                fundingSummaryModelAlbFunding.Period11 + albSupportPaymentObj?.Period11 ?? 0;
+            fundingSummaryModelAlbFunding.Period12 =
+                fundingSummaryModelAlbFunding.Period12 + albSupportPaymentObj?.Period12 ?? 0;
+            fundingSummaryModelAlbFunding.Period1_8 =
+                fundingSummaryModelAlbFunding.Period1_8 + (albSupportPaymentObj?.Period1 ?? 0) +
+                (albSupportPaymentObj?.Period2 ?? 0) +
+                (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) +
+                (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) +
+                (albSupportPaymentObj?.Period7 ?? 0) + (albSupportPaymentObj?.Period8 ?? 0);
+            fundingSummaryModelAlbFunding.Period9_12 =
+                fundingSummaryModelAlbFunding.Period9_12 + (albSupportPaymentObj?.Period9 ?? 0) +
+                (albSupportPaymentObj?.Period10 ?? 0) +
+                (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0);
+            fundingSummaryModelAlbFunding.YearToDate = fundingSummaryModelAlbFunding.YearToDate +
+                                                       GetYearToDateTotal(albSupportPaymentObj, periodTask.Result);
+            fundingSummaryModelAlbFunding.Total =
+                fundingSummaryModelAlbFunding.Total + (albSupportPaymentObj?.Period1 ?? 0) +
+                (albSupportPaymentObj?.Period2 ?? 0) +
+                (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) +
+                (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) +
+                (albSupportPaymentObj?.Period7 ?? 0) + (albSupportPaymentObj?.Period8 ?? 0) +
+                (albSupportPaymentObj?.Period9 ?? 0) + (albSupportPaymentObj?.Period10 ?? 0) +
+                (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0);
+
+            fundingSummaryModelAlbAreaCosts.Period1 = fundingSummaryModelAlbAreaCosts.Period1 +
+                                                      (albAreaUpliftBalPaymentObj?.Period1 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period2 = fundingSummaryModelAlbAreaCosts.Period2 +
+                                                      (albAreaUpliftBalPaymentObj?.Period2 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period3 = fundingSummaryModelAlbAreaCosts.Period3 +
+                                                      (albAreaUpliftBalPaymentObj?.Period3 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period4 = fundingSummaryModelAlbAreaCosts.Period4 +
+                                                      (albAreaUpliftBalPaymentObj?.Period4 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period5 = fundingSummaryModelAlbAreaCosts.Period5 +
+                                                      (albAreaUpliftBalPaymentObj?.Period5 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period6 = fundingSummaryModelAlbAreaCosts.Period6 +
+                                                      (albAreaUpliftBalPaymentObj?.Period6 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period7 = fundingSummaryModelAlbAreaCosts.Period7 +
+                                                      (albAreaUpliftBalPaymentObj?.Period7 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period8 = fundingSummaryModelAlbAreaCosts.Period8 +
+                                                      (albAreaUpliftBalPaymentObj?.Period8 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period9 = fundingSummaryModelAlbAreaCosts.Period9 +
+                                                      (albAreaUpliftBalPaymentObj?.Period9 ?? 0) +
+                                                      (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period10 = fundingSummaryModelAlbAreaCosts.Period10 +
+                                                       (albAreaUpliftBalPaymentObj?.Period10 ?? 0) +
+                                                       (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period11 = fundingSummaryModelAlbAreaCosts.Period11 +
+                                                       (albAreaUpliftBalPaymentObj?.Period11 ?? 0) +
+                                                       (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period12 = fundingSummaryModelAlbAreaCosts.Period12 +
+                                                       (albAreaUpliftBalPaymentObj?.Period12 ?? 0) +
+                                                       (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period9_12 =
+                fundingSummaryModelAlbAreaCosts.Period9_12 + (albAreaUpliftBalPaymentObj?.Period9 ?? 0) +
+                (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0)
+                + (albAreaUpliftBalPaymentObj?.Period10 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0)
+                + (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0)
+                + (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0);
+            fundingSummaryModelAlbAreaCosts.Period1_8 =
+                fundingSummaryModelAlbAreaCosts.Period1_8 + (albAreaUpliftBalPaymentObj?.Period1 ?? 0) +
+                (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0);
+            fundingSummaryModelAlbAreaCosts.YearToDate = fundingSummaryModelAlbAreaCosts.YearToDate +
+                                                         GetYearToDateTotal(albAreaUpliftBalPaymentObj, albAreaUpliftOnProgPaymentObj, periodTask.Result);
+            fundingSummaryModelAlbAreaCosts.Total =
+                fundingSummaryModelAlbAreaCosts.Total + (albAreaUpliftBalPaymentObj?.Period1 ?? 0) +
+                (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0) +
+                (albAreaUpliftBalPaymentObj?.Period9 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0)
+                + (albAreaUpliftBalPaymentObj?.Period10 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0)
+                + (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0)
+                + (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0);
         }
 
         private string GetReportCsv(List<FundingSummaryModel> fundingSummaryModels, FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)
@@ -374,4 +452,3 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         }
     }
 }
-
