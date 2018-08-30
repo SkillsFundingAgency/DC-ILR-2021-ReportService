@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
 
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
 
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 

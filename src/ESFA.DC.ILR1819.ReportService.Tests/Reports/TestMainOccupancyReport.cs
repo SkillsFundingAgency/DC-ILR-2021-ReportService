@@ -29,8 +29,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 {
     public class TestMainOccupancyReport
     {
-        [Fact]
-        public async Task TestMainOccupancyReportGeneration()
+        [Theory]
+        [InlineData("ILR-10033670-1819-20180830-150220-03.xml", "Alb.json", "Fm25.json", "Fm35.json")]
+        public async Task TestMainOccupancyReportGeneration(string ilrFilename, string albFilename, string fm25Filename, string fm35Filename)
         {
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
@@ -44,36 +45,32 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IMainOccupancyReportModelBuilder reportModelBuilder = new MainOccupancyReportModelBuilder();
 
-            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
+            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(ilrFilename));
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("FundingFm35Output", It.IsAny<CancellationToken>())).ReturnsAsync(
-                jsonSerializationService.Serialize(
-                    TestFM35Builder.Build()));
-            redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(
-                jsonSerializationService.Serialize(
-                    TestFM25Builder.Build()));
+            redis.Setup(x => x.GetAsync("FundingFm35Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm35Filename));
+            redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm25Filename));
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {
-                    "3fm9901",
-                    "5fm9901"
+                    "8fm3501",
+                    "0fm3501"
                 }));
             larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Dictionary<string, LarsLearningDelivery>()
                 {
-                    { "60145109", new LarsLearningDelivery { LearningAimTitle = "A", NotionalNvqLevel = "B", Tier2SectorSubjectArea = 3 } }
+                    { "60133533", new LarsLearningDelivery { LearningAimTitle = "A", NotionalNvqLevel = "B", Tier2SectorSubjectArea = 3 } }
                 });
             larsProviderService.Setup(x => x.GetFrameworkAims(It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Dictionary<string, LarsFrameworkAim>
                 {
-                    { "60145109", new LarsFrameworkAim { FrameworkComponentType = 0 } }
+                    { "60133533", new LarsFrameworkAim { FrameworkComponentType = 0 } }
                 });
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
@@ -94,7 +91,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = ilrFilename;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output] = "FundingFm35Output";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output] = "FundingFm25Output";

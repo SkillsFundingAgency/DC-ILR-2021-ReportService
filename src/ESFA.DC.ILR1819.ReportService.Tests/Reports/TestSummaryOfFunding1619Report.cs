@@ -39,7 +39,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
 

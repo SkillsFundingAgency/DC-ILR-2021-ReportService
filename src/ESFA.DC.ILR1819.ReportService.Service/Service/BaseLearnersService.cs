@@ -16,6 +16,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly string _messageKey;
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _redis;
+        private readonly IKeyValuePersistenceService _blob;
         private readonly IJsonSerializationService _jsonSerializationService;
 
         private readonly SemaphoreSlim _getDataLock;
@@ -28,11 +29,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             string key,
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService)
         {
             _messageKey = key;
             _logger = logger;
             _redis = redis;
+            _blob = blob;
             _jsonSerializationService = jsonSerializationService;
             _loadedData = null;
             _getDataLock = new SemaphoreSlim(1, 1);
@@ -56,6 +59,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 _loadedDataAlready = true;
                 string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[_messageKey].ToString(), cancellationToken);
+                await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_{_messageKey}.json", learnersValidStr, cancellationToken);
                 _loadedData = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
             }
             catch (Exception ex)

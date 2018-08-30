@@ -13,8 +13,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         public InvalidLearnersService(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService)
-        : base(JobContextMessageKey.InvalidLearnRefNumbers, logger, redis, jsonSerializationService)
+        : base(JobContextMessageKey.InvalidLearnRefNumbers, logger, redis, blob, jsonSerializationService)
         {
         }
     }

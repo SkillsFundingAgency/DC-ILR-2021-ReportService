@@ -220,9 +220,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Alb.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="app.config" />
     <None Include="ESFA.DC.ILR1819.ReportService.Tests.ruleset">
       <SubType>Designer</SubType>
+    </None>
+    <None Include="Fm25.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Fm35.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="FundingAlbOutput.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -260,6 +269,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ILR-10033670-1819-20180712-144437-03.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="ILR-10033670-1819-20180830-150220-03.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
