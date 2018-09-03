@@ -60,6 +60,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _loadedDataAlready = true;
                 string fm25Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output].ToString();
                 string fm25 = await _redis.GetAsync(fm25Filename, cancellationToken);
+
+                if (string.IsNullOrEmpty(fm25))
+                {
+                    _fundingOutputs = null;
+                    return _fundingOutputs;
+                }
+
                 await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Fm25.json", fm25, cancellationToken);
                 _fundingOutputs = _jsonSerializationService.Deserialize<Global>(fm25);
             }
