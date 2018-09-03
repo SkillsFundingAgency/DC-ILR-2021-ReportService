@@ -32,6 +32,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
 
+        private string _externalFileName;
+        private string _fileName;
+
         public SummaryOfFunding1619Report(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
@@ -62,11 +65,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            _externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            _fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
             string csv = await GetCsv(jobContextMessage, cancellationToken);
-            await _storage.SaveAsync($"{fileName}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{fileName}.csv", csv);
+            await _storage.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{_fileName}.csv", csv);
         }
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)

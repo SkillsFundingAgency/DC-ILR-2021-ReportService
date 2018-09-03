@@ -33,6 +33,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
 
+        private string _externalFileName;
+        private string _fileName;
+
         public ValidationErrorsReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
@@ -61,8 +64,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             long jobId = jobContextMessage.JobId;
             string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            // _fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            ReportFileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
+            _externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            _fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
             IlrValidationResult ilrValidationResult = GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
@@ -133,15 +137,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task PeristValuesToStorage(List<ValidationErrorDto> validationErrorDtos, List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(validationErrors);
-            await _storage.SaveAsync($"{ReportFileName}.json", _jsonSerializationService.Serialize(validationErrorDtos), cancellationToken);
-            await _storage.SaveAsync($"{ReportFileName}.csv", csv, cancellationToken);
+            await _storage.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(validationErrorDtos), cancellationToken);
+            await _storage.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
 
-            await WriteZipEntry(archive, $"{ReportFileName}.csv", csv);
+            await WriteZipEntry(archive, $"{_fileName}.csv", csv);
             using (MemoryStream ms = new MemoryStream())
             {
                 BuildXlsReport(ms, new ValidationErrorMapper(), validationErrors);
-                await _storage.SaveAsync($"{ReportFileName}.xlsx", ms, cancellationToken);
-                await WriteZipEntry(archive, $"{ReportFileName}.xlsx", ms, cancellationToken);
+                await _storage.SaveAsync($"{_externalFileName}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{_fileName}.xlsx", ms, cancellationToken);
             }
         }
 
