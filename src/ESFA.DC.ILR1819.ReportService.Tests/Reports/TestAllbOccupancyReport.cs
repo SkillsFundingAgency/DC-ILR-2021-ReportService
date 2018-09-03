@@ -57,7 +57,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
-            larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<List<string>>(), It.IsAny<CancellationToken>()))
+            larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<string[]>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Dictionary<string, LarsLearningDelivery>()
                 {
                     { "60145109", new LarsLearningDelivery { LearningAimTitle = "A", NotionalNvqLevel = "B", Tier2SectorSubjectArea = 3 } }

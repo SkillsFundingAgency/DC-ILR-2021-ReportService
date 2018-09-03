@@ -94,8 +94,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return null;
             }
 
-            List<string> learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
-                .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
+            string[] learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
+                .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
 
             Dictionary<string, LarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
 

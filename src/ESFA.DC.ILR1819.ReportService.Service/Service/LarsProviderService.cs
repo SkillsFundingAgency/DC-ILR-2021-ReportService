@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.Data.LARS.Model.Interfaces;
+using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
@@ -27,7 +28,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
 
-        private Dictionary<string, LarsFrameworkAim> _loadedFrameworkAims;
+        private List<LearnerAndDeliveries> _loadedFrameworkAims;
 
         private string _version;
 
@@ -43,7 +44,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getVersionLock = new SemaphoreSlim(1, 1);
     }
 
-        public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveries(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
+        public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveries(
+            string[] validLearnerAimRefs,
+            CancellationToken cancellationToken)
         {
             await _getLearningDeliveriesLock.WaitAsync(cancellationToken);
 
@@ -83,7 +86,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedLearningDeliveries;
         }
 
-        public async Task<Dictionary<string, LarsFrameworkAim>> GetFrameworkAims(List<string> validLearnerAimRefs, CancellationToken cancellationToken)
+        public async Task<List<LearnerAndDeliveries>> GetFrameworkAims(
+            string[] learnAimRefs,
+            List<ILearner> learners,
+            CancellationToken cancellationToken)
         {
             await _getFrameworkAimsLock.WaitAsync(cancellationToken);
 
@@ -94,19 +100,44 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                if (_loadedLearningDeliveries == null)
+                if (_loadedFrameworkAims == null)
                 {
+                    _loadedFrameworkAims = new List<LearnerAndDeliveries>();
+                    foreach (ILearner learner in learners)
+                    {
+                        List<LearningDelivery> learningDeliveries = new List<LearningDelivery>();
+                        foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
+                        {
+                            learningDeliveries.Add(new LearningDelivery(learningDelivery.LearnAimRef, learningDelivery.AimSeqNumber, learningDelivery.LearnStartDate));
+                        }
+
+                        _loadedFrameworkAims.Add(new LearnerAndDeliveries(learner.LearnRefNumber, learningDeliveries));
+                    }
+
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
-                    _loadedFrameworkAims = await larsContext.LARS_FrameworkAims
-                        .Where(
-                            x => validLearnerAimRefs.Contains(x.LearnAimRef))
-                        .ToDictionaryAsync(
-                            k => k.LearnAimRef,
-                            v => (LarsFrameworkAim)new LarsFrameworkAim()
+                    LarsFrameworkAim[] res = await larsContext.LARS_FrameworkAims
+                        .Where(x => learnAimRefs.Contains(x.LearnAimRef))
+                        .Select(x =>
+                            new LarsFrameworkAim
                             {
-                                FrameworkComponentType = v.FrameworkComponentType
-                            },
-                            cancellationToken);
+                                LearnAimRef = x.LearnAimRef,
+                                EffectiveFrom = x.EffectiveFrom,
+                                EffectiveTo = x.EffectiveTo ?? DateTime.MaxValue,
+                                FrameworkComponentType = x.FrameworkComponentType
+                            })
+                        .OrderByDescending(x => x.EffectiveTo)
+                        .ToArrayAsync(cancellationToken);
+
+                    foreach (LearnerAndDeliveries learnerAndDelivery in _loadedFrameworkAims)
+                    {
+                        foreach (LearningDelivery learningDelivery in learnerAndDelivery.LearningDeliveries)
+                        {
+                            learningDelivery.FrameworkComponentType = res.FirstOrDefault(x =>
+                                x.LearnAimRef == learningDelivery.LearningDeliveryLearnAimRef &&
+                                x.EffectiveFrom < learningDelivery.LearningDeliveryLearnStartDate &&
+                                x.EffectiveTo > learningDelivery.LearningDeliveryLearnStartDate)?.FrameworkComponentType;
+                        }
+                    }
                 }
             }
             catch (Exception ex)

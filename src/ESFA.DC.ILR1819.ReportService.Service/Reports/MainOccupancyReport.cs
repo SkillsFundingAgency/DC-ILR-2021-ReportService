@@ -85,12 +85,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            List<string> learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).ToList();
+            string[] learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
 
             Task<Dictionary<string, LarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
-            Task<Dictionary<string, LarsFrameworkAim>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs, cancellationToken);
+            Task<List<LearnerAndDeliveries>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs, learners, cancellationToken);
 
             await Task.WhenAll(larsLearningDeliveriesTask, larsFrameworkAimsTask);
+
+            if (larsLearningDeliveriesTask.Result == null || larsFrameworkAimsTask.Result == null)
+            {
+                _logger.LogWarning("Failed to get LARS data for Main Occupancy Report");
+                return;
+            }
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -115,13 +121,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     if (!larsLearningDeliveriesTask.Result.TryGetValue(learningDelivery.LearnAimRef, out LarsLearningDelivery larsModel))
                     {
-                        larsErrors.Add(learner.LearnRefNumber);
+                        larsErrors.Add(learningDelivery.LearnAimRef);
                         continue;
                     }
 
-                    if (!larsFrameworkAimsTask.Result.TryGetValue(learningDelivery.LearnAimRef, out LarsFrameworkAim frameworkAim))
+                    LearningDelivery frameworkAim = larsFrameworkAimsTask.Result.SingleOrDefault(x => x.LearnerLearnRefNumber == learner.LearnRefNumber)
+                        ?.LearningDeliveries.SingleOrDefault(x =>
+                            x.LearningDeliveryLearnAimRef == learningDelivery.LearnAimRef && x.LearningDeliveryAimSeqNumber == learningDelivery.AimSeqNumber);
+                    if (frameworkAim == null)
                     {
-                        larsErrors.Add(learner.LearnRefNumber);
+                        larsErrors.Add(learningDelivery.LearnAimRef);
                         continue;
                     }
 

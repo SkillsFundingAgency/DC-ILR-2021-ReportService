@@ -70,7 +70,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
 
             EntryPoint entryPoint = new EntryPoint(
                 logger.Object,
-
                 streamableKeyValuePersistenceService.Object,
                 new[] { report.Object },
                 ilrFileHelper.Object);

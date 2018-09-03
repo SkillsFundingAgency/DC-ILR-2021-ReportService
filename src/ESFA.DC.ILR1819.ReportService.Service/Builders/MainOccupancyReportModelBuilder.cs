@@ -14,7 +14,7 @@
             ILearner learner,
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
-            LarsFrameworkAim frameworkAim,
+            LearningDelivery frameworkAim,
             LearningDeliveryAttribute fm35Data)
         {
             var onProgPayment = fm35Data?.LearningDeliveryPeriodisedAttributes
