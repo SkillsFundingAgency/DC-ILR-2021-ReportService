@@ -243,8 +243,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     ret = ret + Convert.ToInt32(keyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount]);
                 }
-
-                return ret == 0 ? -1 : ret;
             }
             catch (Exception ex)
             {
