@@ -108,7 +108,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         List<LearningDelivery> learningDeliveries = new List<LearningDelivery>();
                         foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                         {
-                            learningDeliveries.Add(new LearningDelivery(learningDelivery.LearnAimRef, learningDelivery.AimSeqNumber, learningDelivery.LearnStartDate));
+                            learningDeliveries.Add(new LearningDelivery(learningDelivery.LearnAimRef, learningDelivery.AimSeqNumber, learningDelivery.FworkCodeNullable, learningDelivery.ProgTypeNullable, learningDelivery.PwayCodeNullable, learningDelivery.LearnStartDate));
                         }
 
                         _loadedFrameworkAims.Add(new LearnerAndDeliveries(learner.LearnRefNumber, learningDeliveries));
@@ -120,6 +120,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         .Select(x =>
                             new LarsFrameworkAim
                             {
+                                FworkCode = x.FworkCode,
+                                ProgType = x.ProgType,
+                                PwayCode = x.PwayCode,
                                 LearnAimRef = x.LearnAimRef,
                                 EffectiveFrom = x.EffectiveFrom,
                                 EffectiveTo = x.EffectiveTo ?? DateTime.MaxValue,
@@ -133,6 +136,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         foreach (LearningDelivery learningDelivery in learnerAndDelivery.LearningDeliveries)
                         {
                             learningDelivery.FrameworkComponentType = res.FirstOrDefault(x =>
+                                (learningDelivery.FworkCode == null || x.FworkCode == learningDelivery.FworkCode) &&
+                                (learningDelivery.ProgType == null || x.ProgType == learningDelivery.ProgType) &&
+                                (learningDelivery.PwayCode == null || x.PwayCode == learningDelivery.PwayCode) &&
                                 x.LearnAimRef == learningDelivery.LearningDeliveryLearnAimRef &&
                                 x.EffectiveFrom < learningDelivery.LearningDeliveryLearnStartDate &&
                                 x.EffectiveTo > learningDelivery.LearningDeliveryLearnStartDate)?.FrameworkComponentType;

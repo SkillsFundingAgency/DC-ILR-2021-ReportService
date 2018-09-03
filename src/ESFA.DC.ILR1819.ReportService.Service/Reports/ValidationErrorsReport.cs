@@ -61,7 +61,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             long jobId = jobContextMessage.JobId;
             string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            // _fileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            // ReportFileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
             ReportFileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);

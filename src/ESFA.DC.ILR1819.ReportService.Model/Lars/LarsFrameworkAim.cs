@@ -15,5 +15,11 @@ namespace ESFA.DC.ILR1819.ReportService.Model.Lars
         public DateTime EffectiveTo { get; set; }
 
         public int? FrameworkComponentType { get; set; }
+
+        public int FworkCode { get; set; }
+
+        public int ProgType { get; set; }
+
+        public int PwayCode { get; set; }
     }
 }

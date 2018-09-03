@@ -85,6 +85,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                         var learningDeliveryRes = new LearningDelivery(
                             learningDelivery.LearnAimRef,
                             learningDelivery.AimSeqNumber,
+                            learningDelivery.FworkCodeNullable,
+                            learningDelivery.ProgTypeNullable,
+                            learningDelivery.PwayCodeNullable,
                             learningDelivery.LearnStartDate);
                         learningDeliveryRes.FrameworkComponentType = 1;
                         learningDeliveries.Add(learningDeliveryRes);
