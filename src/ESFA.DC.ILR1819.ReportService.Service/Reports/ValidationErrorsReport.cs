@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private string _externalFileName;
         private string _fileName;
+        private IlrValidationResult _ilrValidationResult;
 
         public ValidationErrorsReport(
             ILogger logger,
@@ -69,19 +70,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
-            IlrValidationResult ilrValidationResult = GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
+            GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
 
             await PeristValuesToStorage(validationErrorDtos, validationErrors, archive, cancellationToken);
         }
 
-        private IlrValidationResult GenerateFrontEndValidationReport(
+        private void GenerateFrontEndValidationReport(
             IDictionary<string, object> keyValuePairs,
             List<ValidationErrorDto> validationErrorDtos)
         {
             var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase)).ToArray();
             var warnings = validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            var validationReport = new IlrValidationResult
+            _ilrValidationResult = new IlrValidationResult
             {
                 TotalLearners = GetNumberOfLearners(keyValuePairs),
                 TotalErrors = errors.Length,
@@ -89,8 +90,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 TotalWarningLearners = warnings.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count(),
                 TotalErrorLearners = errors.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count()
             };
-
-            return validationReport;
         }
 
         private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage)
@@ -137,7 +136,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task PeristValuesToStorage(List<ValidationErrorDto> validationErrorDtos, List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(validationErrors);
-            await _storage.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(validationErrorDtos), cancellationToken);
+            await _storage.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
             await _storage.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
 
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
