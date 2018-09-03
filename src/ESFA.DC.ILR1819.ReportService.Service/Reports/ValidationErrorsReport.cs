@@ -33,6 +33,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
 
+        private string _externalFileName;
+        private string _fileName;
+        private IlrValidationResult _ilrValidationResult;
+
         public ValidationErrorsReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
@@ -61,23 +65,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             long jobId = jobContextMessage.JobId;
             string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            // ReportFileName = GetReportFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            ReportFileName = $"{ukPrn}_{jobId.ToString()}_ValidationErrors";
-            List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
-            List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
-            IlrValidationResult ilrValidationResult = GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
+            _externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            _fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
-            await PeristValuesToStorage(validationErrorDtos, validationErrors, archive, cancellationToken);
+            List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
+
+            List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
+            GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
+
+            await PeristValuesToStorage(validationErrors, archive, cancellationToken);
         }
 
-        private IlrValidationResult GenerateFrontEndValidationReport(
+        private void GenerateFrontEndValidationReport(
             IDictionary<string, object> keyValuePairs,
             List<ValidationErrorDto> validationErrorDtos)
         {
             var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase)).ToArray();
             var warnings = validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            var validationReport = new IlrValidationResult
+            _ilrValidationResult = new IlrValidationResult
             {
                 TotalLearners = GetNumberOfLearners(keyValuePairs),
                 TotalErrors = errors.Length,
@@ -85,8 +91,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 TotalWarningLearners = warnings.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count(),
                 TotalErrorLearners = errors.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count()
             };
-
-            return validationReport;
         }
 
         private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage)
@@ -105,14 +109,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 List<ValidationErrorMessageLookup> validationErrorMessageLookups =
                     _jsonSerializationService.Deserialize<List<ValidationErrorMessageLookup>>(validationErrorLookups);
 
-                validationErrors.ToList().ForEach(x =>
+                validationErrors?.ToList().ForEach(x =>
                     result.Add(new ValidationErrorDto
                     {
                         AimSequenceNumber = x.AimSequenceNumber,
                         LearnerReferenceNumber = x.LearnerReferenceNumber,
                         RuleName = x.RuleName,
                         Severity = x.Severity,
-                        ErrorMessage = validationErrorMessageLookups.SingleOrDefault(y => x.RuleName == y.RuleName)?.Message,
+                        ErrorMessage = validationErrorMessageLookups?.SingleOrDefault(y => x.RuleName == y.RuleName)?.Message,
                         FieldValues = x.ValidationErrorParameters == null ? string.Empty : GetValidationErrorParameters(x.ValidationErrorParameters.ToList()),
                     }));
             }
@@ -124,24 +128,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             if (result.Count == 0)
             {
                 _logger.LogError("Falling back to old behaviour");
-                result = _jsonSerializationService.Deserialize<List<ValidationErrorDto>>(validationErrorsStr);
+                try
+                {
+                    result = _jsonSerializationService.Deserialize<List<ValidationErrorDto>>(validationErrorsStr);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Old behaviour failed", ex);
+                }
             }
 
             return result;
         }
 
-        private async Task PeristValuesToStorage(List<ValidationErrorDto> validationErrorDtos, List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
+        private async Task PeristValuesToStorage(List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(validationErrors);
-            await _storage.SaveAsync($"{ReportFileName}.json", _jsonSerializationService.Serialize(validationErrorDtos), cancellationToken);
-            await _storage.SaveAsync($"{ReportFileName}.csv", csv, cancellationToken);
+            await _storage.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
+            await _storage.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
 
-            await WriteZipEntry(archive, $"{ReportFileName}.csv", csv);
+            await WriteZipEntry(archive, $"{_fileName}.csv", csv);
             using (MemoryStream ms = new MemoryStream())
             {
                 BuildXlsReport(ms, new ValidationErrorMapper(), validationErrors);
-                await _storage.SaveAsync($"{ReportFileName}.xlsx", ms, cancellationToken);
-                await WriteZipEntry(archive, $"{ReportFileName}.xlsx", ms, cancellationToken);
+                await _storage.SaveAsync($"{_externalFileName}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{_fileName}.xlsx", ms, cancellationToken);
             }
         }
 
@@ -156,7 +167,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private List<ValidationErrorModel> ValidationErrorModels(IMessage message, List<ValidationErrorDto> validationErrorDtos)
         {
-            var validationErrors = new List<ValidationErrorModel>(validationErrorDtos.Count);
+            var validationErrors = new List<ValidationErrorModel>();
             foreach (ValidationErrorDto validationErrorDto in validationErrorDtos)
             {
                 if (message == null)
@@ -171,13 +182,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 }
                 else
                 {
-                    ILearner learner = message.Learners.FirstOrDefault(x => x.LearnRefNumber == validationErrorDto.LearnerReferenceNumber);
+                    ILearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationErrorDto.LearnerReferenceNumber);
                     if (learner == null)
                     {
                         _logger.LogWarning($"Can't find learner {validationErrorDto.LearnerReferenceNumber}");
                     }
 
-                    ILearningDelivery learningDelivery = learner?.LearningDeliveries.FirstOrDefault(x => x.AimSeqNumber == validationErrorDto.AimSequenceNumber);
+                    ILearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == validationErrorDto.AimSequenceNumber);
                     if (learningDelivery == null)
                     {
                         _logger.LogWarning(
@@ -232,8 +243,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     ret = ret + Convert.ToInt32(keyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount]);
                 }
-
-                return ret == 0 ? -1 : ret;
             }
             catch (Exception ex)
             {

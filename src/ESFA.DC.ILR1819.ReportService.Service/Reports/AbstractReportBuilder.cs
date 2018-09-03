@@ -34,10 +34,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return reportTaskName == ReportTaskName;
         }
 
-        public string GetReportFilename(string ukPrn, long jobId, DateTime submissionDateTime)
+        public string GetExternalFilename(string ukPrn, long jobId, DateTime submissionDateTime)
         {
             DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(submissionDateTime);
             return $"{ukPrn}_{jobId.ToString()}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public string GetFilename(string ukPrn, long jobId, DateTime submissionDateTime)
+        {
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(submissionDateTime);
+            return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
 
         /// <summary>
