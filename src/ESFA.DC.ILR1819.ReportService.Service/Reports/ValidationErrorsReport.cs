@@ -69,10 +69,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
+
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
             GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
 
-            await PeristValuesToStorage(validationErrorDtos, validationErrors, archive, cancellationToken);
+            await PeristValuesToStorage(validationErrors, archive, cancellationToken);
         }
 
         private void GenerateFrontEndValidationReport(
@@ -108,14 +109,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 List<ValidationErrorMessageLookup> validationErrorMessageLookups =
                     _jsonSerializationService.Deserialize<List<ValidationErrorMessageLookup>>(validationErrorLookups);
 
-                validationErrors.ToList().ForEach(x =>
+                validationErrors?.ToList().ForEach(x =>
                     result.Add(new ValidationErrorDto
                     {
                         AimSequenceNumber = x.AimSequenceNumber,
                         LearnerReferenceNumber = x.LearnerReferenceNumber,
                         RuleName = x.RuleName,
                         Severity = x.Severity,
-                        ErrorMessage = validationErrorMessageLookups.SingleOrDefault(y => x.RuleName == y.RuleName)?.Message,
+                        ErrorMessage = validationErrorMessageLookups?.SingleOrDefault(y => x.RuleName == y.RuleName)?.Message,
                         FieldValues = x.ValidationErrorParameters == null ? string.Empty : GetValidationErrorParameters(x.ValidationErrorParameters.ToList()),
                     }));
             }
@@ -127,13 +128,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             if (result.Count == 0)
             {
                 _logger.LogError("Falling back to old behaviour");
-                result = _jsonSerializationService.Deserialize<List<ValidationErrorDto>>(validationErrorsStr);
+                try
+                {
+                    result = _jsonSerializationService.Deserialize<List<ValidationErrorDto>>(validationErrorsStr);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError("Old behaviour failed", ex);
+                }
             }
 
             return result;
         }
 
-        private async Task PeristValuesToStorage(List<ValidationErrorDto> validationErrorDtos, List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
+        private async Task PeristValuesToStorage(List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(validationErrors);
             await _storage.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
@@ -159,7 +167,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private List<ValidationErrorModel> ValidationErrorModels(IMessage message, List<ValidationErrorDto> validationErrorDtos)
         {
-            var validationErrors = new List<ValidationErrorModel>(validationErrorDtos.Count);
+            var validationErrors = new List<ValidationErrorModel>();
             foreach (ValidationErrorDto validationErrorDto in validationErrorDtos)
             {
                 if (message == null)
@@ -174,13 +182,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 }
                 else
                 {
-                    ILearner learner = message.Learners.FirstOrDefault(x => x.LearnRefNumber == validationErrorDto.LearnerReferenceNumber);
+                    ILearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationErrorDto.LearnerReferenceNumber);
                     if (learner == null)
                     {
                         _logger.LogWarning($"Can't find learner {validationErrorDto.LearnerReferenceNumber}");
                     }
 
-                    ILearningDelivery learningDelivery = learner?.LearningDeliveries.FirstOrDefault(x => x.AimSeqNumber == validationErrorDto.AimSequenceNumber);
+                    ILearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == validationErrorDto.AimSequenceNumber);
                     if (learningDelivery == null)
                     {
                         _logger.LogWarning(

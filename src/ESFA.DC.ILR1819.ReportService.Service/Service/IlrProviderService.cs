@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError("Failed to get and deserialise ILR from storage", ex);
+                _logger.LogError($"Failed to get and deserialise ILR from storage, key: {JobContextMessageKey.Filename}", ex);
             }
             finally
             {
