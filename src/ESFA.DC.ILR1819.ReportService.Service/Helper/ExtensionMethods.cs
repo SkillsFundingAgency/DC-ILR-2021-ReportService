@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Helper
 {
@@ -15,6 +16,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Helper
                     yield return element;
                 }
             }
+        }
+
+        public static int DistinctByCount<TSource>(this IEnumerable<TSource> source, Func<TSource, string> keySelector)
+        {
+            HashSet<string> seenKeys = new HashSet<string>();
+            foreach (TSource element in source)
+            {
+                string val = keySelector(element);
+                if (!string.IsNullOrEmpty(val))
+                {
+                    seenKeys.Add(val);
+                }
+            }
+
+            return seenKeys.Count;
         }
     }
 }

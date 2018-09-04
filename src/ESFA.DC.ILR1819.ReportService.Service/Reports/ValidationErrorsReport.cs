@@ -88,8 +88,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 TotalLearners = GetNumberOfLearners(keyValuePairs),
                 TotalErrors = errors.Length,
                 TotalWarnings = warnings.Length,
-                TotalWarningLearners = warnings.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count(),
-                TotalErrorLearners = errors.Where(x => !string.IsNullOrEmpty(x.LearnerReferenceNumber)).DistinctBy(x => x.LearnerReferenceNumber).Count()
+                TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber),
+                TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber)
             };
         }
 
