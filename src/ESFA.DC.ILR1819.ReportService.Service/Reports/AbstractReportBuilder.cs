@@ -130,11 +130,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            if (filename.Contains('_'))
-            {
-                filename = filename.Substring(filename.LastIndexOf('_') + 1);
-            }
-
             ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
             using (StreamWriter sw = new StreamWriter(archivedFile.Open()))
             {
