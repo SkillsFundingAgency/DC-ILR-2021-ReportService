@@ -22,9 +22,9 @@
 
         public string RateBand { get; set; }
 
-        public string StartFund { get; set; }
+        public bool StartFund { get; set; }
 
-        public string OnProgPayment { get; set; }
+        public decimal? OnProgPayment { get; set; }
 
         public string OfficalSensitive { get; }
     }

@@ -90,7 +90,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 var learner =
                     ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                var fm25Learner = fm25Task.Result?.Learners.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var fm25Learner = fm25Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
                 if (learner == null || fm25Learner == null)
                 {
