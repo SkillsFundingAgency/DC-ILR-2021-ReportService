@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -17,7 +18,6 @@ using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -25,11 +25,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IXmlSerializationService _xmlSerializationService;
-        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
+        private readonly IFM25ProviderService _fm25ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
 
         private string _externalFileName;
@@ -38,11 +36,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public SummaryOfFunding1619Report(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
-            IXmlSerializationService xmlSerializationService,
-            IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
+            IFM25ProviderService fm25ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
@@ -50,11 +46,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             _logger = logger;
             _storage = blob;
-            _redis = redis;
-            _xmlSerializationService = xmlSerializationService;
-            _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
+            _fm25ProviderService = fm25ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
 
             ReportFileName = "16-19 Summary of Funding by Student Report";
@@ -77,8 +71,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+            Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
 
-            await Task.WhenAll(ilrFileTask, validLearnersTask);
+            await Task.WhenAll(ilrFileTask, validLearnersTask, fm25Task);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -92,7 +87,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 var learner =
                     ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-                if (learner == null)
+
+                var fm25Learner = fm25Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+
+                if (learner == null || fm25Learner == null)
                 {
                     ilrError.Add(validLearnerRefNum);
                     continue;
@@ -100,7 +98,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 summaryOfFunding1619Models.Add(new SummaryOfFunding1619Model()
                 {
-                    FundLine = "Todo", // Todo
+                    FundLine = fm25Learner.FundLine,
                     LearnRefNumber = learner.LearnRefNumber,
                     FamilyName = learner.FamilyName,
                     GivenNames = learner.GivenNames,
@@ -109,9 +107,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     PlanLearnHours = learner.PlanLearnHoursNullable,
                     PlanEepHours = learner.PlanEEPHoursNullable,
                     TotalPlannedHours = (learner.PlanLearnHoursNullable ?? 0) + (learner.PlanEEPHoursNullable ?? 0),
-                    RateBand = "Todo", // Todo
-                    StartFund = "Todo", // Todo
-                    OnProgPayment = "Todo" // Todo
+                    RateBand = fm25Learner.RateBand,
+                    StartFund = fm25Learner.StartFund ?? false,
+                    OnProgPayment = fm25Learner.OnProgPayment
                 });
             }
 

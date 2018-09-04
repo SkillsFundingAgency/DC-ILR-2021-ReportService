@@ -40,6 +40,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
 
@@ -51,6 +52,10 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     "3fm9901",
                     "5fm9901"
                 }));
+            redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(
+                jsonSerializationService.Serialize(
+                    TestFM25Builder.Build()));
+
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
@@ -59,11 +64,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             SummaryOfFunding1619Report summaryOfFunding1619Report = new SummaryOfFunding1619Report(
                 logger.Object,
                 storage.Object,
-                redis.Object,
-                xmlSerializationService,
-                jsonSerializationService,
                 ilrProviderService,
                 validLearnersService,
+                fm25ProviderService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
                 topicsAndTasks);
@@ -72,6 +75,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output] = "FundingFm25Output";
 
             await summaryOfFunding1619Report.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
