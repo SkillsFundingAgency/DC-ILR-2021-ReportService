@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private bool _loadedDataAlready;
 
-        private FundingOutputs _fundingOutputs;
+        private ALBFundingOutputs _fundingOutputs;
 
         public AllbProviderService(
             ILogger logger,
@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<FundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<ALBFundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Alb.json", alb, cancellationToken);
-                _fundingOutputs = _jsonSerializationService.Deserialize<FundingOutputs>(alb);
+                _fundingOutputs = _jsonSerializationService.Deserialize<ALBFundingOutputs>(alb);
             }
             catch (Exception ex)
             {

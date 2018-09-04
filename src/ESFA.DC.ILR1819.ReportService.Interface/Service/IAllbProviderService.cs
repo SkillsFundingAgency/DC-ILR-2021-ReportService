@@ -7,6 +7,6 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
     public interface IAllbProviderService
     {
-        Task<FundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
+        Task<ALBFundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
     }
 }

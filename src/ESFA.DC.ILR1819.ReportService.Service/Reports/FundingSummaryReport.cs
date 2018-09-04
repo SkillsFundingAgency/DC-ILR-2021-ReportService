@@ -85,7 +85,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<FundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<ALBFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
             Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
             Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
@@ -146,7 +146,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         }
 
         private void TotalAlb(
-            Task<FundingOutputs> albDataTask,
+            Task<ALBFundingOutputs> albDataTask,
             string validLearnerRefNum,
             List<string> albLearnerError,
             FundingSummaryModel fundingSummaryModelAlbFunding,

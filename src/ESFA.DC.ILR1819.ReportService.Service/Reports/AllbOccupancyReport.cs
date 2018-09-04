@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<FundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<ALBFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
