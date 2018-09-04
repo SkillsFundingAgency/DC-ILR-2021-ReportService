@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -32,9 +33,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string csv = string.Empty;
             string json = string.Empty;
             byte[] xlsx = null;
-            System.DateTime dateTime = System.DateTime.UtcNow;
-            //string filename = $"10033670_1_Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
-            string filename = $"10033670_1_ValidationErrors";
+            DateTime dateTime = DateTime.UtcNow;
+            string filename = $"10033670_1_Validation Errors Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             redis.Setup(x => x.GetAsync("ValidationErrors", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ValidationErrors.json"));
             redis.Setup(x => x.GetAsync("ValidationErrorsLookup", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ValidationErrorsLookup.json"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
-            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
 
@@ -75,7 +75,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 dateTimeProviderMock.Object,
                 topicsAndTasks);
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
+            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors] = "ValidationErrors";
