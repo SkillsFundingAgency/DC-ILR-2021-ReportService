@@ -43,28 +43,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.AchDate).Index(32).Name("Achievement date");
             Map(m => m.AddHours).Index(33).Name("Additional delivery hours");
             Map(m => m.LearnDelFamCodeSof).Index(34)
-                .Name("Learning delivery funding and monitoring type – source of funding");
+                .Name("Learning delivery funding and monitoring type - source of funding");
             Map(m => m.LearnDelFamCodeFfi).Index(35)
-                .Name("Learning delivery funding and monitoring type – full or co funding indicator");
+                .Name("Learning delivery funding and monitoring type - full or co funding indicator");
             Map(m => m.LearnDelFamCodeEef).Index(36)
                 .Name(
-                    "Learning delivery funding and monitoring type – eligibility for enhanced apprenticeship funding");
+                    "Learning delivery funding and monitoring type - eligibility for enhanced apprenticeship funding");
             Map(m => m.LearnDelFamCodeLsfHighest).Index(37).Name(
-                "Learning delivery funding and monitoring type – learning support funding (highest applicable)");
+                "Learning delivery funding and monitoring type - learning support funding (highest applicable)");
             Map(m => m.LearnDelFamCodeLsfEarliest).Index(38)
                 .Name("Learning delivery funding and monitoring type - LSF date applies from (earliest)");
             Map(m => m.LearnDelFamCodeLsfLatest).Index(39)
                 .Name("Learning delivery funding and monitoring type - LSF date applies to (latest)");
             Map(m => m.LearnDelFamCodeLdm1).Index(40)
-                .Name("Learning delivery funding and monitoring type – learning delivery monitoring (A)");
+                .Name("Learning delivery funding and monitoring type - learning delivery monitoring (A)");
             Map(m => m.LearnDelFamCodeLdm2).Index(41)
-                .Name("Learning delivery funding and monitoring type – learning delivery monitoring (B)");
+                .Name("Learning delivery funding and monitoring type - learning delivery monitoring (B)");
             Map(m => m.LearnDelFamCodeLdm3).Index(42)
-                .Name("Learning delivery funding and monitoring type – learning delivery monitoring (C)");
+                .Name("Learning delivery funding and monitoring type - learning delivery monitoring (C)");
             Map(m => m.LearnDelFamCodeLdm4).Index(43)
-                .Name("Learning delivery funding and monitoring type – learning delivery monitoring (D)");
+                .Name("Learning delivery funding and monitoring type - learning delivery monitoring (D)");
             Map(m => m.LearnDelFamCodeRes).Index(44)
-                .Name("Learning delivery funding and monitoring type – restart indicator");
+                .Name("Learning delivery funding and monitoring type - restart indicator");
             Map(m => m.ProvSpecDelMonA).Index(45).Name("Provider specified delivery monitoring (A)");
             Map(m => m.ProvSpecDelMonB).Index(46).Name("Provider specified delivery monitoring (B)");
             Map(m => m.ProvSpecDelMonC).Index(47).Name("Provider specified delivery monitoring (C)");
@@ -168,7 +168,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.TotalLearnSuppFundCash).Index(121).Name("Total learning support earned cash");
             Map(m => m.TotalEarnedCash).Index(122).Name("Total earned cash");
 
-            Map(m => m.OfficalSensitive).Index(123).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficalSensitive).Index(123).Name("OFFICIAL - SENSITIVE");
         }
     }
 }
