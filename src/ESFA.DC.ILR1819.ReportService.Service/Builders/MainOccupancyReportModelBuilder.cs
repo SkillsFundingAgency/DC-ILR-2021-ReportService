@@ -26,7 +26,7 @@
             var empOutcomePayment = fm35Data?.LearningDeliveryPeriodisedAttributes
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
             var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedAttributes
-                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
+                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35LearningSupportAttributeName);
 
             var totalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
                                      (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) +
