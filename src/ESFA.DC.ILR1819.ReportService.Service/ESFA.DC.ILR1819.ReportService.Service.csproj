@@ -90,6 +90,9 @@
     <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.1.119.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.0.1.119\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.1.0.0\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.Model, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1819.Model.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
     </Reference>
@@ -174,6 +177,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\SummaryOfFM35FundingModelBuilder.cs" />
@@ -183,6 +187,7 @@
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Helper\IlrFileHelper.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
+    <Compile Include="Mapper\AppsAdditionalPaymentsMapper.cs" />
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
     <Compile Include="Mapper\FundingSummaryHeaderMapper.cs" />
     <Compile Include="Mapper\FundingSummaryMapper.cs" />
@@ -194,6 +199,7 @@
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
+    <Compile Include="Reports\AppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
     <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\SummaryOfFunding1619Report.cs" />
@@ -204,6 +210,7 @@
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\FM25ProviderService.cs" />
+    <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\FM35ProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
     <Compile Include="Service\InvalidLearnersService.cs" />

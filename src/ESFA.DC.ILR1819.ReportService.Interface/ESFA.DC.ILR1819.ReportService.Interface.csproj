@@ -13,6 +13,7 @@
     <PackageReference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model" Version="0.1.129" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.FM25.FundingOutput.Model" Version="0.1.119" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model" Version="0.1.119" />
+    <PackageReference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model" Version="1.0.0" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.JobContext.Interface" Version="0.1.15-beta0001" />
   </ItemGroup>

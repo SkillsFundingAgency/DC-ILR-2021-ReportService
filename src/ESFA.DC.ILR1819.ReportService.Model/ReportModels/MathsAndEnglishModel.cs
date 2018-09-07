@@ -20,6 +20,6 @@
 
         public string RateBand { get; set; }
 
-        public string OfficalSensitive { get; }
+        public string OfficialSensitive { get; }
     }
 }
