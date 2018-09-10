@@ -19,5 +19,24 @@
         public const string Fm35AimAchievementAttributeName = "AchievePayment";
         public const string Fm35LearningSupportAttributeName = "LearnSuppFundCash";
         public const string Fm35AimAchievementPercentAttributeName = "AchievePayPct";
+
+        // FM36 Attributes
+        public const string Fm36PriceEpisodeOnProgPaymentAttributeName = "PriceEpisodeOnProgPayment";
+        public const string Fm3PriceEpisodeBalancePaymentAttributeName = "PriceEpisodeBalancePayment";
+        public const string Fm36PriceEpisodeCompletionPaymentAttributeName = "PriceEpisodeCompletionPayment";
+        public const string Fm36LearnSuppFundCashAttributeName = "LearnSuppFundCash";
+        public const string Fm36PriceEpisodeLSFCashAttributeName = "PriceEpisodeLSFCash";
+        public const string Fm36MathEngOnProgPaymentAttributeName = "MathEngOnProgPayment";
+        public const string Fm36MathEngBalPaymentAttributeName = "MathEngBalPayment";
+        public const string Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName = "PriceEpisodeFirstDisadvantagePayment";
+        public const string Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName = "PriceEpisodeSecondDisadvantagePayment";
+        public const string Fm36PriceEpisodeFirstEmp1618PayAttributeName = "PriceEpisodeFirstEmp1618Pay";
+        public const string Fm36PriceEpisodeSecondEmp1618PayAttributeName = "PriceEpisodeSecondEmp1618Pay";
+        public const string Fm36PriceEpisodeFirstProv1618PayAttributeName = "PriceEpisodeFirstProv1618Pay";
+        public const string Fm36PriceEpisodeSecondProv1618PayAttributeName = "PriceEpisodeSecondProv1618Pay";
+        public const string Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName = "PriceEpisodeLearnerAdditionalPayment";
+        public const string Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName = "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
+        public const string Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName = "PriceEpisodeApplic1618FrameworkUpliftBalancing";
+        public const string Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName = "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
     }
 }

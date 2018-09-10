@@ -90,6 +90,9 @@
     <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.1.119.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.0.1.119\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.1.0.0\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.Model, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1819.Model.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
     </Reference>
@@ -178,6 +181,17 @@
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\SummaryOfFM35FundingModelBuilder.cs" />
     <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeAprilCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeJulyCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeJuneCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeMayCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeMarchCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeFebruaryCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeJanuaryCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeDecemberCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeNovemberCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeOctoberCommand.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeSeptemberCommand.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Helper\ExtensionMethods.cs" />
@@ -194,6 +208,7 @@
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
+    <Compile Include="Reports\AppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
     <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\SummaryOfFunding1619Report.cs" />
@@ -212,6 +227,7 @@
     <Compile Include="Service\PeriodProviderService.cs" />
     <Compile Include="Service\StringUtilitiesService.cs" />
     <Compile Include="Service\ValidLearnersService.cs" />
+    <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeAugustCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
