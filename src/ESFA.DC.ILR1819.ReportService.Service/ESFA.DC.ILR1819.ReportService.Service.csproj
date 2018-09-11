@@ -200,6 +200,7 @@
     <Compile Include="Helper\IlrFileHelper.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
     <Compile Include="Mapper\AppsAdditionalPaymentsMapper.cs" />
+    <Compile Include="Mapper\AppsIndicativeEarningsMapper.cs" />
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
     <Compile Include="Mapper\FundingSummaryHeaderMapper.cs" />
     <Compile Include="Mapper\FundingSummaryMapper.cs" />

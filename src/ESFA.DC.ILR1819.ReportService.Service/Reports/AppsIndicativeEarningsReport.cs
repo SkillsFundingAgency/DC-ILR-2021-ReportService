@@ -164,7 +164,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             using (var ms = new MemoryStream())
             {
-                //BuildCsvReport<MathsAndEnglishMapper, AppsIndicativeEarningsModel>(ms, appsIndicativeEarningsModels);
+                BuildCsvReport<AppsIndicativeEarningsMapper, AppsIndicativeEarningsModel>(ms, appsIndicativeEarningsModels);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }
