@@ -9,10 +9,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="ReportModels\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.6-beta0001" />
   </ItemGroup>
 
