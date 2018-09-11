@@ -177,6 +177,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
@@ -198,6 +199,7 @@
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Helper\IlrFileHelper.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
+    <Compile Include="Mapper\AppsAdditionalPaymentsMapper.cs" />
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
     <Compile Include="Mapper\FundingSummaryHeaderMapper.cs" />
     <Compile Include="Mapper\FundingSummaryMapper.cs" />
@@ -209,6 +211,7 @@
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
+    <Compile Include="Reports\AppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\AppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
     <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
@@ -220,6 +223,7 @@
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\FM25ProviderService.cs" />
+    <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\FM35ProviderService.cs" />
     <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
