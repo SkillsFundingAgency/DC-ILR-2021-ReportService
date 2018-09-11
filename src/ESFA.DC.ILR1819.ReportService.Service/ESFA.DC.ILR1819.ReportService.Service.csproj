@@ -223,7 +223,6 @@
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\FM25ProviderService.cs" />
-    <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\FM35ProviderService.cs" />
     <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
