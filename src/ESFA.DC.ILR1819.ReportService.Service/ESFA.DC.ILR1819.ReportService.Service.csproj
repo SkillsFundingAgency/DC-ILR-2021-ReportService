@@ -177,6 +177,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\SummaryOfFM35FundingModelBuilder.cs" />
@@ -220,6 +221,7 @@
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\FM25ProviderService.cs" />
     <Compile Include="Service\FM35ProviderService.cs" />
+    <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
     <Compile Include="Service\InvalidLearnersService.cs" />
     <Compile Include="Service\LarsProviderService.cs" />

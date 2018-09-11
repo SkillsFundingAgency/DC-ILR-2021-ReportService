@@ -2,6 +2,17 @@
 {
     public static class Constants
     {
+        public const string EmploymentStatusMonitoringTypeSEM = "SEM";
+
+        // LearningDelivery FAM Codes
+        public const string LearningDeliveryFAMCodeLSF = "LSF";
+        public const string LearningDeliveryFAMCodeLDM1 = "LDM1";
+        public const string LearningDeliveryFAMCodeLDM2 = "LDM2";
+        public const string LearningDeliveryFAMCodeLDM3 = "LDM3";
+        public const string LearningDeliveryFAMCodeLDM4 = "LDM4";
+        public const string LearningDeliveryFAMCodeRES = "RES";
+        public const string LearningDeliveryFAMCodeACT = "ACT";
+
         // FM25 FundLines
         public const string DirectFundedStudents1416FundLine = "14-16 Direct Funded Students";
         public const string Students1619FundLine = "16-19 Students (excluding High Needs Students)";

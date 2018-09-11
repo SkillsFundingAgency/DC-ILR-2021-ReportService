@@ -6,13 +6,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
@@ -26,36 +28,33 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
-        private readonly IFM25ProviderService _fm25ProviderService;
+        private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly ILarsProviderService _larsProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
-        private readonly IMathsAndEnglishFm25Rules _mathsAndEnglishFm25Rules;
-        private readonly IMathsAndEnglishModelBuilder _mathsAndEnglishModelBuilder;
+        private readonly IAppsIndicativeEarningsModelBuilder _modelBuilder;
 
         public AppsIndicativeEarningsReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
-            IFM25ProviderService fm25ProviderService,
+            IFM36ProviderService fm36ProviderService,
             ILarsProviderService larsProviderService,
             IStringUtilitiesService stringUtilitiesService,
+            IAppsIndicativeEarningsModelBuilder modelBuilder,
             IDateTimeProvider dateTimeProvider,
-            IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules,
-            IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
         : base(dateTimeProvider)
         {
             _logger = logger;
             _storage = storage;
             _ilrProviderService = ilrProviderService;
-            _fm25ProviderService = fm25ProviderService;
+            _fm36ProviderService = fm36ProviderService;
             _validLearnersService = validLearnersService;
             _larsProviderService = larsProviderService;
             _stringUtilitiesService = stringUtilitiesService;
-            _mathsAndEnglishFm25Rules = mathsAndEnglishFm25Rules;
-            _mathsAndEnglishModelBuilder = mathsAndEnglishModelBuilder;
+            _modelBuilder = modelBuilder;
 
             ReportFileName = "Apps Indicative Earnings Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport; // todo
@@ -77,47 +76,95 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
+            Task<FM36FundingOutputs> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
 
-            await Task.WhenAll(ilrFileTask, validLearnersTask, fm25Task);
+            await Task.WhenAll(ilrFileTask, validLearnersTask, fm36Task);
 
             if (cancellationToken.IsCancellationRequested)
             {
                 return null;
             }
 
+            var validLearners = validLearnersTask.Result;
+            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveries(validLearners.ToArray(), cancellationToken);
+
             var ilrError = new List<string>();
 
-            var mathsAndEnglishModels = new List<MathsAndEnglishModel>(validLearnersTask.Result.Count);
-            foreach (string validLearnerRefNum in validLearnersTask.Result)
+            var appsIndicativeEarningsModels = new List<AppsIndicativeEarningsModel>();
+            foreach (string validLearnerRefNum in validLearners)
             {
-                var learner =
-                    ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var larsDelivery = larsLearningDeliveries.SingleOrDefault(x => x.Key == validLearnerRefNum).Value;
+                var fm36Learner = fm36Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                var fm25Learner = fm25Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-
-                if (learner == null || fm25Learner == null)
+                if (learner == null || fm36Learner == null)
                 {
                     ilrError.Add(validLearnerRefNum);
                     continue;
                 }
 
-                if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Learner))
+                foreach (var learningDelivery in learner.LearningDeliveries)
                 {
-                    continue;
-                }
+                    LARS_Standard larsStandard = learningDelivery.StdCodeNullable == null
+                        ? null
+                        : await _larsProviderService.GetStandard(
+                            learningDelivery.StdCodeNullable ?? 0,
+                            cancellationToken);
 
-                mathsAndEnglishModels.Add(_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
+                    var fm36LearningDelivery = fm36Learner.LearningDeliveryAttributes
+                        .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+
+                    if (fm36Learner.PriceEpisodeAttributes.Any())
+                    {
+                        var earliestEpisodeDate =
+                            fm36Learner.PriceEpisodeAttributes.Min(x => x.PriceEpisodeAttributeDatas.EpisodeStartDate);
+
+                        var earliestEpisode = false;
+                        foreach (var episodeAttribute in fm36Learner.PriceEpisodeAttributes)
+                        {
+                            if (episodeAttribute.PriceEpisodeAttributeDatas.EpisodeStartDate == earliestEpisodeDate)
+                            {
+                                earliestEpisode = true;
+                            }
+
+                            appsIndicativeEarningsModels.Add(
+                                _modelBuilder.BuildModel(
+                                    learner,
+                                    learningDelivery,
+                                    fm36LearningDelivery,
+                                    episodeAttribute,
+                                    larsDelivery,
+                                    larsStandard,
+                                    earliestEpisode,
+                                    true));
+
+                            earliestEpisode = false;
+                        }
+
+                        continue;
+                    }
+
+                    appsIndicativeEarningsModels.Add(
+                        _modelBuilder.BuildModel(
+                            learner,
+                            learningDelivery,
+                            fm36LearningDelivery,
+                            null,
+                            larsDelivery,
+                            larsStandard,
+                            false,
+                            false));
+                }
             }
 
             if (ilrError.Any())
             {
-                _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
+                _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(AppsIndicativeEarningsReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
             }
 
-            using (MemoryStream ms = new MemoryStream())
+            using (var ms = new MemoryStream())
             {
-                BuildCsvReport<MathsAndEnglishMapper, MathsAndEnglishModel>(ms, mathsAndEnglishModels);
+                //BuildCsvReport<MathsAndEnglishMapper, AppsIndicativeEarningsModel>(ms, appsIndicativeEarningsModels);
                 return Encoding.UTF8.GetString(ms.ToArray());
             }
         }

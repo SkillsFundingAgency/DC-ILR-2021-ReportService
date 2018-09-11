@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public string ProviderSpecifiedLearnerMonitoringB { get; set; }
 
-        public string AimSequenceNumber { get; set; }
+        public int? AimSequenceNumber { get; set; }
 
         public string LearningAimReference { get; set; }
 
@@ -28,27 +28,27 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public string SoftwareSupplierAimIdentifier { get; set; }
 
-        public string LARS1618FrameworkUplift { get; set; }
+        public decimal? LARS1618FrameworkUplift { get; set; }
 
         public string NotionalNVQLevel { get; set; }
 
         public string StandardNotionalEndLevel { get; set; }
 
-        public string Tier2SectorSubjectArea { get; set; }
+        public decimal? Tier2SectorSubjectArea { get; set; }
 
-        public string ProgrammeType { get; set; }
+        public int? ProgrammeType { get; set; }
 
-        public string StandardCode { get; set; }
+        public int? StandardCode { get; set; }
 
-        public string FrameworkCode { get; set; }
+        public int? FrameworkCode { get; set; }
 
-        public string ApprenticeshipPathway { get; set; }
+        public int? ApprenticeshipPathway { get; set; }
 
-        public string AimType { get; set; }
+        public int AimType { get; set; }
 
-        public string CommonComponentCode { get; set; }
+        public int? CommonComponentCode { get; set; }
 
-        public string FundingModel { get; set; }
+        public int FundingModel { get; set; }
 
         public DateTime? OriginalLearningStartDate { get; set; }
 
@@ -56,15 +56,15 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public DateTime? LearningPlannedEndDate { get; set; }
 
-        public string CompletionStatus { get; set; }
+        public int CompletionStatus { get; set; }
 
         public DateTime? LearningActualEndDate { get; set; }
 
-        public string Outcome { get; set; }
+        public int? Outcome { get; set; }
 
-        public string FundingAdjustmentForPriorLearning { get; set; }
+        public int? FundingAdjustmentForPriorLearning { get; set; }
 
-        public string OtherFundingAdjustment { get; set; }
+        public int? OtherFundingAdjustment { get; set; }
 
         public string LearningDeliveryFAMTypeLearningSupportFunding { get; set; }
 
@@ -82,31 +82,31 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public string LearningDeliveryFAMRestartIndicator { get; set; }
 
-        public string PriorSpecifiedDeliveryMonitoringA { get; set; }
+        public string ProviderSpecifiedDeliveryMonitoringA { get; set; }
 
-        public string PriorSpecifiedDeliveryMonitoringB { get; set; }
+        public string ProviderSpecifiedDeliveryMonitoringB { get; set; }
 
-        public string PriorSpecifiedDeliveryMonitoringC { get; set; }
+        public string ProviderSpecifiedDeliveryMonitoringC { get; set; }
 
-        public string PriorSpecifiedDeliveryMonitoringD { get; set; }
+        public string ProviderSpecifiedDeliveryMonitoringD { get; set; }
 
         public string EndPointAssessmentOrganisation { get; set; }
 
-        public string PlannedNoOfOnProgrammeInstallmentsForAim { get; set; }
+        public int? PlannedNoOfOnProgrammeInstallmentsForAim { get; set; }
 
-        public string SubContractedOrPartnershipUKPRN { get; set; }
+        public int? SubContractedOrPartnershipUKPRN { get; set; }
 
         public string DeliveryLocationPostcode { get; set; }
 
-        public string EmployerIdentifier { get; set; }
+        public int? EmployerIdentifier { get; set; }
 
         public string AgreementIdentifier { get; set; }
 
-        public string EmploymentStatus { get; set; }
+        public int? EmploymentStatus { get; set; }
 
         public DateTime? EmploymentStatusDate { get; set; }
 
-        public string EmpStatusMonitoringSmallEmployer { get; set; }
+        public int? EmpStatusMonitoringSmallEmployer { get; set; }
 
         public DateTime? PriceEpisodeStartDate { get; set; }
 
@@ -128,7 +128,7 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public decimal? TotalPRMThisFundingYear { get; set; }
 
-        public decimal? LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
+        public string LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
 
         public DateTime? LearningDeliveryFAMTypeACTDateAppliesFrom { get; set; }
 

@@ -7,26 +7,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings
 {
     public class AppsIndicativeAugustCommand : IAppsIndicativeCommand
     {
-        public void Execute(AppsIndicativeEarningsModel model, LearningDeliveryAttribute learningDeliveryAttribute)
+        public void Execute(AppsIndicativeEarningsModel model, LearningDeliveryAttribute learningDeliveryAttribute, PriceEpisodeAttribute episodeAttribute)
         {
             model.AugustOnProgrammeEarnings =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeOnProgPaymentAttributeName)?.Period1 ?? 0;
 
             model.AugustBalancingPaymentEarnings =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm3PriceEpisodeBalancePaymentAttributeName)?.Period1 ?? 0;
 
             model.AugustAimCompletionEarnings =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeCompletionPaymentAttributeName)?.Period1 ?? 0;
 
-            var periodAttribute = learningDeliveryAttribute.LearningDeliveryAttributeDatas.LearnDelMathEng ?? false
-                ? learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36LearnSuppFundCashAttributeName)
-                : learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeLSFCashAttributeName);
-            model.AugustLearningSupportEarnings = periodAttribute?.Period1 ?? 0;
+            model.AugustLearningSupportEarnings = learningDeliveryAttribute.LearningDeliveryAttributeDatas.LearnDelMathEng ?? false
+                    ? learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                          .SingleOrDefault(att => att.AttributeName == Constants.Fm36LearnSuppFundCashAttributeName)?.Period1 ?? 0
+                    : episodeAttribute?.PriceEpisodePeriodisedAttributes
+                          .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeLSFCashAttributeName)?.Period1 ?? 0;
 
             model.AugustEnglishMathsOnProgrammeEarnings =
                 learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
@@ -37,41 +36,41 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36MathEngBalPaymentAttributeName)?.Period1 ?? 0;
 
             model.AugustDisadvantageEarnings =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?.Period1 ?? 0
-                + learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                + episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?.Period1 ?? 0;
 
             model.August1618AdditionalPaymentForEmployers =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?.Period1 ?? 0
-                + learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                + episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?.Period1 ?? 0;
 
             model.August1618AdditionalPaymentForProviders =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?.Period1 ?? 0
-                + learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                + episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?.Period1 ?? 0;
 
             model.AugustAdditionalPaymentsForApprentices =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?.Period1 ?? 0;
 
             model.August1618FrameworkUpliftOnProgrammePayment =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att =>
                         att.AttributeName ==
                         Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName)?.Period1 ?? 0;
 
             model.August1618FrameworkUpliftBalancingPayment =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att =>
                         att.AttributeName ==
                         Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName)?.Period1 ?? 0;
 
             model.August1618FrameworkUpliftCompletionPayment =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
+                episodeAttribute?.PriceEpisodePeriodisedAttributes
                     .SingleOrDefault(att =>
                         att.AttributeName ==
                         Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName)?.Period1 ?? 0;
