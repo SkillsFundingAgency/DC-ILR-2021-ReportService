@@ -57,7 +57,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _modelBuilder = modelBuilder;
 
             ReportFileName = "Apps Indicative Earnings Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport; // todo
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsIndicativeEarningsReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
@@ -97,7 +97,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 var larsDelivery = larsLearningDeliveries.SingleOrDefault(x => x.Key == validLearnerRefNum).Value;
                 var fm36Learner = fm36Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                if (learner == null || fm36Learner == null)
+                if (learner == null)
                 {
                     ilrError.Add(validLearnerRefNum);
                     continue;
@@ -111,10 +111,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                             learningDelivery.StdCodeNullable ?? 0,
                             cancellationToken);
 
-                    var fm36LearningDelivery = fm36Learner.LearningDeliveryAttributes
-                        .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+                    var fm36LearningDelivery = fm36Learner?.LearningDeliveryAttributes
+                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                    if (fm36Learner.PriceEpisodeAttributes.Any())
+                    if (fm36Learner?.PriceEpisodeAttributes.Any() ?? false)
                     {
                         var earliestEpisodeDate =
                             fm36Learner.PriceEpisodeAttributes.Min(x => x.PriceEpisodeAttributeDatas.EpisodeStartDate);

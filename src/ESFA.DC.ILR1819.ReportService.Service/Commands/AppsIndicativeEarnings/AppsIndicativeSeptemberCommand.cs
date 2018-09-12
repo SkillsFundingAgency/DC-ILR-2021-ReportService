@@ -11,67 +11,67 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings
         {
             model.SeptemberOnProgrammeEarnings =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeOnProgPaymentAttributeName)?.Period2 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeOnProgPaymentAttributeName)?.Period2 ?? 0;
 
             model.SeptemberBalancingPaymentEarnings =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm3PriceEpisodeBalancePaymentAttributeName)?.Period2 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm3PriceEpisodeBalancePaymentAttributeName)?.Period2 ?? 0;
 
             model.SeptemberAimCompletionEarnings =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeCompletionPaymentAttributeName)?.Period2 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeCompletionPaymentAttributeName)?.Period2 ?? 0;
 
-            model.SeptemberLearningSupportEarnings = learningDeliveryAttribute.LearningDeliveryAttributeDatas.LearnDelMathEng ?? false
+            model.SeptemberLearningSupportEarnings = learningDeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false
                     ? learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
-                          .SingleOrDefault(att => att.AttributeName == Constants.Fm36LearnSuppFundCashAttributeName)?.Period2 ?? 0
+                          ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36LearnSuppFundCashAttributeName)?.Period2 ?? 0
                     : episodeAttribute?.PriceEpisodePeriodisedAttributes
-                          .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeLSFCashAttributeName)?.Period2 ?? 0;
+                          ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeLSFCashAttributeName)?.Period2 ?? 0;
 
             model.SeptemberEnglishMathsOnProgrammeEarnings =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36MathEngOnProgPaymentAttributeName)?.Period2 ?? 0;
+                learningDeliveryAttribute?.LearningDeliveryPeriodisedAttributes
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36MathEngOnProgPaymentAttributeName)?.Period2 ?? 0;
 
             model.SeptemberEnglishMathsBalancingPaymentEarnings =
-                learningDeliveryAttribute.LearningDeliveryPeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36MathEngBalPaymentAttributeName)?.Period2 ?? 0;
+                learningDeliveryAttribute?.LearningDeliveryPeriodisedAttributes
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36MathEngBalPaymentAttributeName)?.Period2 ?? 0;
 
             model.SeptemberDisadvantageEarnings =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?.Period2 ?? 0
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?.Period2 ?? 0
                 + episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?.Period2 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?.Period2 ?? 0;
 
             model.September1618AdditionalPaymentForEmployers =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?.Period2 ?? 0
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?.Period2 ?? 0
                 + episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?.Period2 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?.Period2 ?? 0;
 
             model.September1618AdditionalPaymentForProviders =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?.Period2 ?? 0
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?.Period2 ?? 0
                 + episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?.Period2 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?.Period2 ?? 0;
 
             model.SeptemberAdditionalPaymentsForApprentices =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?.Period2 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?.Period2 ?? 0;
 
             model.September1618FrameworkUpliftOnProgrammePayment =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att =>
+                    ?.SingleOrDefault(att =>
                         att.AttributeName ==
                         Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName)?.Period2 ?? 0;
 
             model.September1618FrameworkUpliftBalancingPayment =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att =>
+                    ?.SingleOrDefault(att =>
                         att.AttributeName ==
                         Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName)?.Period2 ?? 0;
 
             model.September1618FrameworkUpliftCompletionPayment =
                 episodeAttribute?.PriceEpisodePeriodisedAttributes
-                    .SingleOrDefault(att =>
+                    ?.SingleOrDefault(att =>
                         att.AttributeName ==
                         Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName)?.Period2 ?? 0;
         }

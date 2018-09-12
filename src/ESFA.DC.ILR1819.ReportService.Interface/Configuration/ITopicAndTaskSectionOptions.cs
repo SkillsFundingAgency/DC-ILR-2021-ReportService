@@ -25,5 +25,9 @@
         string TopicReports_TaskGenerateMathsAndEnglishReport { get; set; }
 
         string TopicReports_TaskGenerateSummaryOfFM35FundingReport { get; set; }
+
+        string TopicReports_TaskGenerateAppsAdditionalPaymentsReport { get; set; }
+
+        string TopicReports_TaskGenerateAppsIndicativeEarningsReport { get; set; }
     }
 }

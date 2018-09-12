@@ -10,7 +10,7 @@ using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
-    public class AppsIndicativeEarningsModelBuilder
+    public class AppsIndicativeEarningsModelBuilder : IAppsIndicativeEarningsModelBuilder
     {
         private readonly IList<IAppsIndicativeCommand> _commands;
 
@@ -49,8 +49,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 LearningAimReference = learningDelivery.LearnAimRef,
                 LearningAimTitle = larsLearningDelivery.LearningAimTitle,
                 SoftwareSupplierAimIdentifier = learningDelivery.SWSupAimId,
-                LARS1618FrameworkUplift = fm36DeliveryAttribute.LearningDeliveryAttributeDatas
-                    .LearnDelApplicProv1618FrameworkUplift,
+                LARS1618FrameworkUplift = fm36DeliveryAttribute?.LearningDeliveryAttributeDatas
+                    ?.LearnDelApplicProv1618FrameworkUplift,
                 NotionalNVQLevel = larsLearningDelivery.NotionalNvqLevel,
                 StandardNotionalEndLevel = larsStandard.NotionalEndLevel,
                 Tier2SectorSubjectArea = larsLearningDelivery.Tier2SectorSubjectArea,
@@ -97,7 +97,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "D")?.ProvSpecLearnMon,
                 EndPointAssessmentOrganisation = learningDelivery.EPAOrgID,
                 PlannedNoOfOnProgrammeInstallmentsForAim =
-                    fm36DeliveryAttribute.LearningDeliveryAttributeDatas.PlannedNumOnProgInstalm,
+                    fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.PlannedNumOnProgInstalm,
                 SubContractedOrPartnershipUKPRN = learningDelivery.PartnerUKPRNNullable,
                 DeliveryLocationPostcode = learningDelivery.DelLocPostCode,
                 EmployerIdentifier = employmentStatus?.EmpIdNullable,
@@ -108,8 +108,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     .SingleOrDefault(x => x.ESMType == Constants.EmploymentStatusMonitoringTypeSEM)?.ESMCode,
                 PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.EpisodeStartDate,
                 PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeActualEndDate,
-                FundingLineType = fm36DeliveryAttribute.LearningDeliveryAttributeDatas.LearnDelMathEng ?? false
-                    ? fm36DeliveryAttribute?.LearningDeliveryAttributeDatas.LearnDelInitialFundLineType
+                FundingLineType = fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false
+                    ? fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelInitialFundLineType
                     : fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeFundLineType,
                 TotalPriceApplicableToThisEpisode =
                     fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeTotalTNPPrice,
@@ -165,17 +165,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             bool hasPriceEpisodes)
         {
             bool useDeliveryAttributeDate =
-                fm36DeliveryAttribute.LearningDeliveryAttributeDatas.LearnDelMathEng ?? false ||
-                (!(fm36DeliveryAttribute.LearningDeliveryAttributeDatas.LearnDelMathEng ?? false) && !hasPriceEpisodes);
+                fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false ||
+                (!(fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false) && !hasPriceEpisodes);
 
-            if (learningDelivery.LearningDeliveryFAMs.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT)
+            if (learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT)
                     ?.LearnDelFAMDateFromNullable == null)
             {
                 return;
             }
 
             var contractAppliesFrom = learningDelivery.LearningDeliveryFAMs
-                .Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
+                ?.Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
                             ((useDeliveryAttributeDate &&
                               learningDelivery.LearnStartDate >= x.LearnDelFAMDateFromNullable) ||
                              (!useDeliveryAttributeDate &&
@@ -184,7 +184,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 .Max(x => x.LearnDelFAMDateFromNullable);
 
             var contractAppliesTo = learningDelivery.LearningDeliveryFAMs
-                .Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
+                ?.Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
                             ((useDeliveryAttributeDate &&
                               learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
                              (!useDeliveryAttributeDate &&
@@ -196,193 +196,193 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo;
 
             model.LearningDeliveryFAMTypeApprenticeshipContractType = learningDelivery.LearningDeliveryFAMs
-                .FirstOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
+                ?.FirstOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
                     x.LearnDelFAMDateFromNullable == contractAppliesFrom && x.LearnDelFAMDateToNullable == contractAppliesTo)?.LearnDelFAMCode;
         }
 
         private void GetTotals(AppsIndicativeEarningsModel model)
         {
             model.TotalOnProgrammeEarnings =
-                model.AugustOnProgrammeEarnings +
-                model.SeptemberOnProgrammeEarnings +
-                model.OctoberOnProgrammeEarnings +
-                model.NovemberOnProgrammeEarnings +
-                model.DecemberOnProgrammeEarnings +
-                model.JanuaryOnProgrammeEarnings +
-                model.FebruaryOnProgrammeEarnings +
-                model.MarchOnProgrammeEarnings +
-                model.AprilOnProgrammeEarnings +
-                model.MayOnProgrammeEarnings +
-                model.JuneOnProgrammeEarnings +
-                model.JulyOnProgrammeEarnings;
+                model.AugustOnProgrammeEarnings ?? 0 +
+                model.SeptemberOnProgrammeEarnings ?? 0 +
+                model.OctoberOnProgrammeEarnings ?? 0 +
+                model.NovemberOnProgrammeEarnings ?? 0 +
+                model.DecemberOnProgrammeEarnings ?? 0 +
+                model.JanuaryOnProgrammeEarnings ?? 0 +
+                model.FebruaryOnProgrammeEarnings ?? 0 +
+                model.MarchOnProgrammeEarnings ?? 0 +
+                model.AprilOnProgrammeEarnings ?? 0 +
+                model.MayOnProgrammeEarnings ?? 0 +
+                model.JuneOnProgrammeEarnings ?? 0 +
+                model.JulyOnProgrammeEarnings ?? 0;
 
             model.TotalBalancingPaymentEarnings =
-                model.AugustBalancingPaymentEarnings +
-                model.SeptemberBalancingPaymentEarnings +
-                model.OctoberBalancingPaymentEarnings +
-                model.NovemberBalancingPaymentEarnings +
-                model.DecemberBalancingPaymentEarnings +
-                model.JanuaryBalancingPaymentEarnings +
-                model.FebruaryBalancingPaymentEarnings +
-                model.MarchBalancingPaymentEarnings +
-                model.AprilBalancingPaymentEarnings +
-                model.MayBalancingPaymentEarnings +
-                model.JuneBalancingPaymentEarnings +
-                model.JulyBalancingPaymentEarnings;
+                model.AugustBalancingPaymentEarnings ?? 0 +
+                model.SeptemberBalancingPaymentEarnings ?? 0 +
+                model.OctoberBalancingPaymentEarnings ?? 0 +
+                model.NovemberBalancingPaymentEarnings ?? 0 +
+                model.DecemberBalancingPaymentEarnings ?? 0 +
+                model.JanuaryBalancingPaymentEarnings ?? 0 +
+                model.FebruaryBalancingPaymentEarnings ?? 0 +
+                model.MarchBalancingPaymentEarnings ?? 0 +
+                model.AprilBalancingPaymentEarnings ?? 0 +
+                model.MayBalancingPaymentEarnings ?? 0 +
+                model.JuneBalancingPaymentEarnings ?? 0 +
+                model.JulyBalancingPaymentEarnings ?? 0;
 
             model.TotalAimCompletionEarnings =
-                model.AugustAimCompletionEarnings +
-                model.SeptemberAimCompletionEarnings +
-                model.OctoberAimCompletionEarnings +
-                model.NovemberAimCompletionEarnings +
-                model.DecemberAimCompletionEarnings +
-                model.JanuaryAimCompletionEarnings +
-                model.FebruaryAimCompletionEarnings +
-                model.MarchAimCompletionEarnings +
-                model.AprilAimCompletionEarnings +
-                model.MayAimCompletionEarnings +
-                model.JuneAimCompletionEarnings +
-                model.JulyAimCompletionEarnings;
+                model.AugustAimCompletionEarnings ?? 0 +
+                model.SeptemberAimCompletionEarnings ?? 0 +
+                model.OctoberAimCompletionEarnings ?? 0 +
+                model.NovemberAimCompletionEarnings ?? 0 +
+                model.DecemberAimCompletionEarnings ?? 0 +
+                model.JanuaryAimCompletionEarnings ?? 0 +
+                model.FebruaryAimCompletionEarnings ?? 0 +
+                model.MarchAimCompletionEarnings ?? 0 +
+                model.AprilAimCompletionEarnings ?? 0 +
+                model.MayAimCompletionEarnings ?? 0 +
+                model.JuneAimCompletionEarnings ?? 0 +
+                model.JulyAimCompletionEarnings ?? 0;
 
             model.TotalLearningSupportEarnings =
-                model.AugustLearningSupportEarnings +
-                model.SeptemberLearningSupportEarnings +
-                model.OctoberLearningSupportEarnings +
-                model.NovemberLearningSupportEarnings +
-                model.DecemberLearningSupportEarnings +
-                model.JanuaryLearningSupportEarnings +
-                model.FebruaryLearningSupportEarnings +
-                model.MarchLearningSupportEarnings +
-                model.AprilLearningSupportEarnings +
-                model.MayLearningSupportEarnings +
-                model.JuneLearningSupportEarnings +
-                model.JulyLearningSupportEarnings;
+                model.AugustLearningSupportEarnings ?? 0 +
+                model.SeptemberLearningSupportEarnings ?? 0 +
+                model.OctoberLearningSupportEarnings ?? 0 +
+                model.NovemberLearningSupportEarnings ?? 0 +
+                model.DecemberLearningSupportEarnings ?? 0 +
+                model.JanuaryLearningSupportEarnings ?? 0 +
+                model.FebruaryLearningSupportEarnings ?? 0 +
+                model.MarchLearningSupportEarnings ?? 0 +
+                model.AprilLearningSupportEarnings ?? 0 +
+                model.MayLearningSupportEarnings ?? 0 +
+                model.JuneLearningSupportEarnings ?? 0 +
+                model.JulyLearningSupportEarnings ?? 0;
 
             model.TotalEnglishMathsOnProgrammeEarnings =
-                model.AugustEnglishMathsOnProgrammeEarnings +
-                model.SeptemberEnglishMathsOnProgrammeEarnings +
-                model.OctoberEnglishMathsOnProgrammeEarnings +
-                model.NovemberEnglishMathsOnProgrammeEarnings +
-                model.DecemberEnglishMathsOnProgrammeEarnings +
-                model.JanuaryEnglishMathsOnProgrammeEarnings +
-                model.FebruaryEnglishMathsOnProgrammeEarnings +
-                model.MarchEnglishMathsOnProgrammeEarnings +
-                model.AprilEnglishMathsOnProgrammeEarnings +
-                model.MayEnglishMathsOnProgrammeEarnings +
-                model.JuneEnglishMathsOnProgrammeEarnings +
-                model.JulyEnglishMathsOnProgrammeEarnings;
+                model.AugustEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.SeptemberEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.OctoberEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.NovemberEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.DecemberEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.JanuaryEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.FebruaryEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.MarchEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.AprilEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.MayEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.JuneEnglishMathsOnProgrammeEarnings ?? 0 +
+                model.JulyEnglishMathsOnProgrammeEarnings ?? 0;
 
             model.TotalEnglishMathsBalancingPaymentEarnings =
-                model.AugustEnglishMathsBalancingPaymentEarnings +
-                model.SeptemberEnglishMathsBalancingPaymentEarnings +
-                model.OctoberEnglishMathsBalancingPaymentEarnings +
-                model.NovemberEnglishMathsBalancingPaymentEarnings +
-                model.DecemberEnglishMathsBalancingPaymentEarnings +
-                model.JanuaryEnglishMathsBalancingPaymentEarnings +
-                model.FebruaryEnglishMathsBalancingPaymentEarnings +
-                model.MarchEnglishMathsBalancingPaymentEarnings +
-                model.AprilEnglishMathsBalancingPaymentEarnings +
-                model.MayEnglishMathsBalancingPaymentEarnings +
-                model.JuneEnglishMathsBalancingPaymentEarnings +
-                model.JulyEnglishMathsBalancingPaymentEarnings;
+                model.AugustEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.SeptemberEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.OctoberEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.NovemberEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.DecemberEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.JanuaryEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.FebruaryEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.MarchEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.AprilEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.MayEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.JuneEnglishMathsBalancingPaymentEarnings ?? 0 +
+                model.JulyEnglishMathsBalancingPaymentEarnings ?? 0;
 
             model.TotalDisadvantageEarnings =
-                model.AugustDisadvantageEarnings +
-                model.SeptemberDisadvantageEarnings +
-                model.OctoberDisadvantageEarnings +
-                model.NovemberDisadvantageEarnings +
-                model.DecemberDisadvantageEarnings +
-                model.JanuaryDisadvantageEarnings +
-                model.FebruaryDisadvantageEarnings +
-                model.MarchDisadvantageEarnings +
-                model.AprilDisadvantageEarnings +
-                model.MayDisadvantageEarnings +
-                model.JuneDisadvantageEarnings +
-                model.JulyDisadvantageEarnings;
+                model.AugustDisadvantageEarnings ?? 0 +
+                model.SeptemberDisadvantageEarnings ?? 0 +
+                model.OctoberDisadvantageEarnings ?? 0 +
+                model.NovemberDisadvantageEarnings ?? 0 +
+                model.DecemberDisadvantageEarnings ?? 0 +
+                model.JanuaryDisadvantageEarnings ?? 0 +
+                model.FebruaryDisadvantageEarnings ?? 0 +
+                model.MarchDisadvantageEarnings ?? 0 +
+                model.AprilDisadvantageEarnings ?? 0 +
+                model.MayDisadvantageEarnings ?? 0 +
+                model.JuneDisadvantageEarnings ?? 0 +
+                model.JulyDisadvantageEarnings ?? 0;
 
             model.Total1618AdditionalPaymentForEmployers =
-                model.August1618AdditionalPaymentForEmployers +
-                model.September1618AdditionalPaymentForEmployers +
-                model.October1618AdditionalPaymentForEmployers +
-                model.November1618AdditionalPaymentForEmployers +
-                model.December1618AdditionalPaymentForEmployers +
-                model.January1618AdditionalPaymentForEmployers +
-                model.February1618AdditionalPaymentForEmployers +
-                model.March1618AdditionalPaymentForEmployers +
-                model.April1618AdditionalPaymentForEmployers +
-                model.May1618AdditionalPaymentForEmployers +
-                model.June1618AdditionalPaymentForEmployers +
-                model.July1618AdditionalPaymentForEmployers;
+                model.August1618AdditionalPaymentForEmployers ?? 0 +
+                model.September1618AdditionalPaymentForEmployers ?? 0 +
+                model.October1618AdditionalPaymentForEmployers ?? 0 +
+                model.November1618AdditionalPaymentForEmployers ?? 0 +
+                model.December1618AdditionalPaymentForEmployers ?? 0 +
+                model.January1618AdditionalPaymentForEmployers ?? 0 +
+                model.February1618AdditionalPaymentForEmployers ?? 0 +
+                model.March1618AdditionalPaymentForEmployers ?? 0 +
+                model.April1618AdditionalPaymentForEmployers ?? 0 +
+                model.May1618AdditionalPaymentForEmployers ?? 0 +
+                model.June1618AdditionalPaymentForEmployers ?? 0 +
+                model.July1618AdditionalPaymentForEmployers ?? 0;
 
             model.Total1618AdditionalPaymentForProviders =
-                model.August1618AdditionalPaymentForProviders +
-                model.September1618AdditionalPaymentForProviders +
-                model.October1618AdditionalPaymentForProviders +
-                model.November1618AdditionalPaymentForProviders +
-                model.December1618AdditionalPaymentForProviders +
-                model.January1618AdditionalPaymentForProviders +
-                model.February1618AdditionalPaymentForProviders +
-                model.March1618AdditionalPaymentForProviders +
-                model.April1618AdditionalPaymentForProviders +
-                model.May1618AdditionalPaymentForProviders +
-                model.June1618AdditionalPaymentForProviders +
-                model.July1618AdditionalPaymentForProviders;
+                model.August1618AdditionalPaymentForProviders ?? 0 +
+                model.September1618AdditionalPaymentForProviders ?? 0 +
+                model.October1618AdditionalPaymentForProviders ?? 0 +
+                model.November1618AdditionalPaymentForProviders ?? 0 +
+                model.December1618AdditionalPaymentForProviders ?? 0 +
+                model.January1618AdditionalPaymentForProviders ?? 0 +
+                model.February1618AdditionalPaymentForProviders ?? 0 +
+                model.March1618AdditionalPaymentForProviders ?? 0 +
+                model.April1618AdditionalPaymentForProviders ?? 0 +
+                model.May1618AdditionalPaymentForProviders ?? 0 +
+                model.June1618AdditionalPaymentForProviders ?? 0 +
+                model.July1618AdditionalPaymentForProviders ?? 0;
 
             model.TotalAdditionalPaymentsForApprentices =
-                model.AugustAdditionalPaymentsForApprentices +
-                model.SeptemberAdditionalPaymentsForApprentices +
-                model.OctoberAdditionalPaymentsForApprentices +
-                model.NovemberAdditionalPaymentsForApprentices +
-                model.DecemberAdditionalPaymentsForApprentices +
-                model.JanuaryAdditionalPaymentsForApprentices +
-                model.FebruaryAdditionalPaymentsForApprentices +
-                model.MarchAdditionalPaymentsForApprentices +
-                model.AprilAdditionalPaymentsForApprentices +
-                model.MayAdditionalPaymentsForApprentices +
-                model.JuneAdditionalPaymentsForApprentices +
-                model.JulyAdditionalPaymentsForApprentices;
+                model.AugustAdditionalPaymentsForApprentices ?? 0 +
+                model.SeptemberAdditionalPaymentsForApprentices ?? 0 +
+                model.OctoberAdditionalPaymentsForApprentices ?? 0 +
+                model.NovemberAdditionalPaymentsForApprentices ?? 0 +
+                model.DecemberAdditionalPaymentsForApprentices ?? 0 +
+                model.JanuaryAdditionalPaymentsForApprentices ?? 0 +
+                model.FebruaryAdditionalPaymentsForApprentices ?? 0 +
+                model.MarchAdditionalPaymentsForApprentices ?? 0 +
+                model.AprilAdditionalPaymentsForApprentices ?? 0 +
+                model.MayAdditionalPaymentsForApprentices ?? 0 +
+                model.JuneAdditionalPaymentsForApprentices ?? 0 +
+                model.JulyAdditionalPaymentsForApprentices ?? 0;
 
             model.Total1618FrameworkUpliftOnProgrammePayment =
-                model.August1618FrameworkUpliftOnProgrammePayment +
-                model.September1618FrameworkUpliftOnProgrammePayment +
-                model.October1618FrameworkUpliftOnProgrammePayment +
-                model.November1618FrameworkUpliftOnProgrammePayment +
-                model.December1618FrameworkUpliftOnProgrammePayment +
-                model.January1618FrameworkUpliftOnProgrammePayment +
-                model.February1618FrameworkUpliftOnProgrammePayment +
-                model.March1618FrameworkUpliftOnProgrammePayment +
-                model.April1618FrameworkUpliftOnProgrammePayment +
-                model.May1618FrameworkUpliftOnProgrammePayment +
-                model.June1618FrameworkUpliftOnProgrammePayment +
-                model.July1618FrameworkUpliftOnProgrammePayment;
+                model.August1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.September1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.October1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.November1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.December1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.January1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.February1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.March1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.April1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.May1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.June1618FrameworkUpliftOnProgrammePayment ?? 0 +
+                model.July1618FrameworkUpliftOnProgrammePayment ?? 0;
 
             model.Total1618FrameworkUpliftBalancingPayment =
-                model.August1618FrameworkUpliftBalancingPayment +
-                model.September1618FrameworkUpliftBalancingPayment +
-                model.October1618FrameworkUpliftBalancingPayment +
-                model.November1618FrameworkUpliftBalancingPayment +
-                model.December1618FrameworkUpliftBalancingPayment +
-                model.January1618FrameworkUpliftBalancingPayment +
-                model.February1618FrameworkUpliftBalancingPayment +
-                model.March1618FrameworkUpliftBalancingPayment +
-                model.April1618FrameworkUpliftBalancingPayment +
-                model.May1618FrameworkUpliftBalancingPayment +
-                model.June1618FrameworkUpliftBalancingPayment +
-                model.July1618FrameworkUpliftBalancingPayment;
+                model.August1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.September1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.October1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.November1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.December1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.January1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.February1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.March1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.April1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.May1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.June1618FrameworkUpliftBalancingPayment ?? 0 +
+                model.July1618FrameworkUpliftBalancingPayment ?? 0;
 
             model.Total1618FrameworkUpliftCompletionPayment =
-                model.August1618FrameworkUpliftCompletionPayment +
-                model.September1618FrameworkUpliftCompletionPayment +
-                model.October1618FrameworkUpliftCompletionPayment +
-                model.November1618FrameworkUpliftCompletionPayment +
-                model.December1618FrameworkUpliftCompletionPayment +
-                model.January1618FrameworkUpliftCompletionPayment +
-                model.February1618FrameworkUpliftCompletionPayment +
-                model.March1618FrameworkUpliftCompletionPayment +
-                model.April1618FrameworkUpliftCompletionPayment +
-                model.May1618FrameworkUpliftCompletionPayment +
-                model.June1618FrameworkUpliftCompletionPayment +
-                model.July1618FrameworkUpliftCompletionPayment;
+                model.August1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.September1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.October1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.November1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.December1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.January1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.February1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.March1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.April1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.May1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.June1618FrameworkUpliftCompletionPayment ?? 0 +
+                model.July1618FrameworkUpliftCompletionPayment ?? 0;
         }
     }
 }

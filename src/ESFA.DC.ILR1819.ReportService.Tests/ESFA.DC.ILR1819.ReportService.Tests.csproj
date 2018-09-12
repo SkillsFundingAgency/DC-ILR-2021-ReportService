@@ -302,6 +302,7 @@
     <Compile Include="Helpers\TestXlsxHelper.cs" />
     <Compile Include="Models\CsvEntry.cs" />
     <Compile Include="Reports\TestMainOccupancyReport.cs" />
+    <Compile Include="Reports\TestAppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
     <Compile Include="Reports\TestSummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\TestSummaryOfFunding1619Report.cs" />
