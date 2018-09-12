@@ -7,5 +7,7 @@
         public string NotionalNvqLevel { get; set; }
 
         public decimal? Tier2SectorSubjectArea { get; set; }
+
+        public int? FrameworkCommonComponent { get; set; }
     }
 }

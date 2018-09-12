@@ -61,6 +61,9 @@
     <Reference Include="ESFA.DC.CollectionsManagement.Services.Interface, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.CollectionsManagement.Services.Interface.0.1.12-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Services.Interface.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Data.LARS.Model, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Data.LARS.Model.0.1.4-beta0001\lib\net461\ESFA.DC.Data.LARS.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.DateTimeProvider, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.DateTimeProvider.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.dll</HintPath>
     </Reference>
@@ -299,6 +302,7 @@
     <Compile Include="Helpers\TestXlsxHelper.cs" />
     <Compile Include="Models\CsvEntry.cs" />
     <Compile Include="Reports\TestMainOccupancyReport.cs" />
+    <Compile Include="Reports\TestAppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
     <Compile Include="Reports\TestSummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\TestSummaryOfFunding1619Report.cs" />
@@ -323,6 +327,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Fm35.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Fm36.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="FundingAlbOutput.json">

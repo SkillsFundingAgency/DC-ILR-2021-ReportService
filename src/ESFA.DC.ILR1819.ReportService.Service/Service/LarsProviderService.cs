@@ -26,7 +26,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly SemaphoreSlim _getVersionLock;
 
+        private readonly SemaphoreSlim _getStandardsLock;
+
         private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
+
+        private LARS_Standard _loadedStandard;
 
         private List<LearnerAndDeliveries> _loadedFrameworkAims;
 
@@ -69,7 +73,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                             {
                                 LearningAimTitle = v.LearnAimRefTitle,
                                 NotionalNvqLevel = v.NotionalNVQLevel,
-                                Tier2SectorSubjectArea = v.SectorSubjectAreaTier2
+                                Tier2SectorSubjectArea = v.SectorSubjectAreaTier2,
+                                FrameworkCommonComponent = v.FrameworkCommonComponent
                             },
                             cancellationToken);
                 }
@@ -84,6 +89,38 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _loadedLearningDeliveries;
+        }
+
+        public async Task<LARS_Standard> GetStandard(
+            int learningDeliveryStandardCode,
+            CancellationToken cancellationToken)
+        {
+            await _getStandardsLock.WaitAsync(cancellationToken);
+
+            try
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
+                if (_loadedLearningDeliveries == null)
+                {
+                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    _loadedStandard = await larsContext.LARS_Standard
+                        .SingleOrDefaultAsync(l => l.StandardCode == learningDeliveryStandardCode, cancellationToken);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get LARS standards", ex);
+            }
+            finally
+            {
+                _getStandardsLock.Release();
+            }
+
+            return _loadedStandard;
         }
 
         public async Task<List<LearnerAndDeliveries>> GetFrameworkAims(

@@ -18,6 +18,7 @@ using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
+using ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -207,6 +208,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             RegisterBuilders(containerBuilder);
             RegisterRules(containerBuilder);
             RegisterHelpers(containerBuilder);
+            RegisterCommands(containerBuilder);
 
             return containerBuilder;
         }
@@ -242,6 +244,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<AppsAdditionalPaymentsReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
@@ -303,6 +309,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IMainOccupancyReportModelBuilder>()
                 .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsAdditionalPaymentsModelBuilder>().As<IAppsAdditionalPaymentsModelBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
+                .InstancePerLifetimeScope();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)
@@ -315,6 +325,37 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             containerBuilder.RegisterType<IlrFileHelper>().As<IIlrFileHelper>()
                 .InstancePerLifetimeScope();
+        }
+
+        private static void RegisterCommands(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<AppsIndicativeAugustCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeSeptemberCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeOctoberCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeNovemberCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeDecemberCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeJanuaryCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeFebruaryCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeMarchCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeAprilCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeMayCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeJuneCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsIndicativeJulyCommand>().As<IAppsIndicativeCommand>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.Register(c => new List<IAppsIndicativeCommand>(c.Resolve<IEnumerable<IAppsIndicativeCommand>>()))
+                .As<IList<IAppsIndicativeCommand>>();
         }
     }
 }

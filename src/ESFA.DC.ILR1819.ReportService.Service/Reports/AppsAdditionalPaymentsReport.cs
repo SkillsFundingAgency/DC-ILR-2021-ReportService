@@ -53,7 +53,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _modelBuilder = modelBuilder;
 
             ReportFileName = "Apps Additional Payments Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport;
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsAdditionalPaymentsReport;
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
