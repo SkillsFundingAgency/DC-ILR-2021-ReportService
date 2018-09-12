@@ -247,6 +247,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
                 .As<IList<IReport>>();
         }
@@ -304,6 +308,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<SummaryOfFM35FundingModelBuilder>().As<ISummaryOfFM35FundingModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IMainOccupancyReportModelBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsAdditionalPaymentsModelBuilder>().As<IAppsAdditionalPaymentsModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
                 .InstancePerLifetimeScope();

@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             var employmentStatusDate = learner.LearnerEmploymentStatuses
                 .Where(x => x.DateEmpStatApp <= learningDelivery.LearnStartDate).Max(x => x.DateEmpStatApp);
             var employmentStatus =
-                learner.LearnerEmploymentStatuses.SingleOrDefault(x => x.DateEmpStatApp == employmentStatusDate);
+                learner.LearnerEmploymentStatuses?.SingleOrDefault(x => x.DateEmpStatApp == employmentStatusDate);
 
             var model = new AppsIndicativeEarningsModel
             {
@@ -42,24 +42,24 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 PostcodePriorToEnrollment = learner.PostcodePrior,
                 CampusIdentifier = learner.CampId,
                 ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings
-                    .SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
                 ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings
-                    .SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
                 AimSequenceNumber = learningDelivery.AimSeqNumber,
                 LearningAimReference = learningDelivery.LearnAimRef,
-                LearningAimTitle = larsLearningDelivery.LearningAimTitle,
+                LearningAimTitle = larsLearningDelivery?.LearningAimTitle,
                 SoftwareSupplierAimIdentifier = learningDelivery.SWSupAimId,
                 LARS1618FrameworkUplift = fm36DeliveryAttribute?.LearningDeliveryAttributeDatas
                     ?.LearnDelApplicProv1618FrameworkUplift,
-                NotionalNVQLevel = larsLearningDelivery.NotionalNvqLevel,
-                StandardNotionalEndLevel = larsStandard.NotionalEndLevel,
-                Tier2SectorSubjectArea = larsLearningDelivery.Tier2SectorSubjectArea,
+                NotionalNVQLevel = larsLearningDelivery?.NotionalNvqLevel,
+                StandardNotionalEndLevel = larsStandard?.NotionalEndLevel,
+                Tier2SectorSubjectArea = larsLearningDelivery?.Tier2SectorSubjectArea,
                 ProgrammeType = learningDelivery.ProgTypeNullable,
                 StandardCode = learningDelivery.StdCodeNullable,
                 FrameworkCode = learningDelivery.FworkCodeNullable,
                 ApprenticeshipPathway = learningDelivery.PwayCodeNullable,
                 AimType = learningDelivery.AimType,
-                CommonComponentCode = larsLearningDelivery.FrameworkCommonComponent,
+                CommonComponentCode = larsLearningDelivery?.FrameworkCommonComponent,
                 FundingModel = learningDelivery.FundModel,
                 OriginalLearningStartDate = learningDelivery.OrigLearnStartDateNullable,
                 LearningStartDate = learningDelivery.LearnStartDate,
@@ -86,7 +86,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringD = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM4)?.LearnDelFAMCode,
                 LearningDeliveryFAMRestartIndicator = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeRES).LearnDelFAMCode,
+                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeRES)?.LearnDelFAMCode,
                 ProviderSpecifiedDeliveryMonitoringA = learner.ProviderSpecLearnerMonitorings
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
                 ProviderSpecifiedDeliveryMonitoringB = learner.ProviderSpecLearnerMonitorings
@@ -101,24 +101,24 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 SubContractedOrPartnershipUKPRN = learningDelivery.PartnerUKPRNNullable,
                 DeliveryLocationPostcode = learningDelivery.DelLocPostCode,
                 EmployerIdentifier = employmentStatus?.EmpIdNullable,
-                AgreementIdentifier = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeAgreeId,
+                AgreementIdentifier = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeAgreeId,
                 EmploymentStatus = employmentStatus?.EmpStat,
                 EmploymentStatusDate = employmentStatus?.DateEmpStatApp,
-                EmpStatusMonitoringSmallEmployer = employmentStatus.EmploymentStatusMonitorings
-                    .SingleOrDefault(x => x.ESMType == Constants.EmploymentStatusMonitoringTypeSEM)?.ESMCode,
-                PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.EpisodeStartDate,
-                PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeActualEndDate,
+                EmpStatusMonitoringSmallEmployer = employmentStatus?.EmploymentStatusMonitorings
+                    ?.SingleOrDefault(x => x.ESMType == Constants.EmploymentStatusMonitoringTypeSEM)?.ESMCode,
+                PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.EpisodeStartDate,
+                PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeActualEndDate,
                 FundingLineType = fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false
                     ? fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelInitialFundLineType
-                    : fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeFundLineType,
+                    : fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeFundLineType,
                 TotalPriceApplicableToThisEpisode =
-                    fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeTotalTNPPrice,
-                FundingBandUpperLimit = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeUpperBandLimit,
+                    fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeTotalTNPPrice,
+                FundingBandUpperLimit = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeUpperBandLimit,
                 PriceAmountAboveFundingBandLimit =
-                    fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeUpperLimitAdjustment,
+                    fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeUpperLimitAdjustment,
                 PriceAmountRemainingStartOfEpisode = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas
-                    .PriceEpisodeCappedRemainingTNPAmount,
-                CompletionElement = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas.PriceEpisodeCompletionElement
+                    ?.PriceEpisodeCappedRemainingTNPAmount,
+                CompletionElement = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeCompletionElement
             };
 
             CalculateApprenticeshipContractTypeFields(learningDelivery, model, fm36DeliveryAttribute, fm36EpisodeAttribute, hasPriceEpisodes);

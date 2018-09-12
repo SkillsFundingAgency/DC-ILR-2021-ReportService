@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -74,6 +75,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
+            var firstOfAugust = new DateTime(2018, 8, 1);
+            var endOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
+
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
             Task<FM36FundingOutputs> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
@@ -116,32 +120,40 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     if (fm36Learner?.PriceEpisodeAttributes.Any() ?? false)
                     {
-                        var earliestEpisodeDate =
-                            fm36Learner.PriceEpisodeAttributes.Min(x => x.PriceEpisodeAttributeDatas.EpisodeStartDate);
+                        var episodesInRange = fm36Learner.PriceEpisodeAttributes
+                            .Where(p => p.PriceEpisodeAttributeDatas.EpisodeStartDate >= firstOfAugust &&
+                                        p.PriceEpisodeAttributeDatas.EpisodeStartDate <= endOfYear).ToList();
 
-                        var earliestEpisode = false;
-                        foreach (var episodeAttribute in fm36Learner.PriceEpisodeAttributes)
+                        if (episodesInRange.Any())
                         {
-                            if (episodeAttribute.PriceEpisodeAttributeDatas.EpisodeStartDate == earliestEpisodeDate)
+                            var earliestEpisodeDate =
+                                episodesInRange.Min(x =>
+                                    x.PriceEpisodeAttributeDatas.EpisodeStartDate);
+
+                            var earliestEpisode = false;
+                            foreach (var episodeAttribute in episodesInRange)
                             {
-                                earliestEpisode = true;
+                                if (episodeAttribute.PriceEpisodeAttributeDatas.EpisodeStartDate == earliestEpisodeDate)
+                                {
+                                    earliestEpisode = true;
+                                }
+
+                                appsIndicativeEarningsModels.Add(
+                                    _modelBuilder.BuildModel(
+                                        learner,
+                                        learningDelivery,
+                                        fm36LearningDelivery,
+                                        episodeAttribute,
+                                        larsDelivery,
+                                        larsStandard,
+                                        earliestEpisode,
+                                        true));
+
+                                earliestEpisode = false;
                             }
 
-                            appsIndicativeEarningsModels.Add(
-                                _modelBuilder.BuildModel(
-                                    learner,
-                                    learningDelivery,
-                                    fm36LearningDelivery,
-                                    episodeAttribute,
-                                    larsDelivery,
-                                    larsStandard,
-                                    earliestEpisode,
-                                    true));
-
-                            earliestEpisode = false;
+                            continue;
                         }
-
-                        continue;
                     }
 
                     appsIndicativeEarningsModels.Add(

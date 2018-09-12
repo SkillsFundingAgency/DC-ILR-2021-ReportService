@@ -10,7 +10,6 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
-using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -43,7 +42,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
-            // jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output] = "FundingFm36Output";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output] = "FundingFm36Output";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IKeyValuePersistenceService> storage = new Mock<IKeyValuePersistenceService>();
@@ -72,7 +71,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 }));
             redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
-            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
 
             IMessage message = await ilrProviderService.GetIlrFile(jobContextMessage, CancellationToken.None);
             string validLearners = await redis.Object.GetAsync("ValidLearners");
@@ -119,7 +118,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             await report.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
-            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MathsAndEnglishMapper(), 1));
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsIndicativeEarningsMapper(), 1));
         }
     }
 }
