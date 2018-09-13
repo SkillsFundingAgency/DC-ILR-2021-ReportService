@@ -27,8 +27,6 @@
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="__TopicReports_TaskGenerateSummaryOfFunding1619Report__" />
     <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="__TopicReports_TaskGenerateMathsAndEnglishReport__" />
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="__TopicReports_TaskGenerateMainOccupancyReport__" />
-    <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="__TopicReports_TaskGenerateAppsAdditionalPaymentsReport__" />
-    <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="__TopicReports_TaskGenerateAppsIndicativeEarningsReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- Org -->
