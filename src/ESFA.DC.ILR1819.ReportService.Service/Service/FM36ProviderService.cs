@@ -58,7 +58,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                string fm36Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output].ToString(); // todo - change this to fm36 key when available
+                string fm36Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString();
                 string fm36 = await _redis.GetAsync(fm36Filename, cancellationToken);
 
                 if (string.IsNullOrEmpty(fm36))

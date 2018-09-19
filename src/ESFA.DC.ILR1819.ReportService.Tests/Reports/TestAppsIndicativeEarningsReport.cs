@@ -42,7 +42,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output] = "FundingFm36Output";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output] = "FundingFm36Output";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
