@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Attribute;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
@@ -9,7 +9,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public class AppsAdditionalPaymentsModelBuilder : IAppsAdditionalPaymentsModelBuilder
     {
-        public AppsAdditionalPaymentsModel BuildModel(ILearner learner, LearnerAttribute learnerData)
+        public AppsAdditionalPaymentsModel BuildModel(ILearner learner, FM36Learner learnerData)
         {
             // get variables of monthly earnings here and a total
             // get variables of monthly payments here and a total
