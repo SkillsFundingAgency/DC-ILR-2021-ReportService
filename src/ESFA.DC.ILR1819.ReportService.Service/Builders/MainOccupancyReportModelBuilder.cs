@@ -241,7 +241,7 @@
         public MainOccupancyFM25Model BuildFm25Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
-            Learner fm25Data)
+            FM25Learner fm25Data)
         {
             var onProgPayment = fm25Data?.LearnerPeriodisedValues?.SingleOrDefault(attr =>
                 attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);

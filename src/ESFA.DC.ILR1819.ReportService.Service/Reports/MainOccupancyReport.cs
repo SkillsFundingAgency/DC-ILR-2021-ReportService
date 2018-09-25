@@ -66,7 +66,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
+            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
             Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 

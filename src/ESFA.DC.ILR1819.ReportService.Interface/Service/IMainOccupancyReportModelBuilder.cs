@@ -18,6 +18,6 @@
         MainOccupancyFM25Model BuildFm25Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
-            Learner fm25Data);
+            FM25Learner fm25Data);
     }
 }
