@@ -6,18 +6,18 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
 {
     public static class TestFM25Builder
     {
-        public static Global Build()
+        public static FM25Global Build()
         {
-            return new Global
+            return new FM25Global
             {
                 LARSVersion = "1",
                 OrgVersion = "2",
                 PostcodeDisadvantageVersion = "3",
                 RulebaseVersion = "4",
                 UKPRN = 123456,
-                Learners = new List<Learner>
+                Learners = new List<FM25Learner>
                 {
-                    new Learner
+                    new FM25Learner
                     {
                         AcadMonthPayment = 0,
                         AcadProg = false,
