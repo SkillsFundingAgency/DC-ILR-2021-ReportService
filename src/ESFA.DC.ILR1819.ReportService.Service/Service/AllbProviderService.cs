@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.IO.Interfaces;
@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private bool _loadedDataAlready;
 
-        private ALBFundingOutputs _fundingOutputs;
+        private ALBGlobal _fundingOutputs;
 
         public AllbProviderService(
             ILogger logger,
@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<ALBFundingOutputs> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<ALBGlobal> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Alb.json", alb, cancellationToken);
-                _fundingOutputs = _jsonSerializationService.Deserialize<ALBFundingOutputs>(alb);
+                _fundingOutputs = _jsonSerializationService.Deserialize<ALBGlobal>(alb);
             }
             catch (Exception ex)
             {
