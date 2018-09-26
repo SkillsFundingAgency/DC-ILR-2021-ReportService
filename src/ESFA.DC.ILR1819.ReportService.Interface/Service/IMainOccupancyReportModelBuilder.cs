@@ -1,7 +1,6 @@
 ﻿namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
     using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-    using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Attribute;
     using ESFA.DC.ILR.Model.Interface;
     using Model.Lars;
     using Model.ReportModels;
@@ -13,7 +12,7 @@
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
             LearningDelivery frameworkAim,
-            LearningDeliveryAttribute fm35Data);
+            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data);
 
         MainOccupancyFM25Model BuildFm25Model(
             ILearner learner,
