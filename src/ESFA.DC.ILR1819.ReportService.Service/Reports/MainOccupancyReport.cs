@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -20,6 +20,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
+using LearningDelivery = ESFA.DC.ILR1819.ReportService.Model.Lars.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -67,7 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
-            Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, fm25Task, fm35Task, validLearnersTask);
@@ -135,7 +136,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     }
 
                     var learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
-                        ?.LearningDeliveryAttributes.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
+                        ?.LearningDeliveries.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
 
                     mainOccupancyFm35Models.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
                         learner,

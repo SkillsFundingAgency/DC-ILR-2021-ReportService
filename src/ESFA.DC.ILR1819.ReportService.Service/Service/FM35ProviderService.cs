@@ -2,7 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.IO.Interfaces;
@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private bool _loadedDataAlready;
 
-        private FM35FundingOutputs _fundingOutputs;
+        private FM35Global _fundingOutputs;
 
         public FM35ProviderService(
             ILogger logger,
@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<FM35FundingOutputs> GetFM35Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<FM35Global> GetFM35Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Fm35.json", fm35, cancellationToken);
-                _fundingOutputs = _jsonSerializationService.Deserialize<FM35FundingOutputs>(fm35);
+                _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(fm35);
             }
             catch (Exception ex)
             {
