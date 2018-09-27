@@ -86,7 +86,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var ilrError = new List<string>();
 
             var fm35Data = fm35Task.Result;
-            if (fm35Data == null)
+            if (fm35Data?.Learners == null)
             {
                 ilrError.Add("No FM35 Data");
                 return null;
