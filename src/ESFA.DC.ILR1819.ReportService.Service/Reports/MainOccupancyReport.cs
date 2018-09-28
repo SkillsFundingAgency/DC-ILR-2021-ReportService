@@ -113,6 +113,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 var fm25Data = fm25Task.Result;
                 var fm35Data = fm35Task.Result;
 
+                if (learner.LearningDeliveries == null)
+                {
+                    continue;
+                }
+
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
                     if (!CheckIsApplicableLearner(learningDelivery))
@@ -126,8 +131,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         continue;
                     }
 
-                    LearningDelivery frameworkAim = larsFrameworkAimsTask.Result.SingleOrDefault(x => x.LearnerLearnRefNumber == learner.LearnRefNumber)
-                        ?.LearningDeliveries.SingleOrDefault(x =>
+                    LearningDelivery frameworkAim = larsFrameworkAimsTask.Result?.SingleOrDefault(x => x.LearnerLearnRefNumber == learner.LearnRefNumber)
+                        ?.LearningDeliveries?.SingleOrDefault(x =>
                             x.LearningDeliveryLearnAimRef == learningDelivery.LearnAimRef && x.LearningDeliveryAimSeqNumber == learningDelivery.AimSeqNumber);
                     if (frameworkAim == null)
                     {
@@ -136,7 +141,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     }
 
                     var learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
-                        ?.LearningDeliveries.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
+                        ?.LearningDeliveries?.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
 
                     mainOccupancyFm35Models.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
                         learner,
