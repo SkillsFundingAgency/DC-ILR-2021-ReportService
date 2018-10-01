@@ -1,32 +1,31 @@
-﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Attribute;
+﻿using System.Collections.Generic;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 
 namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
 {
     public static class TestFM35Builder
     {
-        public static FM35FundingOutputs Build()
+        public static FM35Global Build()
         {
-            return new FM35FundingOutputs
+            return new FM35Global
             {
-                Global = new GlobalAttribute(),
-                Learners = new[]
+                Learners = new List<FM35Learner>
                 {
-                    new LearnerAttribute
+                    new FM35Learner
                     {
                         LearnRefNumber = "3fm9901",
-                        LearningDeliveryAttributes = new[]
+                        LearningDeliveries = new List<LearningDelivery>
                         {
-                            new LearningDeliveryAttribute
+                            new LearningDelivery
                             {
                                 AimSeqNumber = 1,
-                                LearningDeliveryAttributeDatas = new LearningDeliveryAttributeData
+                                LearningDeliveryValue = new LearningDeliveryValue
                                 {
                                     FundLine = "12345"
                                 },
-                                LearningDeliveryPeriodisedAttributes = new[]
+                                LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValue>
                                 {
-                                    new LearningDeliveryPeriodisedAttribute
+                                    new LearningDeliveryPeriodisedValue
                                     {
                                         AttributeName = "OnProgPayment",
                                         Period1 = 102.45M

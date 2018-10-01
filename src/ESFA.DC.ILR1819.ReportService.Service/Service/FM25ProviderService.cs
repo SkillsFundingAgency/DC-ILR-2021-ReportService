@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private bool _loadedDataAlready;
 
-        private Global _fundingOutputs;
+        private FM25Global _fundingOutputs;
 
         public FM25ProviderService(
             ILogger logger,
@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<Global> GetFM25Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<FM25Global> GetFM25Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Fm25.json", fm25, cancellationToken);
-                _fundingOutputs = _jsonSerializationService.Deserialize<Global>(fm25);
+                _fundingOutputs = _jsonSerializationService.Deserialize<FM25Global>(fm25);
             }
             catch (Exception ex)
             {

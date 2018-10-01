@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<FM36FundingOutputs> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
+            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, validLearnersTask, fm36Task);
 
@@ -115,25 +115,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                             learningDelivery.StdCodeNullable ?? 0,
                             cancellationToken);
 
-                    var fm36LearningDelivery = fm36Learner?.LearningDeliveryAttributes
+                    var fm36LearningDelivery = fm36Learner?.LearningDeliveries
                         ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                    if (fm36Learner?.PriceEpisodeAttributes.Any() ?? false)
+                    if (fm36Learner?.PriceEpisodes.Any() ?? false)
                     {
-                        var episodesInRange = fm36Learner.PriceEpisodeAttributes
-                            .Where(p => p.PriceEpisodeAttributeDatas.EpisodeStartDate >= firstOfAugust &&
-                                        p.PriceEpisodeAttributeDatas.EpisodeStartDate <= endOfYear).ToList();
+                        var episodesInRange = fm36Learner.PriceEpisodes
+                            .Where(p => p.PriceEpisodeValues.EpisodeStartDate >= firstOfAugust &&
+                                        p.PriceEpisodeValues.EpisodeStartDate <= endOfYear).ToList();
 
                         if (episodesInRange.Any())
                         {
                             var earliestEpisodeDate =
                                 episodesInRange.Min(x =>
-                                    x.PriceEpisodeAttributeDatas.EpisodeStartDate);
+                                    x.PriceEpisodeValues.EpisodeStartDate);
 
                             var earliestEpisode = false;
                             foreach (var episodeAttribute in episodesInRange)
                             {
-                                if (episodeAttribute.PriceEpisodeAttributeDatas.EpisodeStartDate == earliestEpisodeDate)
+                                if (episodeAttribute.PriceEpisodeValues.EpisodeStartDate == earliestEpisodeDate)
                                 {
                                     earliestEpisode = true;
                                 }

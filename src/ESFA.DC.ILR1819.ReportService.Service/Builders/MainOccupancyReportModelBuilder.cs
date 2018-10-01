@@ -1,8 +1,9 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+
+namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     using System.Linq;
     using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-    using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Attribute;
     using ESFA.DC.ILR.Model.Interface;
     using ESFA.DC.ILR1819.ReportService.Interface.Service;
     using Model.Lars;
@@ -15,17 +16,17 @@
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
             LearningDelivery frameworkAim,
-            LearningDeliveryAttribute fm35Data)
+            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data)
         {
-            var onProgPayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+            var onProgPayment = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35OnProgrammeAttributeName);
-            var balancePayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+            var balancePayment = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35BalancingAttributeName);
-            var achievePayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+            var achievePayment = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35AimAchievementAttributeName);
-            var empOutcomePayment = fm35Data?.LearningDeliveryPeriodisedAttributes
+            var empOutcomePayment = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
-            var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedAttributes
+            var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35LearningSupportAttributeName);
 
             var totalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
@@ -63,7 +64,7 @@
                                          (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) +
                                          (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0);
 
-            var aimPercent = fm35Data?.LearningDeliveryPeriodisedAttributes?.SingleOrDefault(attr =>
+            var aimPercent = fm35Data?.LearningDeliveryPeriodisedValues?.SingleOrDefault(attr =>
                 attr.AttributeName == Constants.Fm35AimAchievementPercentAttributeName);
 
             return new MainOccupancyFM35Model
@@ -82,10 +83,10 @@
                 LearnAimRef = learningDelivery.LearnAimRef,
                 LearnAimRefTitle = larsModel.LearningAimTitle,
                 SwSupAimId = learningDelivery.SWSupAimId,
-                WeightedRateFromEsol = fm35Data?.LearningDeliveryAttributeDatas?.WeightedRateFromESOL,
-                ApplicWeightFundRate = fm35Data?.LearningDeliveryAttributeDatas?.ApplicWeightFundRate,
-                ApplicProgWeightFact = fm35Data?.LearningDeliveryAttributeDatas?.ApplicProgWeightFact,
-                AimValue = fm35Data?.LearningDeliveryAttributeDatas?.AimValue,
+                WeightedRateFromEsol = fm35Data?.LearningDeliveryValue?.WeightedRateFromESOL,
+                ApplicWeightFundRate = fm35Data?.LearningDeliveryValue?.ApplicWeightFundRate,
+                ApplicProgWeightFact = fm35Data?.LearningDeliveryValue?.ApplicProgWeightFact,
+                AimValue = fm35Data?.LearningDeliveryValue?.AimValue,
                 NotionalNvqLevelV2 = larsModel.NotionalNvqLevel,
                 SectorSubjectAreaTier2 = larsModel.Tier2SectorSubjectArea,
                 ProgType = learningDelivery.ProgTypeNullable,
@@ -136,25 +137,25 @@
                     ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "C")?.ProvSpecDelMon,
                 ProvSpecDelMonD = learningDelivery.ProviderSpecDeliveryMonitorings
                     ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "D")?.ProvSpecDelMon,
-                FundLine = fm35Data?.LearningDeliveryAttributeDatas?.FundLine,
-                PlannedNumOnProgInstalm = fm35Data?.LearningDeliveryAttributeDatas?.PlannedNumOnProgInstalm,
-                PlannedNumOnProgInstalmTrans = fm35Data?.LearningDeliveryAttributeDatas?.PlannedNumOnProgInstalmTrans,
-                StartPropTrans = fm35Data?.LearningDeliveryAttributeDatas?.StartPropTrans,
-                AchieveElement = fm35Data?.LearningDeliveryAttributeDatas?.AchieveElement,
+                FundLine = fm35Data?.LearningDeliveryValue?.FundLine,
+                PlannedNumOnProgInstalm = fm35Data?.LearningDeliveryValue?.PlannedNumOnProgInstalm,
+                PlannedNumOnProgInstalmTrans = fm35Data?.LearningDeliveryValue?.PlannedNumOnProgInstalmTrans,
+                StartPropTrans = fm35Data?.LearningDeliveryValue?.StartPropTrans,
+                AchieveElement = fm35Data?.LearningDeliveryValue?.AchieveElement,
                 AchievePercentage = aimPercent == null ? 0 : GetMaxPeriod(aimPercent),
-                NonGovCont = fm35Data?.LearningDeliveryAttributeDatas?.NonGovCont,
+                NonGovCont = fm35Data?.LearningDeliveryValue?.NonGovCont,
                 PartnerUkprn = learningDelivery.PartnerUKPRNNullable,
                 DelLocPostCode = learningDelivery.DelLocPostCode,
-                AreaCostFactAdj = fm35Data?.LearningDeliveryAttributeDatas?.AreaCostFactAdj,
-                DisUpFactAdj = fm35Data?.LearningDeliveryAttributeDatas?.DisUpFactAdj,
-                LargeEmployerID = fm35Data?.LearningDeliveryAttributeDatas?.LargeEmployerID,
-                LargeEmployerFM35Fctr = fm35Data?.LearningDeliveryAttributeDatas?.LargeEmployerFM35Fctr,
-                CapFactor = fm35Data?.LearningDeliveryAttributeDatas?.CapFactor,
-                TraineeWorkPlacement = (fm35Data?.LearningDeliveryAttributeDatas?.TrnWorkPlaceAim ?? false)
-                                       || (fm35Data?.LearningDeliveryAttributeDatas?.TrnWorkPrepAim ?? false),
-                HigherApprentishipHeAim = fm35Data?.LearningDeliveryAttributeDatas?.PrscHEAim ?? false,
-                ApplicEmpFactDate = fm35Data?.LearningDeliveryAttributeDatas?.ApplicEmpFactDate,
-                ApplicFactDate = fm35Data?.LearningDeliveryAttributeDatas?.ApplicFactDate,
+                AreaCostFactAdj = fm35Data?.LearningDeliveryValue?.AreaCostFactAdj,
+                DisUpFactAdj = fm35Data?.LearningDeliveryValue?.DisUpFactAdj,
+                LargeEmployerID = fm35Data?.LearningDeliveryValue?.LargeEmployerID,
+                LargeEmployerFM35Fctr = fm35Data?.LearningDeliveryValue?.LargeEmployerFM35Fctr,
+                CapFactor = fm35Data?.LearningDeliveryValue?.CapFactor,
+                TraineeWorkPlacement = (fm35Data?.LearningDeliveryValue?.TrnWorkPlaceAim ?? false)
+                                       || (fm35Data?.LearningDeliveryValue?.TrnWorkPrepAim ?? false),
+                HigherApprentishipHeAim = fm35Data?.LearningDeliveryValue?.PrscHEAim ?? false,
+                ApplicEmpFactDate = fm35Data?.LearningDeliveryValue?.ApplicEmpFactDate,
+                ApplicFactDate = fm35Data?.LearningDeliveryValue?.ApplicFactDate,
 
                 Period1OnProgPayment = onProgPayment?.Period1,
                 Period1BalancePayment = balancePayment?.Period1,
@@ -241,7 +242,7 @@
         public MainOccupancyFM25Model BuildFm25Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
-            Learner fm25Data)
+            FM25Learner fm25Data)
         {
             var onProgPayment = fm25Data?.LearnerPeriodisedValues?.SingleOrDefault(attr =>
                 attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);
@@ -294,7 +295,7 @@
             };
         }
 
-        private static decimal GetMaxPeriod(LearningDeliveryPeriodisedAttribute learningDeliveryPeriodisedAttribute)
+        private static decimal GetMaxPeriod(LearningDeliveryPeriodisedValue learningDeliveryPeriodisedAttribute)
         {
             decimal max = int.MinValue;
             if (learningDeliveryPeriodisedAttribute.Period1 > max)

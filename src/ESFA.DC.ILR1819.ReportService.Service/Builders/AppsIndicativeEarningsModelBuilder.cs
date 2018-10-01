@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.Data.LARS.Model;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Attribute;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using LearningDelivery = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
@@ -22,8 +23,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         public AppsIndicativeEarningsModel BuildModel(
             ILearner learner,
             ILearningDelivery learningDelivery,
-            LearningDeliveryAttribute fm36DeliveryAttribute,
-            PriceEpisodeAttribute fm36EpisodeAttribute,
+            LearningDelivery fm36DeliveryAttribute,
+            PriceEpisode fm36EpisodeAttribute,
             LarsLearningDelivery larsLearningDelivery,
             LARS_Standard larsStandard,
             bool earliestEpisode,
@@ -49,7 +50,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 LearningAimReference = learningDelivery.LearnAimRef,
                 LearningAimTitle = larsLearningDelivery?.LearningAimTitle,
                 SoftwareSupplierAimIdentifier = learningDelivery.SWSupAimId,
-                LARS1618FrameworkUplift = fm36DeliveryAttribute?.LearningDeliveryAttributeDatas
+                LARS1618FrameworkUplift = fm36DeliveryAttribute?.LearningDeliveryValues
                     ?.LearnDelApplicProv1618FrameworkUplift,
                 NotionalNVQLevel = larsLearningDelivery?.NotionalNvqLevel,
                 StandardNotionalEndLevel = larsStandard?.NotionalEndLevel,
@@ -97,28 +98,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "D")?.ProvSpecLearnMon,
                 EndPointAssessmentOrganisation = learningDelivery.EPAOrgID,
                 PlannedNoOfOnProgrammeInstallmentsForAim =
-                    fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.PlannedNumOnProgInstalm,
+                    fm36DeliveryAttribute?.LearningDeliveryValues?.PlannedNumOnProgInstalm,
                 SubContractedOrPartnershipUKPRN = learningDelivery.PartnerUKPRNNullable,
                 DeliveryLocationPostcode = learningDelivery.DelLocPostCode,
                 EmployerIdentifier = employmentStatus?.EmpIdNullable,
-                AgreementIdentifier = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeAgreeId,
+                AgreementIdentifier = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeAgreeId,
                 EmploymentStatus = employmentStatus?.EmpStat,
                 EmploymentStatusDate = employmentStatus?.DateEmpStatApp,
                 EmpStatusMonitoringSmallEmployer = employmentStatus?.EmploymentStatusMonitorings
                     ?.SingleOrDefault(x => x.ESMType == Constants.EmploymentStatusMonitoringTypeSEM)?.ESMCode,
-                PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.EpisodeStartDate,
-                PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeActualEndDate,
-                FundingLineType = fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false
-                    ? fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelInitialFundLineType
-                    : fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeFundLineType,
+                PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate,
+                PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeActualEndDate,
+                FundingLineType = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false
+                    ? fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelInitialFundLineType
+                    : fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeFundLineType,
                 TotalPriceApplicableToThisEpisode =
-                    fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeTotalTNPPrice,
-                FundingBandUpperLimit = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeUpperBandLimit,
+                    fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeTotalTNPPrice,
+                FundingBandUpperLimit = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeUpperBandLimit,
                 PriceAmountAboveFundingBandLimit =
-                    fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeUpperLimitAdjustment,
-                PriceAmountRemainingStartOfEpisode = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas
+                    fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeUpperLimitAdjustment,
+                PriceAmountRemainingStartOfEpisode = fm36EpisodeAttribute?.PriceEpisodeValues
                     ?.PriceEpisodeCappedRemainingTNPAmount,
-                CompletionElement = fm36EpisodeAttribute?.PriceEpisodeAttributeDatas?.PriceEpisodeCompletionElement
+                CompletionElement = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeCompletionElement
             };
 
             CalculateApprenticeshipContractTypeFields(learningDelivery, model, fm36DeliveryAttribute, fm36EpisodeAttribute, hasPriceEpisodes);
@@ -160,13 +161,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         private void CalculateApprenticeshipContractTypeFields(
             ILearningDelivery learningDelivery,
             AppsIndicativeEarningsModel model,
-            LearningDeliveryAttribute fm36DeliveryAttribute,
-            PriceEpisodeAttribute fm36PriceEpisodeAttribute,
+            LearningDelivery fm36DeliveryAttribute,
+            PriceEpisode fm36PriceEpisodeAttribute,
             bool hasPriceEpisodes)
         {
             bool useDeliveryAttributeDate =
-                fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false ||
-                (!(fm36DeliveryAttribute?.LearningDeliveryAttributeDatas?.LearnDelMathEng ?? false) && !hasPriceEpisodes);
+                fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false ||
+                (!(fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false) && !hasPriceEpisodes);
 
             if (learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT)
                     ?.LearnDelFAMDateFromNullable == null)
@@ -179,7 +180,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                             ((useDeliveryAttributeDate &&
                               learningDelivery.LearnStartDate >= x.LearnDelFAMDateFromNullable) ||
                              (!useDeliveryAttributeDate &&
-                              fm36PriceEpisodeAttribute?.PriceEpisodeAttributeDatas.EpisodeStartDate >=
+                              fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate >=
                               x.LearnDelFAMDateFromNullable)))
                 .Max(x => x.LearnDelFAMDateFromNullable);
 
@@ -188,7 +189,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                             ((useDeliveryAttributeDate &&
                               learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
                              (!useDeliveryAttributeDate &&
-                              fm36PriceEpisodeAttribute?.PriceEpisodeAttributeDatas.EpisodeStartDate <=
+                              fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate <=
                               x.LearnDelFAMDateToNullable)))
                 .Min(x => x.LearnDelFAMDateFromNullable);
 

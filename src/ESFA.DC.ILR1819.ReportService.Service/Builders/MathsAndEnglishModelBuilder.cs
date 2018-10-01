@@ -7,7 +7,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public class MathsAndEnglishModelBuilder : IMathsAndEnglishModelBuilder
     {
-        public MathsAndEnglishModel BuildModel(ILearner learner, Learner fm25Data)
+        public MathsAndEnglishModel BuildModel(ILearner learner, FM25Learner fm25Data)
         {
             return new MathsAndEnglishModel
             {

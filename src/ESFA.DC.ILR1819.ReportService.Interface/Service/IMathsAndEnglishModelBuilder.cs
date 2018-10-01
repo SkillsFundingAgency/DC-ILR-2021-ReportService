@@ -6,6 +6,6 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
     public interface IMathsAndEnglishModelBuilder
     {
-        MathsAndEnglishModel BuildModel(ILearner learner, Learner fm25Data);
+        MathsAndEnglishModel BuildModel(ILearner learner, FM25Learner fm25Data);
     }
 }

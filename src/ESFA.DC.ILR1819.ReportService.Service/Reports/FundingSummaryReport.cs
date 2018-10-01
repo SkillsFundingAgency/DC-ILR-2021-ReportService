@@ -7,10 +7,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -85,9 +85,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<ALBFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            Task<Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
-            Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
+            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage);
@@ -146,14 +146,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         }
 
         private void TotalAlb(
-            Task<ALBFundingOutputs> albDataTask,
+            Task<ALBGlobal> albDataTask,
             string validLearnerRefNum,
             List<string> albLearnerError,
             FundingSummaryModel fundingSummaryModelAlbFunding,
             Task<int> periodTask,
             FundingSummaryModel fundingSummaryModelAlbAreaCosts)
         {
-            LearnerAttribute albLearner =
+            ALBLearner albLearner =
                 albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
             if (albLearner == null)
             {
@@ -162,11 +162,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             var albSupportPaymentObj =
-                albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
+                albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
             var albAreaUpliftOnProgPaymentObj =
-                albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
+                albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
             var albAreaUpliftBalPaymentObj =
-                albLearner.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
+                albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
 
             fundingSummaryModelAlbFunding.Period1 =
                 fundingSummaryModelAlbFunding.Period1 + albSupportPaymentObj?.Period1 ?? 0;
@@ -342,7 +342,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return fundingSummaryFooterModel;
         }
 
-        private decimal? GetYearToDateTotal(LearnerPeriodisedAttribute albSupportPaymentObj, int period)
+        private decimal? GetYearToDateTotal(LearnerPeriodisedValue albSupportPaymentObj, int period)
         {
             decimal total = 0;
             for (int i = 0; i < period; i++)
@@ -391,7 +391,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return total;
         }
 
-        private decimal? GetYearToDateTotal(LearnerPeriodisedAttribute albAreaUpliftBalPaymentObj, LearnerPeriodisedAttribute albAreaUpliftOnProgPaymentObj, int period)
+        private decimal? GetYearToDateTotal(LearnerPeriodisedValue albAreaUpliftBalPaymentObj, LearnerPeriodisedValue albAreaUpliftOnProgPaymentObj, int period)
         {
             decimal total = 0;
             for (int i = 0; i < period; i++)

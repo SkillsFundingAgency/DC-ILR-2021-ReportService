@@ -7,8 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Attribute;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -80,7 +79,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<ALBFundingOutputs> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
@@ -119,7 +118,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                LearnerAttribute albLearner =
+                ALBLearner albLearner =
                     albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
                 if (albLearner == null)
                 {
@@ -140,17 +139,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         continue;
                     }
 
-                    var albAttribs = albLearner?.LearningDeliveryAttributes
-                        .SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
-                        ?.LearningDeliveryAttributeDatas;
+                    var albAttribs = albLearner?.LearningDeliveries
+                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
+                        ?.LearningDeliveryValue;
                     var albSupportPaymentObj =
-                        albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
+                        albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
                     var albAreaUpliftOnProgPaymentObj =
-                        albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
+                        albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
                     var albAreaUpliftBalPaymentObj =
-                        albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
+                        albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
 
-                    var alb = learningDelivery.LearningDeliveryFAMs.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
+                    var alb = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
 
                     models.Add(new AllbOccupancyModel
                     {
@@ -200,66 +199,66 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         LiabilityDate = albAttribs?.LiabilityDate?.ToString("dd/MM/yyyy"),
                         PlannedNumOnProgInstalm = albAttribs?.PlannedNumOnProgInstalm,
                         ApplicFactDate = albAttribs?.ApplicFactDate?.ToString("dd/MM/yyyy"),
-                        Period1AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period1,
+                        Period1AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period1,
                         Period1AlbPayment = albSupportPaymentObj?.Period1,
                         Period1AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period1 ?? 0,
                         Period1AlbAreaUplift = albAreaUpliftBalPaymentObj?.Period1 ?? 0,
-                        Period1AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period1) ?? 0,
-                        Period2AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period2 ?? 0,
+                        Period1AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period1) ?? 0,
+                        Period2AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period2 ?? 0,
                         Period2AlbPayment = albSupportPaymentObj?.Period2 ?? 0,
                         Period2AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period2 ?? 0,
                         Period2AlbBalPayment = albAreaUpliftBalPaymentObj?.Period2 ?? 0,
-                        Period2AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period2) ?? 0,
-                        Period3AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period3 ?? 0,
+                        Period2AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period2) ?? 0,
+                        Period3AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period3 ?? 0,
                         Period3AlbPayment = albSupportPaymentObj?.Period3 ?? 0,
                         Period3AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period3 ?? 0,
                         Period3AlbBalPayment = albAreaUpliftBalPaymentObj?.Period3 ?? 0,
-                        Period3AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period3) ?? 0,
-                        Period4AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period4 ?? 0,
+                        Period3AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period3) ?? 0,
+                        Period4AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period4 ?? 0,
                         Period4AlbPayment = albSupportPaymentObj?.Period4 ?? 0,
                         Period4AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period4 ?? 0,
                         Period4AlbBalPayment = albAreaUpliftBalPaymentObj?.Period4 ?? 0,
-                        Period4AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period4) ?? 0,
-                        Period5AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period5 ?? 0,
+                        Period4AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period4) ?? 0,
+                        Period5AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period5 ?? 0,
                         Period5AlbPayment = albSupportPaymentObj?.Period5 ?? 0,
                         Period5AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period5 ?? 0,
                         Period5AlbBalPayment = albAreaUpliftBalPaymentObj?.Period5 ?? 0,
-                        Period5AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period5) ?? 0,
-                        Period6AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period6 ?? 0,
+                        Period5AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period5) ?? 0,
+                        Period6AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period6 ?? 0,
                         Period6AlbPayment = albSupportPaymentObj?.Period6 ?? 0,
                         Period6AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period6 ?? 0,
                         Period6AlbBalPayment = albAreaUpliftBalPaymentObj?.Period6 ?? 0,
-                        Period6AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period6) ?? 0,
-                        Period7AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period7 ?? 0,
+                        Period6AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period6) ?? 0,
+                        Period7AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period7 ?? 0,
                         Period7AlbPayment = albSupportPaymentObj?.Period7 ?? 0,
                         Period7AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period7 ?? 0,
                         Period7AlbBalPayment = albAreaUpliftBalPaymentObj?.Period7 ?? 0,
-                        Period7AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period7) ?? 0,
-                        Period8AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period8 ?? 0,
+                        Period7AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period7) ?? 0,
+                        Period8AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period8 ?? 0,
                         Period8AlbPayment = albSupportPaymentObj?.Period8 ?? 0,
                         Period8AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period8 ?? 0,
                         Period8AlbBalPayment = albAreaUpliftBalPaymentObj?.Period8 ?? 0,
-                        Period8AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period8) ?? 0,
-                        Period9AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period9 ?? 0,
+                        Period8AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period8) ?? 0,
+                        Period9AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period9 ?? 0,
                         Period9AlbPayment = albSupportPaymentObj?.Period9 ?? 0,
                         Period9AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period9 ?? 0,
                         Period9AlbBalPayment = albAreaUpliftBalPaymentObj?.Period9 ?? 0,
-                        Period9AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period9) ?? 0,
-                        Period10AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period10 ?? 0,
+                        Period9AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period9) ?? 0,
+                        Period10AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period10 ?? 0,
                         Period10AlbPayment = albSupportPaymentObj?.Period10 ?? 0,
                         Period10AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period10 ?? 0,
                         Period10AlbBalPayment = albAreaUpliftBalPaymentObj?.Period10 ?? 0,
-                        Period10AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period10) ?? 0,
-                        Period11AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period11 ?? 0,
+                        Period10AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period10) ?? 0,
+                        Period11AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period11 ?? 0,
                         Period11AlbPayment = albSupportPaymentObj?.Period11 ?? 0,
                         Period11AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period11 ?? 0,
                         Period11AlbBalPayment = albAreaUpliftBalPaymentObj?.Period11 ?? 0,
-                        Period11AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period11) ?? 0,
-                        Period12AlbCode = albLearner?.LearnerPeriodisedAttributes.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period12 ?? 0,
+                        Period11AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period11) ?? 0,
+                        Period12AlbCode = albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period12 ?? 0,
                         Period12AlbPayment = albSupportPaymentObj?.Period12 ?? 0,
                         Period12AlbOnProgPayment = albAreaUpliftOnProgPaymentObj?.Period12 ?? 0,
                         Period12AlbBalPayment = albAreaUpliftBalPaymentObj?.Period12 ?? 0,
-                        Period12AlbTotal = albLearner?.LearnerPeriodisedAttributes.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period12) ?? 0,
+                        Period12AlbTotal = albLearner?.LearnerPeriodisedValues?.Where(x => x.AttributeName == AlbSupportPayment || x.AttributeName == AlbAreaUpliftOnProgPayment || x.AttributeName == AlbAreaUpliftBalPayment).Sum(x => x.Period12) ?? 0,
                         TotalAlbSupportPayment = (albSupportPaymentObj?.Period1 ?? 0) + (albSupportPaymentObj?.Period2 ?? 0) + (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) + (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) + (albSupportPaymentObj?.Period7 ?? 0)
                                                 + (albSupportPaymentObj?.Period8 ?? 0) + (albSupportPaymentObj?.Period9 ?? 0) + (albSupportPaymentObj?.Period10 ?? 0) + (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0),
                         TotalAlbAreaUplift = (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0)

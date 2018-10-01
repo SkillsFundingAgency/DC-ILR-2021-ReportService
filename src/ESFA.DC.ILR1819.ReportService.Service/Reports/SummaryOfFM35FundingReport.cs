@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -73,7 +74,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<IList<SummaryOfFm35FundingModel>> GetSummaryOfFm35FundingModels(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
-            Task<FM35FundingOutputs> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(fm35Task);
 
@@ -85,7 +86,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var ilrError = new List<string>();
 
             var fm35Data = fm35Task.Result;
-            if (fm35Data == null)
+            if (fm35Data?.Learners == null)
             {
                 ilrError.Add("No FM35 Data");
                 return null;
@@ -94,7 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var summaryOfFm35FundingModels = new List<SummaryOfFm35FundingModel>();
             foreach (var learnerAttribute in fm35Data.Learners)
             {
-                foreach (var fundLineData in learnerAttribute.LearningDeliveryAttributes)
+                foreach (var fundLineData in learnerAttribute.LearningDeliveries)
                 {
                     summaryOfFm35FundingModels.AddRange(_summaryOfFm35FundingModelBuilder.BuildModel(fundLineData));
                 }

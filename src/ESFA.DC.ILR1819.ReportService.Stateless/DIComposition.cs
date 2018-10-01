@@ -69,7 +69,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterInstance(collectionsManagementConfiguration)
                 .As<CollectionsManagementConfiguration>().SingleInstance();
 
-            // register Cosmos config
+            // register redis config
             var azureRedisOptions = configHelper.GetSectionValues<RedisOptions>("RedisSection");
             containerBuilder.Register(c => new RedisKeyValuePersistenceConfig(
                     azureRedisOptions.RedisConnectionString))
@@ -153,8 +153,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     new TopicSubscriptionSevice<JobContextDto>(
                         topicConfig,
                         c.Resolve<IJsonSerializationService>(),
-                        c.Resolve<ILogger>(),
-                        c.Resolve<IDateTimeProvider>());
+                        c.Resolve<ILogger>());
                 return topicSubscriptionSevice;
             }).As<ITopicSubscriptionService<JobContextDto>>();
 
