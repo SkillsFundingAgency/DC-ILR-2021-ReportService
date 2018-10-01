@@ -35,7 +35,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private string _externalFileName;
         private string _fileName;
-        private IlrValidationResult _ilrValidationResult;
+        private FileValidationResult _ilrValidationResult;
 
         public ValidationErrorsReport(
             ILogger logger,
@@ -83,13 +83,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase)).ToArray();
             var warnings = validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            _ilrValidationResult = new IlrValidationResult
+            _ilrValidationResult = new FileValidationResult
             {
                 TotalLearners = GetNumberOfLearners(keyValuePairs),
                 TotalErrors = errors.Length,
                 TotalWarnings = warnings.Length,
                 TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber),
-                TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber)
+                TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber),
+                ErrorMessage = validationErrorDtos.FirstOrDefault(x => string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase))?.ErrorMessage
             };
         }
 
