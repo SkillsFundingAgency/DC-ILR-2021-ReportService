@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Helper
 {

@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR1819.ReportService.Stateless;
-using ESFA.DC.ILR1819.ReportService.Stateless.Handlers;
-using ESFA.DC.JobContext;
-using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Interface;
+using ESFA.DC.JobContextManager.Model;
+using ESFA.DC.JobContextManager.Model.Interface;
 using Xunit;
 
 namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 JobContextMessage jobContextMessage =
                     new JobContextMessage(
                         1,
-                        new ITopicItem[] { new TopicItem("SubscriptionName", "SubscriptionSqlFilterValue", new List<ITaskItem>()) },
+                        new ITopicItem[] { new TopicItem("SubscriptionName", new List<ITaskItem>()) },
                         0,
                         DateTime.UtcNow);
                 CancellationTokenSource cts = new CancellationTokenSource();
@@ -32,8 +32,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 IContainer c = containerBuilder.Build();
                 using (var lifeTime = c.BeginLifetimeScope())
                 {
-                    var messageHandler = lifeTime.Resolve<IMessageHandler>();
-                    bool ret = await messageHandler.Handle(jobContextMessage, cts.Token);
+                    var messageHandler = lifeTime.Resolve<IMessageHandler<JobContextMessage>>();
+                    bool ret = await messageHandler.HandleAsync(jobContextMessage, cts.Token);
                 }
             }
             catch (Exception ex)
