@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Autofac;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.Auditing;
-using ESFA.DC.Auditing.Dto;
 using ESFA.DC.Auditing.Interface;
 using ESFA.DC.CollectionsManagement.Services;
 using ESFA.DC.CollectionsManagement.Services.Interface;
@@ -24,18 +20,17 @@ using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Handlers;
-using ESFA.DC.ILR1819.ReportService.Stateless.Mappers;
 using ESFA.DC.ILR1819.ReportService.Stateless.Modules;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.IO.Redis;
 using ESFA.DC.IO.Redis.Config.Interfaces;
-using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager;
 using ESFA.DC.JobContextManager.Interface;
-using ESFA.DC.JobStatus.Dto;
+using ESFA.DC.JobContextManager.Model;
+using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.JobStatus.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Mapping.Interface;
@@ -122,7 +117,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     auditPublishConfig,
                     c.Resolve<IJsonSerializationService>()))
                 .As<IQueuePublishService<AuditingDto>>();
-            containerBuilder.RegisterType<Auditor>().As<IAuditor>();
 
             // get job status queue config values and register container
             var jobStatusQueueOptions =
@@ -139,7 +133,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     jobStatusPublishConfig,
                     c.Resolve<IJsonSerializationService>()))
                 .As<IQueuePublishService<JobStatusDto>>();
-            containerBuilder.RegisterType<JobStatus.JobStatus>().As<IJobStatus>();
 
             // register Jobcontext services
             var topicConfig = new ServiceBusTopicConfig(
@@ -167,21 +160,14 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             }).As<ITopicPublishService<JobContextDto>>();
 
             // register message mapper
-            containerBuilder.RegisterType<JobContextMessageMapper>()
-                .As<IMapper<JobContextMessage, JobContextMessage>>();
+            containerBuilder.RegisterType<DefaultJobContextMessageMapper<JobContextMessage>>().As<IMapper<JobContextMessage, JobContextMessage>>();
 
             // register MessageHandler
-            containerBuilder.RegisterType<MessageHandler>().As<IMessageHandler>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<MessageHandler>().As<IMessageHandler<JobContextMessage>>().InstancePerLifetimeScope();
 
-            // register the  callback handle when a new message is received from ServiceBus
-            containerBuilder.Register<Func<JobContextMessage, CancellationToken, Task<bool>>>(c =>
-                c.Resolve<IMessageHandler>().Handle).InstancePerLifetimeScope();
+            containerBuilder.RegisterType<EntryPoint>().WithAttributeFiltering().InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<EntryPoint>()
-                .WithAttributeFiltering()
-                .InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<JobContextManagerForTopics<JobContextMessage>>().As<IJobContextManager<JobContextMessage>>()
+            containerBuilder.RegisterType<JobContextManager<JobContextMessage>>().As<IJobContextManager<JobContextMessage>>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
