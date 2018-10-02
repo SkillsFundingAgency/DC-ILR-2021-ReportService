@@ -10,8 +10,9 @@ using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext;
 using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Model;
+using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using FluentAssertions;
 using Moq;
@@ -62,7 +63,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
             JobContextMessage jobContextMessage =
                 new JobContextMessage(
                     1,
-                    new ITopicItem[] { new TopicItem("SubscriptionName", "SubscriptionSqlFilterValue", new List<ITaskItem> { new TaskItem(new List<string> { topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport }, false) }) },
+                    new ITopicItem[] { new TopicItem("SubscriptionName", new List<ITaskItem> { new TaskItem(new List<string> { topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport }, false) }) },
                     0,
                     DateTime.UtcNow);
 

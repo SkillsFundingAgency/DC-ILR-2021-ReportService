@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Model.Interface;
 
 namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {

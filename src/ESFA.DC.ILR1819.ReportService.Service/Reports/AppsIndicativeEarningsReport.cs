@@ -20,6 +20,7 @@ using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports

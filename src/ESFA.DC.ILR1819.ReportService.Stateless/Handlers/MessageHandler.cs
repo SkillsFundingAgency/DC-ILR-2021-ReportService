@@ -4,13 +4,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR1819.ReportService.Service;
-using ESFA.DC.JobContext;
-using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Interface;
+using ESFA.DC.JobContextManager.Model;
+using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
 {
-    public sealed class MessageHandler : IMessageHandler
+    public sealed class MessageHandler : IMessageHandler<JobContextMessage>
     {
         private readonly ILifetimeScope _parentLifeTimeScope;
         private readonly StatelessServiceContext _context;
@@ -32,7 +33,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
             _context = context;
         }
 
-        public async Task<bool> Handle(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<bool> HandleAsync(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             try
             {

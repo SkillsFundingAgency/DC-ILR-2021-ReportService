@@ -4,7 +4,7 @@ using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Model.Interface;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {

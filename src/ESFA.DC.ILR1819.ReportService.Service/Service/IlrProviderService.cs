@@ -7,6 +7,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
