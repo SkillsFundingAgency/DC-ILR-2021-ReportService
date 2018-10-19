@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="ESFA.DC.Data.DAS.Model" Version="0.1.0" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.6-beta0001" />
   </ItemGroup>
 

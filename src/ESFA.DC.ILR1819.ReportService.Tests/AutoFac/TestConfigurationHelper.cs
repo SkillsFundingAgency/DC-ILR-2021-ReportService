@@ -71,7 +71,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 TopicValidation = "TopicValidation",
                 TopicReports_TaskGenerateMathsAndEnglishReport = "TopicReports_TaskGenerateMathsAndEnglishReport",
                 TopicReports_TaskGenerateAppsAdditionalPaymentsReport = "TopicReports_TaskGenerateAppsAdditionalPaymentsReport",
-                TopicReports_TaskGenerateAppsIndicativeEarningsReport = "TopicReports_TaskGenerateAppsIndicativeEarningsReport"
+                TopicReports_TaskGenerateAppsIndicativeEarningsReport = "TopicReports_TaskGenerateAppsIndicativeEarningsReport",
+                TopicReports_TaskGenerateDataMatchReport = "TopicReports_TaskGenerateDataMatchReport"
             };
         }
     }

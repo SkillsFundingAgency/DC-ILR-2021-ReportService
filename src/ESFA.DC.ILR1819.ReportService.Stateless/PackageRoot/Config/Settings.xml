@@ -57,6 +57,7 @@
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="" />
     <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
   </Section>
   
@@ -66,6 +67,10 @@
 
   <Section Name="OrgSection">
     <Parameter Name="OrgConnectionString" Value="" />
+  </Section>
+
+  <Section Name="DasCommitmentsSection">
+    <Parameter Name="DasCommitmentsConnectionString" Value="" />
   </Section>
 
   <Section Name="CollectionsManagementSection">

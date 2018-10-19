@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -15,6 +16,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -32,6 +34,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private const string AlbAreaUpliftBalPayment = "AreaUpliftBalPayment";
 
         private const string AlbAreaUpliftOnProgPayment = "AreaUpliftOnProgPayment";
+
+        private static readonly AllbOccupancyModelComparer AllbOccupancyModelComparer = new AllbOccupancyModelComparer();
 
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
@@ -98,7 +102,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             string[] learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
                 .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
 
-            Dictionary<string, LarsLearningDelivery> larsLearningDeliveriesTask = await _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
+            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
+            if (larsLearningDeliveries == null)
+            {
+                return null;
+            }
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -112,7 +120,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<AllbOccupancyModel> models = new List<AllbOccupancyModel>(validLearnersTask.Result.Count);
             foreach (string validLearnerRefNum in validLearnersTask.Result)
             {
-                var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
                 if (learner == null)
                 {
                     ilrError.Add(validLearnerRefNum);
@@ -120,7 +128,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 }
 
                 ALBLearner albLearner =
-                    albDataTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                    albDataTask.Result?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
                 if (albLearner == null)
                 {
                     albLearnerError.Add(validLearnerRefNum);
@@ -130,25 +138,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 if (learner.LearningDeliveries == null)
                 {
                     ilrError.Add(validLearnerRefNum);
+                    continue;
                 }
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
-                    if (!larsLearningDeliveriesTask.TryGetValue(learningDelivery.LearnAimRef, out LarsLearningDelivery larsModel))
+                    if (!larsLearningDeliveries.TryGetValue(learningDelivery.LearnAimRef, out LarsLearningDelivery larsModel))
                     {
                         larsError.Add(validLearnerRefNum);
                         continue;
                     }
 
-                    var albAttribs = albLearner?.LearningDeliveries
-                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber)
-                        ?.LearningDeliveryValue;
+                    var albLearningDelivery = albLearner?.LearningDeliveries
+                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+                    var albAttribs = albLearningDelivery?.LearningDeliveryValue;
                     var albSupportPaymentObj =
-                        albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
+                        albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
                     var albAreaUpliftOnProgPaymentObj =
-                        albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
+                        albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
                     var albAreaUpliftBalPaymentObj =
-                        albLearner?.LearnerPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
+                        albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
 
                     var alb = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
 
@@ -277,6 +286,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             CheckWarnings(ilrError, larsError, albLearnerError);
+            models.Sort(AllbOccupancyModelComparer);
             return WriteResults(models);
         }
 

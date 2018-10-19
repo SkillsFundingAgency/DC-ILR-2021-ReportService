@@ -310,6 +310,7 @@
     <Compile Include="Helpers\TestFM35Builder.cs" />
     <Compile Include="Helpers\TestXlsxHelper.cs" />
     <Compile Include="Models\CsvEntry.cs" />
+    <Compile Include="Reports\ALB\TestAlbOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\TestMainOccupancyReport.cs" />
     <Compile Include="Reports\TestAppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
@@ -342,6 +343,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
+    <None Include="PrivateSettings.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Reports\ALB\Alb1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="ValidationErrors.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -383,6 +390,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="ILR-10033670-1819-20180831-094549-03.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\ALB\ILR-10033670-1819-20181018-093353-03.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

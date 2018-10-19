@@ -27,10 +27,13 @@
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="__TopicReports_TaskGenerateSummaryOfFunding1619Report__" />
     <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="__TopicReports_TaskGenerateMathsAndEnglishReport__" />
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="__TopicReports_TaskGenerateMainOccupancyReport__" />
+    <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="__GenerateDataMatchReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- Org -->
     <Parameter Name="OrgConnectionString" Value="__OrganisationConnectionString__" />
+    <!-- DAS Commitments -->
+    <Parameter Name="DasCommitmentsConnectionString" Value="__DasCommitmentsConnectionString__" />
     <!-- Collections Management -->
     <Parameter Name="CollectionsManagementConnectionString" Value="__CollectionsManagementDbConnectionString__" />
     <Parameter Name="ProcessingServicePlacementConstraints" Value="__ProcessingServicePlacementConstraints__" />

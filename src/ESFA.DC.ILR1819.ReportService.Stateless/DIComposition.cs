@@ -56,6 +56,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
             containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
 
+            var dasCommitmentsConfiguration = configHelper.GetSectionValues<DasCommitmentsConfiguration>("DasCommitmentsSection");
+            containerBuilder.RegisterInstance(dasCommitmentsConfiguration).As<DasCommitmentsConfiguration>().SingleInstance();
+
             var orgConfiguration = configHelper.GetSectionValues<OrgConfiguration>("OrgSection");
             containerBuilder.RegisterInstance(orgConfiguration).As<OrgConfiguration>().SingleInstance();
 
@@ -283,6 +286,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<PeriodProviderService>().As<IPeriodProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DasCommitmentsService>().As<IDasCommitmentsService>()
                 .InstancePerLifetimeScope();
         }
 

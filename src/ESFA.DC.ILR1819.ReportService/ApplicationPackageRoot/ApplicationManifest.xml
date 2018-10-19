@@ -28,9 +28,12 @@
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" DefaultValue="GenerateSummaryOfFunding1619Report" />
     <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" DefaultValue="GenerateMathsAndEnglishReport" />
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" DefaultValue="GenerateMainOccupancyReport" />
+    <Parameter Name="TopicReports_TaskGenerateDataMatchReport" DefaultValue="GenerateDataMatchReport" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
+    <!-- DAS Commitments -->
+    <Parameter Name="DasCommitmentsConnectionString" DefaultValue="" />
     <!-- Org -->
     <Parameter Name="OrgConnectionString" DefaultValue="" />
     <!-- Collections Management -->
@@ -84,6 +87,7 @@
             <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="[TopicReports_TaskGenerateSummaryOfFunding1619Report]" />
             <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="[TopicReports_TaskGenerateMathsAndEnglishReport]" />
             <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="[TopicReports_TaskGenerateMainOccupancyReport]" />
+            <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="[TopicReports_TaskGenerateDataMatchReport]" />
             <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
           </Section>
           <Section Name="LarsSection">
@@ -91,6 +95,9 @@
           </Section>
           <Section Name="OrgSection">
             <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />
+          </Section>
+          <Section Name="DasCommitmentsSection">
+            <Parameter Name="DasCommitmentsConnectionString" Value="[DasCommitmentsConnectionString]" />
           </Section>
           <Section Name="CollectionsManagementSection">
             <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />

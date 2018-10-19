@@ -29,5 +29,7 @@
         string TopicReports_TaskGenerateAppsAdditionalPaymentsReport { get; set; }
 
         string TopicReports_TaskGenerateAppsIndicativeEarningsReport { get; set; }
+
+        string TopicReports_TaskGenerateDataMatchReport { get; set; }
     }
 }
