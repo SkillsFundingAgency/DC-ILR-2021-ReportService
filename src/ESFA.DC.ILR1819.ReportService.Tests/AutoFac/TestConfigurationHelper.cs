@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 case "TopicAndTaskSection":
                     return (T)GetTopicsAndTasks();
                 case "AzureStorageSection":
-                    return (T)(object)new AzureStorageOptions()
+                    return (T)(object)new AzureStorageOptions
                     {
                         AzureBlobConnectionString = "AzureBlobConnectionString",
                         AzureBlobContainerName = "AzureBlobContainerName"
@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                         TopicName = "TopicName"
                     };
                 case "VersionSection":
-                    return (T)(object)new VersionInfo()
+                    return (T)(object)new VersionInfo
                     {
                         ServiceReleaseVersion = "ServiceReleaseVersion"
                     };
@@ -46,9 +46,15 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 case "OrgSection":
                     return (T)(object)new OrgConfiguration();
                 case "CollectionsManagementSection":
-                    return (T)(object)new CollectionsManagementConfiguration()
+                    return (T)(object)new CollectionsManagementConfiguration
                     {
                         CollectionsManagementConnectionString = "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
+                    };
+                case "DasCommitmentsSection":
+                    return (T)(object)new DasCommitmentsConfiguration
+                    {
+                        DasCommitmentsConnectionString =
+                            "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
                     };
             }
 

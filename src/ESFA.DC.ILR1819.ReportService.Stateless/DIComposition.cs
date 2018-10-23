@@ -7,6 +7,7 @@ using ESFA.DC.CollectionsManagement.Services;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -44,7 +45,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless
 {
-    public class DIComposition
+    public static class DIComposition
     {
         public static ContainerBuilder BuildContainer(IConfigurationHelper configHelper)
         {
@@ -137,7 +138,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     c.Resolve<IJsonSerializationService>()))
                 .As<IQueuePublishService<JobStatusDto>>();
 
-            // register Jobcontext services
+            // register Job Context services
             var topicConfig = new ServiceBusTopicConfig(
                 serviceBusOptions.ServiceBusConnectionString,
                 serviceBusOptions.TopicName,
@@ -145,21 +146,21 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 Environment.ProcessorCount);
             containerBuilder.Register(c =>
             {
-                var topicSubscriptionSevice =
+                var topicSubscriptionService =
                     new TopicSubscriptionSevice<JobContextDto>(
                         topicConfig,
                         c.Resolve<IJsonSerializationService>(),
                         c.Resolve<ILogger>());
-                return topicSubscriptionSevice;
+                return topicSubscriptionService;
             }).As<ITopicSubscriptionService<JobContextDto>>();
 
             containerBuilder.Register(c =>
             {
-                var topicPublishSevice =
+                var topicPublishService =
                     new TopicPublishService<JobContextDto>(
                         topicConfig,
                         c.Resolve<IJsonSerializationService>());
-                return topicPublishSevice;
+                return topicPublishService;
             }).As<ITopicPublishService<JobContextDto>>();
 
             // register message mapper
@@ -178,16 +179,15 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.Register(context =>
             {
-                var settings = context.Resolve<CollectionsManagementConfiguration>();
-                var optionsBuilder = new DbContextOptionsBuilder();
+                CollectionsManagementConfiguration settings = context.Resolve<CollectionsManagementConfiguration>();
+                DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder();
                 optionsBuilder.UseSqlServer(
                     settings.CollectionsManagementConnectionString,
                     options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
-
                 return optionsBuilder.Options;
             })
-                .As<DbContextOptions>()
-                .InstancePerLifetimeScope();
+            .As<DbContextOptions>()
+            .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
 
@@ -236,6 +236,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DataMatchReport>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
@@ -304,6 +308,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
                 .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>().InstancePerLifetimeScope();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)

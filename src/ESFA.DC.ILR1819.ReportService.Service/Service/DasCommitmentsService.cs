@@ -64,24 +64,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 using (DAS_commitmentsRefContext dasCommitmentsRefContext = new DAS_commitmentsRefContext(options))
                 {
-                    IEnumerable<long> ulnsPage = ulns.Take(1000);
-                    int position = 1000;
+                    int pages = (int)Math.Ceiling(ulns.Count / 1000M);
 
-                    DasCommitments[] results = await dasCommitmentsRefContext.DasCommitments
-                        .Where(x => x.Ukprn == ukPrn || ulnsPage.Contains(x.Uln))
-                        .ToArrayAsync(cancellationToken);
-                    dasCommitments.AddRange(results);
-
-                    while (position < ulns.Count)
+                    for (int i = 0; i < pages; i++)
                     {
-                        ulnsPage = ulns.Skip(position).Take(1000);
-
-                        results = await dasCommitmentsRefContext.DasCommitments
-                            .Where(x => ulnsPage.Contains(x.Uln))
+                        long[] ulnsPage = ulns.Skip(i * 1000).Take(1000).ToArray();
+                        DasCommitments[] results = await dasCommitmentsRefContext.DasCommitments
+                            .Where(x => (i == 0 && x.Ukprn == ukPrn) || ulnsPage.Contains(x.Uln))
                             .ToArrayAsync(cancellationToken);
                         dasCommitments.AddRange(results);
-
-                        position += 1000;
                     }
 
                     _dasCommitments = _dasCommitmentBuilder.Build(dasCommitments.Distinct(Comparer));

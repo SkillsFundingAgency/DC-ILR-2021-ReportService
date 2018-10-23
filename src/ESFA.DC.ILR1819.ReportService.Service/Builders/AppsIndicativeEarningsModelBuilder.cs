@@ -141,12 +141,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         private void CalculateAppFinTotals(AppsIndicativeEarningsModel model, ILearningDelivery learningDelivery)
         {
-            var firstOfAugust = new DateTime(2018, 8, 1);
-            var endOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
+            if (learningDelivery.AppFinRecords == null)
+            {
+                model.TotalPRMPreviousFundingYear = 0;
+                model.TotalPRMThisFundingYear = 0;
+                return;
+            }
 
-            var previousYearData = learningDelivery.AppFinRecords
+            DateTime firstOfAugust = new DateTime(2018, 8, 1);
+            DateTime endOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
+
+            List<IAppFinRecord> previousYearData = learningDelivery.AppFinRecords
                 .Where(x => x.AFinDate < firstOfAugust && x.AFinType == "PMR").ToList();
-            var currentYearData = learningDelivery.AppFinRecords
+            List<IAppFinRecord> currentYearData = learningDelivery.AppFinRecords
                 .Where(x => x.AFinDate >= firstOfAugust && x.AFinDate <= endOfYear && x.AFinType == "PMR").ToList();
 
             model.TotalPRMPreviousFundingYear =

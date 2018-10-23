@@ -38,10 +38,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
             string filename = $"10033670_1_Apps Indicative Earnings Report {dateTime:yyyyMMdd-HHmmss}";
+            string ilr = "ILR-10033670-1819-20180704-120055-03";
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = ilr;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output] = "FundingFm36Output";
 
@@ -61,14 +62,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands);
 
-            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ILR-10033670-1819-20180712-144437-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
+            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($"{ilr}.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {
-                    "0fm2501",
-                    "3fm9901",
-                    "5fm9901"
+                    "3DOB01",
                 }));
             redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
@@ -85,17 +84,19 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             foreach (ILearner messageLearner in message.Learners)
             {
-                if (validLearners.Contains(messageLearner.LearnRefNumber))
+                if (!validLearners.Contains(messageLearner.LearnRefNumber))
                 {
-                    foreach (ILearningDelivery learningDelivery in messageLearner.LearningDeliveries)
+                    continue;
+                }
+
+                foreach (ILearningDelivery learningDelivery in messageLearner.LearningDeliveries)
+                {
+                    learningDeliveriesDict[learningDelivery.LearnAimRef] = new LarsLearningDelivery()
                     {
-                        learningDeliveriesDict[learningDelivery.LearnAimRef] = new LarsLearningDelivery()
-                        {
-                            LearningAimTitle = "A",
-                            NotionalNvqLevel = "B",
-                            Tier2SectorSubjectArea = 3
-                        };
-                    }
+                        LearningAimTitle = "A",
+                        NotionalNvqLevel = "B",
+                        Tier2SectorSubjectArea = 3
+                    };
                 }
             }
 

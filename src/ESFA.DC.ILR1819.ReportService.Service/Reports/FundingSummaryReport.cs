@@ -90,7 +90,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
-            Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage);
+            Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, validLearnersTask, providerNameTask, periodTask);
 

@@ -13,7 +13,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         public List<DasCommitment> Build(IEnumerable<DasCommitments> commitments)
         {
             List<DasCommitment> dasCommitments = new List<DasCommitment>(commitments.Select(x => new DasCommitment(x)));
-            var commitmentsById = dasCommitments.ToLookup(x => x.CommitmentId);
+            ILookup<long, DasCommitment> commitmentsById = dasCommitments.ToLookup(x => x.CommitmentId);
 
             foreach (var commitmentsForId in commitmentsById)
             {
@@ -44,7 +44,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 }
             }
 
-            var lastCommitment = dasCommitments
+            DasCommitment lastCommitment = dasCommitments
                 .OrderByDescending(x => x.EffectiveStartDate)
                 .ThenByDescending(x => x.CommitmentId)
                 .FirstOrDefault();

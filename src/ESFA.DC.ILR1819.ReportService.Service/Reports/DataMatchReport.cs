@@ -70,7 +70,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             if (!long.TryParse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString(), out var ukPrn))
             {
-                _logger.LogWarning($"Cannot convert {jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]} to long, can't generate Das Match Report");
+                _logger.LogWarning($"Cannot convert {JobContextMessageKey.UkPrn} with value {jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]} to long, can't generate {nameof(DataMatchReport)}");
                 return;
             }
 
@@ -83,7 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             cancellationToken.ThrowIfCancellationRequested();
 
             List<RawEarning> rawEarnings = new List<RawEarning>();
-            List<long> ulns = await GetUlnsForValidLearners(ilrFileTask.Result, fm36Task.Result, rawEarnings, jobContextMessage);
+            List<long> ulns = await GetUlnsForValidLearners(ilrFileTask.Result, fm36Task.Result, rawEarnings, jobContextMessage, cancellationToken);
 
             List<DasCommitment> commitments = await _dasCommitmentsService.GetCommitments(
                 ukPrn,
@@ -210,7 +210,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                                                                         c.ProgrammeType.Value == rawEarning.ProgrammeType)
                         .ToList();
 
-                    if (!commitmentsToMatch.Any())
+                    if (!commitmentsToMatch2.Any())
                     {
                         foreach (DasCommitment dasCommitment in commitmentsToMatch)
                         {
@@ -229,7 +229,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 commitmentsToMatch2 = commitmentsToMatch.Where(c => c.AgreedCost == rawEarning.AgreedPrice).ToList();
 
-                if (!commitmentsToMatch.Any())
+                if (!commitmentsToMatch2.Any())
                 {
                     foreach (DasCommitment dasCommitment in commitmentsToMatch)
                     {
@@ -255,7 +255,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     return c.StartDate <= rawEarning.EpisodeEffectiveTnpStartDate;
                 }).ToList();
 
-                if (!commitmentsToMatch.Any())
+                if (!commitmentsToMatch2.Any())
                 {
                     AddError(
                         DataLockValidationMessages.DLOCK_09,
@@ -310,14 +310,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IMessage message,
             FM36Global fm36Data,
             List<RawEarning> rawEarnings,
-            IJobContextMessage jobContextMessage)
+            IJobContextMessage jobContextMessage,
+            CancellationToken cancellationToken)
         {
-            int period = await _periodProviderService.GetPeriod(jobContextMessage);
+            int period = await _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
             List<long> ulns = new List<long>();
             foreach (ILearner learner in message.Learners)
             {
                 FM36Learner fm36Entry =
-                    fm36Data.Learners.SingleOrDefault(x => x.LearnRefNumber == learner.LearnRefNumber);
+                    fm36Data.Learners.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
 
                 if (fm36Entry == null)
                 {
@@ -326,13 +327,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 ulns.Add(learner.ULN);
 
-                foreach (ILearningDelivery learnerLearningDelivery in learner.LearningDeliveries.Where(x => x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y => y.LearnDelFAMType == "ACT" && y.LearnDelFAMCode == "1")))
+                foreach (ILearningDelivery learnerLearningDelivery in learner.LearningDeliveries.Where(x => x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y => string.Equals(y.LearnDelFAMType, "ACT", StringComparison.OrdinalIgnoreCase) && string.Equals(y.LearnDelFAMCode, "1", StringComparison.OrdinalIgnoreCase))))
                 {
-                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && x.PriceEpisodeValues.PriceEpisodeContractType == "Levy Contract").ToList();
+                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, "Levy Contract", StringComparison.OrdinalIgnoreCase)).ToList();
 
                     if (!priceEpisode.Any())
                     {
-                        _logger.LogWarning($"Can't find any price episodes for learner {learner.LearnRefNumber} with learning delivery {learnerLearningDelivery.AimSeqNumber}");
+                        _logger.LogWarning($"Can't find any price episodes for learner {learner.LearnRefNumber} with learning delivery aim sequence no. {learnerLearningDelivery.AimSeqNumber} skipping {nameof(DataMatchReport)} {nameof(RawEarning)} model");
                         continue;
                     }
 
@@ -367,27 +368,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private DateTime CalculateOnProgCensusDate(RawEarning earning)
         {
-            var month = MonthFromPeriod(earning.Period);
-            var year = YearFromPeriod(earning.Period, earning.EpisodeStartDate ?? new DateTime(9999, 01, 01));
+            int month = _periodProviderService.MonthFromPeriod(earning.Period);
+            int year = YearFromPeriod(earning.Period, earning.EpisodeStartDate ?? new DateTime(9999, 01, 01));
 
-            var lastDayOfMonth = DateTime.DaysInMonth(year, month);
+            int lastDayOfMonth = DateTime.DaysInMonth(year, month);
             return new DateTime(year, month, lastDayOfMonth);
-        }
-
-        private int MonthFromPeriod(int period)
-        {
-            if (period < 6)
-            {
-                return period + 7;
-            }
-
-            return period - 5;
         }
 
         private int YearFromPeriod(int period, DateTime episodeStartDate)
         {
-            var month = MonthFromPeriod(period);
-            var startOfAcademicYear = StartOfAcademicYearFromEpisodeStartDate(episodeStartDate);
+            int month = _periodProviderService.MonthFromPeriod(period);
+            DateTime startOfAcademicYear = StartOfAcademicYearFromEpisodeStartDate(episodeStartDate);
             if (month < 8)
             {
                 return startOfAcademicYear.Year + 1;
@@ -398,7 +389,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private DateTime StartOfAcademicYearFromEpisodeStartDate(DateTime episodeStartDate)
         {
-            var month = episodeStartDate.Month;
+            int month = episodeStartDate.Month;
             if (month < 8)
             {
                 return new DateTime(episodeStartDate.Year - 1, 8, 1);
