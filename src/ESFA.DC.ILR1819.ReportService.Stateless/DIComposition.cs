@@ -74,7 +74,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     azureRedisOptions.RedisConnectionString))
                 .As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
 
-            containerBuilder.RegisterType<RedisKeyValuePersistenceService>()
+            containerBuilder.RegisterType<AzureStorageKeyValuePersistenceService>()
                 .Keyed<IKeyValuePersistenceService>(PersistenceStorageKeys.Redis)
                 .InstancePerLifetimeScope();
 
