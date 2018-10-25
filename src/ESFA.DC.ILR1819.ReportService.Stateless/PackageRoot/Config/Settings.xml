@@ -76,4 +76,16 @@
   <Section Name="CollectionsManagementSection">
     <Parameter Name="CollectionsManagementConnectionString" Value="" />
   </Section>
+
+  <Section Name="EasSection">
+    <Parameter Name="EasConnectionString" Value="" />
+  </Section>
+
+  <Section Name="PostcodeSection">
+    <Parameter Name="PostcodeConnectionString" Value="" />
+  </Section>
+
+  <Section Name="LargeEmployerSection">
+    <Parameter Name="LargeEmployerConnectionString" Value="" />
+  </Section>
 </Settings>

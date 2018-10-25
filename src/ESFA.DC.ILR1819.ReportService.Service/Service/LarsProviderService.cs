@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getLearningDeliveriesLock = new SemaphoreSlim(1, 1);
             _getFrameworkAimsLock = new SemaphoreSlim(1, 1);
             _getVersionLock = new SemaphoreSlim(1, 1);
-    }
+        }
 
         public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveries(
             string[] validLearnerAimRefs,

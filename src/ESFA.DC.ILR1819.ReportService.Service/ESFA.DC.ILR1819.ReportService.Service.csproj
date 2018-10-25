@@ -54,8 +54,8 @@
     <CodeAnalysisRuleSet>ESFA.DC.ILR1819.ReportService.Service.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aspose.Cells, Version=18.7.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
-      <HintPath>..\packages\Aspose.Cells.18.7.0\lib\net40\Aspose.Cells.dll</HintPath>
+    <Reference Include="Aspose.Cells, Version=18.10.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Cells.18.10.0\lib\net40\Aspose.Cells.dll</HintPath>
     </Reference>
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
@@ -81,11 +81,17 @@
     <Reference Include="ESFA.DC.Data.DAS.Model, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Data.DAS.Model.0.1.0\lib\netstandard2.0\ESFA.DC.Data.DAS.Model.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Data.LargeEmployer.Model, Version=0.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Data.LargeEmployer.Model.0.1.2-beta0001\lib\net461\ESFA.DC.Data.LargeEmployer.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.Data.LARS.Model, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Data.LARS.Model.0.1.4-beta0001\lib\net461\ESFA.DC.Data.LARS.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Data.Organisatons.Model, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Data.Organisations.Model.0.1.5-beta0001\lib\net461\ESFA.DC.Data.Organisatons.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.Data.Postcodes.Model, Version=0.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Data.Postcodes.Model.0.1.3-beta0001\lib\net461\ESFA.DC.Data.Postcodes.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.DateTimeProvider.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.DateTimeProvider.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.Interface.dll</HintPath>
@@ -247,6 +253,7 @@
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.3.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.5.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Interactive.Async, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Interactive.Async.3.1.1\lib\net46\System.Interactive.Async.dll</HintPath>
     </Reference>
@@ -268,9 +275,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\AllbBuilder.cs" />
     <Compile Include="Builders\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
     <Compile Include="Builders\DasCommitmentBuilder.cs" />
+    <Compile Include="Builders\Fm25Builder.cs" />
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\SummaryOfFM35FundingModelBuilder.cs" />
@@ -324,11 +333,15 @@
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\DasCommitmentsService.cs" />
+    <Compile Include="Service\EasProviderService.cs" />
+    <Compile Include="Service\ExcelStyleProvider.cs" />
     <Compile Include="Service\FM25ProviderService.cs" />
     <Compile Include="Service\FM35ProviderService.cs" />
     <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
     <Compile Include="Service\InvalidLearnersService.cs" />
+    <Compile Include="Service\LargeEmployerProviderService.cs" />
+    <Compile Include="Service\PostcodeProviderService.cs" />
     <Compile Include="Service\LarsProviderService.cs" />
     <Compile Include="Service\OrgProviderService.cs" />
     <Compile Include="Service\PeriodProviderService.cs" />

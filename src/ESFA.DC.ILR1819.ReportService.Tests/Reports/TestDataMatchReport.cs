@@ -90,6 +90,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 .ReturnsAsync(dasCommitments);
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
+            periodProviderService.Setup(x => x.MonthFromPeriod(It.IsAny<int>())).Returns(1);
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 

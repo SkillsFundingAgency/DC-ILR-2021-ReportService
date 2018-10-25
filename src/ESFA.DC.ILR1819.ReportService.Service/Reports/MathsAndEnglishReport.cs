@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
@@ -115,8 +116,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildCsvReport<MathsAndEnglishMapper, MathsAndEnglishModel>(ms, mathsAndEnglishModels);
-                return Encoding.UTF8.GetString(ms.ToArray());
+                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
+                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
+                {
+                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                    {
+                        WriteCsvRecords<MathsAndEnglishMapper, MathsAndEnglishModel>(csvWriter, mathsAndEnglishModels);
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
+                }
             }
         }
     }

@@ -63,6 +63,15 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             var orgConfiguration = configHelper.GetSectionValues<OrgConfiguration>("OrgSection");
             containerBuilder.RegisterInstance(orgConfiguration).As<OrgConfiguration>().SingleInstance();
 
+            var easConfiguration = configHelper.GetSectionValues<EasConfiguration>("EasSection");
+            containerBuilder.RegisterInstance(easConfiguration).As<EasConfiguration>().SingleInstance();
+
+            var largeEmployeeConfiguration = configHelper.GetSectionValues<LargeEmployerConfiguration>("LargeEmployerSection");
+            containerBuilder.RegisterInstance(largeEmployeeConfiguration).As<LargeEmployerConfiguration>().SingleInstance();
+
+            var postcodeConfiguration = configHelper.GetSectionValues<PostcodeConfiguration>("PostcodeSection");
+            containerBuilder.RegisterInstance(postcodeConfiguration).As<PostcodeConfiguration>().SingleInstance();
+
             var collectionsManagementConfiguration =
                 configHelper.GetSectionValues<CollectionsManagementConfiguration>("CollectionsManagementSection");
             containerBuilder.RegisterInstance(collectionsManagementConfiguration)
@@ -294,6 +303,18 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.RegisterType<DasCommitmentsService>().As<IDasCommitmentsService>()
                 .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<EasProviderService>().As<IEasProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<PostcodeProviderService>().As<IPostcodeProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<LargeEmployerProviderService>().As<ILargeEmployerProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ExcelStyleProvider>().As<IExcelStyleProvider>()
+                .InstancePerLifetimeScope();
         }
 
         private static void RegisterBuilders(ContainerBuilder containerBuilder)
@@ -309,6 +330,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)

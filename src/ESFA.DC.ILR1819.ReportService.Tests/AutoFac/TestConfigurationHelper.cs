@@ -56,6 +56,24 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                         DasCommitmentsConnectionString =
                             "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
                     };
+                case "EasSection":
+                    return (T)(object)new EasConfiguration
+                    {
+                        EasConnectionString =
+                            "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
+                    };
+                case "LargeEmployerSection":
+                    return (T)(object)new LargeEmployerConfiguration
+                    {
+                        LargeEmployerConnectionString =
+                            "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
+                    };
+                case "PostcodeSection":
+                    return (T)(object)new PostcodeConfiguration
+                    {
+                        PostcodeConnectionString =
+                            "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
+                    };
             }
 
             return default(T);

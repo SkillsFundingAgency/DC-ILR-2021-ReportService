@@ -4,7 +4,6 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
@@ -13,6 +12,7 @@ using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
+using ESFA.DC.ILR1819.ReportService.Model.Styling;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -22,9 +22,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private readonly IDateTimeProvider _dateTimeProvider;
 
+        private readonly Dictionary<Worksheet, int> _currentRow;
+
         protected AbstractReportBuilder(IDateTimeProvider dateTimeProvider)
         {
             _dateTimeProvider = dateTimeProvider;
+
+            _currentRow = new Dictionary<Worksheet, int>();
         }
 
         public string ReportTaskName { get; set; }
@@ -51,23 +55,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         /// </summary>
         /// <typeparam name="TMapper">The mapper.</typeparam>
         /// <typeparam name="TModel">The model.</typeparam>
-        /// <param name="writer">The memory stream to write to.</param>
+        /// <param name="csvWriter">The memory stream to write to.</param>
         /// <param name="records">The records to persist.</param>
-        protected void BuildCsvReport<TMapper, TModel>(MemoryStream writer, IEnumerable<TModel> records)
+        /// <param name="mapperOverride">Optional override of the TMapper, for example, when needing to specify constructor parameters.</param>
+        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records, TMapper mapperOverride = null)
             where TMapper : ClassMap, IClassMapper
             where TModel : class
         {
-            UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
-            using (TextWriter textWriter = new StreamWriter(writer, utF8Encoding, 1024, true))
+            if (mapperOverride == null)
             {
-                using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                {
-                    csvWriter.Configuration.RegisterClassMap<TMapper>();
-                    csvWriter.WriteHeader<TModel>();
-                    csvWriter.NextRecord();
-                    csvWriter.WriteRecords(records);
-                }
+                csvWriter.Configuration.RegisterClassMap<TMapper>();
             }
+            else
+            {
+                csvWriter.Configuration.RegisterClassMap(mapperOverride);
+            }
+
+            csvWriter.WriteHeader<TModel>();
+
+            csvWriter.NextRecord();
+            csvWriter.WriteRecords(records);
+
+            csvWriter.Configuration.UnregisterClassMap();
         }
 
         /// <summary>
@@ -77,11 +86,24 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         /// <typeparam name="TModel">The model.</typeparam>
         /// <param name="writer">The memory stream to write to.</param>
         /// <param name="record">The record to persist.</param>
-        protected void BuildCsvReport<TMapper, TModel>(MemoryStream writer, TModel record)
+        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter writer, TModel record)
             where TMapper : ClassMap, IClassMapper
             where TModel : class
         {
-            BuildCsvReport<TMapper, TModel>(writer, new[] { record });
+            WriteCsvRecords<TMapper, TModel>(writer, new[] { record });
+        }
+
+        /// <summary>
+        /// Writes a blank row to the csv file.
+        /// </summary>
+        /// <param name="writer">The memory stream to write to.</param>
+        /// <param name="numberOfBlankRows">The optional number of blank rows to create.</param>
+        protected void WriteCsvRecords(CsvWriter writer, int numberOfBlankRows = 1)
+        {
+            for (int i = 0; i < numberOfBlankRows; i++)
+            {
+                writer.NextRecord();
+            }
         }
 
         /// <summary>
@@ -89,19 +111,36 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         /// </summary>
         /// <typeparam name="TMapper">The mapper.</typeparam>
         /// <typeparam name="TModel">The model.</typeparam>
-        /// <param name="writer">The open memory stream to write to.</param>
+        /// <param name="worksheet">The worksheet to operate on.</param>
         /// <param name="classMap">The class mapper to use to write the headers, and to get the properties references from.</param>
         /// <param name="records">The records to write.</param>
-        protected void BuildXlsReport<TMapper, TModel>(MemoryStream writer, TMapper classMap, IEnumerable<TModel> records)
+        /// <param name="headerStyle">The style to apply to the header.</param>
+        /// <param name="recordStyle">The style to apply to the records.</param>
+        /// <param name="pivot">Whether to write the data vertically, rather than horizontally.</param>
+        protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, IEnumerable<TModel> records, CellStyle headerStyle, CellStyle recordStyle, bool pivot = false)
             where TMapper : ClassMap, IClassMapper
             where TModel : class
         {
+            int currentRow = GetCurrentRow(worksheet);
             ModelProperty[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
 
-            Workbook wb = new Workbook();
-            Worksheet sheet = wb.Worksheets[0];
-            sheet.Cells.ImportObjectArray(names.Select(x => x.Name).ToArray(), 0, 0, false);
-            int row = 1;
+            worksheet.Cells.ImportObjectArray(names.Select(x => x.Name).ToArray(), 0, 0, pivot);
+            if (headerStyle != null)
+            {
+                worksheet.Cells.CreateRange(currentRow, names.Length, pivot).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
+            }
+
+            int column = 0;
+            if (pivot)
+            {
+                // If we have pivoted then we need to move one column in, as the header is in column 1.
+                column = 1;
+            }
+            else
+            {
+                currentRow++;
+            }
+
             object[] values = new object[names.Length];
             foreach (TModel record in records)
             {
@@ -110,10 +149,61 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     values[i] = names[i].MethodInfo.GetValue(record);
                 }
 
-                sheet.Cells.ImportObjectArray(values, row++, 0, false);
+                worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
+                if (recordStyle != null)
+                {
+                    worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length)
+                        .ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
+                }
+
+                if (pivot)
+                {
+                    column++;
+                }
+                else
+                {
+                    currentRow++;
+                }
             }
 
-            wb.Save(writer, SaveFormat.Xlsx);
+            if (pivot)
+            {
+                currentRow += names.Length;
+            }
+
+            SetCurrentRow(worksheet, currentRow);
+        }
+
+        /// <summary>
+        /// Writes a blank row to the worksheet (increments the current row number)
+        /// </summary>
+        /// <param name="worksheet">The current worksheet.</param>
+        /// <param name="numberOfBlankRows">The optional number of blank rows to create.</param>
+        protected void WriteExcelRecords(Worksheet worksheet, int numberOfBlankRows = 1)
+        {
+            int currentRow = GetCurrentRow(worksheet);
+            currentRow += numberOfBlankRows;
+            SetCurrentRow(worksheet, currentRow);
+        }
+
+        /// <summary>
+        /// Writes a new heading row in column 1, optionally extends across a number of columns
+        /// </summary>
+        /// <param name="worksheet">The current worksheet,</param>
+        /// <param name="heading">The heading text to write out.</param>
+        /// <param name="headerStyle">The optional header style.</param>
+        /// <param name="numberOfColumns">The optional number of columns.</param>
+        protected void WriteExcelRecords(Worksheet worksheet, string heading, CellStyle headerStyle = null, int numberOfColumns = 1)
+        {
+            int currentRow = GetCurrentRow(worksheet);
+            worksheet.Cells[currentRow, 0].PutValue(heading);
+            if (headerStyle != null)
+            {
+                worksheet.Cells.CreateRange(currentRow, numberOfColumns, false).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
+            }
+
+            currentRow++;
+            SetCurrentRow(worksheet, currentRow);
         }
 
         /// <summary>
@@ -158,6 +248,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 data.Seek(0, SeekOrigin.Begin);
                 await data.CopyToAsync(sw, 81920, cancellationToken);
             }
+        }
+
+        private int GetCurrentRow(Worksheet worksheet)
+        {
+            if (!_currentRow.ContainsKey(worksheet))
+            {
+                _currentRow.Add(worksheet, 0);
+            }
+
+            return _currentRow[worksheet];
+        }
+
+        private void SetCurrentRow(Worksheet worksheet, int currentRow)
+        {
+            _currentRow[worksheet] = currentRow;
         }
     }
 }

@@ -6,9 +6,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
 {
     public sealed class FundingSummaryMapper : ClassMap<FundingSummaryModel>, IClassMapper
     {
-        public FundingSummaryMapper()
+        public FundingSummaryMapper(string sectionName = "Not Set")
         {
-            Map(m => m.Title).Index(0).Name("Advanced Loans Bursary");
+            Map(m => m.Title).Index(0).Name(sectionName);
             Map(m => m.Period1).Index(1).Name("August 2018");
             Map(m => m.Period2).Index(2).Name("September 2018");
             Map(m => m.Period3).Index(3).Name("October 2018");

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
@@ -294,8 +295,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             using (var ms = new MemoryStream())
             {
-                BuildCsvReport<AllbOccupancyMapper, AllbOccupancyModel>(ms, models);
-                return Encoding.UTF8.GetString(ms.ToArray());
+                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
+                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
+                {
+                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                    {
+                        WriteCsvRecords<AllbOccupancyMapper, AllbOccupancyModel>(csvWriter, models);
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
+                }
             }
         }
 

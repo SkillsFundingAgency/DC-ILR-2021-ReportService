@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using CsvHelper;
 using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
@@ -177,8 +178,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             using (var ms = new MemoryStream())
             {
-                BuildCsvReport<AppsIndicativeEarningsMapper, AppsIndicativeEarningsModel>(ms, appsIndicativeEarningsModels);
-                return Encoding.UTF8.GetString(ms.ToArray());
+                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
+                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
+                {
+                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                    {
+                        WriteCsvRecords<AppsIndicativeEarningsMapper, AppsIndicativeEarningsModel>(csvWriter, appsIndicativeEarningsModels);
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
+                }
             }
         }
     }

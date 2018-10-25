@@ -34,6 +34,12 @@
     <Parameter Name="LarsConnectionString" DefaultValue="" />
     <!-- DAS Commitments -->
     <Parameter Name="DasCommitmentsConnectionString" DefaultValue="" />
+    <!-- EAS -->
+    <Parameter Name="EasConnectionString" DefaultValue="" />
+    <!-- Postcode -->
+    <Parameter Name="PostcodeConnectionString" DefaultValue="" />
+    <!-- Large Employer -->
+    <Parameter Name="LargeEmployerConnectionString" DefaultValue="" />
     <!-- Org -->
     <Parameter Name="OrgConnectionString" DefaultValue="" />
     <!-- Collections Management -->
@@ -98,6 +104,15 @@
           </Section>
           <Section Name="DasCommitmentsSection">
             <Parameter Name="DasCommitmentsConnectionString" Value="[DasCommitmentsConnectionString]" />
+          </Section>
+          <Section Name="EasSection">
+            <Parameter Name="EasConnectionString" Value="[EasConnectionString]" />
+          </Section>
+          <Section Name="PostcodeSection">
+            <Parameter Name="PostcodeConnectionString" Value="[PostcodeConnectionString]" />
+          </Section>
+          <Section Name="LargeEmployerSection">
+            <Parameter Name="LargeEmployerConnectionString" Value="[LargeEmployerConnectionString]" />
           </Section>
           <Section Name="CollectionsManagementSection">
             <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />

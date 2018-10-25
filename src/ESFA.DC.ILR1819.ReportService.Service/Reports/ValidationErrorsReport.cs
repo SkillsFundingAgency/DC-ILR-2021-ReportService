@@ -6,7 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspose.Cells;
 using Autofac.Features.AttributeFilters;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
@@ -150,9 +152,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             await _storage.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
 
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
+
+            Workbook workbook = new Workbook();
+            Worksheet sheet = workbook.Worksheets[0];
+            WriteExcelRecords(sheet, new ValidationErrorMapper(), validationErrors, null, null);
+
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildXlsReport(ms, new ValidationErrorMapper(), validationErrors);
+                workbook.Save(ms, SaveFormat.Xlsx);
                 await _storage.SaveAsync($"{_externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{_fileName}.xlsx", ms, cancellationToken);
             }
@@ -162,8 +169,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildCsvReport<ValidationErrorMapper, ValidationErrorModel>(ms, validationErrorModels);
-                return Encoding.UTF8.GetString(ms.ToArray());
+                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
+                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
+                {
+                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                    {
+                        WriteCsvRecords<ValidationErrorMapper, ValidationErrorModel>(csvWriter, validationErrorModels);
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
+                }
             }
         }
 

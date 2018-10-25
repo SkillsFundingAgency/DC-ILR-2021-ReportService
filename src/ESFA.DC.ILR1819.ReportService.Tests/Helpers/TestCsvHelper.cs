@@ -21,9 +21,17 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
                     {
                         textFieldParser.TextFieldType = FieldType.Delimited;
                         textFieldParser.Delimiters = new[] { "," };
+                        long lastKnownRow = 0;
                         foreach (CsvEntry csvEntry in csvEntries)
                         {
                             string[] currentRow = textFieldParser.ReadFields();
+
+                            if (csvEntry.BlankRowsBefore > 0)
+                            {
+                                // Reader will read the next row, so the line number will be 1 too far.
+                                Assert.Equal(csvEntry.BlankRowsBefore, (textFieldParser.LineNumber - 1) - lastKnownRow);
+                            }
+
                             CheckHeader(currentRow, csvEntry.Mapper);
                             for (int i = 0; i < csvEntry.DataRows; i++)
                             {
@@ -31,6 +39,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
                                 Assert.NotNull(currentRow);
                                 CheckRow(currentRow, csvEntry.Mapper);
                             }
+
+                            lastKnownRow = textFieldParser.LineNumber;
                         }
                     }
                 }

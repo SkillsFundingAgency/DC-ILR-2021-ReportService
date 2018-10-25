@@ -34,6 +34,12 @@
     <Parameter Name="OrgConnectionString" Value="__OrganisationConnectionString__" />
     <!-- DAS Commitments -->
     <Parameter Name="DasCommitmentsConnectionString" Value="__DasCommitmentConnectionStringRO__" />
+    <!-- EAS -->
+    <Parameter Name="EasConnectionString" Value="__EasConnectionStringRO__" />
+    <!-- Postcode -->
+    <Parameter Name="PostcodeConnectionString" Value="__PostcodeConnectionStringRO__" />
+    <!-- Large Employer -->
+    <Parameter Name="LargeEmployerConnectionString" Value="__LargeEmployerConnectionStringRO__" />
     <!-- Collections Management -->
     <Parameter Name="CollectionsManagementConnectionString" Value="__JobManagementDbConnectionStringRO__" />
     <Parameter Name="ProcessingServicePlacementConstraints" Value="__ProcessingServicePlacementConstraints__" />
