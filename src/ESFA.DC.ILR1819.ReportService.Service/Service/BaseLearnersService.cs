@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 _loadedDataAlready = true;
                 string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[_messageKey].ToString(), cancellationToken);
-                await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_{_messageKey}.json", learnersValidStr, cancellationToken);
+                // await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_{_messageKey}.json", learnersValidStr, cancellationToken);
                 _loadedData = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
             }
             catch (Exception ex)
