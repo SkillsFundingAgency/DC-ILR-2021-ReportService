@@ -332,6 +332,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>().SingleInstance();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)

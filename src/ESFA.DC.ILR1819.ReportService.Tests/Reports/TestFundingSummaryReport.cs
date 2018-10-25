@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         public async Task TestFundingSummaryReportGeneration()
         {
             string csv = string.Empty;
+            byte[] xlsx = null;
             DateTime dateTime = DateTime.UtcNow;
             string filename = $"10033670_1_Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
 
@@ -63,6 +64,17 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ILR-10033670-1819-20180704-120055-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
+            storage.Setup(x => x.SaveAsync($"{filename}.xlsx", It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>(
+                    (key, value, ct) =>
+                    {
+                        value.Seek(0, SeekOrigin.Begin);
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            value.CopyTo(ms);
+                            xlsx = ms.ToArray();
+                        }
+                    })
+                .Returns(Task.CompletedTask);
             redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ALBOutput1000.json"));
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
@@ -117,13 +129,16 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             await fundingSummaryReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
+            xlsx.Should().NotBeNullOrEmpty();
 
+            var header = new FundingSummaryHeaderMapper();
             TestCsvHelper.CheckCsv(
                 csv,
-                new CsvEntry(new FundingSummaryHeaderMapper(), 1),
+                new CsvEntry(header, 1),
                 new CsvEntry(new FundingSummaryMapper("16-18 Traineeships"), 1),
                 new CsvEntry(new FundingSummaryMapper("Advanced Loans Bursary"), 2, 1),
                 new CsvEntry(new FundingSummaryFooterMapper(), 1));
+            TestXlsxHelper.CheckXlsx(xlsx, new XlsxEntry(header, header.GetMaxIndex(), true));
         }
     }
 }

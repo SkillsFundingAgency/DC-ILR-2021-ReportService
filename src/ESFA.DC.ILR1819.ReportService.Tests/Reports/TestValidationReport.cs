@@ -92,7 +92,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             ValidationErrorMapper helper = new ValidationErrorMapper();
             TestCsvHelper.CheckCsv(csv, new CsvEntry(helper, 1));
-            TestXlsxHelper.CheckXlsx(xlsx, helper, 5);
+            TestXlsxHelper.CheckXlsx(xlsx, new XlsxEntry(helper, 5));
         }
     }
 }

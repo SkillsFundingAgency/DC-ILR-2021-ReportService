@@ -317,6 +317,7 @@
     <Compile Include="Helpers\TestFM35Builder.cs" />
     <Compile Include="Helpers\TestXlsxHelper.cs" />
     <Compile Include="Models\CsvEntry.cs" />
+    <Compile Include="Models\XlsxEntry.cs" />
     <Compile Include="Reports\ALB\TestAlbOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\Data Match\TestDasCommitmentBuilder.cs" />
     <Compile Include="Reports\TestDataMatchReport.cs" />

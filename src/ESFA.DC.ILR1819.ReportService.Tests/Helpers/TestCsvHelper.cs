@@ -11,6 +11,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
 {
     public static class TestCsvHelper
     {
+        /// <summary>
+        /// Checks the csv data matches the expected structure.
+        /// </summary>
+        /// <param name="csv">The csv data.</param>
+        /// <param name="csvEntries">The entries to verify.</param>
         public static void CheckCsv(string csv, params CsvEntry[] csvEntries)
         {
             try
@@ -28,7 +33,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
 
                             if (csvEntry.BlankRowsBefore > 0)
                             {
-                                // Reader will read the next row, so the line number will be 1 too far.
+                                // Reader will automatically skip the blank row, so the line number will be 1 too far.
                                 Assert.Equal(csvEntry.BlankRowsBefore, (textFieldParser.LineNumber - 1) - lastKnownRow);
                             }
 

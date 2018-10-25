@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             fundingSummaryModel.Title = title;
 
             LearnerPeriodisedValues[] periodisedValues = fundLineObject.SelectMany(x => x.LearnerPeriodisedValues)
-                .Where(x => string.Equals(x.AttributeName, "LnrOnProgPay")).ToArray();
+                .Where(x => string.Equals(x.AttributeName, "OnProgPayment")).ToArray();
 
             fundingSummaryModel.Period1 = periodisedValues.Sum(x => x.Period1 ?? 0);
             fundingSummaryModel.Period2 = periodisedValues.Sum(x => x.Period2 ?? 0);
