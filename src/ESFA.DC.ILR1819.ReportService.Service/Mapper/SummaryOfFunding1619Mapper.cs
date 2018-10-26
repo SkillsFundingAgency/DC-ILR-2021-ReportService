@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.RateBand).Index(i++).Name("Funding band");
             Map(m => m.StartFund).Index(i++).Name("Qualifies for funding");
             Map(m => m.OnProgPayment).Index(i++).Name("Total funding");
-            Map(m => m.OfficalSensitive).Index(i++).Name("OFFICIAL-SENSITIVE");
+            Map(m => m.OfficalSensitive).Index(i++).Name("OFFICIAL - SENSITIVE");
         }
     }
 }

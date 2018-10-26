@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.Period12OnProgPayment).Index(21).Name("July on programme earned cash");
             Map(m => m.PeriodOnProgPaymentTotal).Index(22).Name("Total on programme earned cash");
             Map(m => m.Total).Index(23).Name("Total earned cash");
-            Map(m => m.OfficalSensitive).Index(24).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficalSensitive).Index(24).Name("OFFICIAL - SENSITIVE");
         }
     }
 }

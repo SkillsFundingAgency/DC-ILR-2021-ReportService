@@ -49,7 +49,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.TotalEarnings).Index(i++).Name("Total earnings");
             Map(m => m.TotalPaymentsYearToDate).Index(i++).Name("Total payments (year to date)");
 
-            Map(m => m.OfficialSensitive).Index(i++).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficialSensitive).Index(i++).Name("OFFICIAL - SENSITIVE");
         }
     }
 }

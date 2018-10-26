@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.ProviderSpecDelOccurB).Index(13).Name(@"Provider Specified Learning Delivery Monitoring B");
             Map(m => m.ProviderSpecDelOccurC).Index(14).Name(@"Provider Specified Learning Delivery Monitoring C");
             Map(m => m.ProviderSpecDelOccurD).Index(15).Name(@"Provider Specified Learning Delivery Monitoring D");
-            Map(m => m.SecurityClassification).Index(16).Name(@"OFFICIAL-SENSITIVE");
+            Map(m => m.SecurityClassification).Index(16).Name(@"OFFICIAL - SENSITIVE");
         }
     }
 }
