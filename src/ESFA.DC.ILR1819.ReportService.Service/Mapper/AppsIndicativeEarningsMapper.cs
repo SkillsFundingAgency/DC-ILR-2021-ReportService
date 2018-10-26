@@ -260,7 +260,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.Total1618FrameworkUpliftBalancingPayment).Index(i++).Name("Total 16-18 framework uplift balancing payment");
             Map(m => m.Total1618FrameworkUpliftCompletionPayment).Index(i++).Name("Total 16-18 framework uplift completion payment");
 
-            Map(m => m.OfficialSensitive).Index(i).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficialSensitive).Index(i).Name("OFFICIAL - SENSITIVE");
         }
     }
 }

@@ -277,7 +277,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 ProviderName = providerNameTask.Result ?? "Unknown",
                 LastEasUpdate = (await _easProviderService.GetLastEasUpdate(messageTask.Result.HeaderEntity.SourceEntity.UKPRN, cancellationToken)).ToString("dd/MM/yyyy"),
                 LastIlrFileUpdate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy"),
-                SecurityClassification = "OFFICIAL-SENSITIVE"
+                SecurityClassification = "OFFICIAL - SENSITIVE"
             };
 
             return fundingSummaryHeaderModel;
