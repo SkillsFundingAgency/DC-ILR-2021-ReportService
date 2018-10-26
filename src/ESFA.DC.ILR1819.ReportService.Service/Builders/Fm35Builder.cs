@@ -64,7 +64,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         public FundingSummaryModel BuildWithFundLine(string title, FM35Global fm35Global, List<string> validLearners, string fundLine, string[] attributes)
         {
-            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel { Title = title };
+            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
+
+            if (fm35Global.Learners == null)
+            {
+                return fundingSummaryModel;
+            }
 
             FM35Learner[] learners = fm35Global.Learners.Where(x => validLearners.Contains(x.LearnRefNumber)).ToArray();
 

@@ -21,12 +21,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             string fundLine,
             int period)
         {
+            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
+
+            if (fm25Global.Learners == null)
+            {
+                return fundingSummaryModel;
+            }
+
             FM25Learner[] fundLineObject = fm25Global.Learners.Where(x =>
                 string.Equals(x.FundLine, fundLine, StringComparison.OrdinalIgnoreCase) &&
                 validLearners.Contains(x.LearnRefNumber)).ToArray();
-
-            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel();
-            fundingSummaryModel.Title = title;
 
             LearnerPeriodisedValues[] periodisedValues = fundLineObject.SelectMany(x => x.LearnerPeriodisedValues)
                 .Where(x => string.Equals(x.AttributeName, "OnProgPayment")).ToArray();

@@ -135,8 +135,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             // Todo: Check keys & titles
             fundingSummaryModels.Add(new FundingSummaryModel());
-            fundingSummaryModels.Add(new FundingSummaryModel(0, "16-18 Traineeships Budget", true));
-            fundingSummaryModels.Add(new FundingSummaryModel(2, "16-18 Traineeships", false));
+            fundingSummaryModels.Add(new FundingSummaryModel("16-18 Traineeships Budget", true, 0));
+            fundingSummaryModels.Add(new FundingSummaryModel("16-18 Traineeships", false, 2));
             FundingSummaryModel traineeships1618 = _fm25Builder.BuildWithFundLine("ILR 16-18 Traineeships Programme Funding (£)", fm25Task.Result, validLearnersTask.Result, "16-18 Traineeships (Adult Funded)", periodTask.Result);
             fundingSummaryModels.Add(traineeships1618);
             FundingSummaryModel traineeships1924 = _fm25Builder.BuildWithFundLine("ILR 19-24 Traineeships (16-19 Model) Programme Funding (£)", fm25Task.Result, validLearnersTask.Result, "19+ Traineeships (Adult Funded)", periodTask.Result);
@@ -147,7 +147,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(traineeshipsTotal);
 
             fundingSummaryModels.Add(new FundingSummaryModel());
-            fundingSummaryModels.Add(new FundingSummaryModel(2, "16-18 Trailblazer Apprenticeships for starts before 1 May 2017", false));
+            fundingSummaryModels.Add(new FundingSummaryModel("16-18 Trailblazer Apprenticeships for starts before 1 May 2017", false, 2));
             FundingSummaryModel ilrApprenticeshipProgramme = _fm35Builder.BuildWithFundLine("ILR Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, "16-18 Apprenticeship", new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
             FundingSummaryModel ilrApprenticeshipFrameworks = _fm35Builder.BuildWithFundLine("ILR Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, "16-18 Apprenticeship", new[] { Constants.Fm35LearningSupportAttributeName });
             fundingSummaryModels.Add(_totalBuilder.TotalRecords("ILR Total 16-18 Apprenticeship Frameworks (£)", ilrApprenticeshipProgramme, ilrApprenticeshipFrameworks));
@@ -161,7 +161,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             albTotal.ExcelHeaderStyle = 3;
             albTotal.ExcelRecordStyle = 3;
             fundingSummaryModels.Add(albTotal);
-            fundingSummaryModels.Add(new FundingSummaryModel(4, Constants.ALBInfoText, true));
+            fundingSummaryModels.Add(new FundingSummaryModel(Constants.ALBInfoText, true));
             fundingSummaryModels.Add(new FundingSummaryModel());
 
             var jobId = jobContextMessage.JobId;

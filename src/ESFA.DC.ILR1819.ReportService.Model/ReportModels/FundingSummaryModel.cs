@@ -8,9 +8,10 @@
             ExcelRecordStyle = excelRecordStyle;
         }
 
-        public FundingSummaryModel(int excelHeaderStyle, string title, bool titleOnly)
+        public FundingSummaryModel(string title, bool titleOnly = false, int excelHeaderStyle = 4)
         {
             ExcelHeaderStyle = excelHeaderStyle;
+            ExcelRecordStyle = 4;
             Title = title;
             TitleOnly = titleOnly;
         }
