@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.TotalAchievement).Index(i++).Name("Total Achievement (£)");
             Map(m => m.LearningSupport).Index(i++).Name("Learning Support (£)");
             Map(m => m.Total).Index(i++).Name("Total (£)");
-            Map(m => m.OfficalSensitive).Index(i).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficalSensitive).Index(i).Name("OFFICIAL - SENSITIVE");
         }
     }
 }

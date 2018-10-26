@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.ApprenticeshipServiceValue).Index(6).Name("Apprenticeship service value");
             Map(m => m.PriceEpisodeStartDate).Index(7).Name("Price episode start date");
             Map(m => m.PriceEpisodeActualEndDate).Index(8).Name("Price episode actual end date");
-            Map(m => m.OfficalSensitive).Index(9).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficalSensitive).Index(9).Name("OFFICIAL - SENSITIVE");
         }
     }
 }

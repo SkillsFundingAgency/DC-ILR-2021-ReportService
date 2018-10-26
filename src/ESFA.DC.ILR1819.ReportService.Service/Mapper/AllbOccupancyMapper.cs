@@ -147,7 +147,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.TotalAlbBalPayment).Index(106).Name("Total loans bursary for area costs balancing earned cash");
             Map(m => m.TotalEarnedCash).Index(107).Name("Total earned cash");
 
-            Map(m => m.OfficalSensitive).Index(108).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficalSensitive).Index(108).Name("OFFICIAL - SENSITIVE");
         }
     }
 }
