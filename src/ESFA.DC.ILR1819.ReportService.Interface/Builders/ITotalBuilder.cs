@@ -5,6 +5,8 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
 {
     public interface ITotalBuilder
     {
-        List<FundingSummaryModel> TotalRecords(string title, List<FundingSummaryModel> fundingSummaryModels);
+        FundingSummaryModel TotalRecords(string title, params FundingSummaryModel[] fundingSummaryModels);
+
+        decimal? Total(decimal? original, decimal? value);
     }
 }

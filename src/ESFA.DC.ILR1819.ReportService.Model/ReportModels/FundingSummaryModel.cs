@@ -2,6 +2,19 @@
 {
     public sealed class FundingSummaryModel
     {
+        public FundingSummaryModel(int excelHeaderStyle = 4, int excelRecordStyle = 4)
+        {
+            ExcelHeaderStyle = excelHeaderStyle;
+            ExcelRecordStyle = excelRecordStyle;
+        }
+
+        public FundingSummaryModel(int excelHeaderStyle, string title, bool titleOnly)
+        {
+            ExcelHeaderStyle = excelHeaderStyle;
+            Title = title;
+            TitleOnly = titleOnly;
+        }
+
         public string Title { get; set; }
 
         public decimal? Period1 { get; set; }
@@ -35,5 +48,11 @@
         public decimal? YearToDate { get; set; }
 
         public decimal? Total { get; set; }
+
+        public int ExcelHeaderStyle { get; set; }
+
+        public int ExcelRecordStyle { get; set; }
+
+        public bool TitleOnly { get; }
     }
 }

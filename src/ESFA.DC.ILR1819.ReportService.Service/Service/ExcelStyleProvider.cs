@@ -81,5 +81,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             return cellStyles.ToArray();
         }
+
+        public CellStyle GetCellStyle(CellStyle[] cellStyles, int index)
+        {
+            if (index == -1)
+            {
+                return null;
+            }
+
+            return cellStyles[index];
+        }
     }
 }

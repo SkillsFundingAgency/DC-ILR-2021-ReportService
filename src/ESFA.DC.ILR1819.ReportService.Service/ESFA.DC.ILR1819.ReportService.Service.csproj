@@ -282,7 +282,7 @@
     <Compile Include="Builders\Fm25Builder.cs" />
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
-    <Compile Include="Builders\SummaryOfFM35FundingModelBuilder.cs" />
+    <Compile Include="Builders\Fm35Builder.cs" />
     <Compile Include="Builders\TotalBuilder.cs" />
     <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />
     <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeAprilCommand.cs" />

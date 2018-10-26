@@ -37,6 +37,21 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
                                 Assert.Equal(csvEntry.BlankRowsBefore, (textFieldParser.LineNumber - 1) - lastKnownRow);
                             }
 
+                            if (!string.IsNullOrEmpty(csvEntry.Title))
+                            {
+                                csvEntry.Mapper.MemberMaps.Single(x => x.Data.Index == 0).Name(csvEntry.Title);
+                            }
+
+                            Assert.NotNull(currentRow);
+
+                            if (csvEntry.DataRows == 0)
+                            {
+                                Assert.Single(currentRow);
+                                Assert.Equal(csvEntry.Title, currentRow[0]);
+                                lastKnownRow = textFieldParser.LineNumber;
+                                continue;
+                            }
+
                             CheckHeader(currentRow, csvEntry.Mapper);
                             for (int i = 0; i < csvEntry.DataRows; i++)
                             {

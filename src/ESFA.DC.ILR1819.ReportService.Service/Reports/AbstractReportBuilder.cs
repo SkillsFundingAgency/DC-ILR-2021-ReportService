@@ -59,7 +59,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         /// <param name="records">The records to persist.</param>
         /// <param name="mapperOverride">Optional override of the TMapper, for example, when needing to specify constructor parameters.</param>
         protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records, TMapper mapperOverride = null)
-            where TMapper : ClassMap, IClassMapper
+            where TMapper : ClassMap
             where TModel : class
         {
             if (mapperOverride == null)
@@ -79,6 +79,38 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             csvWriter.Configuration.UnregisterClassMap();
         }
 
+        protected void WriteCsvRecords<TMapper>(CsvWriter csvWriter, TMapper mapper)
+            where TMapper : ClassMap
+        {
+            string[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => x.Data.Names[0]).ToArray();
+            WriteCsvRecords(csvWriter, mapper, names);
+        }
+
+        protected void WriteCsvRecords<TMapper>(CsvWriter csvWriter, TMapper mapper, string[] names)
+            where TMapper : ClassMap
+        {
+            WriteCsvRecords(csvWriter, names);
+        }
+
+        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, TModel record)
+            where TMapper : ClassMap
+        {
+            ModelProperty[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
+            WriteCsvRecords(csvWriter, mapper, names, record);
+        }
+
+        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, ModelProperty[] names, TModel record)
+            where TMapper : ClassMap
+        {
+            string[] values = new string[names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                values[i] = names[i].MethodInfo.GetValue(record)?.ToString();
+            }
+
+            WriteCsvRecords(csvWriter, values);
+        }
+
         /// <summary>
         /// Builds a CSV report using the specified mapper as the list of column names.
         /// </summary>
@@ -87,7 +119,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         /// <param name="writer">The memory stream to write to.</param>
         /// <param name="record">The record to persist.</param>
         protected void WriteCsvRecords<TMapper, TModel>(CsvWriter writer, TModel record)
-            where TMapper : ClassMap, IClassMapper
+            where TMapper : ClassMap
             where TModel : class
         {
             WriteCsvRecords<TMapper, TModel>(writer, new[] { record });
@@ -107,6 +139,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         }
 
         /// <summary>
+        /// Writes the items as individual tokens to the CSV.
+        /// </summary>
+        /// <param name="writer">The writer target.</param>
+        /// <param name="items">The strings to write.</param>
+        protected void WriteCsvRecords(CsvWriter writer, params string[] items)
+        {
+            foreach (string item in items)
+            {
+                writer.WriteField(item);
+            }
+
+            writer.NextRecord();
+        }
+
+        /// <summary>
         /// Builds an Excel report using the specified mapper as the list of column names.
         /// </summary>
         /// <typeparam name="TMapper">The mapper.</typeparam>
@@ -118,13 +165,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         /// <param name="recordStyle">The style to apply to the records.</param>
         /// <param name="pivot">Whether to write the data vertically, rather than horizontally.</param>
         protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, IEnumerable<TModel> records, CellStyle headerStyle, CellStyle recordStyle, bool pivot = false)
-            where TMapper : ClassMap, IClassMapper
+            where TMapper : ClassMap
             where TModel : class
         {
             int currentRow = GetCurrentRow(worksheet);
             ModelProperty[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
 
-            worksheet.Cells.ImportObjectArray(names.Select(x => x.Name).ToArray(), 0, 0, pivot);
+            worksheet.Cells.ImportObjectArray(names.Select(x => x.Name).ToArray(), currentRow, 0, pivot);
             if (headerStyle != null)
             {
                 worksheet.Cells.CreateRange(currentRow, names.Length, pivot).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
@@ -169,6 +216,82 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             if (pivot)
             {
                 currentRow += names.Length;
+            }
+
+            SetCurrentRow(worksheet, currentRow);
+        }
+
+        protected void WriteExcelRecords<TMapper>(Worksheet worksheet, TMapper classMap, CellStyle headerStyle, bool pivot = false)
+            where TMapper : ClassMap
+        {
+            string[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => x.Data.Names[0]).ToArray();
+            WriteExcelRecords(worksheet, classMap, names, headerStyle, pivot);
+        }
+
+        protected void WriteExcelRecords<TMapper>(Worksheet worksheet, TMapper classMap, string[] names, CellStyle headerStyle, bool pivot = false)
+            where TMapper : ClassMap
+        {
+            int currentRow = GetCurrentRow(worksheet);
+
+            worksheet.Cells.ImportObjectArray(names, currentRow, 0, pivot);
+            if (headerStyle != null)
+            {
+                worksheet.Cells.CreateRange(currentRow, names.Length, pivot).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
+            }
+
+            if (pivot)
+            {
+                currentRow += names.Length;
+            }
+            else
+            {
+                currentRow++;
+            }
+
+            SetCurrentRow(worksheet, currentRow);
+        }
+
+        protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, TModel record, CellStyle recordStyle, bool pivot = false)
+            where TMapper : ClassMap
+            where TModel : class
+        {
+            ModelProperty[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
+            WriteExcelRecords(worksheet, classMap, names, record, recordStyle, pivot);
+        }
+
+        protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, ModelProperty[] names, TModel record, CellStyle recordStyle, bool pivot = false)
+            where TMapper : ClassMap
+            where TModel : class
+        {
+            int currentRow = GetCurrentRow(worksheet);
+
+            int column = 0;
+            if (pivot)
+            {
+                // If we have pivoted then we need to move one column in, as the header is in column 1.
+                column = 1;
+            }
+
+            object[] values = new object[names.Length];
+            for (int i = 0; i < names.Length; i++)
+            {
+                values[i] = names[i].MethodInfo.GetValue(record);
+            }
+
+            worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
+            if (recordStyle != null)
+            {
+                worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length)
+                    .ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
+            }
+
+            if (pivot)
+            {
+                currentRow += names.Length;
+            }
+            else
+            {
+                currentRow++;
             }
 
             SetCurrentRow(worksheet, currentRow);

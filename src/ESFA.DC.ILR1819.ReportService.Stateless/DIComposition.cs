@@ -321,16 +321,16 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             containerBuilder.RegisterType<MathsAndEnglishModelBuilder>().As<IMathsAndEnglishModelBuilder>()
                 .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<SummaryOfFM35FundingModelBuilder>().As<ISummaryOfFM35FundingModelBuilder>()
-                .InstancePerLifetimeScope();
             containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IMainOccupancyReportModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsAdditionalPaymentsModelBuilder>().As<IAppsAdditionalPaymentsModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
                 .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>().InstancePerLifetimeScope();
-            containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>().SingleInstance();
+            containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>().SingleInstance();
+            containerBuilder.RegisterType<Fm35Builder>().As<IFm35Builder>()
+                .SingleInstance();
             containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>().SingleInstance();
         }

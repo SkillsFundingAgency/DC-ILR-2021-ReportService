@@ -42,7 +42,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.IsNullOrEmpty(_version))
                 {
                     IPostcodes postcodesContext = new Postcodes(_postcodeConfiguration.PostcodeConnectionString);
-                    _version = (await postcodesContext.VersionInfos.SingleAsync(cancellationToken)).VersionNumber;
+                    _version = (await postcodesContext.VersionInfos.SingleOrDefaultAsync(cancellationToken))?.VersionNumber ?? "NA";
                 }
             }
             catch (Exception ex)

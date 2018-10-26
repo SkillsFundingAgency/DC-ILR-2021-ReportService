@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +17,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Generation;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Model.Styling;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
@@ -27,10 +30,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class FundingSummaryReport : AbstractReportBuilder, IReport
     {
-        private readonly FundingSummaryMapper _albFundingSummaryMapper = new FundingSummaryMapper("Advanced Loans Bursary");
-        private readonly FundingSummaryMapper _traineeship1618Mapper = new FundingSummaryMapper("16-18 Traineeships");
+        private readonly FundingSummaryMapper _fundingSummaryMapper;
 
-        private readonly Dictionary<string, List<FundingSummaryModel>> fundingSummaryModels;
+        private readonly ModelProperty[] _cachedModelProperties;
+
+        private readonly List<FundingSummaryModel> fundingSummaryModels;
 
         private readonly ILogger _logger;
         private readonly IStreamableKeyValuePersistenceService _storage;
@@ -49,6 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly ILargeEmployerProviderService _largeEmployerProviderService;
         private readonly IAllbBuilder _allbBuilder;
         private readonly IFm25Builder _fm25Builder;
+        private readonly IFm35Builder _fm35Builder;
+        private readonly ITotalBuilder _totalBuilder;
         private readonly IVersionInfo _versionInfo;
         private readonly IExcelStyleProvider _excelStyleProvider;
 
@@ -70,6 +76,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ILargeEmployerProviderService largeEmployerProviderService,
             IAllbBuilder allbBuilder,
             IFm25Builder fm25Builder,
+            IFm35Builder fm35Builder,
+            ITotalBuilder totalBuilder,
             IVersionInfo versionInfo,
             IExcelStyleProvider excelStyleProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
@@ -91,6 +99,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _largeEmployerProviderService = largeEmployerProviderService;
             _allbBuilder = allbBuilder;
             _fm25Builder = fm25Builder;
+            _fm35Builder = fm35Builder;
+            _totalBuilder = totalBuilder;
             _versionInfo = versionInfo;
             _excelStyleProvider = excelStyleProvider;
             _dateTimeProvider = dateTimeProvider;
@@ -98,7 +108,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportFileName = "Funding Summary Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;
 
-            fundingSummaryModels = new Dictionary<string, List<FundingSummaryModel>>();
+            fundingSummaryModels = new List<FundingSummaryModel>();
+            _fundingSummaryMapper = new FundingSummaryMapper();
+            _cachedModelProperties = _fundingSummaryMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
@@ -122,8 +134,35 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(ilrFileTask, cancellationToken);
 
             // Todo: Check keys & titles
-            fundingSummaryModels["ALB"] = await _allbBuilder.BuildAsync(jobContextMessage, cancellationToken);
-            fundingSummaryModels["16-18 Traineeships (Adult Funded)"] = new List<FundingSummaryModel> { _fm25Builder.BuildWithFundLine("16-18 Traineeships (Adult Funded)", fm25Task.Result, validLearnersTask.Result, "16-18 Traineeships (Adult Funded)", periodTask.Result) };
+            fundingSummaryModels.Add(new FundingSummaryModel());
+            fundingSummaryModels.Add(new FundingSummaryModel(0, "16-18 Traineeships Budget", true));
+            fundingSummaryModels.Add(new FundingSummaryModel(2, "16-18 Traineeships", false));
+            FundingSummaryModel traineeships1618 = _fm25Builder.BuildWithFundLine("ILR 16-18 Traineeships Programme Funding (£)", fm25Task.Result, validLearnersTask.Result, "16-18 Traineeships (Adult Funded)", periodTask.Result);
+            fundingSummaryModels.Add(traineeships1618);
+            FundingSummaryModel traineeships1924 = _fm25Builder.BuildWithFundLine("ILR 19-24 Traineeships (16-19 Model) Programme Funding (£)", fm25Task.Result, validLearnersTask.Result, "19+ Traineeships (Adult Funded)", periodTask.Result);
+            fundingSummaryModels.Add(traineeships1924);
+            FundingSummaryModel traineeshipsTotal = _totalBuilder.TotalRecords("ILR Total 16-18 Traineeships (£)", traineeships1618, traineeships1924);
+            traineeshipsTotal.ExcelHeaderStyle = 3;
+            traineeshipsTotal.ExcelRecordStyle = 3;
+            fundingSummaryModels.Add(traineeshipsTotal);
+
+            fundingSummaryModels.Add(new FundingSummaryModel());
+            fundingSummaryModels.Add(new FundingSummaryModel(2, "16-18 Trailblazer Apprenticeships for starts before 1 May 2017", false));
+            FundingSummaryModel ilrApprenticeshipProgramme = _fm35Builder.BuildWithFundLine("ILR Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, "16-18 Apprenticeship", new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel ilrApprenticeshipFrameworks = _fm35Builder.BuildWithFundLine("ILR Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, "16-18 Apprenticeship", new[] { Constants.Fm35LearningSupportAttributeName });
+            fundingSummaryModels.Add(_totalBuilder.TotalRecords("ILR Total 16-18 Apprenticeship Frameworks (£)", ilrApprenticeshipProgramme, ilrApprenticeshipFrameworks));
+
+            fundingSummaryModels.Add(new FundingSummaryModel());
+            fundingSummaryModels.Add(new FundingSummaryModel(0) { Title = "Advanced Loans Bursary Budget" });
+            fundingSummaryModels.Add(new FundingSummaryModel(2) { Title = "Advanced Loans Bursary" });
+            List<FundingSummaryModel> albModels = await _allbBuilder.BuildAsync(jobContextMessage, cancellationToken);
+            fundingSummaryModels.AddRange(albModels);
+            FundingSummaryModel albTotal = _totalBuilder.TotalRecords("Total Advanced Loans Bursary (£)", albModels[0], albModels[1]);
+            albTotal.ExcelHeaderStyle = 3;
+            albTotal.ExcelRecordStyle = 3;
+            fundingSummaryModels.Add(albTotal);
+            fundingSummaryModels.Add(new FundingSummaryModel(4, Constants.ALBInfoText, true));
+            fundingSummaryModels.Add(new FundingSummaryModel());
 
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
@@ -154,10 +193,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
                         WriteCsvRecords<FundingSummaryHeaderMapper, FundingSummaryHeaderModel>(csvWriter, fundingSummaryHeaderModel);
-                        WriteCsvRecords(csvWriter, fundingSummaryModels["16-18 Traineeships (Adult Funded)"], _traineeship1618Mapper);
-                        WriteCsvRecords(csvWriter);
-                        WriteCsvRecords(csvWriter, fundingSummaryModels["ALB"], _albFundingSummaryMapper);
+                        foreach (FundingSummaryModel fundingSummaryModel in fundingSummaryModels)
+                        {
+                            if (string.IsNullOrEmpty(fundingSummaryModel.Title))
+                            {
+                                WriteCsvRecords(csvWriter);
+                                continue;
+                            }
+
+                            if (fundingSummaryModel.ExcelHeaderStyle == 0 || fundingSummaryModel.TitleOnly)
+                            {
+                                WriteCsvRecords(csvWriter, fundingSummaryModel.Title);
+                                continue;
+                            }
+
+                            if (fundingSummaryModel.ExcelHeaderStyle == 2)
+                            {
+                                _fundingSummaryMapper.MemberMaps.Single(x => x.Data.Index == 0).Name(fundingSummaryModel.Title);
+                                WriteCsvRecords(csvWriter, _fundingSummaryMapper);
+                                continue;
+                            }
+
+                            WriteCsvRecords(csvWriter, _fundingSummaryMapper, _cachedModelProperties, fundingSummaryModel);
+                        }
+
                         WriteCsvRecords<FundingSummaryFooterMapper, FundingSummaryFooterModel>(csvWriter, fundingSummaryFooterModel);
+
                         csvWriter.Flush();
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());
@@ -175,18 +236,34 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Worksheet sheet = workbook.Worksheets[0];
 
             WriteExcelRecords(sheet, new FundingSummaryHeaderMapper(), new List<FundingSummaryHeaderModel> { fundingSummaryHeaderModel }, cellStyles[5], cellStyles[5], true);
-            WriteExcelRecords(sheet);
-            WriteExcelRecords(sheet, "16-18 Traineeships Budget", cellStyles[0], 17);
-            WriteExcelRecords(
-                sheet,
-                _traineeship1618Mapper,
-                fundingSummaryModels["16-18 Traineeships (Adult Funded)"],
-                cellStyles[2],
-                null);
-            WriteExcelRecords(sheet);
-            WriteExcelRecords(sheet, "Advanced Loans Bursary Budget", cellStyles[0], 17);
-            WriteExcelRecords(sheet, _albFundingSummaryMapper, fundingSummaryModels["ALB"], cellStyles[2], cellStyles[4]);
-            WriteExcelRecords(sheet);
+            foreach (FundingSummaryModel fundingSummaryModel in fundingSummaryModels)
+            {
+                if (string.IsNullOrEmpty(fundingSummaryModel.Title))
+                {
+                    WriteExcelRecords(sheet);
+                    continue;
+                }
+
+                CellStyle excelHeaderStyle = _excelStyleProvider.GetCellStyle(cellStyles, fundingSummaryModel.ExcelHeaderStyle);
+
+                if (fundingSummaryModel.ExcelHeaderStyle == 0 || fundingSummaryModel.TitleOnly)
+                {
+                    WriteExcelRecords(sheet, fundingSummaryModel.Title, excelHeaderStyle, 17);
+                    continue;
+                }
+
+                if (fundingSummaryModel.ExcelHeaderStyle == 2)
+                {
+                    _fundingSummaryMapper.MemberMaps.Single(x => x.Data.Index == 0).Name(fundingSummaryModel.Title);
+                    WriteExcelRecords(sheet, _fundingSummaryMapper, excelHeaderStyle);
+                    continue;
+                }
+
+                CellStyle excelRecordStyle = _excelStyleProvider.GetCellStyle(cellStyles, fundingSummaryModel.ExcelRecordStyle);
+
+                WriteExcelRecords(sheet, _fundingSummaryMapper, _cachedModelProperties, fundingSummaryModel, excelRecordStyle);
+            }
+
             WriteExcelRecords(sheet, new FundingSummaryFooterMapper(), new List<FundingSummaryFooterModel> { fundingSummaryFooterModel }, cellStyles[5], cellStyles[5], true);
             return workbook;
         }
@@ -197,7 +274,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 IlrFile = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString()),
                 Ukprn = messageTask.Result.HeaderEntity.SourceEntity.UKPRN,
-                ProviderName = providerNameTask.Result,
+                ProviderName = providerNameTask.Result ?? "Unknown",
                 LastEasUpdate = (await _easProviderService.GetLastEasUpdate(messageTask.Result.HeaderEntity.SourceEntity.UKPRN, cancellationToken)).ToString("dd/MM/yyyy"),
                 LastIlrFileUpdate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy"),
                 SecurityClassification = "OFFICIAL-SENSITIVE"

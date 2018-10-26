@@ -2,10 +2,12 @@
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
 {
-    public interface ISummaryOfFM35FundingModelBuilder
+    public interface IFm35Builder
     {
         IList<SummaryOfFm35FundingModel> BuildModel(LearningDelivery fundLineData);
+
+        FundingSummaryModel BuildWithFundLine(string title, FM35Global fm35Global, List<string> validLearners, string fundLine, string[] attributes);
     }
 }

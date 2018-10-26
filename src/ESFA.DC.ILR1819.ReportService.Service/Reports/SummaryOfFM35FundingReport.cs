@@ -10,6 +10,7 @@ using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -28,7 +29,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IKeyValuePersistenceService _storage;
         private readonly ILogger _logger;
-        private readonly ISummaryOfFM35FundingModelBuilder _summaryOfFm35FundingModelBuilder;
+        private readonly IFm35Builder _summaryOfFm35FundingModelBuilder;
 
         public SummaryOfFm35FundingReport(
             ILogger logger,
@@ -37,7 +38,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            ISummaryOfFM35FundingModelBuilder builder)
+            IFm35Builder builder)
             : base(dateTimeProvider)
         {
             _logger = logger;

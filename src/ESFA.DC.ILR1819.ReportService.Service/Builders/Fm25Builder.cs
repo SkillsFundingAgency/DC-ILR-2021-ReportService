@@ -9,6 +9,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public sealed class Fm25Builder : IFm25Builder
     {
+        // Singleton
         public Fm25Builder()
         {
         }

@@ -10,6 +10,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public sealed class DasCommitmentBuilder : IDasCommitmentBuilder
     {
+        // Single instance
+        public DasCommitmentBuilder()
+        {
+        }
+
         public List<DasCommitment> Build(IEnumerable<DasCommitments> commitments)
         {
             List<DasCommitment> dasCommitments = new List<DasCommitment>(commitments.Select(x => new DasCommitment(x)));

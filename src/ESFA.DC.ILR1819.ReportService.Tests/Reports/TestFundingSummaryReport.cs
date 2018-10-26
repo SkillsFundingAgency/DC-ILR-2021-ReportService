@@ -7,6 +7,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
@@ -58,7 +59,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };
+            ITotalBuilder totalBuilder = new TotalBuilder();
             IFm25Builder fm25Builder = new Fm25Builder();
+            IFm35Builder fm35Builder = new Fm35Builder(totalBuilder);
             IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, periodProviderService.Object, stringUtilitiesService, logger.Object);
             IExcelStyleProvider excelStyleProvider = new ExcelStyleProvider();
 
@@ -92,6 +95,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             largeEmployerProviderService.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync("NA");
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
+            orgProviderService
+                .Setup(x => x.GetProviderName(It.IsAny<IJobContextMessage>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync("Test Provider");
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
@@ -113,6 +119,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 largeEmployerProviderService.Object,
                 allbBuilder,
                 fm25Builder,
+                fm35Builder,
+                totalBuilder,
                 versionInfo,
                 excelStyleProvider,
                 topicsAndTasks);
@@ -131,14 +139,20 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             csv.Should().NotBeNullOrEmpty();
             xlsx.Should().NotBeNullOrEmpty();
 
-            var header = new FundingSummaryHeaderMapper();
+            var fundingSummaryHeaderMapper = new FundingSummaryHeaderMapper();
+            var fundingSummaryMapper = new FundingSummaryMapper();
+            var fundingSummaryFooterMapper = new FundingSummaryFooterMapper();
             TestCsvHelper.CheckCsv(
                 csv,
-                new CsvEntry(header, 1),
-                new CsvEntry(new FundingSummaryMapper("16-18 Traineeships"), 1),
-                new CsvEntry(new FundingSummaryMapper("Advanced Loans Bursary"), 2, 1),
-                new CsvEntry(new FundingSummaryFooterMapper(), 1));
-            TestXlsxHelper.CheckXlsx(xlsx, new XlsxEntry(header, header.GetMaxIndex(), true));
+                new CsvEntry(fundingSummaryHeaderMapper, 1),
+                new CsvEntry(fundingSummaryMapper, 0, "16-18 Traineeships Budget", 1),
+                new CsvEntry(fundingSummaryMapper, 3, "16-18 Traineeships"),
+                new CsvEntry(fundingSummaryMapper, 1, "16-18 Trailblazer Apprenticeships for starts before 1 May 2017", 1),
+                new CsvEntry(fundingSummaryMapper, 0, "Advanced Loans Bursary Budget", 1),
+                new CsvEntry(fundingSummaryMapper, 3, "Advanced Loans Bursary"),
+                new CsvEntry(fundingSummaryMapper, 0, Constants.ALBInfoText),
+                new CsvEntry(fundingSummaryFooterMapper, 1, blankRowsBefore: 1));
+            TestXlsxHelper.CheckXlsx(xlsx, new XlsxEntry(fundingSummaryHeaderMapper, fundingSummaryHeaderMapper.GetMaxIndex(), true));
         }
     }
 }
