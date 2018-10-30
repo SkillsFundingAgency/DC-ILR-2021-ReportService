@@ -203,8 +203,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             FundingSummaryModel totalApprenticeships1618 = _totalBuilder.TotalRecords("Total 16-18 Apprenticeship Frameworks for starts before 1 May 2017 (£)", ilrTotal1618Apprenticeship, easTotal1618Apprenticeship);
-            totalApprenticeships1618.ExcelHeaderStyle = 3;
-            totalApprenticeships1618.ExcelRecordStyle = 3;
+            totalApprenticeships1618.ExcelHeaderStyle = 2;
+            totalApprenticeships1618.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalApprenticeships1618);
 
             fundingSummaryModels.Add(new FundingSummaryModel());

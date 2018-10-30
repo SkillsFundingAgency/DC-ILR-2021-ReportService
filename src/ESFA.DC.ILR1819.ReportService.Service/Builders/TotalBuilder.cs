@@ -63,15 +63,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         public decimal? Total(decimal? original, decimal? value)
         {
-            if (original == null && value == null)
-            {
-                return null;
-            }
+            //if (original == null && value == null)
+            //{
+            //    return null;
+            //}
 
-            if (value == null)
-            {
-                return original;
-            }
+            //if (value == null)
+            //{
+            //    return original;
+            //}
 
             return original.GetValueOrDefault(0) + value.GetValueOrDefault(0);
         }

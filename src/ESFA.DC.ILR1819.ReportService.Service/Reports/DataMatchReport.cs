@@ -81,6 +81,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             await Task.WhenAll(ilrFileTask, fm36Task, validLearnersTask).ConfigureAwait(false);
 
+            if (fm36Task.Result?.Learners == null)
+            {
+                _logger.LogWarning($"No FM36 learner data for {nameof(DataMatchReport)}");
+                return;
+            }
+
             cancellationToken.ThrowIfCancellationRequested();
 
             List<RawEarning> rawEarnings = new List<RawEarning>();
