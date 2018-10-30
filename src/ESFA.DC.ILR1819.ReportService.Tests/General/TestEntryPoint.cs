@@ -45,8 +45,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
             Mock<IReport> report = new Mock<IReport>();
             report.SetupGet(x => x.ReportTaskName).Returns(topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport);
             report.Setup(x =>
-                    x.GenerateReport(It.IsAny<IJobContextMessage>(), It.IsAny<ZipArchive>(), It.IsAny<CancellationToken>()))
-                .Callback<IJobContextMessage, ZipArchive, CancellationToken>((j, z, c) =>
+                    x.GenerateReport(It.IsAny<IJobContextMessage>(), It.IsAny<ZipArchive>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Callback<IJobContextMessage, ZipArchive, bool, CancellationToken>((j, z, b, c) =>
                 {
                     ZipArchiveEntry archivedFile = z.CreateEntry("ExampleReport.csv", CompressionLevel.Optimal);
                     using (var sw = new StreamWriter(archivedFile.Open()))
@@ -83,6 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
                 using (ZipArchive archive = new ZipArchive(ms, ZipArchiveMode.Read))
                 {
                     ZipArchiveEntry entry = archive.GetEntry("ExampleReport.csv");
+                    entry.Should().NotBeNull();
                     using (StreamReader reader = new StreamReader(entry.Open()))
                     {
                         zipContents = reader.ReadToEnd();

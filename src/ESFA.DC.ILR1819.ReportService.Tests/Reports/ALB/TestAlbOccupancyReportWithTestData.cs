@@ -95,7 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
 
-            await allbOccupancyReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await allbOccupancyReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
 #if DEBUG

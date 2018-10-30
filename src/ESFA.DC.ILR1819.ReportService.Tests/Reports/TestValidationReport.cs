@@ -84,7 +84,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount] = 2;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount] = 3;
 
-            await validationErrorsReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await validationErrorsReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 
             json.Should().NotBeNullOrEmpty();
             csv.Should().NotBeNullOrEmpty();

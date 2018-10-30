@@ -67,7 +67,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateDataMatchReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             if (!long.TryParse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString(), out var ukPrn))
             {

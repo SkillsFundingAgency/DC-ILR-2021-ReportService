@@ -1,0 +1,85 @@
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Autofac.Features.AttributeFilters;
+using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
+using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.IO.Interfaces;
+using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Model.Interface;
+using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Serialization.Interfaces;
+
+namespace ESFA.DC.ILR1819.ReportService.Service.Service
+{
+    public sealed class FM81TrailBlazerProviderService : IFM81TrailBlazerProviderService
+    {
+        private readonly ILogger _logger;
+        private readonly IKeyValuePersistenceService _redis;
+        private readonly IKeyValuePersistenceService _blob;
+        private readonly IJsonSerializationService _jsonSerializationService;
+
+        private readonly SemaphoreSlim _getDataLock;
+
+        private bool _loadedDataAlready;
+
+        private FM81Global _fundingOutputs;
+
+        public FM81TrailBlazerProviderService(
+            ILogger logger,
+            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
+            IJsonSerializationService jsonSerializationService)
+        {
+            _logger = logger;
+            _redis = redis;
+            _blob = blob;
+            _jsonSerializationService = jsonSerializationService;
+
+            _fundingOutputs = null;
+            _getDataLock = new SemaphoreSlim(1, 1);
+        }
+
+        public async Task<FM81Global> GetFM81Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        {
+            await _getDataLock.WaitAsync(cancellationToken);
+
+            try
+            {
+                if (_loadedDataAlready)
+                {
+                    return _fundingOutputs;
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
+                _loadedDataAlready = true;
+                string fm81Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm81Output].ToString();
+                string fm81 = await _redis.GetAsync(fm81Filename, cancellationToken);
+
+                if (string.IsNullOrEmpty(fm81))
+                {
+                    _fundingOutputs = null;
+                    return _fundingOutputs;
+                }
+
+                _fundingOutputs = _jsonSerializationService.Deserialize<FM81Global>(fm81);
+            }
+            catch (Exception ex)
+            {
+                // Todo: Check behaviour
+                _logger.LogError("Failed to get & deserialise FM81 funding data", ex);
+            }
+            finally
+            {
+                _getDataLock.Release();
+            }
+
+            return _fundingOutputs;
+        }
+    }
+}

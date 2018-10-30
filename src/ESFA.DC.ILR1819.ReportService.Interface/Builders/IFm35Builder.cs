@@ -8,6 +8,6 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
     {
         IList<SummaryOfFm35FundingModel> BuildModel(LearningDelivery fundLineData);
 
-        FundingSummaryModel BuildWithFundLine(string title, FM35Global fm35Global, List<string> validLearners, string fundLine, string[] attributes);
+        FundingSummaryModel BuildWithFundLine(string title, FM35Global fm35Global, List<string> validLearners, string[] fundLines, string[] attributes);
     }
 }

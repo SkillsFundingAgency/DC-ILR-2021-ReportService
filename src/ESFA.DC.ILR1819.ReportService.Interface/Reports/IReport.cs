@@ -12,8 +12,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Reports
 
         string GetFilename(string ukPrn, long jobId, DateTime submissionDateTime);
 
-        Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive,
-            CancellationToken cancellationToken);
+        Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken);
 
         bool IsMatch(string reportTaskName);
     }

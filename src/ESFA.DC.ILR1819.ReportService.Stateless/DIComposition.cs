@@ -281,6 +281,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<FM81TrailBlazerProviderService>().As<IFM81TrailBlazerProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<ReturnCalendarService>().As<IReturnCalendarService>()
                 .InstancePerLifetimeScope();
 
@@ -315,6 +319,13 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.RegisterType<ExcelStyleProvider>().As<IExcelStyleProvider>()
                 .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery[]>>()
+                .InstancePerDependency();
+            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>>()
+                .InstancePerDependency();
+            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>()
+                .InstancePerDependency();
         }
 
         private static void RegisterBuilders(ContainerBuilder containerBuilder)
@@ -331,6 +342,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>().SingleInstance();
             containerBuilder.RegisterType<Fm35Builder>().As<IFm35Builder>()
                 .SingleInstance();
+            containerBuilder.RegisterType<Fm36Builder>().As<IFm36Builder>().SingleInstance();
+            containerBuilder.RegisterType<Fm81Builder>().As<IFm81Builder>().SingleInstance();
             containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>().SingleInstance();
         }

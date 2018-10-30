@@ -12,7 +12,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         public FundingSummaryModel TotalRecords(string title, params FundingSummaryModel[] fundingSummaryModels)
         {
-            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel { Title = title };
+            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
 
             foreach (FundingSummaryModel summaryModel in fundingSummaryModels)
             {
@@ -33,6 +33,30 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 fundingSummaryModel.Period9_12 = Total(fundingSummaryModel.Period9_12, summaryModel.Period9_12);
                 fundingSummaryModel.Total = Total(fundingSummaryModel.Total, summaryModel.Total);
             }
+
+            return fundingSummaryModel;
+        }
+
+        public FundingSummaryModel TotalRecordsCumulative(string title, FundingSummaryModel sourceFundingSummaryModel)
+        {
+            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
+
+            fundingSummaryModel.Period1 = sourceFundingSummaryModel.Period1;
+            fundingSummaryModel.Period2 = Total(fundingSummaryModel.Period1, sourceFundingSummaryModel.Period2);
+            fundingSummaryModel.Period3 = Total(fundingSummaryModel.Period2, sourceFundingSummaryModel.Period3);
+            fundingSummaryModel.Period4 = Total(fundingSummaryModel.Period3, sourceFundingSummaryModel.Period4);
+            fundingSummaryModel.Period5 = Total(fundingSummaryModel.Period4, sourceFundingSummaryModel.Period5);
+            fundingSummaryModel.Period6 = Total(fundingSummaryModel.Period5, sourceFundingSummaryModel.Period6);
+            fundingSummaryModel.Period7 = Total(fundingSummaryModel.Period6, sourceFundingSummaryModel.Period7);
+            fundingSummaryModel.Period8 = Total(fundingSummaryModel.Period7, sourceFundingSummaryModel.Period8);
+            fundingSummaryModel.Period9 = Total(fundingSummaryModel.Period8, sourceFundingSummaryModel.Period9);
+            fundingSummaryModel.Period10 = Total(fundingSummaryModel.Period9, sourceFundingSummaryModel.Period10);
+            fundingSummaryModel.Period11 = Total(fundingSummaryModel.Period10, sourceFundingSummaryModel.Period11);
+            fundingSummaryModel.Period12 = Total(fundingSummaryModel.Period11, sourceFundingSummaryModel.Period12);
+
+            fundingSummaryModel.Period1_8 = fundingSummaryModel.Period8;
+            fundingSummaryModel.Period9_12 = fundingSummaryModel.Period12 - fundingSummaryModel.Period8;
+            fundingSummaryModel.Total = fundingSummaryModel.Period1_8 + fundingSummaryModel.Period9_12;
 
             return fundingSummaryModel;
         }

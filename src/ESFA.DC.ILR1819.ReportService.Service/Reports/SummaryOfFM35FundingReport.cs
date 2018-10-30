@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -15,6 +14,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -25,6 +25,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public class SummaryOfFm35FundingReport : AbstractReportBuilder, IReport
     {
+        private static readonly SummaryOfFm35FundingModelComparer comparer = new SummaryOfFm35FundingModelComparer();
+
         private readonly IFM35ProviderService _fm35ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IKeyValuePersistenceService _storage;
@@ -51,14 +53,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportFileName = "Summary of Funding Model 35 Funding Report";
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
             var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
-            var summaryOfFm35FundingModels = await GetSummaryOfFm35FundingModels(jobContextMessage, cancellationToken);
+            IList<SummaryOfFm35FundingModel> summaryOfFm35FundingModels = await GetSummaryOfFm35FundingModels(jobContextMessage, cancellationToken);
+            if (summaryOfFm35FundingModels == null)
+            {
+                return;
+            }
 
             string csv = GetCsv(summaryOfFm35FundingModels);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
@@ -89,34 +95,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             await Task.WhenAll(fm35Task);
 
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return null;
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
-            var ilrError = new List<string>();
+            List<SummaryOfFm35FundingModel> summaryOfFm35FundingModels = new List<SummaryOfFm35FundingModel>();
 
-            var fm35Data = fm35Task.Result;
+            FM35Global fm35Data = fm35Task.Result;
             if (fm35Data?.Learners == null)
             {
-                ilrError.Add("No FM35 Data");
-                return null;
+                _logger.LogWarning($"No Fm35 data for {nameof(SummaryOfFm35FundingReport)}");
+                return summaryOfFm35FundingModels;
             }
 
-            var summaryOfFm35FundingModels = new List<SummaryOfFm35FundingModel>();
-            foreach (var learnerAttribute in fm35Data.Learners)
+            foreach (FM35Learner learnerAttribute in fm35Data.Learners)
             {
-                foreach (var fundLineData in learnerAttribute.LearningDeliveries)
+                foreach (LearningDelivery fundLineData in learnerAttribute.LearningDeliveries)
                 {
                     summaryOfFm35FundingModels.AddRange(_summaryOfFm35FundingModelBuilder.BuildModel(fundLineData));
                 }
             }
 
-            if (ilrError.Any())
-            {
-                _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(SummaryOfFm35FundingReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
-            }
-
+            summaryOfFm35FundingModels.Sort(comparer);
             return summaryOfFm35FundingModels;
         }
     }

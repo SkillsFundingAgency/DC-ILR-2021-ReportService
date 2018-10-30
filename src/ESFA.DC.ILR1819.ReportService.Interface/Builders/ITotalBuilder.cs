@@ -8,5 +8,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
         FundingSummaryModel TotalRecords(string title, params FundingSummaryModel[] fundingSummaryModels);
 
         decimal? Total(decimal? original, decimal? value);
+
+        FundingSummaryModel TotalRecordsCumulative(string title, FundingSummaryModel sourceFundingSummaryModel);
     }
 }

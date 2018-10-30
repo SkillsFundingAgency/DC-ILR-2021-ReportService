@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         {
             FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
 
-            if (fm25Global.Learners == null)
+            if (fm25Global?.Learners == null)
             {
                 return fundingSummaryModel;
             }
