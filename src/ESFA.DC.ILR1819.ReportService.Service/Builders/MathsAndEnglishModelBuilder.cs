@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
-                LearnerStartDate = fm25Data?.LearnerStartDate
+                LearnerStartDate = fm25Data.LearnerStartDate
             };
         }
     }

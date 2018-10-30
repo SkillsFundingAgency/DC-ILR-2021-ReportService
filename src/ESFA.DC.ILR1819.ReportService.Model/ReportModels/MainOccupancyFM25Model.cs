@@ -18,15 +18,15 @@
 
         public string ProvSpecLearnMonB { get; set; }
 
-        public object NatRate { get; set; }
+        public decimal? NatRate { get; set; }
 
         public int FundModel { get; set; }
 
-        public object LearnerStartDate { get; set; }
+        public string LearnerStartDate { get; set; }
 
-        public object LearnerPlanEndDate { get; set; }
+        public string LearnerPlanEndDate { get; set; }
 
-        public object LearnerActEndDate { get; set; }
+        public string LearnerActEndDate { get; set; }
 
         public string FundLine { get; set; }
 

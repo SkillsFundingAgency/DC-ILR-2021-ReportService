@@ -54,19 +54,19 @@
 
         public int? OtherFundAdj { get; set; }
 
-        public System.DateTime? OrigLearnStartDate { get; set; }
+        public string OrigLearnStartDate { get; set; }
 
-        public System.DateTime LearnStartDate { get; set; }
+        public string LearnStartDate { get; set; }
 
-        public System.DateTime LearnPlanEndDate { get; set; }
+        public string LearnPlanEndDate { get; set; }
 
         public int CompStatus { get; set; }
 
-        public System.DateTime? LearnActEndDate { get; set; }
+        public string LearnActEndDate { get; set; }
 
         public int? Outcome { get; set; }
 
-        public System.DateTime? AchDate { get; set; }
+        public string AchDate { get; set; }
 
         public int? AddHours { get; set; }
 
@@ -132,9 +132,9 @@
 
         public bool HigherApprentishipHeAim { get; set; }
 
-        public object ApplicEmpFactDate { get; set; }
+        public string ApplicEmpFactDate { get; set; }
 
-        public System.DateTime? ApplicFactDate { get; set; }
+        public string ApplicFactDate { get; set; }
 
         public decimal? Period1OnProgPayment { get; set; }
 

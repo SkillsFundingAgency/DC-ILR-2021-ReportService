@@ -64,7 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                                          (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) +
                                          (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0);
 
-            var aimPercent = fm35Data?.LearningDeliveryPeriodisedValues?.SingleOrDefault(attr =>
+            LearningDeliveryPeriodisedValue aimPercent = fm35Data?.LearningDeliveryPeriodisedValues?.SingleOrDefault(attr =>
                 attr.AttributeName == Constants.Fm35AimAchievementPercentAttributeName);
 
             return new MainOccupancyFM35Model
@@ -97,13 +97,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 FundModel = learningDelivery.FundModel,
                 PriorLearnFundAdj = learningDelivery.PriorLearnFundAdjNullable,
                 OtherFundAdj = learningDelivery.OtherFundAdjNullable,
-                OrigLearnStartDate = learningDelivery.OrigLearnStartDateNullable,
-                LearnStartDate = learningDelivery.LearnStartDate,
-                LearnPlanEndDate = learningDelivery.LearnPlanEndDate,
+                OrigLearnStartDate = learningDelivery.OrigLearnStartDateNullable?.ToString("dd/MM/yyyy"),
+                LearnStartDate = learningDelivery.LearnStartDate.ToString("dd/MM/yyyy"),
+                LearnPlanEndDate = learningDelivery.LearnPlanEndDate.ToString("dd/MM/yyyy"),
                 CompStatus = learningDelivery.CompStatus,
-                LearnActEndDate = learningDelivery.LearnActEndDateNullable,
+                LearnActEndDate = learningDelivery.LearnActEndDateNullable?.ToString("dd/MM/yyyy"),
                 Outcome = learningDelivery.OutcomeNullable,
-                AchDate = learningDelivery.AchDateNullable,
+                AchDate = learningDelivery.AchDateNullable?.ToString("dd/MM/yyyy"),
                 AddHours = learningDelivery.AddHoursNullable,
                 LearnDelFamCodeSof = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => x.LearnDelFAMType == "SOF")?.LearnDelFAMCode,
@@ -154,8 +154,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 TraineeWorkPlacement = (fm35Data?.LearningDeliveryValue?.TrnWorkPlaceAim ?? false)
                                        || (fm35Data?.LearningDeliveryValue?.TrnWorkPrepAim ?? false),
                 HigherApprentishipHeAim = fm35Data?.LearningDeliveryValue?.PrscHEAim ?? false,
-                ApplicEmpFactDate = fm35Data?.LearningDeliveryValue?.ApplicEmpFactDate,
-                ApplicFactDate = fm35Data?.LearningDeliveryValue?.ApplicFactDate,
+                ApplicEmpFactDate = fm35Data?.LearningDeliveryValue?.ApplicEmpFactDate?.ToString("dd/MM/yyyy"),
+                ApplicFactDate = fm35Data?.LearningDeliveryValue?.ApplicFactDate?.ToString("dd/MM/yyyy"),
 
                 Period1OnProgPayment = onProgPayment?.Period1,
                 Period1BalancePayment = balancePayment?.Period1,
@@ -274,9 +274,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
                 NatRate = fm25Data?.NatRate,
                 FundModel = learningDelivery.FundModel,
-                LearnerStartDate = fm25Data?.LearnerStartDate,
-                LearnerPlanEndDate = fm25Data?.LearnerPlanEndDate,
-                LearnerActEndDate = fm25Data?.LearnerActEndDate,
+                LearnerStartDate = fm25Data?.LearnerStartDate?.ToString("dd/MM/yyyy"),
+                LearnerPlanEndDate = fm25Data?.LearnerPlanEndDate?.ToString("dd/MM/yyyy"),
+                LearnerActEndDate = fm25Data?.LearnerActEndDate?.ToString("dd/MM/yyyy"),
                 FundLine = fm25Data?.FundLine,
                 Period1OnProgPayment = onProgPayment?.Period1,
                 Period2OnProgPayment = onProgPayment?.Period2,

@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
@@ -31,31 +28,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
                 return 0;
             }
 
-            int cmp = string.CompareOrdinal(x.LearnRefNumber, y.LearnRefNumber);
+            int cmp = string.Compare(x.LearnRefNumber, y.LearnRefNumber, StringComparison.OrdinalIgnoreCase);
             if (cmp != 0)
             {
                 return cmp;
             }
 
-            cmp = string.CompareOrdinal(x.ConditionOfFundingEnglish, y.ConditionOfFundingEnglish);
+            cmp = string.Compare(x.ConditionOfFundingEnglish, y.ConditionOfFundingEnglish, StringComparison.OrdinalIgnoreCase);
             if (cmp != 0)
             {
                 return cmp;
             }
 
-            cmp = string.CompareOrdinal(x.ConditionOfFundingMaths, y.ConditionOfFundingMaths);
+            cmp = string.Compare(x.ConditionOfFundingMaths, y.ConditionOfFundingMaths, StringComparison.OrdinalIgnoreCase);
             if (cmp != 0)
             {
                 return cmp;
             }
 
-            cmp = string.CompareOrdinal(x.ProvSpecLearnMonA, y.ProvSpecLearnMonA);
+            cmp = string.Compare(x.ProvSpecLearnMonA, y.ProvSpecLearnMonA, StringComparison.OrdinalIgnoreCase);
             if (cmp != 0)
             {
                 return cmp;
             }
 
-            cmp = string.CompareOrdinal(x.ProvSpecLearnMonB, y.ProvSpecLearnMonB);
+            cmp = string.Compare(x.ProvSpecLearnMonB, y.ProvSpecLearnMonB, StringComparison.OrdinalIgnoreCase);
             if (cmp != 0)
             {
                 return cmp;

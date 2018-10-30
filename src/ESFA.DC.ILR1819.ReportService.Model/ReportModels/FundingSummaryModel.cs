@@ -9,6 +9,23 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
         {
             ExcelHeaderStyle = excelHeaderStyle;
             ExcelRecordStyle = excelRecordStyle;
+
+            Period1 = 0;
+            Period2 = 0;
+            Period3 = 0;
+            Period4 = 0;
+            Period5 = 0;
+            Period6 = 0;
+            Period7 = 0;
+            Period8 = 0;
+            Period9 = 0;
+            Period10 = 0;
+            Period11 = 0;
+            Period12 = 0;
+            Period1_8 = 0;
+            Period9_12 = 0;
+            YearToDate = 0;
+            Total = 0;
         }
 
         public FundingSummaryModel(string title, HeaderType headerType = HeaderType.None, int excelHeaderStyle = 4)
@@ -17,6 +34,23 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
             ExcelRecordStyle = 4;
             Title = title;
             HeaderType = headerType;
+
+            Period1 = 0;
+            Period2 = 0;
+            Period3 = 0;
+            Period4 = 0;
+            Period5 = 0;
+            Period6 = 0;
+            Period7 = 0;
+            Period8 = 0;
+            Period9 = 0;
+            Period10 = 0;
+            Period11 = 0;
+            Period12 = 0;
+            Period1_8 = 0;
+            Period9_12 = 0;
+            YearToDate = 0;
+            Total = 0;
         }
 
         public string Title { get; set; }

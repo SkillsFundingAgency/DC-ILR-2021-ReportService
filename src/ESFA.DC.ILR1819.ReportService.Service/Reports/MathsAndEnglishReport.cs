@@ -26,6 +26,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class MathsAndEnglishReport : AbstractReportBuilder, IReport
     {
+        private static readonly MathsAndEnglishModelComparer MathsAndEnglishModelComparer = new MathsAndEnglishModelComparer();
+
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
@@ -34,8 +36,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IMathsAndEnglishFm25Rules _mathsAndEnglishFm25Rules;
         private readonly IMathsAndEnglishModelBuilder _mathsAndEnglishModelBuilder;
-
-        private static readonly MathsAndEnglishModelComparer MathsAndEnglishModelComparer = new MathsAndEnglishModelComparer();
 
         public MathsAndEnglishReport(
             ILogger logger,
@@ -88,28 +88,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return null;
             }
 
-            var ilrError = new List<string>();
+            List<string> ilrError = new List<string>();
 
-            var mathsAndEnglishModels = new List<MathsAndEnglishModel>(validLearnersTask.Result.Count);
-            foreach (string validLearnerRefNum in validLearnersTask.Result)
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>();
+            if (fm25Task.Result?.Learners != null)
             {
-                var learner =
-                    ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-
-                var fm25Learner = fm25Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-
-                if (learner == null || fm25Learner == null)
+                foreach (string validLearnerRefNum in validLearnersTask.Result)
                 {
-                    ilrError.Add(validLearnerRefNum);
-                    continue;
-                }
+                    ILearner learner =
+                        ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Learner))
-                {
-                    continue;
-                }
+                    FM25Learner fm25Learner =
+                        fm25Task.Result.Learners.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                mathsAndEnglishModels.Add(_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
+                    if (learner == null || fm25Learner == null)
+                    {
+                        ilrError.Add(validLearnerRefNum);
+                        continue;
+                    }
+
+                    if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Learner))
+                    {
+                        continue;
+                    }
+
+                    mathsAndEnglishModels.Add(_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
+                }
             }
 
             if (ilrError.Any())
