@@ -1,4 +1,6 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
+﻿using System;
+
+namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 {
     public sealed class MathsAndEnglishModel
     {
@@ -21,5 +23,11 @@
         public string RateBand { get; set; }
 
         public string OfficialSensitive { get; }
+
+        public DateTime? LearnerStartDate { get; set; }
+
+        public string ProvSpecLearnMonA { get; set; }
+
+        public string ProvSpecLearnMonB { get; set; }
     }
 }

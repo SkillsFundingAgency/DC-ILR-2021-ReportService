@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -86,6 +89,144 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             csv.Should().NotBeNullOrEmpty();
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new MathsAndEnglishMapper(), 1));
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_ShouldSortModels_VerifyLearnRefNumber()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ConditionOfFundingEnglish = "A",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    ConditionOfFundingEnglish = "B",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("123", mathsAndEnglishModels[0].LearnRefNumber);
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_VerifyConditionsOfFundingEnglish()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ConditionOfFundingEnglish = "B",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ConditionOfFundingEnglish = "A",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("A", mathsAndEnglishModels[0].ConditionOfFundingEnglish);
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_VerifyConditionsOfFundingMaths()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ConditionOfFundingMaths = "B",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ConditionOfFundingMaths = "A",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("A", mathsAndEnglishModels[0].ConditionOfFundingMaths);
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_VerifyProvSpecLearnMonA()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ProvSpecLearnMonA = "B",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ProvSpecLearnMonA = "A",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("A", mathsAndEnglishModels[0].ProvSpecLearnMonA);
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_VerifyProvSpecLearnMonB()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ProvSpecLearnMonB = "B",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ProvSpecLearnMonB = "A",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("A", mathsAndEnglishModels[0].ProvSpecLearnMonB);
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_VerifyLearnsStartDate()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    LearnerStartDate = DateTime.Today.Date.AddDays(2),
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    LearnerStartDate = DateTime.Today,
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal(DateTime.Today, mathsAndEnglishModels[0].LearnerStartDate);
         }
     }
 }

@@ -15,6 +15,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -33,6 +34,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IMathsAndEnglishFm25Rules _mathsAndEnglishFm25Rules;
         private readonly IMathsAndEnglishModelBuilder _mathsAndEnglishModelBuilder;
+
+        private static readonly MathsAndEnglishModelComparer MathsAndEnglishModelComparer = new MathsAndEnglishModelComparer();
 
         public MathsAndEnglishReport(
             ILogger logger,
@@ -113,6 +116,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
             }
+
+            mathsAndEnglishModels.Sort(MathsAndEnglishModelComparer);
 
             using (MemoryStream ms = new MemoryStream())
             {

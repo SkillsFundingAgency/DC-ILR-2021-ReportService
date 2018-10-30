@@ -305,6 +305,7 @@
     <Compile Include="Comparer\DasCommitmentsComparer.cs" />
     <Compile Include="Comparer\DataMatchModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
+    <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
