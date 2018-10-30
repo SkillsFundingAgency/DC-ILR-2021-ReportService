@@ -33,7 +33,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings
 
             model.JanuaryEnglishMathsBalancingPaymentEarnings =
                 LearningDelivery?.LearningDeliveryPeriodisedValues
-                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36MathEngBalPaymentAttributeName)?.Period6 ?? 0;
+                    ?.SingleOrDefault(att => att.AttributeName == Constants.Fm36MathEngBalPayment)?.Period6 ?? 0;
 
             model.JanuaryDisadvantageEarnings =
                 episodeAttribute?.PriceEpisodePeriodisedValues

@@ -13,6 +13,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             Style style1 = workbook.CreateStyle();
             style1.ForegroundColor = System.Drawing.Color.FromArgb(191, 191, 191);
+            style1.Pattern = BackgroundType.Solid;
             style1.Font.Size = 13;
             style1.Font.IsBold = true;
             style1.Font.Name = "Arial";
@@ -25,6 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             Style style2 = workbook.CreateStyle();
             style2.ForegroundColor = System.Drawing.Color.FromArgb(216, 216, 216);
+            style2.Pattern = BackgroundType.Solid;
             style2.Font.Size = 12;
             style2.Font.IsBold = true;
             style2.Font.Name = "Arial";
@@ -37,6 +39,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             Style style3 = workbook.CreateStyle();
             style3.ForegroundColor = System.Drawing.Color.FromArgb(242, 242, 242);
+            style3.Pattern = BackgroundType.Solid;
             style3.Font.Size = 11;
             style3.Font.IsBold = true;
             style3.Font.Name = "Arial";

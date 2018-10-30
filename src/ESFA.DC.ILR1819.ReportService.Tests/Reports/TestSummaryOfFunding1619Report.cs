@@ -77,7 +77,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output] = "FundingFm25Output";
 
-            await summaryOfFunding1619Report.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await summaryOfFunding1619Report.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new SummaryOfFunding1619Mapper(), 1));

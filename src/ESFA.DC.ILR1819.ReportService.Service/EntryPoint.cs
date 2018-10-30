@@ -97,7 +97,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
                 _logger.LogDebug($"Attempting to generate {report.GetType().Name}");
-                await report.GenerateReport(jobContextMessage, archive, cancellationToken);
+                await report.GenerateReport(jobContextMessage, archive, false, cancellationToken);
                 stopWatch.Stop();
                 _logger.LogDebug($"Persisted {report.GetType().Name} to csv/json in: {stopWatch.ElapsedMilliseconds}");
 

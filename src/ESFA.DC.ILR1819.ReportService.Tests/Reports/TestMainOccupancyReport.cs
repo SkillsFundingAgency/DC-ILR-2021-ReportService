@@ -123,7 +123,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 topicsAndTasks,
                 reportModelBuilder);
 
-            await mainOccupancyReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await mainOccupancyReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
 

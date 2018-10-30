@@ -1,6 +1,9 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
+﻿using System;
+using ESFA.DC.ILR1819.ReportService.Model.Styling;
+
+namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 {
-    public sealed class FundingSummaryModel
+    public sealed class FundingSummaryModel : ICloneable
     {
         public FundingSummaryModel(int excelHeaderStyle = 4, int excelRecordStyle = 4)
         {
@@ -8,12 +11,12 @@
             ExcelRecordStyle = excelRecordStyle;
         }
 
-        public FundingSummaryModel(string title, bool titleOnly = false, int excelHeaderStyle = 4)
+        public FundingSummaryModel(string title, HeaderType headerType = HeaderType.None, int excelHeaderStyle = 4)
         {
             ExcelHeaderStyle = excelHeaderStyle;
             ExcelRecordStyle = 4;
             Title = title;
-            TitleOnly = titleOnly;
+            HeaderType = headerType;
         }
 
         public string Title { get; set; }
@@ -54,6 +57,15 @@
 
         public int ExcelRecordStyle { get; set; }
 
-        public bool TitleOnly { get; }
+        public HeaderType HeaderType { get; }
+
+        /// <summary>
+        /// Shallow copies this model (which is enough as it should only have value types)
+        /// </summary>
+        /// <returns>A shallow copy of this object.</returns>
+        public object Clone()
+        {
+            return MemberwiseClone();
+        }
     }
 }

@@ -117,7 +117,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 dateTimeProviderMock.Object,
                 topicsAndTasks);
 
-            await report.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await report.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsIndicativeEarningsMapper(), 1));

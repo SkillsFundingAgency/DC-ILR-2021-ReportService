@@ -10,7 +10,6 @@ using Aspose.Cells;
 using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
 using ESFA.DC.ILR1819.ReportService.Model.Styling;
 
@@ -174,7 +173,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             worksheet.Cells.ImportObjectArray(names.Select(x => x.Name).ToArray(), currentRow, 0, pivot);
             if (headerStyle != null)
             {
-                worksheet.Cells.CreateRange(currentRow, names.Length, pivot).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
+                worksheet.Cells.CreateRange(currentRow, 0, pivot ? names.Length : 1, pivot ? 1 : names.Length).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
             }
 
             int column = 0;
@@ -199,8 +198,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
                 if (recordStyle != null)
                 {
-                    worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length)
-                        .ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
+                    worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length).ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
                 }
 
                 if (pivot)
@@ -236,7 +234,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             worksheet.Cells.ImportObjectArray(names, currentRow, 0, pivot);
             if (headerStyle != null)
             {
-                worksheet.Cells.CreateRange(currentRow, names.Length, pivot).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
+                worksheet.Cells.CreateRange(currentRow, 0, pivot ? names.Length : 1, pivot ? 1 : names.Length).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
             }
 
             if (pivot)
@@ -281,8 +279,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
             if (recordStyle != null)
             {
-                worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length)
-                    .ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
+                worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length).ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
             }
 
             if (pivot)
@@ -322,7 +319,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             worksheet.Cells[currentRow, 0].PutValue(heading);
             if (headerStyle != null)
             {
-                worksheet.Cells.CreateRange(currentRow, numberOfColumns, false).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
+                worksheet.Cells.CreateRange(currentRow, 0, 1, numberOfColumns).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
             }
 
             currentRow++;
