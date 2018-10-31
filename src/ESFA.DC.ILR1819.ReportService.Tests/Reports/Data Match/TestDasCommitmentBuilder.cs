@@ -10,7 +10,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Data_Match
 {
     public sealed class TestDasCommitmentBuilder
     {
+#if DEBUG
         [Fact]
+#endif
         public async Task TestDasCommitmentBuilderBuild()
         {
             List<DasCommitments> dasCommitments = new List<DasCommitments>

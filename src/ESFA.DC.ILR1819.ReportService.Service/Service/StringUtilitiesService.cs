@@ -31,5 +31,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 DateTimeStyles.None,
                 out var date) ? date : (DateTime?)null;
         }
+
+        public int TryGetInt(string value, int def)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return def;
+            }
+
+            if (!int.TryParse(value, out int res))
+            {
+                return def;
+            }
+
+            return res;
+        }
     }
 }

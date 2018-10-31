@@ -9,14 +9,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
         public AppsIndicativeEarningsMapper()
         {
             int i = 0;
-            Map(m => m.LearnerReferenceNumber).Index(i++).Name("Learner reference number");
+            Map(m => m.LearnRefNumber).Index(i++).Name("Learner reference number");
             Map(m => m.UniqueLearnerNumber).Index(i++).Name("Unique learner number");
             Map(m => m.DateOfBirth).Index(i++).Name("Date of birth");
             Map(m => m.PostcodePriorToEnrollment).Index(i++).Name("Postcode prior to enrolment");
             Map(m => m.CampusIdentifier).Index(i++).Name("Campus identifier");
             Map(m => m.ProviderSpecifiedLearnerMonitoringA).Index(i++).Name("Provider specified learner monitoring (A)");
             Map(m => m.ProviderSpecifiedLearnerMonitoringB).Index(i++).Name("Provider specified learner monitoring (B)");
-            Map(m => m.AimSequenceNumber).Index(i++).Name("Aim sequence number");
+            Map(m => m.AimSeqNumber).Index(i++).Name("Aim sequence number");
             Map(m => m.LearningAimReference).Index(i++).Name("Learning aim reference");
             Map(m => m.LearningAimTitle).Index(i++).Name("Learning aim title");
             Map(m => m.SoftwareSupplierAimIdentifier).Index(i++).Name("Software supplier aim identifier");

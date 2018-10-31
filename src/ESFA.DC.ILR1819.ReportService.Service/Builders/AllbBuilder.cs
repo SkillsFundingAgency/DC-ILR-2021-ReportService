@@ -108,11 +108,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 return;
             }
 
-            var albSupportPaymentObj =
+            LearnerPeriodisedValue albSupportPaymentObj =
                 albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
-            var albAreaUpliftOnProgPaymentObj =
+            LearnerPeriodisedValue albAreaUpliftOnProgPaymentObj =
                 albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
-            var albAreaUpliftBalPaymentObj =
+            LearnerPeriodisedValue albAreaUpliftBalPaymentObj =
                 albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
 
             fundingSummaryModelAlbFunding.Period1 =

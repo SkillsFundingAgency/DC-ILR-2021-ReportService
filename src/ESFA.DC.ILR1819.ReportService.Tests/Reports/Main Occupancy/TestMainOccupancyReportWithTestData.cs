@@ -28,7 +28,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Main_Occupancy
 {
     public sealed class TestMainOccupancyReportWithTestData
     {
+#if DEBUG
         [Fact]
+#endif
         public async Task TestMainOccupancyReportGeneration()
         {
             string csv = string.Empty;

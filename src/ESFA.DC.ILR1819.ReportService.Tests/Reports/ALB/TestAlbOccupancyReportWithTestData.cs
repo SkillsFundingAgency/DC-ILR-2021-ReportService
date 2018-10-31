@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Configuration;
+﻿using System.Configuration;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -32,9 +30,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
     public sealed class TestAlbOccupancyReportWithTestData
     {
 #if DEBUG
-        [Fact]
+        [Theory]
+        //[InlineData("ILR-10033670-1819-20181018-093353-03.xml", "ALB1.json", "ValidationValidLearners1.json")]
+        [InlineData("ILR-10033670-1819-20180909-090909-99.xml", "ALB2.json", "ValidationValidLearners2.json")]
 #endif
-        public async Task TestAllbOccupancyReportGeneration()
+        public async Task TestAllbOccupancyReportGeneration(string ilr, string alb, string validLearners)
         {
             string csv = string.Empty;
             System.DateTime dateTime = System.DateTime.UtcNow;
@@ -49,17 +49,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
-                .Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead(@"Reports\ALB\ILR-10033670-1819-20181018-093353-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
+                .Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($@"Reports\ALB\{ilr}").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(@"Reports\ALB\ALB1.json"));
-            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
-                new List<string>
-                {
-                    "4fm9901",
-                    "3fm9901",
-                    "5fm9901"
-                }));
+            redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText($@"Reports\ALB\{alb}"));
+            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText($@"Reports\ALB\{validLearners}"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
@@ -91,7 +85,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20181018-093353-03";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = ilr.Replace(".xml", string.Empty);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
 

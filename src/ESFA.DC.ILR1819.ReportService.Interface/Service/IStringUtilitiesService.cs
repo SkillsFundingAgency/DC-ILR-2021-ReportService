@@ -8,5 +8,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
         string JoinWithMaxLength(IEnumerable<string> list);
 
         DateTime? GetIlrFileDate(string ilrFilename);
+
+        int TryGetInt(string value, int def);
     }
 }

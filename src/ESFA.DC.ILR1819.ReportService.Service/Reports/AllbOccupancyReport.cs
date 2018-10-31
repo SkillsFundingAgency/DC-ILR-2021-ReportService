@@ -23,6 +23,7 @@ using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -150,17 +151,42 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         continue;
                     }
 
-                    var albLearningDelivery = albLearner?.LearningDeliveries
+                    LearningDelivery albLearningDelivery = albLearner?.LearningDeliveries
                         ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
-                    var albAttribs = albLearningDelivery?.LearningDeliveryValue;
-                    var albSupportPaymentObj =
+                    LearningDeliveryValue albAttribs = albLearningDelivery?.LearningDeliveryValue;
+                    LearningDeliveryPeriodisedValue albSupportPaymentObj =
                         albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
-                    var albAreaUpliftOnProgPaymentObj =
+                    LearningDeliveryPeriodisedValue albAreaUpliftOnProgPaymentObj =
                         albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
-                    var albAreaUpliftBalPaymentObj =
+                    LearningDeliveryPeriodisedValue albAreaUpliftBalPaymentObj =
                         albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
+                    ILearningDeliveryFAM[] alb = learningDelivery.LearningDeliveryFAMs?.Where(x => x.LearnDelFAMType == "ALB").ToArray();
 
-                    var alb = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == "ALB");
+                    string albBursaryFunding = "0", albDateFrom = "NA", albDateTo = "NA";
+                    if (alb != null && alb.Any())
+                    {
+                        albBursaryFunding = alb.Max(x => _stringUtilitiesService.TryGetInt(x.LearnDelFAMCode, 0)).ToString();
+                        DateTime albDateFromDt = alb.Min(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue);
+                        DateTime albDateToDt = alb.Max(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue);
+
+                        if (albDateFromDt == DateTime.MinValue)
+                        {
+                            albDateFrom = "NA";
+                        }
+                        else
+                        {
+                            albDateFrom = albDateFromDt.ToString("dd/MM/yyyy");
+                        }
+
+                        if (albDateToDt == DateTime.MinValue)
+                        {
+                            albDateTo = "NA";
+                        }
+                        else
+                        {
+                            albDateTo = albDateToDt.ToString("dd/MM/yyyy");
+                        }
+                    }
 
                     models.Add(new AllbOccupancyModel
                     {
@@ -192,9 +218,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         LearnActEndDate = learningDelivery.LearnActEndDateNullable?.ToString("dd/MM/yyyy"),
                         Outcome = learningDelivery.OutcomeNullable,
                         LearnDelFamCodeAdl = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == "ADL")?.LearnDelFAMCode,
-                        AlbBursaryFunding = alb?.LearnDelFAMCode,
-                        AlbDateFrom = alb?.LearnDelFAMDateFromNullable?.ToString("dd/MM/yyyy"),
-                        AlbDateTo = alb?.LearnDelFAMDateToNullable?.ToString("dd/MM/yyyy"),
+                        AlbBursaryFunding = albBursaryFunding,
+                        AlbDateFrom = albDateFrom,
+                        AlbDateTo = albDateTo,
                         LearnDelMonA = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == "LDM1")?.LearnDelFAMCode,
                         LearnDelMonB = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == "LDM2")?.LearnDelFAMCode,
                         LearnDelMonC = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == "LDM3")?.LearnDelFAMCode,

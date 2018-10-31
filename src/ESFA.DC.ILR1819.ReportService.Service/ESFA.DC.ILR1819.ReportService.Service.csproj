@@ -302,6 +302,7 @@
     <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeOctoberCommand.cs" />
     <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeSeptemberCommand.cs" />
     <Compile Include="Comparer\AllbOccupancyModelComparer.cs" />
+    <Compile Include="Comparer\AppsIndicativeEarningsModelComparer.cs" />
     <Compile Include="Comparer\DasCommitmentsComparer.cs" />
     <Compile Include="Comparer\DataMatchModelComparer.cs" />
     <Compile Include="Comparer\MainOccupancyFM25ModelComparer.cs" />

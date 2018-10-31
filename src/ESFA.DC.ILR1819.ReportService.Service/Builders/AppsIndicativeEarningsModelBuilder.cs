@@ -37,16 +37,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
             var model = new AppsIndicativeEarningsModel
             {
-                LearnerReferenceNumber = learner.LearnRefNumber,
+                LearnRefNumber = learner.LearnRefNumber,
                 UniqueLearnerNumber = learner.ULN,
-                DateOfBirth = learner.DateOfBirthNullable,
+                DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
                 PostcodePriorToEnrollment = learner.PostcodePrior,
                 CampusIdentifier = learner.CampId,
                 ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
                 ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings
                     ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
-                AimSequenceNumber = learningDelivery.AimSeqNumber,
+                AimSeqNumber = learningDelivery.AimSeqNumber,
                 LearningAimReference = learningDelivery.LearnAimRef,
                 LearningAimTitle = larsLearningDelivery?.LearningAimTitle,
                 SoftwareSupplierAimIdentifier = learningDelivery.SWSupAimId,
@@ -62,11 +62,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 AimType = learningDelivery.AimType,
                 CommonComponentCode = larsLearningDelivery?.FrameworkCommonComponent,
                 FundingModel = learningDelivery.FundModel,
-                OriginalLearningStartDate = learningDelivery.OrigLearnStartDateNullable,
-                LearningStartDate = learningDelivery.LearnStartDate,
-                LearningPlannedEndDate = learningDelivery.LearnPlanEndDate,
+                OriginalLearningStartDate = learningDelivery.OrigLearnStartDateNullable?.ToString("dd/MM/yyyy"),
+                LearningStartDate = learningDelivery.LearnStartDate.ToString("dd/MM/yyyy"),
+                LearningPlannedEndDate = learningDelivery.LearnPlanEndDate.ToString("dd/MM/yyyy"),
                 CompletionStatus = learningDelivery.CompStatus,
-                LearningActualEndDate = learningDelivery.LearnActEndDateNullable,
+                LearningActualEndDate = learningDelivery.LearnActEndDateNullable?.ToString("dd/MM/yyyy"),
                 Outcome = learningDelivery.OutcomeNullable,
                 FundingAdjustmentForPriorLearning = learningDelivery.PriorLearnFundAdjNullable,
                 OtherFundingAdjustment = learningDelivery.OtherFundAdjNullable,
@@ -74,10 +74,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLSF)?.LearnDelFAMCode,
                 LearningDeliveryFAMTypeLSFDateAppliesFrom = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLSF)
-                    ?.LearnDelFAMDateFromNullable,
+                    ?.LearnDelFAMDateFromNullable?.ToString("dd/MM/yyyy"),
                 LearningDeliveryFAMTypeLSFDateAppliesTo = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLSF)
-                    ?.LearnDelFAMDateToNullable,
+                    ?.LearnDelFAMDateToNullable?.ToString("dd/MM/yyyy"),
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringA = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM1)?.LearnDelFAMCode,
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringB = learningDelivery.LearningDeliveryFAMs
@@ -104,11 +104,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 EmployerIdentifier = employmentStatus?.EmpIdNullable,
                 AgreementIdentifier = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeAgreeId,
                 EmploymentStatus = employmentStatus?.EmpStat,
-                EmploymentStatusDate = employmentStatus?.DateEmpStatApp,
+                EmploymentStatusDate = employmentStatus?.DateEmpStatApp.ToString("dd/MM/yyyy"),
                 EmpStatusMonitoringSmallEmployer = employmentStatus?.EmploymentStatusMonitorings
                     ?.SingleOrDefault(x => x.ESMType == Constants.EmploymentStatusMonitoringTypeSEM)?.ESMCode,
-                PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate,
-                PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeActualEndDate,
+                PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate?.ToString("dd/MM/yyyy"),
+                PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeActualEndDate?.ToString("dd/MM/yyyy"),
                 FundingLineType = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false
                     ? fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelInitialFundLineType
                     : fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeFundLineType,
@@ -200,8 +200,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                               x.LearnDelFAMDateToNullable)))
                 .Min(x => x.LearnDelFAMDateFromNullable);
 
-            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom;
-            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo;
+            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom?.ToString("dd/MM/yyyy");
+            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo?.ToString("dd/MM/yyyy");
 
             model.LearningDeliveryFAMTypeApprenticeshipContractType = learningDelivery.LearningDeliveryFAMs
                 ?.FirstOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&

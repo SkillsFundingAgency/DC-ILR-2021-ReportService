@@ -18,6 +18,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -28,6 +29,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class AppsIndicativeEarningsReport : AbstractReportBuilder, IReport
     {
+        private static readonly AppsIndicativeEarningsModelComparer AppsIndicativeEarningsModelComparer = new AppsIndicativeEarningsModelComparer();
+
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
@@ -170,6 +173,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                             false));
                 }
             }
+
+            appsIndicativeEarningsModels.Sort(AppsIndicativeEarningsModelComparer);
 
             if (ilrError.Any())
             {
