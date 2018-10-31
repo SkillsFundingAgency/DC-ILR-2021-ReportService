@@ -58,7 +58,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 _loadedDataAlready = true;
 
-                var dasCommitments = new List<DasCommitments>();
+                List<DasCommitments> dasCommitments = new List<DasCommitments>();
 
                 DbContextOptions<DAS_commitmentsRefContext> options = new DbContextOptionsBuilder<DAS_commitmentsRefContext>().UseSqlServer(_dasCommitmentsConfiguration.DasCommitmentsConnectionString).Options;
 

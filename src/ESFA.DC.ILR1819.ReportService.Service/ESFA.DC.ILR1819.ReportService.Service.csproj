@@ -304,6 +304,8 @@
     <Compile Include="Comparer\AllbOccupancyModelComparer.cs" />
     <Compile Include="Comparer\DasCommitmentsComparer.cs" />
     <Compile Include="Comparer\DataMatchModelComparer.cs" />
+    <Compile Include="Comparer\MainOccupancyFM25ModelComparer.cs" />
+    <Compile Include="Comparer\MainOccupancyFM35ModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
     <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
     <Compile Include="Constants.cs" />

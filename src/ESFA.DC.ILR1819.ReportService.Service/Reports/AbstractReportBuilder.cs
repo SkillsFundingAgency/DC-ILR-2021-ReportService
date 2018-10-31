@@ -104,7 +104,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             string[] values = new string[names.Length];
             for (int i = 0; i < names.Length; i++)
             {
-                values[i] = names[i].MethodInfo.GetValue(record)?.ToString();
+                object value = GetFormattedValue(names[i].MethodInfo.GetValue(record));
+                values[i] = value?.ToString();
             }
 
             WriteCsvRecords(csvWriter, values);
@@ -192,7 +193,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 for (int i = 0; i < names.Length; i++)
                 {
-                    values[i] = names[i].MethodInfo.GetValue(record);
+                    values[i] = GetFormattedValue(names[i].MethodInfo.GetValue(record));
                 }
 
                 worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
@@ -273,7 +274,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             object[] values = new object[names.Length];
             for (int i = 0; i < names.Length; i++)
             {
-                values[i] = names[i].MethodInfo.GetValue(record);
+                values[i] = GetFormattedValue(names[i].MethodInfo.GetValue(record));
             }
 
             worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
@@ -383,6 +384,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private void SetCurrentRow(Worksheet worksheet, int currentRow)
         {
             _currentRow[worksheet] = currentRow;
+        }
+
+        private object GetFormattedValue(object value)
+        {
+            if (value == null)
+            {
+                return null;
+            }
+
+            if (value is decimal d1)
+            {
+                value = decimal.Round(d1, 2);
+            }
+            else if (IsOfNullableType<decimal>(value))
+            {
+                decimal? d = (decimal?)value;
+                value = decimal.Round(d.Value, 2);
+            }
+
+            return value;
+        }
+
+        private bool IsOfNullableType<T>(object o)
+        {
+            return Nullable.GetUnderlyingType(o.GetType()) != null && o is T;
         }
     }
 }

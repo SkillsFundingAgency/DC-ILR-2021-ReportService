@@ -58,6 +58,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.LiabilityDate).Index(41).Name("First liability date");
             Map(m => m.PlannedNumOnProgInstalm).Index(42).Name("Planned number of instalments");
             Map(m => m.ApplicFactDate).Index(43).Name("Date used for factor lookups");
+
             Map(m => m.Period1AlbCode).Index(44).Name("August ALB code used");
             Map(m => m.Period1AlbPayment).Index(45).Name("August ALB support payment earned cash");
             Map(m => m.Period1AlbOnProgPayment).Index(46).Name("August loans bursary for area costs on programme earned cash");

@@ -59,5 +59,8 @@
         public decimal? Total { get; set; }
 
         public string OfficalSensitive { get; }
+
+        // For sorting only
+        public int AimSeqNumber { get; set; }
     }
 }

@@ -323,12 +323,14 @@
     <Compile Include="Models\XlsxEntry.cs" />
     <Compile Include="Reports\ALB\TestAlbOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\Data Match\TestDasCommitmentBuilder.cs" />
+    <Compile Include="Reports\Main Occupancy\TestMainOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\TestDataMatchReport.cs" />
     <Compile Include="Reports\TestMainOccupancyReport.cs" />
     <Compile Include="Reports\TestAppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
     <Compile Include="Reports\TestSummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\TestSummaryOfFunding1619Report.cs" />
+    <Compile Include="Service\DasCommitmentsServiceTest.cs" />
     <Compile Include="Service\PeriodProviderServiceTest.cs" />
     <Compile Include="Reports\TestAllbOccupancyReport.cs" />
     <Compile Include="AutoFac\TestConfigurationHelper.cs" />
@@ -337,6 +339,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Reports\Main Occupancy\ILR-10033670-1819-20181030-101919-07.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="ALBOutput1000.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -360,6 +365,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="Reports\ALB\Alb1.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\Main Occupancy\FundingFm35Output_FM35TNP13.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="ValidationErrors.json">
@@ -413,6 +421,7 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

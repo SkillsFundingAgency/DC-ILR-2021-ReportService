@@ -264,6 +264,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             {
                 LearnRefNumber = learner.LearnRefNumber,
                 Uln = learner.ULN,
+                AimSeqNumber = learningDelivery.AimSeqNumber,
                 DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
                 PostcodePrior = learner.PostcodePrior,
                 PmUkprn = learner.PMUKPRNNullable,
