@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Aspose.Cells;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.EAS1819.EF;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
@@ -63,6 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly ITotalBuilder _totalBuilder;
         private readonly IVersionInfo _versionInfo;
         private readonly IExcelStyleProvider _excelStyleProvider;
+        private readonly IEasBuilder _easBuilder;
 
         public FundingSummaryReport(
             ILogger logger,
@@ -90,7 +92,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ITotalBuilder totalBuilder,
             IVersionInfo versionInfo,
             IExcelStyleProvider excelStyleProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            IEasBuilder easBuilder)
             : base(dateTimeProvider)
         {
             _logger = logger;
@@ -118,6 +121,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _versionInfo = versionInfo;
             _excelStyleProvider = excelStyleProvider;
             _dateTimeProvider = dateTimeProvider;
+            _easBuilder = easBuilder;
 
             ReportFileName = "Funding Summary Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;
@@ -139,7 +143,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
 
-            await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, periodTask);
+            Task<List<EasSubmissionValues>> easSubmissionsValuesTask =
+                _easProviderService.GetEasSubmissionValuesAsync(jobContextMessage, cancellationToken);
+
+            await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, periodTask, easSubmissionsValuesTask);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -158,6 +165,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel traineeships1924 = _fm25Builder.BuildWithFundLine("ILR 19-24 Traineeships (16-19 Model) Programme Funding (£)", fm25Task.Result, validLearnersTask.Result, "19+ Traineeships (Adult Funded)", periodTask.Result);
             fundingSummaryModels.Add(traineeships1924);
             FundingSummaryModel ilrTraineeshipsTotal = _totalBuilder.TotalRecords("ILR Total 16-18 Traineeships (£)", traineeships1618, traineeships1924);
+
             FundingSummaryModel easTraineeshipsTotal = new FundingSummaryModel(); // Todo: EAS
             if (!isFis)
             {
@@ -166,6 +174,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 fundingSummaryModels.Add(ilrTraineeshipsTotal);
 
                 // Todo: EAS
+                FundingSummaryModel eas1618TraineeshipsAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Traineeships Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Traineeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618TraineeshipsAuditAdjustments);
+
+                FundingSummaryModel eas1618TraineeshipsAuthorisedClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Traineeships Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Traineeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618TraineeshipsAuthorisedClaims);
+
+                FundingSummaryModel eas1618TraineeshipsExcessLearningSupport = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Traineeships Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 16-18 Traineeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618TraineeshipsExcessLearningSupport);
+
+                FundingSummaryModel eas1619TraineeshipsVulStudentBursery = _easBuilder.BuildWithEasSubValueLine("EAS 16-19 Traineeships Bursary Vulnerable Student Bursary (£)", easSubmissionsValuesTask.Result, "Vulnerable Bursary: 16-19 Traineeships Bursary", periodTask.Result);
+                fundingSummaryModels.Add(eas1619TraineeshipsVulStudentBursery);
+
+                FundingSummaryModel eas1619TraineeshipsFreeMealsBursery = _easBuilder.BuildWithEasSubValueLine("EAS 16-19 Traineeships Bursary Free Meals (£)", easSubmissionsValuesTask.Result, "Free Meals: 16-19 Traineeships Bursary", periodTask.Result);
+                fundingSummaryModels.Add(eas1619TraineeshipsFreeMealsBursery);
+
+                FundingSummaryModel eas1619TraineeshipsDiscretionaryBursary = _easBuilder.BuildWithEasSubValueLine("EAS 16-19 Traineeships Bursary Discretionary Bursary (£)", easSubmissionsValuesTask.Result, "Discretionary Bursary: 16-19 Traineeships Bursary", periodTask.Result);
+                fundingSummaryModels.Add(eas1619TraineeshipsDiscretionaryBursary);
+
+                easTraineeshipsTotal = _totalBuilder.TotalRecords("EAS Total 16-18 Traineeships Earnings Adjustment (£)", eas1618TraineeshipsAuditAdjustments, eas1618TraineeshipsAuthorisedClaims, eas1618TraineeshipsExcessLearningSupport, eas1619TraineeshipsVulStudentBursery, eas1619TraineeshipsFreeMealsBursery, eas1619TraineeshipsDiscretionaryBursary);
             }
 
             FundingSummaryModel traineeshipsTotal = _totalBuilder.TotalRecords("Total 16-18 Traineeships (£)", ilrTraineeshipsTotal, easTraineeshipsTotal);

@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                     return (T)(object)new EasConfiguration
                     {
                         EasConnectionString =
-                            "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
+                            "data source=DCT-GP-DEV\\SQLEXPRESS;initial catalog=Easdb;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90;"
                     };
                 case "LargeEmployerSection":
                     return (T)(object)new LargeEmployerConfiguration

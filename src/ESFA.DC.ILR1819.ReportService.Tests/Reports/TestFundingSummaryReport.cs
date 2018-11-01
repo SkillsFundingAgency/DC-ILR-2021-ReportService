@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.EAS1819.EF;
+using ESFA.DC.EAS1819.EF.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
+using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -45,8 +50,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
             Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
-            Mock<IEasProviderService> easProviderServiceMock = new Mock<IEasProviderService>();
-            Mock<IPostcodeProviderService> postcodeProverServiceMock = new Mock<IPostcodeProviderService>();
+
+            EasConfiguration easConfiguration = new EasConfiguration() { EasConnectionString = new TestConfigurationHelper().GetSectionValues<EasConfiguration>("EasSection").EasConnectionString };
+            IEasProviderService easProviderService = new EasProviderService(logger.Object, easConfiguration);
+
+            Mock <IPostcodeProviderService> postcodeProverServiceMock = new Mock<IPostcodeProviderService>();
             Mock<ILargeEmployerProviderService> largeEmployerProviderService = new Mock<ILargeEmployerProviderService>();
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
@@ -65,6 +73,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IFm81Builder fm81Builder = new Fm81Builder(totalBuilder, new CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>());
             IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, periodProviderService.Object, stringUtilitiesService, logger.Object);
             IExcelStyleProvider excelStyleProvider = new ExcelStyleProvider();
+
+            IEasBuilder easBuilder = new EasBuilder(easProviderService);
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ILR-10033670-1819-20180704-120055-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -91,8 +101,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             periodProviderService.Setup(x => x.GetPeriod(It.IsAny<IJobContextMessage>(), It.IsAny<CancellationToken>())).ReturnsAsync(12);
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
-            easProviderServiceMock.Setup(x => x.GetLastEasUpdate(It.IsAny<int>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync(DateTime.MinValue);
+            //easProviderServiceMock.Setup(x => x.GetLastEasUpdate(It.IsAny<int>(), It.IsAny<CancellationToken>()))
+            //    .ReturnsAsync(DateTime.MinValue);
             largeEmployerProviderService.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync("NA");
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
@@ -117,7 +127,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 periodProviderService.Object,
                 dateTimeProviderMock.Object,
                 larsProviderService.Object,
-                easProviderServiceMock.Object,
+                easProviderService,
                 postcodeProverServiceMock.Object,
                 largeEmployerProviderService.Object,
                 allbBuilder,
@@ -128,7 +138,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 totalBuilder,
                 versionInfo,
                 excelStyleProvider,
-                topicsAndTasks);
+                topicsAndTasks,
+                easBuilder);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
 

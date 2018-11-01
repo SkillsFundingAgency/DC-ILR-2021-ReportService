@@ -326,6 +326,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerDependency();
             containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>()
                 .InstancePerDependency();
+
+            containerBuilder.RegisterType<EasProviderService>().As<IEasProviderService>()
+                .InstancePerLifetimeScope();
         }
 
         private static void RegisterBuilders(ContainerBuilder containerBuilder)
@@ -346,6 +349,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<Fm81Builder>().As<IFm81Builder>().SingleInstance();
             containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>().SingleInstance();
+            containerBuilder.RegisterType<EasBuilder>().As<IEasBuilder>().SingleInstance();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)
