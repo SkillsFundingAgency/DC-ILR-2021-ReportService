@@ -115,118 +115,74 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         }
 
         [Fact]
-        public async Task TestMathsAndEnglishComparer_VerifyConditionsOfFundingEnglish()
+        public async Task TestMathsAndEnglishComparer_ShouldSortModels_VerifyFundLineType()
         {
             List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
             {
                 new MathsAndEnglishModel()
                 {
                     LearnRefNumber = "321",
-                    ConditionOfFundingEnglish = "B",
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
                     RateBand = "A"
                 },
                 new MathsAndEnglishModel()
                 {
+                    LearnRefNumber = "123",
+                    FundLine = "19-24 Students with an EHCP",
+                    RateBand = "B"
+                },
+                new MathsAndEnglishModel()
+                {
                     LearnRefNumber = "321",
-                    ConditionOfFundingEnglish = "A",
+                    FundLine = "16-19 Students (excluding High Needs Students)",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    FundLine = "14-16 Direct Funded Students",
                     RateBand = "B"
                 }
             };
 
             mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
-            Assert.Equal("A", mathsAndEnglishModels[0].ConditionOfFundingEnglish);
+            Assert.Equal("14-16 Direct Funded Students", mathsAndEnglishModels[0].FundLine);
         }
 
         [Fact]
-        public async Task TestMathsAndEnglishComparer_VerifyConditionsOfFundingMaths()
+        public async Task TestMathsAndEnglishComparer_ShouldSortModels_VerifySortOrder()
         {
             List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
             {
                 new MathsAndEnglishModel()
                 {
                     LearnRefNumber = "321",
-                    ConditionOfFundingMaths = "B",
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
                     RateBand = "A"
                 },
                 new MathsAndEnglishModel()
                 {
+                    LearnRefNumber = "123",
+                    FundLine = "19-24 Students with an EHCP",
+                    RateBand = "B"
+                },
+                new MathsAndEnglishModel()
+                {
                     LearnRefNumber = "321",
-                    ConditionOfFundingMaths = "A",
+                    FundLine = "19-24 Students with an EHCP",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
                     RateBand = "B"
                 }
             };
 
             mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
-            Assert.Equal("A", mathsAndEnglishModels[0].ConditionOfFundingMaths);
-        }
-
-        [Fact]
-        public async Task TestMathsAndEnglishComparer_VerifyProvSpecLearnMonA()
-        {
-            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
-            {
-                new MathsAndEnglishModel()
-                {
-                    LearnRefNumber = "321",
-                    ProvSpecLearnMonA = "B",
-                    RateBand = "A"
-                },
-                new MathsAndEnglishModel()
-                {
-                    LearnRefNumber = "321",
-                    ProvSpecLearnMonA = "A",
-                    RateBand = "B"
-                }
-            };
-
-            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
-            Assert.Equal("A", mathsAndEnglishModels[0].ProvSpecLearnMonA);
-        }
-
-        [Fact]
-        public async Task TestMathsAndEnglishComparer_VerifyProvSpecLearnMonB()
-        {
-            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
-            {
-                new MathsAndEnglishModel()
-                {
-                    LearnRefNumber = "321",
-                    ProvSpecLearnMonB = "B",
-                    RateBand = "A"
-                },
-                new MathsAndEnglishModel()
-                {
-                    LearnRefNumber = "321",
-                    ProvSpecLearnMonB = "A",
-                    RateBand = "B"
-                }
-            };
-
-            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
-            Assert.Equal("A", mathsAndEnglishModels[0].ProvSpecLearnMonB);
-        }
-
-        [Fact]
-        public async Task TestMathsAndEnglishComparer_VerifyLearnsStartDate()
-        {
-            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
-            {
-                new MathsAndEnglishModel()
-                {
-                    LearnRefNumber = "321",
-                    LearnerStartDate = DateTime.Today.Date.AddDays(2),
-                    RateBand = "A"
-                },
-                new MathsAndEnglishModel()
-                {
-                    LearnRefNumber = "321",
-                    LearnerStartDate = DateTime.Today,
-                    RateBand = "B"
-                }
-            };
-
-            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
-            Assert.Equal(DateTime.Today, mathsAndEnglishModels[0].LearnerStartDate);
+            Assert.Equal("19-24 Students with an EHCP", mathsAndEnglishModels[0].FundLine);
+            Assert.Equal("123", mathsAndEnglishModels[0].LearnRefNumber);
         }
     }
 }
