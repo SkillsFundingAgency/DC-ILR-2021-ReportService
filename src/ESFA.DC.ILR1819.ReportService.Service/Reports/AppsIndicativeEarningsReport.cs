@@ -8,7 +8,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using CsvHelper;
-using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
@@ -24,6 +23,7 @@ using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using LearningDelivery = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -50,8 +50,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStringUtilitiesService stringUtilitiesService,
             IAppsIndicativeEarningsModelBuilder modelBuilder,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -68,10 +69,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            long jobId = jobContextMessage.JobId;
+            string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            string externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            string fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
             string csv = await GetCsv(jobContextMessage, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
@@ -80,9 +81,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
-            var firstOfAugust = new DateTime(2018, 8, 1);
-            var endOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
-
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
             Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
@@ -94,49 +92,65 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return null;
             }
 
-            var validLearners = validLearnersTask.Result;
-            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveries(validLearners.ToArray(), cancellationToken);
+            List<AppsIndicativeEarningsModel> appsIndicativeEarningsModels = new List<AppsIndicativeEarningsModel>();
 
-            var ilrError = new List<string>();
-
-            var appsIndicativeEarningsModels = new List<AppsIndicativeEarningsModel>();
-            foreach (string validLearnerRefNum in validLearners)
+            if (ilrFileTask.Result?.Learners != null)
             {
-                var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-                var larsDelivery = larsLearningDeliveries.SingleOrDefault(x => x.Key == validLearnerRefNum).Value;
-                var fm36Learner = fm36Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                await GenerateRowsAsync(ilrFileTask.Result, fm36Task.Result, validLearnersTask.Result, appsIndicativeEarningsModels, cancellationToken);
+            }
 
-                if (learner == null)
+            using (var ms = new MemoryStream())
+            {
+                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
+                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
                 {
-                    ilrError.Add(validLearnerRefNum);
-                    continue;
+                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                    {
+                        WriteCsvRecords<AppsIndicativeEarningsMapper, AppsIndicativeEarningsModel>(csvWriter, appsIndicativeEarningsModels);
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
                 }
+            }
+        }
 
-                foreach (var learningDelivery in learner.LearningDeliveries)
+        private async Task GenerateRowsAsync(IMessage ilrFile, FM36Global fm36Data, List<string> validLearners, List<AppsIndicativeEarningsModel> appsIndicativeEarningsModels, CancellationToken cancellationToken)
+        {
+            ILearner[] learners = ilrFile.Learners.Where(x => validLearners.Contains(x.LearnRefNumber)).ToArray();
+            string[] learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
+            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
+
+            foreach (ILearner learner in learners)
+            {
+                LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => x.Key == learner.LearnRefNumber).Value;
+                FM36Learner fm36Learner = fm36Data?.Learners?.SingleOrDefault(x => x.LearnRefNumber == learner.LearnRefNumber);
+
+                foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
-                    LARS_Standard larsStandard = learningDelivery.StdCodeNullable == null
-                        ? null
-                        : await _larsProviderService.GetStandard(
-                            learningDelivery.StdCodeNullable ?? 0,
+                    string larsStandard = null;
+                    if (learningDelivery.StdCodeNullable != null)
+                    {
+                        larsStandard = await _larsProviderService.GetStandardAsync(
+                            learningDelivery.StdCodeNullable.Value,
                             cancellationToken);
+                    }
 
-                    var fm36LearningDelivery = fm36Learner?.LearningDeliveries
+                    LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries
                         ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
 
                     if (fm36Learner?.PriceEpisodes.Any() ?? false)
                     {
-                        var episodesInRange = fm36Learner.PriceEpisodes
-                            .Where(p => p.PriceEpisodeValues.EpisodeStartDate >= firstOfAugust &&
-                                        p.PriceEpisodeValues.EpisodeStartDate <= endOfYear).ToList();
+                        List<PriceEpisode> episodesInRange = fm36Learner.PriceEpisodes
+                            .Where(p => p.PriceEpisodeValues.EpisodeStartDate >= Constants.FirstOfAugust &&
+                                        p.PriceEpisodeValues.EpisodeStartDate <= Constants.EndOfYear).ToList();
 
                         if (episodesInRange.Any())
                         {
-                            var earliestEpisodeDate =
-                                episodesInRange.Min(x =>
-                                    x.PriceEpisodeValues.EpisodeStartDate);
+                            DateTime earliestEpisodeDate = episodesInRange.Select(x => x.PriceEpisodeValues.EpisodeStartDate ?? DateTime.MaxValue).Min();
 
-                            var earliestEpisode = false;
-                            foreach (var episodeAttribute in episodesInRange)
+                            bool earliestEpisode = false;
+                            foreach (PriceEpisode episodeAttribute in episodesInRange)
                             {
                                 if (episodeAttribute.PriceEpisodeValues.EpisodeStartDate == earliestEpisodeDate)
                                 {
@@ -175,26 +189,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             appsIndicativeEarningsModels.Sort(AppsIndicativeEarningsModelComparer);
-
-            if (ilrError.Any())
-            {
-                _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(AppsIndicativeEarningsReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
-            }
-
-            using (var ms = new MemoryStream())
-            {
-                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
-                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
-                {
-                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                    {
-                        WriteCsvRecords<AppsIndicativeEarningsMapper, AppsIndicativeEarningsModel>(csvWriter, appsIndicativeEarningsModels);
-                        csvWriter.Flush();
-                        textWriter.Flush();
-                        return Encoding.UTF8.GetString(ms.ToArray());
-                    }
-                }
-            }
         }
     }
 }

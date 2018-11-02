@@ -326,6 +326,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerDependency();
             containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>()
                 .InstancePerDependency();
+
+            containerBuilder.RegisterType<ValueProvider>().As<IValueProvider>().SingleInstance();
         }
 
         private static void RegisterBuilders(ContainerBuilder containerBuilder)

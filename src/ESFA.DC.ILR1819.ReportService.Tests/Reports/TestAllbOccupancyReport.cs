@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
-            larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<string[]>(), It.IsAny<CancellationToken>()))
+            larsProviderService.Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Dictionary<string, LarsLearningDelivery>()
                 {
                     { "60133533", new LarsLearningDelivery { LearningAimTitle = "A", NotionalNvqLevel = "B", Tier2SectorSubjectArea = 3 } }
@@ -74,6 +74,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
+            IValueProvider valueProvider = new ValueProvider();
+
             IReport allbOccupancyReport = new AllbOccupancyReport(
                 logger.Object,
                 storage.Object,
@@ -83,6 +85,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 validLearnersService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -22,6 +23,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         private readonly IValidLearnersService _validLearnersService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly IPeriodProviderService _periodProviderService;
+        private readonly ITotalBuilder _totalBuilder;
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly ILogger _logger;
 
@@ -30,6 +32,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             IValidLearnersService validLearnersService,
             IAllbProviderService allbProviderService,
             IPeriodProviderService periodProviderService,
+            ITotalBuilder totalBuilder,
             IStringUtilitiesService stringUtilitiesService,
             ILogger logger)
         {
@@ -37,6 +40,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             _validLearnersService = validLearnersService;
             _allbProviderService = allbProviderService;
             _periodProviderService = periodProviderService;
+            _totalBuilder = totalBuilder;
             _stringUtilitiesService = stringUtilitiesService;
             _logger = logger;
         }
@@ -59,24 +63,34 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 fundingSummaryModelAlbAreaCosts
             };
 
-            IMessage ilrFile = await _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            List<string> validLearners = await _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            ALBGlobal albData = await _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            int period = await _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFile = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<List<string>> validLearners = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+            Task<ALBGlobal> albData = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
+            Task<int> period = _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
+
+            await Task.WhenAll(ilrFile, validLearners, albData, period);
 
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
 
-            foreach (string validLearnerRefNum in validLearners)
+            foreach (string validLearnerRefNum in validLearners.Result)
             {
-                var learner = ilrFile?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var learner = ilrFile?.Result.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
                 if (learner == null)
                 {
                     ilrError.Add(validLearnerRefNum);
                     continue;
                 }
 
-                TotalAlb(albData, validLearnerRefNum, albLearnerError, fundingSummaryModelAlbFunding, period, fundingSummaryModelAlbAreaCosts);
+                ALBLearner albLearner =
+                    albData?.Result.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                if (albLearner == null)
+                {
+                    albLearnerError.Add(validLearnerRefNum);
+                    continue;
+                }
+
+                TotalAlb(albLearner, fundingSummaryModelAlbFunding, period.Result, fundingSummaryModelAlbAreaCosts);
             }
 
             if (ilrError.Any())
@@ -93,21 +107,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         }
 
         private void TotalAlb(
-            ALBGlobal albData,
-            string validLearnerRefNum,
-            List<string> albLearnerError,
+            ALBLearner albLearner,
             FundingSummaryModel fundingSummaryModelAlbFunding,
             int period,
             FundingSummaryModel fundingSummaryModelAlbAreaCosts)
         {
-            ALBLearner albLearner =
-                albData?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-            if (albLearner == null)
-            {
-                albLearnerError.Add(validLearnerRefNum);
-                return;
-            }
-
             LearnerPeriodisedValue albSupportPaymentObj =
                 albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
             LearnerPeriodisedValue albAreaUpliftOnProgPaymentObj =
@@ -140,25 +144,29 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             fundingSummaryModelAlbFunding.Period12 =
                 fundingSummaryModelAlbFunding.Period12 + albSupportPaymentObj?.Period12 ?? 0;
             fundingSummaryModelAlbFunding.Period1_8 =
-                fundingSummaryModelAlbFunding.Period1_8 + (albSupportPaymentObj?.Period1 ?? 0) +
-                (albSupportPaymentObj?.Period2 ?? 0) +
-                (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) +
-                (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) +
-                (albSupportPaymentObj?.Period7 ?? 0) + (albSupportPaymentObj?.Period8 ?? 0);
+                _totalBuilder.TotalRecords(
+                    fundingSummaryModelAlbFunding.Period1_8,
+                    fundingSummaryModelAlbFunding.Period1,
+                    fundingSummaryModelAlbFunding.Period2,
+                    fundingSummaryModelAlbFunding.Period3,
+                    fundingSummaryModelAlbFunding.Period4,
+                    fundingSummaryModelAlbFunding.Period5,
+                    fundingSummaryModelAlbFunding.Period6,
+                    fundingSummaryModelAlbFunding.Period7,
+                    fundingSummaryModelAlbFunding.Period8);
             fundingSummaryModelAlbFunding.Period9_12 =
-                fundingSummaryModelAlbFunding.Period9_12 + (albSupportPaymentObj?.Period9 ?? 0) +
-                (albSupportPaymentObj?.Period10 ?? 0) +
-                (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0);
+                _totalBuilder.TotalRecords(
+                    fundingSummaryModelAlbFunding.Period9_12,
+                    fundingSummaryModelAlbFunding.Period9,
+                    fundingSummaryModelAlbFunding.Period10,
+                    fundingSummaryModelAlbFunding.Period11,
+                    fundingSummaryModelAlbFunding.Period12);
             fundingSummaryModelAlbFunding.YearToDate = fundingSummaryModelAlbFunding.YearToDate +
                                                        GetYearToDateTotal(albSupportPaymentObj, period);
-            fundingSummaryModelAlbFunding.Total =
-                fundingSummaryModelAlbFunding.Total + (albSupportPaymentObj?.Period1 ?? 0) +
-                (albSupportPaymentObj?.Period2 ?? 0) +
-                (albSupportPaymentObj?.Period3 ?? 0) + (albSupportPaymentObj?.Period4 ?? 0) +
-                (albSupportPaymentObj?.Period5 ?? 0) + (albSupportPaymentObj?.Period6 ?? 0) +
-                (albSupportPaymentObj?.Period7 ?? 0) + (albSupportPaymentObj?.Period8 ?? 0) +
-                (albSupportPaymentObj?.Period9 ?? 0) + (albSupportPaymentObj?.Period10 ?? 0) +
-                (albSupportPaymentObj?.Period11 ?? 0) + (albSupportPaymentObj?.Period12 ?? 0);
+            fundingSummaryModelAlbFunding.Total = _totalBuilder.TotalRecords(
+                fundingSummaryModelAlbFunding.Total,
+                fundingSummaryModelAlbFunding.Period1_8,
+                fundingSummaryModelAlbFunding.Period9_12);
 
             fundingSummaryModelAlbAreaCosts.Period1 = fundingSummaryModelAlbAreaCosts.Period1 +
                                                       (albAreaUpliftBalPaymentObj?.Period1 ?? 0) +
@@ -196,38 +204,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             fundingSummaryModelAlbAreaCosts.Period12 = fundingSummaryModelAlbAreaCosts.Period12 +
                                                        (albAreaUpliftBalPaymentObj?.Period12 ?? 0) +
                                                        (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period9_12 =
-                fundingSummaryModelAlbAreaCosts.Period9_12 + (albAreaUpliftBalPaymentObj?.Period9 ?? 0) +
-                (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0)
-                + (albAreaUpliftBalPaymentObj?.Period10 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0)
-                + (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0)
-                + (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0);
             fundingSummaryModelAlbAreaCosts.Period1_8 =
-                fundingSummaryModelAlbAreaCosts.Period1_8 + (albAreaUpliftBalPaymentObj?.Period1 ?? 0) +
-                (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0);
+                _totalBuilder.TotalRecords(
+                    fundingSummaryModelAlbAreaCosts.Period1_8,
+                    fundingSummaryModelAlbAreaCosts.Period1,
+                    fundingSummaryModelAlbAreaCosts.Period2,
+                    fundingSummaryModelAlbAreaCosts.Period3,
+                    fundingSummaryModelAlbAreaCosts.Period4,
+                    fundingSummaryModelAlbAreaCosts.Period5,
+                    fundingSummaryModelAlbAreaCosts.Period6,
+                    fundingSummaryModelAlbAreaCosts.Period7,
+                    fundingSummaryModelAlbAreaCosts.Period8);
+            fundingSummaryModelAlbAreaCosts.Period9_12 =
+                _totalBuilder.TotalRecords(
+                    fundingSummaryModelAlbAreaCosts.Period9_12,
+                    fundingSummaryModelAlbAreaCosts.Period9,
+                    fundingSummaryModelAlbAreaCosts.Period10,
+                    fundingSummaryModelAlbAreaCosts.Period11,
+                    fundingSummaryModelAlbAreaCosts.Period12);
             fundingSummaryModelAlbAreaCosts.YearToDate = fundingSummaryModelAlbAreaCosts.YearToDate +
                                                          GetYearToDateTotal(albAreaUpliftBalPaymentObj, albAreaUpliftOnProgPaymentObj, period);
             fundingSummaryModelAlbAreaCosts.Total =
-                fundingSummaryModelAlbAreaCosts.Total + (albAreaUpliftBalPaymentObj?.Period1 ?? 0) +
-                (albAreaUpliftOnProgPaymentObj?.Period1 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period2 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period2 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period3 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period3 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period4 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period4 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period5 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period5 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period6 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period6 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period7 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period7 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period8 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period8 ?? 0) +
-                (albAreaUpliftBalPaymentObj?.Period9 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period9 ?? 0)
-                + (albAreaUpliftBalPaymentObj?.Period10 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period10 ?? 0)
-                + (albAreaUpliftBalPaymentObj?.Period11 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period11 ?? 0)
-                + (albAreaUpliftBalPaymentObj?.Period12 ?? 0) + (albAreaUpliftOnProgPaymentObj?.Period12 ?? 0);
+                _totalBuilder.TotalRecords(
+                    fundingSummaryModelAlbAreaCosts.Total,
+                    fundingSummaryModelAlbAreaCosts.Period1_8,
+                    fundingSummaryModelAlbAreaCosts.Period9_12);
         }
 
         private decimal? GetYearToDateTotal(LearnerPeriodisedValue albSupportPaymentObj, int period)

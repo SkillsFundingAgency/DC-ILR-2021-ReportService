@@ -64,6 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IMainOccupancyReportModelBuilder reportModelBuilder = new MainOccupancyReportModelBuilder();
+            IValueProvider valueProvider = new ValueProvider();
 
             var validLearnersStr = File.ReadAllText(validLearnRefNumbersFilename);
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead(ilrFilename).CopyTo(sr)).Returns(Task.CompletedTask);
@@ -104,8 +105,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 }
             }
 
-            larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
-            larsProviderService.Setup(x => x.GetFrameworkAims(It.IsAny<string[]>(), It.IsAny<List<ILearner>>(), It.IsAny<CancellationToken>())).ReturnsAsync(learnerAndDeliveries);
+            larsProviderService.Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
+            larsProviderService.Setup(x => x.GetFrameworkAimsAsync(It.IsAny<string[]>(), It.IsAny<List<ILearner>>(), It.IsAny<CancellationToken>())).ReturnsAsync(learnerAndDeliveries);
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
@@ -120,6 +121,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 fm35ProviderService,
                 larsProviderService.Object,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks,
                 reportModelBuilder);
 

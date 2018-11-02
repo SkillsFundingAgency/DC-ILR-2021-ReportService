@@ -4,20 +4,18 @@ using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
 {
-    public sealed class SummaryOfFm35FundingModelComparer : IComparer<SummaryOfFm35FundingModel>
+    public sealed class SummaryOfFunding1619ModelComparer : IComparer<SummaryOfFunding1619Model>
     {
         private readonly string[] stringOrder =
         {
-            "16-18 Apprenticeship",
-            "19-23 Apprenticeship",
-            "24+ Apprenticeship",
-            "19-24 Traineeship (non-procured)",
-            "19-24 Traineeship (procured from Nov 2017)",
-            "AEB – Other Learning (non-procured)",
-            "AEB – Other Learning (procured from Nov 2017)"
+            "14-16 Direct Funded Students",
+            "16-19 Students (excluding High Needs Students)",
+            "16-19 High Needs Students",
+            "19-24 Students with an EHCP",
+            "19+ Continuing Students (excluding EHCP)",
         };
 
-        public int Compare(SummaryOfFm35FundingModel x, SummaryOfFm35FundingModel y)
+        public int Compare(SummaryOfFunding1619Model x, SummaryOfFunding1619Model y)
         {
             if (x == null && y == null)
             {
@@ -58,23 +56,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
                 }
             }
 
-            if (x.Period > y.Period)
-            {
-                return 1;
-            }
-
-            if (x.Period < y.Period)
-            {
-                return -1;
-            }
-
-            return 0;
+            return string.Compare(x.LearnRefNumber, y.LearnRefNumber, StringComparison.OrdinalIgnoreCase);
         }
 
-        private int Compare(SummaryOfFm35FundingModel x, SummaryOfFm35FundingModel y, string str)
+        private int Compare(SummaryOfFunding1619Model x, SummaryOfFunding1619Model y, string str)
         {
-            bool x1 = string.Equals(x.FundingLineType, str, StringComparison.OrdinalIgnoreCase);
-            bool y1 = string.Equals(y.FundingLineType, str, StringComparison.OrdinalIgnoreCase);
+            bool x1 = string.Equals(x.FundLine, str, StringComparison.OrdinalIgnoreCase);
+            bool y1 = string.Equals(y.FundLine, str, StringComparison.OrdinalIgnoreCase);
 
             if (x1 && y1)
             {

@@ -309,6 +309,7 @@
     <Compile Include="Comparer\MainOccupancyFM35ModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
     <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
+    <Compile Include="Comparer\SummaryOfFunding1619ModelComparer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
@@ -361,6 +362,7 @@
     <Compile Include="Service\StringUtilitiesService.cs" />
     <Compile Include="Service\ValidLearnersService.cs" />
     <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeAugustCommand.cs" />
+    <Compile Include="Service\ValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">

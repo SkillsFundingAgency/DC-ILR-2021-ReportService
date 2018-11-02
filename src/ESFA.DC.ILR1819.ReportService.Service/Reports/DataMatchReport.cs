@@ -51,8 +51,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IPeriodProviderService periodProviderService,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-            : base(dateTimeProvider)
+            : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _ilrProviderService = ilrProviderService;
@@ -83,23 +84,29 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             if (fm36Task.Result?.Learners == null)
             {
-                _logger.LogWarning($"No FM36 learner data for {nameof(DataMatchReport)}");
-                return;
+                _logger.LogWarning($"No FM36 learner data for {nameof(DataMatchReport)}. It will be empty.");
             }
+            else
+            {
+                cancellationToken.ThrowIfCancellationRequested();
 
-            cancellationToken.ThrowIfCancellationRequested();
+                List<RawEarning> rawEarnings = new List<RawEarning>();
+                List<long> ulns = await GetUlnsForValidLearners(
+                    ilrFileTask.Result,
+                    fm36Task.Result,
+                    rawEarnings,
+                    jobContextMessage,
+                    cancellationToken);
 
-            List<RawEarning> rawEarnings = new List<RawEarning>();
-            List<long> ulns = await GetUlnsForValidLearners(ilrFileTask.Result, fm36Task.Result, rawEarnings, jobContextMessage, cancellationToken);
+                List<DasCommitment> commitments = await _dasCommitmentsService.GetCommitments(
+                    ukPrn,
+                    ulns,
+                    cancellationToken);
 
-            List<DasCommitment> commitments = await _dasCommitmentsService.GetCommitments(
-                ukPrn,
-                ulns,
-                cancellationToken);
+                cancellationToken.ThrowIfCancellationRequested();
 
-            cancellationToken.ThrowIfCancellationRequested();
-
-            BuildReportData(rawEarnings, commitments, ukPrn);
+                BuildReportData(rawEarnings, commitments, ukPrn);
+            }
 
             var jobId = jobContextMessage.JobId;
             var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, jobContextMessage.SubmissionDateTimeUtc);

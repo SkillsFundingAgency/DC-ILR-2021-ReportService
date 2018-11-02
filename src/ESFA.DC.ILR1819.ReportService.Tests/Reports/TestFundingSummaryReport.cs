@@ -63,7 +63,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IFm35Builder fm35Builder = new Fm35Builder(totalBuilder, new CacheProviderService<LearningDelivery[]>());
             IFm36Builder fm36Builder = new Fm36Builder(totalBuilder, new CacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>());
             IFm81Builder fm81Builder = new Fm81Builder(totalBuilder, new CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>());
-            IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, periodProviderService.Object, stringUtilitiesService, logger.Object);
+            IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, periodProviderService.Object, totalBuilder, stringUtilitiesService, logger.Object);
             IExcelStyleProvider excelStyleProvider = new ExcelStyleProvider();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ILR-10033670-1819-20180704-120055-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
@@ -101,6 +101,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 .ReturnsAsync("Test Provider");
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+            IValueProvider valueProvider = new ValueProvider();
 
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
                 logger.Object,
@@ -116,6 +117,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 stringUtilitiesService,
                 periodProviderService.Object,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 larsProviderService.Object,
                 easProviderServiceMock.Object,
                 postcodeProverServiceMock.Object,

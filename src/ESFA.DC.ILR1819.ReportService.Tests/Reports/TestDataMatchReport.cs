@@ -93,6 +93,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             periodProviderService.Setup(x => x.MonthFromPeriod(It.IsAny<int>())).Returns(1);
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+            IValueProvider valueProvider = new ValueProvider();
 
             var report = new DataMatchReport(
                 logger.Object,
@@ -103,6 +104,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 periodProviderService.Object,
                 storage.Object,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks);
 
             await report.GenerateReport(jobContextMessage, null, false, CancellationToken.None);

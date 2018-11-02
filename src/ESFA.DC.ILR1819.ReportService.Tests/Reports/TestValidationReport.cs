@@ -43,6 +43,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            IValueProvider valueProvider = new ValueProvider();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180712-144437-03.xml"));
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -74,6 +75,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 jsonSerializationService,
                 ilrProviderService,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);

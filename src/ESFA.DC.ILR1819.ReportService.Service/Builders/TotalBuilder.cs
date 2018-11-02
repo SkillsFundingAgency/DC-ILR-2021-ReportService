@@ -37,6 +37,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             return fundingSummaryModel;
         }
 
+        public decimal TotalRecords(params decimal?[] values)
+        {
+            decimal ret = 0;
+
+            foreach (decimal? value in values)
+            {
+                ret += value.GetValueOrDefault(0);
+            }
+
+            return ret;
+        }
+
         public FundingSummaryModel TotalRecordsCumulative(string title, FundingSummaryModel sourceFundingSummaryModel)
         {
             FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);

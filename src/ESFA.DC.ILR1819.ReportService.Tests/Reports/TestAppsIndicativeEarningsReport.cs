@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
@@ -57,10 +57,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            ITotalBuilder totalBuilder = new TotalBuilder();
 
             List<IAppsIndicativeCommand> commands = new List<IAppsIndicativeCommand>();
 
-            AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands);
+            AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands, totalBuilder);
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($"{ilr}.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -76,11 +77,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IMessage message = await ilrProviderService.GetIlrFile(jobContextMessage, CancellationToken.None);
             string validLearners = await redis.Object.GetAsync("ValidLearners");
             Dictionary<string, LarsLearningDelivery> learningDeliveriesDict = new Dictionary<string, LarsLearningDelivery>();
-
-            LARS_Standard standard = new LARS_Standard
-            {
-                StandardCode = 1
-            };
 
             foreach (ILearner messageLearner in message.Learners)
             {
@@ -100,10 +96,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 }
             }
 
-            larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
-            larsProviderService.Setup(x => x.GetStandard(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(standard);
+            larsProviderService.Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
+            larsProviderService.Setup(x => x.GetStandardAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync("NotionalEndLevel");
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+            IValueProvider valueProvider = new ValueProvider();
 
             var report = new AppsIndicativeEarningsReport(
                 logger.Object,
@@ -115,6 +112,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 stringUtilitiesService,
                 builder,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks);
 
             await report.GenerateReport(jobContextMessage, null, false, CancellationToken.None);

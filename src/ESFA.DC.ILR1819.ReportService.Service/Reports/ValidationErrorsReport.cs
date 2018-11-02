@@ -47,8 +47,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;

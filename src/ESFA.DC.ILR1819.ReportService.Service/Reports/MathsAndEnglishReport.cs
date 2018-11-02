@@ -45,10 +45,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM25ProviderService fm25ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules,
             IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;

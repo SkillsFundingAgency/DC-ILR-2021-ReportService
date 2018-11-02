@@ -42,9 +42,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM36ProviderService fm36ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             IAppsAdditionalPaymentsModelBuilder modelBuilder,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;

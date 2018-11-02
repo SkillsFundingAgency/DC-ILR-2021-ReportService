@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+﻿using System;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
@@ -112,10 +113,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 LearnDelFamCodeEef = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => x.LearnDelFAMType == "EEF")?.LearnDelFAMCode,
                 LearnDelFamCodeLsfHighest = learningDelivery.LearningDeliveryFAMs
-                    ?.Where(x => x.LearnDelFAMType == "LSF").Max(x => x.LearnDelFAMCode),
+                    ?.Where(x => x.LearnDelFAMType == "LSF").Select(x => x.LearnDelFAMCode).DefaultIfEmpty().Max(),
                 LearnDelFamCodeLsfEarliest = learningDelivery.LearningDeliveryFAMs
-                    ?.Where(x => x.LearnDelFAMType == "LSF").Min(x => x.LearnDelFAMDateFromNullable)
-                    ?.ToString("dd/MM/yyyy"),
+                    ?.Where(x => x.LearnDelFAMType == "LSF").Select(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue)
+                    .DefaultIfEmpty(DateTime.MinValue).Min().ToString("dd/MM/yyyy"),
                 LearnDelFamCodeLsfLatest = learningDelivery.LearningDeliveryFAMs
                     ?.Where(x => x.LearnDelFAMType == "LSF")
                     .Min(x => x.LearnDelFAMDateToNullable)?.ToString("dd/MM/yyyy"),
