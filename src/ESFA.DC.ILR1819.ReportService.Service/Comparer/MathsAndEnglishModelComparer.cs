@@ -1,11 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
 {
     public sealed class MathsAndEnglishModelComparer : IComparer<MathsAndEnglishModel>
     {
+        private readonly string[] stringOrder = {
+            "14-16 Direct Funded Students",
+            "16-19 Students (excluding High Needs Students)",
+            "16-19 High Needs Students",
+            "19-24 Students with an EHCP",
+            "19+ Continuing Students (excluding EHCP)"
+        };
+
         public int Compare(MathsAndEnglishModel x, MathsAndEnglishModel y)
         {
             if (x == null && y == null)
@@ -28,48 +39,75 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
                 return 0;
             }
 
-            int cmp = string.Compare(x.LearnRefNumber, y.LearnRefNumber, StringComparison.OrdinalIgnoreCase);
-            if (cmp != 0)
+            foreach (string str in stringOrder)
             {
-                return cmp;
+                int cmp = Compare(x, y, str);
+                if (cmp == 0)
+                {
+                    break;
+                }
+
+                if (cmp == 1)
+                {
+                    return 1;
+                }
+
+                if (cmp == -1)
+                {
+                    return -1;
+                }
             }
 
-            cmp = string.Compare(x.ConditionOfFundingEnglish, y.ConditionOfFundingEnglish, StringComparison.OrdinalIgnoreCase);
-            if (cmp != 0)
+            var isleftNumber = long.TryParse(x.LearnRefNumber, out long xLearnRefNumber);
+            var isrightNumber = long.TryParse(y.LearnRefNumber, out long yLearnRefNumber);
+
+            if (isleftNumber)
             {
-                return cmp;
+                if (!isrightNumber)
+                {
+                    return -1;
+                }
+
+                if (xLearnRefNumber < yLearnRefNumber)
+                {
+                    return -1;
+                }
+
+                if (yLearnRefNumber < xLearnRefNumber)
+                {
+                    return 1;
+                }
+
+                if (xLearnRefNumber == yLearnRefNumber)
+                {
+                    return 0;
+                }
             }
 
-            cmp = string.Compare(x.ConditionOfFundingMaths, y.ConditionOfFundingMaths, StringComparison.OrdinalIgnoreCase);
-            if (cmp != 0)
+            return 0;
+        }
+
+        private int Compare(MathsAndEnglishModel x, MathsAndEnglishModel y, string str)
+        {
+            bool x1 = string.Equals(x.FundLine, str, StringComparison.OrdinalIgnoreCase);
+            bool y1 = string.Equals(y.FundLine, str, StringComparison.OrdinalIgnoreCase);
+
+            if (x1 && y1)
             {
-                return cmp;
+                return 0;
             }
 
-            cmp = string.Compare(x.ProvSpecLearnMonA, y.ProvSpecLearnMonA, StringComparison.OrdinalIgnoreCase);
-            if (cmp != 0)
-            {
-                return cmp;
-            }
-
-            cmp = string.Compare(x.ProvSpecLearnMonB, y.ProvSpecLearnMonB, StringComparison.OrdinalIgnoreCase);
-            if (cmp != 0)
-            {
-                return cmp;
-            }
-
-            cmp = Nullable.Compare(x.LearnerStartDate, y.LearnerStartDate);
-            if (cmp < 0)
+            if (x1)
             {
                 return -1;
             }
 
-            if (cmp > 0)
+            if (y1)
             {
                 return 1;
             }
 
-            return 0;
+            return int.MaxValue;
         }
     }
 }
