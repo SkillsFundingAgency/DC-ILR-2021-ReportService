@@ -167,14 +167,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(traineeships1924);
             FundingSummaryModel ilrTraineeshipsTotal = _totalBuilder.TotalRecords("ILR Total 16-18 Traineeships (£)", traineeships1618, traineeships1924);
 
-            FundingSummaryModel easTraineeshipsTotal = new FundingSummaryModel(); // Todo: EAS
+            FundingSummaryModel easTraineeshipsTotal = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 ilrTraineeshipsTotal.ExcelHeaderStyle = 3;
                 ilrTraineeshipsTotal.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(ilrTraineeshipsTotal);
 
-                // Todo: EAS
+                // EAS
                 FundingSummaryModel eas1618TraineeshipsAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Traineeships Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Traineeships", periodTask.Result);
                 fundingSummaryModels.Add(eas1618TraineeshipsAuditAdjustments);
 
@@ -220,14 +220,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel ilrApprenticeshipFrameworks = _fm35Builder.BuildWithFundLine("ILR 16-18 Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName });
             fundingSummaryModels.Add(ilrApprenticeshipFrameworks);
             FundingSummaryModel ilrTotal1618Apprenticeship = _totalBuilder.TotalRecords("ILR Total 16-18 Apprenticeship Frameworks (£)", ilrApprenticeshipProgramme, ilrApprenticeshipFrameworks);
-            FundingSummaryModel easTotal1618Apprenticeship = new FundingSummaryModel(); // Todo: EAS
+            FundingSummaryModel easTotal1618Apprenticeship = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 ilrTotal1618Apprenticeship.ExcelHeaderStyle = 3;
                 ilrTotal1618Apprenticeship.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(ilrTotal1618Apprenticeship);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel eas1618ApprenticeshipAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Apprenticeship Frameworks Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618ApprenticeshipAuditAdjustments);
+
+                FundingSummaryModel eas1618ApprenticeshipAuthorisedClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Apprenticeship Frameworks Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618ApprenticeshipAuthorisedClaims);
+
+                FundingSummaryModel eas1618ApprenticeshipExcessLearningSupport = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Apprenticeship Frameworks Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 16-18 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618ApprenticeshipExcessLearningSupport);
+
+                FundingSummaryModel eas1618ApprenticeshipLearnerSupport = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Apprenticeship Frameworks Learner Support (£)", easSubmissionsValuesTask.Result, "Learner Support: 16-18 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618ApprenticeshipLearnerSupport);
+
+                easTotal1618Apprenticeship = _totalBuilder.TotalRecords("EAS Total 16-18 Apprenticeship Frameworks Earnings Adjustment (£)", eas1618ApprenticeshipAuditAdjustments, eas1618ApprenticeshipAuthorisedClaims, eas1618ApprenticeshipExcessLearningSupport, eas1618ApprenticeshipLearnerSupport);
             }
 
             FundingSummaryModel totalApprenticeships1618 = _totalBuilder.TotalRecords("Total 16-18 Apprenticeship Frameworks for starts before 1 May 2017 (£)", ilrTotal1618Apprenticeship, easTotal1618Apprenticeship);
@@ -244,16 +257,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel trailblazer1618Support = _fm81Builder.BuildWithFundLine("ILR 16-18 Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "16-18 Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash });
             fundingSummaryModels.Add(trailblazer1618Support);
             FundingSummaryModel trailblazerTotal = _totalBuilder.TotalRecords("ILR Total 16-18 Trailblazer Apprenticeships (£)", trailblazer1618Programme, trailblazer1618Incentive, trailblazer1618Support);
+            FundingSummaryModel easTotal1618TrailblazerApprenticeship = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 trailblazerTotal.ExcelHeaderStyle = 3;
                 trailblazerTotal.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(trailblazerTotal);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel eas1618TrailblazerAppAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Trailblazer Apprenticeships Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618TrailblazerAppAuditAdjustments);
+
+                FundingSummaryModel eas1618TrailblazerAppAuthorisedClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Trailblazer Apprenticeships Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618TrailblazerAppAuthorisedClaims);
+
+                FundingSummaryModel eas1618TrailblazerAppExcessLearningSupport = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Trailblazer Apprenticeships Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 16-18 Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1618TrailblazerAppExcessLearningSupport);
+
+                easTotal1618TrailblazerApprenticeship = _totalBuilder.TotalRecords("EAS Total 16-18 Trailblazer Apprenticeships Earnings Adjustment (£)", eas1618TrailblazerAppAuditAdjustments, eas1618TrailblazerAppAuthorisedClaims, eas1618TrailblazerAppExcessLearningSupport);
             }
 
-            FundingSummaryModel totalTrailblazer1618Before = _totalBuilder.TotalRecords("Total 16-18 Trailblazer Apprenticeships for starts before 1 May 2017 (£)", trailblazerTotal); // Todo: EAS
+            FundingSummaryModel totalTrailblazer1618Before = _totalBuilder.TotalRecords("Total 16-18 Trailblazer Apprenticeships for starts before 1 May 2017 (£)", trailblazerTotal, easTotal1618TrailblazerApprenticeship); // EAS
             totalTrailblazer1618Before.ExcelHeaderStyle = 2;
             totalTrailblazer1618Before.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalTrailblazer1618Before);
@@ -276,16 +300,40 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel nonLevySupport = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnSuppFundCash });
             fundingSummaryModels.Add(nonLevySupport);
             FundingSummaryModel nonLevyTotal = _totalBuilder.TotalRecords("ILR Total 16-18 Non-Levy Contracted Apprenticeships (£)", nonLevyCoInvest, nonLevyMathsAndEnglish, nonLevyUplift, nonLevyDisadvantage, nonLevyProviders, nonLevyEmployers, nonLevySupport);
+
+            FundingSummaryModel easTotal1618NonLevy = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 nonLevyTotal.ExcelHeaderStyle = 3;
                 nonLevyTotal.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(nonLevyTotal);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel eas1618NonLevyTrainingAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Non-Levy Contracted Apprenticeships Training Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Non-Levy Apprenticeships - Training", periodTask.Result);
+                fundingSummaryModels.Add(eas1618NonLevyTrainingAuditAdjustments);
+
+                FundingSummaryModel eas1618NonLevyTrainingAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Non-Levy Contracted Apprenticeships Training Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Non-Levy Apprenticeships - Training", periodTask.Result);
+                fundingSummaryModels.Add(eas1618NonLevyTrainingAuthClaims);
+
+                FundingSummaryModel eas1618NonLevyProviderAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Non-Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(eas1618NonLevyProviderAuditAdjustments);
+
+                FundingSummaryModel eas1618NonLevyProviderAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Non-Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(eas1618NonLevyProviderAuthClaims);
+
+                FundingSummaryModel eas1618NonLevyProviderExcessLearning = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 16-18 Non-Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(eas1618NonLevyProviderExcessLearning);
+
+                FundingSummaryModel eas1618NonLevyEmployerAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Employers Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Non-Levy Apprenticeships - Employer", periodTask.Result);
+                fundingSummaryModels.Add(eas1618NonLevyEmployerAuditAdjustments);
+
+                FundingSummaryModel eas1618NonLevyEmployerAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Employers Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Non-Levy Apprenticeships - Employer", periodTask.Result);
+                fundingSummaryModels.Add(eas1618NonLevyEmployerAuthClaims);
+
+                easTotal1618NonLevy = _totalBuilder.TotalRecords("EAS Total 16-18 Non-Levy Contracted Apprenticeships Earnings Adjustment (£)", eas1618NonLevyTrainingAuditAdjustments, eas1618NonLevyTrainingAuthClaims, eas1618NonLevyProviderAuditAdjustments, eas1618NonLevyProviderAuthClaims, eas1618NonLevyProviderExcessLearning, eas1618NonLevyEmployerAuditAdjustments, eas1618NonLevyEmployerAuthClaims);
             }
 
-            FundingSummaryModel total1618NonLevyNonProcured = _totalBuilder.TotalRecords("Total 16-18 Non-Levy Contracted Apprenticeships – Non-procured delivery (£)", nonLevyTotal); // Todo: EAS
+            FundingSummaryModel total1618NonLevyNonProcured = _totalBuilder.TotalRecords("Total 16-18 Non-Levy Contracted Apprenticeships – Non-procured delivery (£)", nonLevyTotal, easTotal1618NonLevy); // EAS
             total1618NonLevyNonProcured.ExcelHeaderStyle = 2;
             total1618NonLevyNonProcured.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(total1618NonLevyNonProcured);
@@ -297,6 +345,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel apprenticeshipSupport = _fm35Builder.BuildWithFundLine("ILR 19-23 Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-23 Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName });
             fundingSummaryModels.Add(apprenticeshipSupport);
             FundingSummaryModel apprenticeshipTotal = _totalBuilder.TotalRecords("ILR Total 19-23 Apprenticeship Frameworks (£)", apprenticeshipProgramme, apprenticeshipSupport);
+
+            FundingSummaryModel easTotal1923Frameworks = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 apprenticeshipTotal.ExcelHeaderStyle = 3;
@@ -304,9 +354,22 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 fundingSummaryModels.Add(apprenticeshipTotal);
 
                 // Todo: EAS
+                FundingSummaryModel eas1923FrameworksAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Apprenticeship Frameworks Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 19-23 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1923FrameworksAuditAdjustments);
+
+                FundingSummaryModel eas1923FrameworksAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Apprenticeship Frameworks Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 19-23 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1923FrameworksAuthClaims);
+
+                FundingSummaryModel eas1923FrameworksExcessLearningSupport = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Apprenticeship Frameworks Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 19-23 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1923FrameworksExcessLearningSupport);
+
+                FundingSummaryModel eas1923FrameworksLearnerSupport = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Apprenticeship Frameworks Learner Support (£)", easSubmissionsValuesTask.Result, "Learner Support: 19-23 Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1923FrameworksLearnerSupport);
+
+                easTotal1923Frameworks = _totalBuilder.TotalRecords("EAS Total 19-23 Apprenticeship Frameworks Earnings Adjustment (£)", eas1923FrameworksAuditAdjustments, eas1923FrameworksAuthClaims, eas1923FrameworksExcessLearningSupport, eas1923FrameworksLearnerSupport);
             }
 
-            FundingSummaryModel totalApprenticeship1923Before = _totalBuilder.TotalRecords("Total 19-23 Apprenticeship Frameworks for starts before 1 May 2017 (£)", apprenticeshipTotal); // Todo: EAS
+            FundingSummaryModel totalApprenticeship1923Before = _totalBuilder.TotalRecords("Total 19-23 Apprenticeship Frameworks for starts before 1 May 2017 (£)", apprenticeshipTotal, easTotal1923Frameworks); // EAS
             totalApprenticeship1923Before.ExcelHeaderStyle = 2;
             totalApprenticeship1923Before.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalApprenticeship1923Before);
@@ -319,16 +382,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel trailblazer1923Support = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash });
             fundingSummaryModels.Add(trailblazer1923Support);
             FundingSummaryModel trailblazer1923Total = _totalBuilder.TotalRecords("ILR Total 19-23 Trailblazer Apprenticeships (£)", trailblazer1923Funding, trailblazer1923Payment, trailblazer1923Support);
+
+            FundingSummaryModel easTotal1923Trailblazer = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 trailblazer1923Total.ExcelHeaderStyle = 3;
                 trailblazer1923Total.ExcelRecordStyle = 3;
-                fundingSummaryModels.Add(trailblazer1923Total);
+                fundingSummaryModels.Add(easTotal1923Trailblazer);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel eas1923TrailblazerAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Trailblazer Apprenticeships Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 19-23 Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1923TrailblazerAuditAdjustments);
+
+                FundingSummaryModel eas1923TrailblazerAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Trailblazer Apprenticeships Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 19-23 Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1923TrailblazerAuthClaims);
+
+                FundingSummaryModel eas1923TrailblazerExcessLearningSupport = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Trailblazer Apprenticeships Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 19-23 Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas1923TrailblazerExcessLearningSupport);
+
+                easTotal1923Trailblazer = _totalBuilder.TotalRecords("EAS Total 19-23 Trailblazer Apprenticeships Earnings Adjustment (£)", eas1923TrailblazerAuditAdjustments, eas1923TrailblazerAuthClaims, eas1923TrailblazerExcessLearningSupport);
             }
 
-            FundingSummaryModel totalTrailblazer1923Before = _totalBuilder.TotalRecords("Total 19-23 Trailblazer Apprenticeships for starts before 1 May 2017 (£)", trailblazer1923Total); // Todo: EAS
+            FundingSummaryModel totalTrailblazer1923Before = _totalBuilder.TotalRecords("Total 19-23 Trailblazer Apprenticeships for starts before 1 May 2017 (£)", trailblazer1923Total, easTotal1923Trailblazer); // EAS
             totalTrailblazer1923Before.ExcelHeaderStyle = 2;
             totalTrailblazer1923Before.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalTrailblazer1923Before);
@@ -340,16 +415,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel apprenticeship24Support = _fm35Builder.BuildWithFundLine("ILR 24+ Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "24+ Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName });
             fundingSummaryModels.Add(apprenticeship24Support);
             FundingSummaryModel apprenticeship24Total = _totalBuilder.TotalRecords("ILR Total 24+ Apprenticeship Frameworks (£)", apprenticeship24Programme, apprenticeship24Support);
+
+            FundingSummaryModel easTotal24AppFramework = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 apprenticeship24Total.ExcelHeaderStyle = 3;
                 apprenticeship24Total.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(apprenticeship24Total);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel eas24AppFrameworkAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 24+ Apprenticeship Frameworks Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 24+ Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas24AppFrameworkAuditAdjustments);
+
+                FundingSummaryModel eas24AppFrameworkAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 24+ Apprenticeship Frameworks Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 24+ Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas24AppFrameworkAuthClaims);
+
+                FundingSummaryModel eas24AppFrameworkExcessLearningSupport = _easBuilder.BuildWithEasSubValueLine("EAS 24+ Apprenticeship Frameworks Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 24+ Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas24AppFrameworkExcessLearningSupport);
+
+                FundingSummaryModel eas24AppFrameworkLearnerSupport = _easBuilder.BuildWithEasSubValueLine("EAS 24+ Apprenticeship Frameworks Learner Support (£)", easSubmissionsValuesTask.Result, "Learner Support: 24+ Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(eas24AppFrameworkLearnerSupport);
+
+                easTotal24AppFramework = _totalBuilder.TotalRecords("EAS Total 19-23 Trailblazer Apprenticeships Earnings Adjustment (£)", eas24AppFrameworkAuditAdjustments, eas24AppFrameworkAuthClaims, eas24AppFrameworkExcessLearningSupport, eas24AppFrameworkLearnerSupport);
             }
 
-            FundingSummaryModel totalApprenticeship24Before = _totalBuilder.TotalRecords("Total 24+ Apprenticeship Frameworks for starts before 1 May 2017 (£)", apprenticeship24Total); // Todo: EAS
+            FundingSummaryModel totalApprenticeship24Before = _totalBuilder.TotalRecords("Total 24+ Apprenticeship Frameworks for starts before 1 May 2017 (£)", apprenticeship24Total, easTotal24AppFramework); // EAS
             totalApprenticeship24Before.ExcelHeaderStyle = 2;
             totalApprenticeship24Before.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalApprenticeship24Before);
@@ -362,16 +452,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel trailblazer24Support = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash });
             fundingSummaryModels.Add(trailblazer24Support);
             FundingSummaryModel trailblazer24Total = _totalBuilder.TotalRecords("ILR Total 24+ Trailblazer Apprenticeships (£)", trailblazer24Funding, trailblazer24Payment, trailblazer24Support);
+
+            FundingSummaryModel easTrailblazer24Total = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 trailblazer24Total.ExcelHeaderStyle = 3;
                 trailblazer24Total.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(trailblazer24Total);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel easTrailblazer24AuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 24+ Trailblazer Apprenticeships Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 24+ Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(easTrailblazer24AuditAdjustments);
+
+                FundingSummaryModel easTrailblazer24AuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 24+ Trailblazer Apprenticeships Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 24+ Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(easTrailblazer24AuthClaims);
+
+                FundingSummaryModel easTrailblazer24LearningSupport = _easBuilder.BuildWithEasSubValueLine("EAS 24+ Trailblazer Apprenticeships Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 24+ Trailblazer Apprenticeships", periodTask.Result);
+                fundingSummaryModels.Add(easTrailblazer24LearningSupport);
+
+                easTrailblazer24Total = _totalBuilder.TotalRecords("EAS Total 24+ Trailblazer Apprenticeships Earnings Adjustment (£)", easTrailblazer24AuditAdjustments, easTrailblazer24AuthClaims, easTrailblazer24LearningSupport);
             }
 
-            FundingSummaryModel totalTrailblazer24Before = _totalBuilder.TotalRecords("Total 24+ Trailblazer Apprenticeships for starts before 1 May 2017 (£)", trailblazer24Total); // Todo: EAS
+            FundingSummaryModel totalTrailblazer24Before = _totalBuilder.TotalRecords("Total 24+ Trailblazer Apprenticeships for starts before 1 May 2017 (£)", trailblazer24Total, easTrailblazer24Total); // EAS
             totalTrailblazer24Before.ExcelHeaderStyle = 2;
             totalTrailblazer24Before.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalTrailblazer24Before);
@@ -394,16 +496,40 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel nonLevySupportAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnSuppFundCash });
             fundingSummaryModels.Add(nonLevySupportAdult);
             FundingSummaryModel nonLevyTotalAdult = _totalBuilder.TotalRecords("ILR Total Adult Non-Levy Contracted Apprenticeships (£)", nonLevyCoInvestAdult, nonLevyMathsAndEnglishAdult, nonLevyUpliftAdult, nonLevyDisadvantageAdult, nonLevyProvidersAdult, nonLevyEmployersAdult, nonLevySupportAdult);
+
+            FundingSummaryModel easNonLevyTotalAdult = new FundingSummaryModel(); // EAS
             if (!isFis)
             {
                 nonLevyTotalAdult.ExcelHeaderStyle = 3;
                 nonLevyTotalAdult.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(nonLevyTotalAdult);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel easNonLevyAdultTrainingAuditAdjustment = _easBuilder.BuildWithEasSubValueLine("EAS Adult Non-Levy Contracted Apprenticeships Training Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: Adult Non-Levy Apprenticeships - Training", periodTask.Result);
+                fundingSummaryModels.Add(easNonLevyAdultTrainingAuditAdjustment);
+
+                FundingSummaryModel easNonLevyAdultTrainingAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS Adult Non-Levy Contracted Apprenticeships Training Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: Adult Non-Levy Apprenticeships - Training", periodTask.Result);
+                fundingSummaryModels.Add(easNonLevyAdultTrainingAuthClaims);
+
+                FundingSummaryModel easNonLevyAdultProviderAuditAdjustment = _easBuilder.BuildWithEasSubValueLine("EAS Adult Non-Levy Contracted Apprenticeships Additional Payments for Providers Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: Adult Non-Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(easNonLevyAdultProviderAuditAdjustment);
+
+                FundingSummaryModel easNonLevyAdultProviderAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS Adult Non-Levy Contracted Apprenticeships Additional Payments for Providers Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: Adult Non-Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(easNonLevyAdultProviderAuthClaims);
+
+                FundingSummaryModel easNonLevyAdultProviderExcessLearning = _easBuilder.BuildWithEasSubValueLine("EAS Adult Non-Levy Contracted Apprenticeships Additional Payments for Providers Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: Adult Non-Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(easNonLevyAdultProviderExcessLearning);
+
+                FundingSummaryModel easNonLevyAdultEmployerAuditAdjustment = _easBuilder.BuildWithEasSubValueLine("EAS Adult Non-Levy Contracted Apprenticeships Additional Payments for Employers Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: Adult Non-Levy Apprenticeships - Employer", periodTask.Result);
+                fundingSummaryModels.Add(easNonLevyAdultEmployerAuditAdjustment);
+
+                FundingSummaryModel easNonLevyAdultEmployerAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS Adult Non-Levy Contracted Apprenticeships Additional Payments for Employers Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: Adult Non-Levy Apprenticeships - Employer", periodTask.Result);
+                fundingSummaryModels.Add(easNonLevyAdultEmployerAuthClaims);
+
+                easNonLevyTotalAdult = _totalBuilder.TotalRecords("EAS Total Adult Non-Levy Contracted Apprenticeships Earnings Adjustment (£)", easNonLevyAdultTrainingAuditAdjustment, easNonLevyAdultTrainingAuthClaims, easNonLevyAdultProviderAuditAdjustment, easNonLevyAdultProviderAuthClaims, easNonLevyAdultProviderExcessLearning, easNonLevyAdultEmployerAuditAdjustment, easNonLevyAdultEmployerAuthClaims);
             }
 
-            FundingSummaryModel totalNonLevyNonProcuredAdult = _totalBuilder.TotalRecords("Total Adult Non-Levy Contracted Apprenticeships – Non-procured delivery (£)", nonLevyTotalAdult); // Todo: EAS
+            FundingSummaryModel totalNonLevyNonProcuredAdult = _totalBuilder.TotalRecords("Total Adult Non-Levy Contracted Apprenticeships – Non-procured delivery (£)", nonLevyTotalAdult, easNonLevyTotalAdult); // EAS
             totalNonLevyNonProcuredAdult.ExcelHeaderStyle = 2;
             totalNonLevyNonProcuredAdult.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalNonLevyNonProcuredAdult);
@@ -438,16 +564,40 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             FundingSummaryModel levySupport1618 = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash });
             fundingSummaryModels.Add(nonLevySupportAdult);
             FundingSummaryModel levyTotal1618 = _totalBuilder.TotalRecords("ILR Total Adult Non-Levy Contracted Apprenticeships (£)", levyCoInvest1618, levyMathsAndEnglish1618, levyUplift1618, levyDisadvantage1618, levyProviders1618, levyEmployers1618, levySupport1618);
+
+            FundingSummaryModel easLevyTotal1618 = new FundingSummaryModel();
             if (!isFis)
             {
                 levyTotal1618.ExcelHeaderStyle = 3;
                 levyTotal1618.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(levyTotal1618);
 
-                // Todo: EAS
+                // EAS
+                FundingSummaryModel easLevy1618TrainingAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Levy Contracted Apprenticeships Training Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Levy Apprenticeships - Training", periodTask.Result);
+                fundingSummaryModels.Add(easLevy1618TrainingAuditAdjustments);
+
+                FundingSummaryModel easLevy1618TrainingAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Levy Contracted Apprenticeships Training Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Levy Apprenticeships - Training", periodTask.Result);
+                fundingSummaryModels.Add(easLevy1618TrainingAuthClaims);
+
+                FundingSummaryModel easLevy1618ProviderAuditAdjustment = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Levy Contracted Apprenticeships Additional Payments for Providers Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(easLevy1618ProviderAuditAdjustment);
+
+                FundingSummaryModel easLevy1618ProviderAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Levy Contracted Apprenticeships Additional Payments for Providers Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(easLevy1618ProviderAuthClaims);
+
+                FundingSummaryModel easLevy1618ProviderExcessLearning = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Levy Contracted Apprenticeships Additional Payments for Providers Excess Learning Support (£)", easSubmissionsValuesTask.Result, "Excess Learning Support: 16-18 Levy Apprenticeships - Provider", periodTask.Result);
+                fundingSummaryModels.Add(easLevy1618ProviderExcessLearning);
+
+                FundingSummaryModel easLevy1618EmployerAuditAdjustment = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Levy Contracted Apprenticeships Additional Payments for Employers Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 16-18 Levy Apprenticeships - Employer", periodTask.Result);
+                fundingSummaryModels.Add(easLevy1618EmployerAuditAdjustment);
+
+                FundingSummaryModel easLevy1618EmployerAuthClaims = _easBuilder.BuildWithEasSubValueLine("EAS 16-18 Levy Contracted Apprenticeships Additional Payments for Employers Authorised Claims (£)", easSubmissionsValuesTask.Result, "Authorised Claims: 16-18 Levy Apprenticeships - Employer", periodTask.Result);
+                fundingSummaryModels.Add(easLevy1618EmployerAuthClaims);
+
+                easLevyTotal1618 = _totalBuilder.TotalRecords("EAS Total 16-18 Levy Contracted Apprenticeships Earnings Adjustment (£)", easLevy1618TrainingAuditAdjustments, easLevy1618TrainingAuthClaims, easLevy1618ProviderAuditAdjustment, easLevy1618ProviderAuthClaims, easLevy1618ProviderExcessLearning);
             }
 
-            FundingSummaryModel totalLevyNonProcured1618 = _totalBuilder.TotalRecords("Total 16-18 Levy Contracted Apprenticeships (£)", levyTotal1618); // Todo: EAS
+            FundingSummaryModel totalLevyNonProcured1618 = _totalBuilder.TotalRecords("Total 16-18 Levy Contracted Apprenticeships (£)", levyTotal1618, easLevyTotal1618); // EAS
             totalLevyNonProcured1618.ExcelHeaderStyle = 2;
             totalLevyNonProcured1618.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalLevyNonProcured1618);
