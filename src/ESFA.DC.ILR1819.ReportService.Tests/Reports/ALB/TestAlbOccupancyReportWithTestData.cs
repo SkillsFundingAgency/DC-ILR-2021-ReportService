@@ -72,6 +72,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
+            IValueProvider valueProvider = new ValueProvider();
+
             IReport allbOccupancyReport = new AllbOccupancyReport(
                 logger.Object,
                 storage.Object,
@@ -81,6 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
                 validLearnersService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);

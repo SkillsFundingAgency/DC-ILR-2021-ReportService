@@ -52,9 +52,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM35ProviderService fm35ProviderService,
             ILarsProviderService larsProviderService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IMainOccupancyReportModelBuilder mainOccupancyReportModelBuilder)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -94,8 +95,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             string[] learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
 
-            Task<Dictionary<string, LarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
-            Task<List<LearnerAndDeliveries>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs, learners, cancellationToken);
+            Task<Dictionary<string, LarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
+            Task<List<LearnerAndDeliveries>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAimsAsync(learnAimRefs, learners, cancellationToken);
 
             await Task.WhenAll(larsLearningDeliveriesTask, larsFrameworkAimsTask);
 

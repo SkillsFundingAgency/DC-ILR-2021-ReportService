@@ -10,5 +10,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
         DateTime? GetIlrFileDate(string ilrFilename);
 
         int TryGetInt(string value, int def);
+
+        string GetDateTimeAsString(DateTime? dateTime, string def, DateTime? replace = null);
     }
 }

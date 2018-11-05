@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
 
-        private LARS_Standard _loadedStandard;
+        private Dictionary<int, string> _loadedStandards;
 
         private List<LearnerAndDeliveries> _loadedFrameworkAims;
 
@@ -43,12 +43,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _loadedLearningDeliveries = null;
             _loadedFrameworkAims = null;
             _version = null;
+
+            _loadedStandards = new Dictionary<int, string>();
             _getLearningDeliveriesLock = new SemaphoreSlim(1, 1);
             _getFrameworkAimsLock = new SemaphoreSlim(1, 1);
             _getVersionLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveries(
+        public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveriesAsync(
             string[] validLearnerAimRefs,
             CancellationToken cancellationToken)
         {
@@ -91,7 +93,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedLearningDeliveries;
         }
 
-        public async Task<LARS_Standard> GetStandard(
+        public async Task<string> GetStandardAsync(
             int learningDeliveryStandardCode,
             CancellationToken cancellationToken)
         {
@@ -104,11 +106,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                if (_loadedLearningDeliveries == null)
+                if (!_loadedStandards.ContainsKey(learningDeliveryStandardCode))
                 {
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
-                    _loadedStandard = await larsContext.LARS_Standard
+                    LARS_Standard larsStandard = await larsContext.LARS_Standard
                         .SingleOrDefaultAsync(l => l.StandardCode == learningDeliveryStandardCode, cancellationToken);
+                    _loadedStandards[learningDeliveryStandardCode] = larsStandard?.NotionalEndLevel ?? "NA";
                 }
             }
             catch (Exception ex)
@@ -120,10 +123,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _getStandardsLock.Release();
             }
 
-            return _loadedStandard;
+            return _loadedStandards[learningDeliveryStandardCode];
         }
 
-        public async Task<List<LearnerAndDeliveries>> GetFrameworkAims(
+        public async Task<List<LearnerAndDeliveries>> GetFrameworkAimsAsync(
             string[] learnAimRefs,
             List<ILearner> learners,
             CancellationToken cancellationToken)

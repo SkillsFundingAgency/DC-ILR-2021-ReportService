@@ -49,6 +49,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             ITotalBuilder totalBuilder = new TotalBuilder();
             IFm35Builder fm35Builder = new Fm35Builder(totalBuilder, new CacheProviderService<LearningDelivery[]>());
+            IValueProvider valueProvider = new ValueProvider();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ILR-10033670-1819-20180704-120055-03.xml"));
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -65,6 +66,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 fm35ProviderService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks,
                 fm35Builder);
 

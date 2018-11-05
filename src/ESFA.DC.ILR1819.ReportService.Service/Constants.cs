@@ -1,4 +1,6 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service
+﻿using System;
+
+namespace ESFA.DC.ILR1819.ReportService.Service
 {
     public static class Constants
     {
@@ -77,5 +79,9 @@
 
         // Funding Summary
         public const string ALBInfoText = "Please note that loads bursary funding for learners who are funded within the Career Learning Pilot is not included here. Please refer to the separate Career Learning Pilot report.";
+
+        // Dates
+        public static readonly DateTime FirstOfAugust = new DateTime(2018, 8, 1);
+        public static readonly DateTime EndOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
     }
 }

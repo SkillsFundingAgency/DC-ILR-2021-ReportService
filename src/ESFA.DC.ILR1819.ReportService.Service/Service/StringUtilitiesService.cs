@@ -46,5 +46,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             return res;
         }
+
+        public string GetDateTimeAsString(DateTime? dateTime, string def, DateTime? replace = null)
+        {
+            if (dateTime == null)
+            {
+                return def;
+            }
+
+            if (replace != null && dateTime.Value == replace.Value)
+            {
+                return def;
+            }
+
+            return dateTime.Value.ToString("dd/MM/yyyy");
+        }
     }
 }

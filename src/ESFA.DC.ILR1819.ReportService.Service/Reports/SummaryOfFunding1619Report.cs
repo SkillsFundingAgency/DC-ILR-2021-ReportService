@@ -15,6 +15,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -25,15 +26,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class SummaryOfFunding1619Report : AbstractReportBuilder, IReport
     {
+        private static readonly SummaryOfFunding1619ModelComparer SummaryOfFunding1619ModelComparer = new SummaryOfFunding1619ModelComparer();
+
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IFM25ProviderService _fm25ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
-
-        private string _externalFileName;
-        private string _fileName;
 
         public SummaryOfFunding1619Report(
             ILogger logger,
@@ -43,8 +43,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM25ProviderService fm25ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = blob;
@@ -61,12 +62,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            _externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            _fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            string externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            string fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
             string csv = await GetCsv(jobContextMessage, cancellationToken);
-            await _storage.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{_fileName}.csv", csv);
+            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
         private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
@@ -98,7 +99,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     continue;
                 }
 
-                summaryOfFunding1619Models.Add(new SummaryOfFunding1619Model()
+                summaryOfFunding1619Models.Add(new SummaryOfFunding1619Model
                 {
                     FundLine = fm25Learner.FundLine,
                     LearnRefNumber = learner.LearnRefNumber,
@@ -114,6 +115,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     OnProgPayment = fm25Learner.OnProgPayment
                 });
             }
+
+            summaryOfFunding1619Models.Sort(SummaryOfFunding1619ModelComparer);
 
             if (ilrError.Any())
             {

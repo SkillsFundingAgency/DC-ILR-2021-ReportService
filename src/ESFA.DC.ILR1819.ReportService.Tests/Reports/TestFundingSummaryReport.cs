@@ -71,7 +71,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IFm35Builder fm35Builder = new Fm35Builder(totalBuilder, new CacheProviderService<LearningDelivery[]>());
             IFm36Builder fm36Builder = new Fm36Builder(totalBuilder, new CacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>());
             IFm81Builder fm81Builder = new Fm81Builder(totalBuilder, new CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>());
-            IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, periodProviderService.Object, stringUtilitiesService, logger.Object);
+            IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, periodProviderService.Object, totalBuilder, stringUtilitiesService, logger.Object);
             IExcelStyleProvider excelStyleProvider = new ExcelStyleProvider();
 
             IEasBuilder easBuilder = new EasBuilder(easProviderService);
@@ -111,6 +111,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 .ReturnsAsync("Test Provider");
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+            IValueProvider valueProvider = new ValueProvider();
 
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
                 logger.Object,
@@ -126,6 +127,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 stringUtilitiesService,
                 periodProviderService.Object,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 larsProviderService.Object,
                 easProviderService,
                 postcodeProverServiceMock.Object,

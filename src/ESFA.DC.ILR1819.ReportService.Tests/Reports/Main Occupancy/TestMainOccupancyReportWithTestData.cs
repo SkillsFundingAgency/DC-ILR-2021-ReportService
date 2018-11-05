@@ -64,6 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Main_Occupancy
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IMainOccupancyReportModelBuilder reportModelBuilder = new MainOccupancyReportModelBuilder();
+            IValueProvider valueProvider = new ValueProvider();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead(ilrFilename).CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -83,6 +84,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Main_Occupancy
                 fm35ProviderService,
                 larsProviderService,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks,
                 reportModelBuilder);
 

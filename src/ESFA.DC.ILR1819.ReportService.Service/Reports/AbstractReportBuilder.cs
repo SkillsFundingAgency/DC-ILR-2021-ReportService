@@ -10,6 +10,7 @@ using Aspose.Cells;
 using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
 using ESFA.DC.ILR1819.ReportService.Model.Styling;
 
@@ -20,12 +21,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         protected string ReportFileName;
 
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IValueProvider _valueProvider;
 
         private readonly Dictionary<Worksheet, int> _currentRow;
 
-        protected AbstractReportBuilder(IDateTimeProvider dateTimeProvider)
+        protected AbstractReportBuilder(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider)
         {
             _dateTimeProvider = dateTimeProvider;
+            _valueProvider = valueProvider;
 
             _currentRow = new Dictionary<Worksheet, int>();
         }
@@ -81,34 +84,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         protected void WriteCsvRecords<TMapper>(CsvWriter csvWriter, TMapper mapper)
             where TMapper : ClassMap
         {
-            string[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => x.Data.Names[0]).ToArray();
-            WriteCsvRecords(csvWriter, mapper, names);
-        }
-
-        protected void WriteCsvRecords<TMapper>(CsvWriter csvWriter, TMapper mapper, string[] names)
-            where TMapper : ClassMap
-        {
+            object[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).SelectMany(x => x.Data.Names.Names).Select(x => (object)x).ToArray();
             WriteCsvRecords(csvWriter, names);
         }
 
         protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, TModel record)
             where TMapper : ClassMap
+            where TModel : class
         {
-            ModelProperty[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
+            ModelProperty[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
             WriteCsvRecords(csvWriter, mapper, names, record);
         }
 
-        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, ModelProperty[] names, TModel record)
+        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, ModelProperty[] modelProperties, TModel record)
             where TMapper : ClassMap
         {
-            string[] values = new string[names.Length];
-            for (int i = 0; i < names.Length; i++)
+            List<object> values = new List<object>();
+            foreach (var modelProperty in modelProperties)
             {
-                object value = GetFormattedValue(names[i].MethodInfo.GetValue(record));
-                values[i] = value?.ToString();
+                _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record));
             }
 
-            WriteCsvRecords(csvWriter, values);
+            WriteCsvRecords(csvWriter, values.ToArray());
         }
 
         /// <summary>
@@ -143,9 +140,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         /// </summary>
         /// <param name="writer">The writer target.</param>
         /// <param name="items">The strings to write.</param>
-        protected void WriteCsvRecords(CsvWriter writer, params string[] items)
+        protected void WriteCsvRecords(CsvWriter writer, params object[] items)
         {
-            foreach (string item in items)
+            foreach (object item in items)
             {
                 writer.WriteField(item);
             }
@@ -169,15 +166,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             where TModel : class
         {
             int currentRow = GetCurrentRow(worksheet);
-            ModelProperty[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
+            ModelProperty[] modelProperties = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
+            string[] names = modelProperties.SelectMany(x => x.Names).ToArray();
 
-            worksheet.Cells.ImportObjectArray(names.Select(x => x.Name).ToArray(), currentRow, 0, pivot);
+            worksheet.Cells.ImportObjectArray(names, currentRow, 0, pivot);
             if (headerStyle != null)
             {
                 worksheet.Cells.CreateRange(currentRow, 0, pivot ? names.Length : 1, pivot ? 1 : names.Length).ApplyStyle(headerStyle.Style, headerStyle.StyleFlag);
             }
 
-            int column = 0;
+            int column = 0, localRow = currentRow;
             if (pivot)
             {
                 // If we have pivoted then we need to move one column in, as the header is in column 1.
@@ -186,35 +184,53 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             else
             {
                 currentRow++;
+                localRow++;
             }
 
-            object[] values = new object[names.Length];
             foreach (TModel record in records)
             {
-                for (int i = 0; i < names.Length; i++)
-                {
-                    values[i] = GetFormattedValue(names[i].MethodInfo.GetValue(record));
-                }
+                int widestColumn = 1;
 
-                worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
-                if (recordStyle != null)
+                foreach (var modelProperty in modelProperties)
                 {
-                    worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length).ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
+                    List<object> values = new List<object>();
+                    _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record));
+
+                    worksheet.Cells.ImportObjectArray(values.ToArray(), localRow, column, false);
+                    if (recordStyle != null)
+                    {
+                        worksheet.Cells.CreateRange(localRow, column, 1, values.Count).ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
+                    }
+
+                    if (pivot)
+                    {
+                        localRow++;
+                    }
+                    else
+                    {
+                        column += values.Count;
+                    }
+
+                    if (values.Count > widestColumn)
+                    {
+                        widestColumn = values.Count;
+                    }
                 }
 
                 if (pivot)
                 {
-                    column++;
-                }
-                else
-                {
-                    currentRow++;
+                    column += widestColumn;
+                    localRow = currentRow;
                 }
             }
 
             if (pivot)
             {
                 currentRow += names.Length;
+            }
+            else
+            {
+                currentRow += records.Count();
             }
 
             SetCurrentRow(worksheet, currentRow);
@@ -254,11 +270,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             where TMapper : ClassMap
             where TModel : class
         {
-            ModelProperty[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
+            ModelProperty[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
             WriteExcelRecords(worksheet, classMap, names, record, recordStyle, pivot);
         }
 
-        protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, ModelProperty[] names, TModel record, CellStyle recordStyle, bool pivot = false)
+        protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, ModelProperty[] modelProperties, TModel record, CellStyle recordStyle, bool pivot = false)
             where TMapper : ClassMap
             where TModel : class
         {
@@ -271,21 +287,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 column = 1;
             }
 
-            object[] values = new object[names.Length];
-            for (int i = 0; i < names.Length; i++)
+            List<object> values = new List<object>();
+            foreach (var modelProperty in modelProperties)
             {
-                values[i] = GetFormattedValue(names[i].MethodInfo.GetValue(record));
+                _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record));
             }
 
-            worksheet.Cells.ImportObjectArray(values, currentRow, column, pivot);
+            worksheet.Cells.ImportObjectArray(values.ToArray(), currentRow, column, pivot);
             if (recordStyle != null)
             {
-                worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Length : 1, pivot ? 1 : values.Length).ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
+                worksheet.Cells.CreateRange(currentRow, column, pivot ? values.Count : 1, pivot ? 1 : values.Count).ApplyStyle(recordStyle.Style, recordStyle.StyleFlag);
             }
 
             if (pivot)
             {
-                currentRow += names.Length;
+                currentRow += values.Count;
             }
             else
             {
@@ -384,31 +400,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private void SetCurrentRow(Worksheet worksheet, int currentRow)
         {
             _currentRow[worksheet] = currentRow;
-        }
-
-        private object GetFormattedValue(object value)
-        {
-            if (value == null)
-            {
-                return null;
-            }
-
-            if (value is decimal d1)
-            {
-                value = decimal.Round(d1, 2);
-            }
-            else if (IsOfNullableType<decimal>(value))
-            {
-                decimal? d = (decimal?)value;
-                value = decimal.Round(d.Value, 2);
-            }
-
-            return value;
-        }
-
-        private bool IsOfNullableType<T>(object o)
-        {
-            return Nullable.GetUnderlyingType(o.GetType()) != null && o is T;
         }
     }
 }

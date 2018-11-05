@@ -56,8 +56,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = blob;
@@ -104,7 +105,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             string[] learnAimRefs = ilrFileTask.Result?.Learners?.Where(x => validLearnersTask.Result.Contains(x.LearnRefNumber))
                 .SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
 
-            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
+            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
             if (larsLearningDeliveries == null)
             {
                 return null;
@@ -153,7 +154,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     LearningDelivery albLearningDelivery = albLearner?.LearningDeliveries
                         ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
-                    LearningDeliveryValue albAttribs = albLearningDelivery?.LearningDeliveryValue;
+                    LearningDeliveryValue albLearningDeliveryValue = albLearningDelivery?.LearningDeliveryValue;
                     LearningDeliveryPeriodisedValue albSupportPaymentObj =
                         albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
                     LearningDeliveryPeriodisedValue albAreaUpliftOnProgPaymentObj =
@@ -166,26 +167,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     if (alb != null && alb.Any())
                     {
                         albBursaryFunding = alb.Max(x => _stringUtilitiesService.TryGetInt(x.LearnDelFAMCode, 0)).ToString();
-                        DateTime albDateFromDt = alb.Min(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue);
-                        DateTime albDateToDt = alb.Max(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue);
-
-                        if (albDateFromDt == DateTime.MinValue)
-                        {
-                            albDateFrom = "NA";
-                        }
-                        else
-                        {
-                            albDateFrom = albDateFromDt.ToString("dd/MM/yyyy");
-                        }
-
-                        if (albDateToDt == DateTime.MinValue)
-                        {
-                            albDateTo = "NA";
-                        }
-                        else
-                        {
-                            albDateTo = albDateToDt.ToString("dd/MM/yyyy");
-                        }
+                        albDateFrom = _stringUtilitiesService.GetDateTimeAsString(alb.Min(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue), "NA", DateTime.MinValue);
+                        albDateTo = _stringUtilitiesService.GetDateTimeAsString(alb.Max(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue), "NA", DateTime.MinValue);
                     }
 
                     models.Add(new AllbOccupancyModel
@@ -203,8 +186,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         LearnAimRef = learningDelivery.LearnAimRef,
                         LearnAimRefTitle = larsModel.LearningAimTitle,
                         SwSupAimId = learningDelivery.SWSupAimId,
-                        WeightedRate = albAttribs?.WeightedRate,
-                        ApplicProgWeightFact = albAttribs?.ApplicProgWeightFact,
+                        WeightedRate = albLearningDeliveryValue?.WeightedRate,
+                        ApplicProgWeightFact = albLearningDeliveryValue?.ApplicProgWeightFact,
                         NotionalNvqLevelV2 = larsModel.NotionalNvqLevel,
                         SectorSubjectAreaTier2 = larsModel.Tier2SectorSubjectArea,
                         AimType = learningDelivery.AimType,
@@ -231,11 +214,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         ProvSpecDelMonD = learningDelivery.ProviderSpecDeliveryMonitorings?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "D")?.ProvSpecDelMon,
                         PartnerUkprn = learningDelivery.PartnerUKPRNNullable,
                         DelLocPostCode = learningDelivery.DelLocPostCode,
-                        AreaCodeFactAdj = albAttribs?.AreaCostFactAdj,
-                        FundLine = albAttribs?.FundLine,
-                        LiabilityDate = albAttribs?.LiabilityDate?.ToString("dd/MM/yyyy"),
-                        PlannedNumOnProgInstalm = albAttribs?.PlannedNumOnProgInstalm,
-                        ApplicFactDate = albAttribs?.ApplicFactDate?.ToString("dd/MM/yyyy"),
+                        AreaCodeFactAdj = albLearningDeliveryValue?.AreaCostFactAdj,
+                        FundLine = albLearningDeliveryValue?.FundLine,
+                        LiabilityDate = albLearningDeliveryValue?.LiabilityDate?.ToString("dd/MM/yyyy"),
+                        PlannedNumOnProgInstalm = albLearningDeliveryValue?.PlannedNumOnProgInstalm,
+                        ApplicFactDate = albLearningDeliveryValue?.ApplicFactDate?.ToString("dd/MM/yyyy"),
 
                         Period1AlbCode = albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x => x.AttributeName == AlbCode)?.Period1,
                         Period1AlbPayment = albSupportPaymentObj?.Period1,

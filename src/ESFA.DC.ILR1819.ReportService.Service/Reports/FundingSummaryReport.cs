@@ -80,6 +80,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IStringUtilitiesService stringUtilitiesService,
             IPeriodProviderService periodProviderService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ILarsProviderService larsProviderService,
             IEasProviderService easProviderService,
             IPostcodeProviderService postcodeProviderService,
@@ -128,7 +129,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels = new List<FundingSummaryModel>();
             _fundingSummaryMapper = new FundingSummaryMapper();
-            _cachedModelProperties = _fundingSummaryMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names[0], (PropertyInfo)x.Data.Member)).ToArray();
+            _cachedModelProperties = _fundingSummaryMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
         }
 
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
@@ -751,7 +752,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                             if (fundingSummaryModel.HeaderType == HeaderType.TitleOnly)
                             {
-                                WriteCsvRecords(csvWriter, fundingSummaryModel.Title);
+                                WriteCsvRecords(csvWriter, (object)fundingSummaryModel.Title);
                                 continue;
                             }
 

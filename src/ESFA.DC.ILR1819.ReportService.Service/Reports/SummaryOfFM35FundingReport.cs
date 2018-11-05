@@ -39,9 +39,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM35ProviderService fm35ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFm35Builder builder)
-            : base(dateTimeProvider)
+            : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _fm35ProviderService = fm35ProviderService;
