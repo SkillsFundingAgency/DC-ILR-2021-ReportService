@@ -22,16 +22,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private List<EasSubmissionValues> _loadedEasSubmissionValuesList;
         private readonly SemaphoreSlim _getLastEastUpdateLock;
 
-        //private readonly IEasdbContext _easDbContext;
-
-        public EasProviderService(ILogger logger, EasConfiguration easConfiguration) //, IEasdbContext easDbContext)
+        public EasProviderService(ILogger logger, EasConfiguration easConfiguration)
         {
             _logger = logger;
             _easConfiguration = easConfiguration;
             _loadedLastEasUpdate = new Dictionary<int, DateTime>();
             _loadedEasSubmissionValuesList = new List<EasSubmissionValues>();
 
-            //_easDbContext = easDbContext;
             _getLastEastUpdateLock = new SemaphoreSlim(1, 1);
         }
 
