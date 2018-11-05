@@ -407,7 +407,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 trailblazer1923Total.ExcelHeaderStyle = 3;
                 trailblazer1923Total.ExcelRecordStyle = 3;
-                fundingSummaryModels.Add(trailblazer1923Total);
+                fundingSummaryModels.Add(easTotal1923Trailblazer);
 
                 // EAS
                 FundingSummaryModel eas1923TrailblazerAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Trailblazer Apprenticeships Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 19-23 Trailblazer Apprenticeships", periodTask.Result);
