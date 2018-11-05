@@ -95,7 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IExcelStyleProvider excelStyleProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IEasBuilder easBuilder)
-            : base(dateTimeProvider)
+            : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
