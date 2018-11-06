@@ -44,6 +44,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 {
                     _loadedLastEasUpdate[ukprn] = DateTime.MinValue;
                 }
+
+                var easDbContext = new EasdbContext(_easConfiguration.EasConnectionString);
+                var easSubmission = easDbContext.EasSubmission.Where(x => x.Ukprn == ukprn.ToString())
+                    .OrderByDescending(x => x.UpdatedOn).FirstOrDefault();
+
+                _loadedLastEasUpdate[ukprn] = easSubmission?.UpdatedOn ?? DateTime.MinValue;
             }
             catch (Exception ex)
             {
