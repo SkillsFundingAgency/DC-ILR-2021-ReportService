@@ -328,6 +328,7 @@
     <Compile Include="Reports\Data Match\TestDasCommitmentBuilder.cs" />
     <Compile Include="Reports\Main Occupancy\TestMainOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\TestDataMatchReport.cs" />
+    <Compile Include="Reports\TestAdultFundingClaimReport.cs" />
     <Compile Include="Reports\TestMainOccupancyReport.cs" />
     <Compile Include="Reports\TestAppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
@@ -348,6 +349,9 @@
     <Content Include="Reports\Main Occupancy\ILR-10033670-1819-20181030-101919-07.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="AdultFundingClaimReportTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="ALBOutput1000.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
