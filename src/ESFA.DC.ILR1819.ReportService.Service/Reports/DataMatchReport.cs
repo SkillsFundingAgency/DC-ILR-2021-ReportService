@@ -103,6 +103,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     ulns,
                     cancellationToken);
 
+                _logger.LogWarning($"Found {commitments.Count} commitments against UKPRN {ukPrn} and {ulns.Count} ULNs.");
+
                 cancellationToken.ThrowIfCancellationRequested();
 
                 BuildReportData(rawEarnings, commitments, ukPrn);
@@ -341,7 +343,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 ulns.Add(learner.ULN);
 
-                foreach (ILearningDelivery learnerLearningDelivery in learner.LearningDeliveries.Where(x => x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y => string.Equals(y.LearnDelFAMType, "ACT", StringComparison.OrdinalIgnoreCase) && string.Equals(y.LearnDelFAMCode, "1", StringComparison.OrdinalIgnoreCase))))
+                ILearningDelivery[] learningDeliveries = learner.LearningDeliveries.Where(x =>
+                    x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y =>
+                        string.Equals(y.LearnDelFAMType, "ACT", StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(y.LearnDelFAMCode, "1", StringComparison.OrdinalIgnoreCase))).ToArray();
+
+                _logger.LogWarning($"Found {learningDeliveries.Length} FM36 ACT 1 learning deliveries for learner {learner.LearnRefNumber}");
+
+                foreach (ILearningDelivery learnerLearningDelivery in learningDeliveries)
                 {
                     List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, "Levy Contract", StringComparison.OrdinalIgnoreCase)).ToList();
 
