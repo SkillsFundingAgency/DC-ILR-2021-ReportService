@@ -343,7 +343,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 foreach (ILearningDelivery learnerLearningDelivery in learner.LearningDeliveries.Where(x => x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y => string.Equals(y.LearnDelFAMType, "ACT", StringComparison.OrdinalIgnoreCase) && string.Equals(y.LearnDelFAMCode, "1", StringComparison.OrdinalIgnoreCase))))
                 {
-                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, "Levy Contract", StringComparison.OrdinalIgnoreCase)).ToList();
+                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber).ToList();
 
                     if (!priceEpisode.Any())
                     {
