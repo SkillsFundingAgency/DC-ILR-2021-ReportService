@@ -58,7 +58,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         private int GetPaymentTypeId(string paymentTypeName)
         {
             var paymentId = _easProviderService.GetAllPaymentTypes()
-                .FirstOrDefault(pt => pt.PaymentName == paymentTypeName).PaymentId;
+                .FirstOrDefault(pt => string.Equals(pt.PaymentName, paymentTypeName, StringComparison.OrdinalIgnoreCase))?.PaymentId ?? 0;
             return paymentId;
         }
 

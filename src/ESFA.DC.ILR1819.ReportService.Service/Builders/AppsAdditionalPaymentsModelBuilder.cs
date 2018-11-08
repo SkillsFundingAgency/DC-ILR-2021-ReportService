@@ -17,8 +17,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             {
                 LearnerReferenceNumber = learner.LearnRefNumber,
                 UniqueLearnerNumber = learner.ULN,
-                ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings?.SingleOrDefault(psm => psm.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
-                ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings?.SingleOrDefault(psm => psm.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings?.SingleOrDefault(psm =>
+                    string.Equals(psm.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
+                ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings?.SingleOrDefault(psm =>
+                    string.Equals(psm.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 LearningStartDate = DateTime.MinValue, // todo Requires DAS data
                 FundingLineType = string.Empty, // todo Requires DAS data
                 TypeOfAdditionalPayment = string.Empty, // todo Requires DAS data
