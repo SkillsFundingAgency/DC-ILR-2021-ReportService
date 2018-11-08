@@ -392,6 +392,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             totalApprenticeship1923Before.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalApprenticeship1923Before);
 
+            fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("19-23 Trailblazer Apprenticeships for starts before 1 May 2017", HeaderType.All, 2));
             FundingSummaryModel trailblazer1923Funding = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment });
             fundingSummaryModels.Add(trailblazer1923Funding);
@@ -406,7 +407,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 trailblazer1923Total.ExcelHeaderStyle = 3;
                 trailblazer1923Total.ExcelRecordStyle = 3;
-                fundingSummaryModels.Add(easTotal1923Trailblazer);
+                fundingSummaryModels.Add(trailblazer1923Total);
 
                 // EAS
                 FundingSummaryModel eas1923TrailblazerAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Trailblazer Apprenticeships Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 19-23 Trailblazer Apprenticeships", periodTask.Result);
@@ -468,6 +469,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             totalApprenticeship24Before.ExcelRecordStyle = 2;
             fundingSummaryModels.Add(totalApprenticeship24Before);
 
+            fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("24+ Trailblazer Apprenticeships for starts before 1 May 2017", HeaderType.All, 2));
             FundingSummaryModel trailblazer24Funding = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English)(£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment });
             fundingSummaryModels.Add(trailblazer24Funding);
