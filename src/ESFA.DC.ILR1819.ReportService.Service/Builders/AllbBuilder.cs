@@ -83,7 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 }
 
                 ALBLearner albLearner =
-                    albData?.Result.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                    albData?.Result.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
                 if (albLearner == null)
                 {
                     albLearnerError.Add(validLearnerRefNum);
@@ -113,11 +113,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             FundingSummaryModel fundingSummaryModelAlbAreaCosts)
         {
             LearnerPeriodisedValue albSupportPaymentObj =
-                albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbSupportPayment);
+                albLearner.LearnerPeriodisedValues.SingleOrDefault(x =>
+                    string.Equals(x.AttributeName, AlbSupportPayment, StringComparison.OrdinalIgnoreCase));
             LearnerPeriodisedValue albAreaUpliftOnProgPaymentObj =
-                albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftOnProgPayment);
+                albLearner.LearnerPeriodisedValues.SingleOrDefault(x =>
+                    string.Equals(x.AttributeName, AlbAreaUpliftOnProgPayment, StringComparison.OrdinalIgnoreCase));
             LearnerPeriodisedValue albAreaUpliftBalPaymentObj =
-                albLearner.LearnerPeriodisedValues.SingleOrDefault(x => x.AttributeName == AlbAreaUpliftBalPayment);
+                albLearner.LearnerPeriodisedValues.SingleOrDefault(x =>
+                    string.Equals(x.AttributeName, AlbAreaUpliftBalPayment, StringComparison.OrdinalIgnoreCase));
 
             fundingSummaryModelAlbFunding.Period1 =
                 fundingSummaryModelAlbFunding.Period1 + albSupportPaymentObj?.Period1 ?? 0;

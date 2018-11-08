@@ -53,9 +53,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 PostcodePriorToEnrollment = learner.PostcodePrior,
                 CampusIdentifier = learner.CampId,
                 ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 AimSeqNumber = learningDelivery.AimSeqNumber,
                 LearningAimReference = learningDelivery.LearnAimRef,
                 LearningAimTitle = larsLearningDelivery?.LearningAimTitle,
@@ -84,23 +84,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 LearningDeliveryFAMTypeLSFDateAppliesFrom = learningDeliveryFams.Select(x => x.From).Min().ToString("dd/MM/yyyy"),
                 LearningDeliveryFAMTypeLSFDateAppliesTo = learningDeliveryFams.Select(x => x.To).Max().ToString("dd/MM/yyyy"),
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringA = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM1)?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM1, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringB = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM2)?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM2, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringC = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM3)?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM3, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringD = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM4)?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM4, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearningDeliveryFAMRestartIndicator = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeRES)?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeRES, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 ProviderSpecifiedDeliveryMonitoringA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProviderSpecifiedDeliveryMonitoringB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProviderSpecifiedDeliveryMonitoringC = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "C")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProviderSpecifiedDeliveryMonitoringD = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "D")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 EndPointAssessmentOrganisation = learningDelivery.EPAOrgID,
                 PlannedNoOfOnProgrammeInstallmentsForAim =
                     fm36DeliveryAttribute?.LearningDeliveryValues?.PlannedNumOnProgInstalm,
@@ -111,7 +111,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 EmploymentStatus = employmentStatus?.EmpStat,
                 EmploymentStatusDate = employmentStatus?.DateEmpStatApp.ToString("dd/MM/yyyy"),
                 EmpStatusMonitoringSmallEmployer = employmentStatus?.EmploymentStatusMonitorings
-                    ?.SingleOrDefault(x => x.ESMType == Constants.EmploymentStatusMonitoringTypeSEM)?.ESMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.ESMType, Constants.EmploymentStatusMonitoringTypeSEM, StringComparison.OrdinalIgnoreCase))?.ESMCode,
                 PriceEpisodeStartDate =
                     fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate?.ToString("dd/MM/yyyy"),
                 PriceEpisodeActualEndDate =
@@ -185,9 +185,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             }
 
             List<IAppFinRecord> previousYearData = learningDelivery.AppFinRecords
-                .Where(x => x.AFinDate < Constants.FirstOfAugust && x.AFinType == "PMR").ToList();
+                .Where(x => x.AFinDate < Constants.FirstOfAugust &&
+                            string.Equals(x.AFinType, "PMR", StringComparison.OrdinalIgnoreCase)).ToList();
             List<IAppFinRecord> currentYearData = learningDelivery.AppFinRecords
-                .Where(x => x.AFinDate >= Constants.FirstOfAugust && x.AFinDate <= Constants.EndOfYear && x.AFinType == "PMR").ToList();
+                .Where(x => x.AFinDate >= Constants.FirstOfAugust && x.AFinDate <= Constants.EndOfYear &&
+                            string.Equals(x.AFinType, "PMR", StringComparison.OrdinalIgnoreCase)).ToList();
 
             model.TotalPRMPreviousFundingYear =
                 previousYearData.Where(x => x.AFinCode == 1 || x.AFinCode == 2).Sum(x => x.AFinAmount) -
@@ -217,7 +219,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         {
             bool learnDelMathEng = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false;
             bool useDeliveryAttributeDate = learnDelMathEng || !hasPriceEpisodes;
-            ILearningDeliveryFAM[] acts = learningDelivery.LearningDeliveryFAMs.Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT).ToArray();
+            ILearningDeliveryFAM[] acts = learningDelivery.LearningDeliveryFAMs.Where(x =>
+                string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeACT, StringComparison.OrdinalIgnoreCase)).ToArray();
 
             if (acts.All(x => x.LearnDelFAMDateFromNullable == null))
             {
@@ -449,7 +452,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             List<LearningDeliveryFamSimple> ret = new List<LearningDeliveryFamSimple>();
 
             ILearningDeliveryFAM[] lsfs = learningDelivery.LearningDeliveryFAMs
-                ?.Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLSF)
+                ?.Where(x =>
+                    string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLSF, StringComparison.OrdinalIgnoreCase))
                 .ToArray();
             if (lsfs == null || !lsfs.Any())
             {

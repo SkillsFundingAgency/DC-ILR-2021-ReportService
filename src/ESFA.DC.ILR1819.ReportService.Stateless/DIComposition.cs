@@ -329,6 +329,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.RegisterType<EasProviderService>().As<IEasProviderService>()
                 .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ValueProvider>().As<IValueProvider>()
+                .SingleInstance();
         }
 
         private static void RegisterBuilders(ContainerBuilder containerBuilder)
