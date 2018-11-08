@@ -11,10 +11,22 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Models
             Pivot = pivot;
         }
 
+        public XlsxEntry(ClassMap mapper, int dataRows, string title, int blankRowsBefore)
+        {
+            Mapper = mapper;
+            DataRows = dataRows;
+            Title = title;
+            BlankRowsBefore = blankRowsBefore;
+        }
+
         public ClassMap Mapper { get; }
 
         public int DataRows { get; }
 
         public bool Pivot { get; }
+
+        public string Title { get; }
+
+        public int BlankRowsBefore { get; }
     }
 }

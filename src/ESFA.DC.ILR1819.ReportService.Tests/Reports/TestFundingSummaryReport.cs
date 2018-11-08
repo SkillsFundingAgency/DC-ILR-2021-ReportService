@@ -14,10 +14,13 @@ using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
+using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
+using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model;
@@ -172,7 +175,21 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             //    new CsvEntry(fundingSummaryMapper, 3, "Advanced Loans Bursary"),
             //    new CsvEntry(fundingSummaryMapper, 0, Constants.ALBInfoText),
             //    new CsvEntry(fundingSummaryFooterMapper, 1, blankRowsBefore: 1));
-            //TestXlsxHelper.CheckXlsx(xlsx, new XlsxEntry(fundingSummaryHeaderMapper, fundingSummaryHeaderMapper.GetMaxIndex(), true));
+
+            //var fundingSummaryHeaderMapper = new FundingSummaryHeaderMapper();
+            //var fundingSummaryMapper = new FundingSummaryMapper();
+            //TestXlsxHelper.CheckXlsxWithTitles(
+            //    xlsx,
+            //    new XlsxEntry(fundingSummaryHeaderMapper, fundingSummaryHeaderMapper.GetMaxIndex(), true),
+            //    new XlsxEntry(fundingSummaryMapper, 0, "16-18 Traineeships Budget", 1),
+            //    new XlsxEntry(fundingSummaryMapper, 13, "16-18 Traineeships", 0),
+            //    new XlsxEntry(fundingSummaryMapper, 0, "Carry-in Apprenticeships Budget (for starts before 1 May 2017 and non-procured delivery)", 1),
+            //    new XlsxEntry(fundingSummaryMapper, 9, "16-18 Apprenticeship Frameworks for starts before 1 May 2017", 1),
+            //    new XlsxEntry(fundingSummaryMapper, 9, "16-18 Trailblazer Apprenticeships for starts before 1 May 2017", 1),
+            //    new XlsxEntry(fundingSummaryMapper, 18, "16-18 Non-Levy Contracted Apprenticeships - Non-procured delivery", 1),
+            //    new XlsxEntry(fundingSummaryMapper, 9, "19-23 Apprenticeship Frameworks for starts before 1 May 2017", 1),
+            //    new XlsxEntry(fundingSummaryMapper, 9, "19-23 Trailblazer Apprenticeships for starts before 1 May 2017", 0),
+            //    new XlsxEntry(fundingSummaryMapper, 9, "24+ Apprenticeship Frameworks for starts before 1 May 2017", 1));
         }
     }
 }
