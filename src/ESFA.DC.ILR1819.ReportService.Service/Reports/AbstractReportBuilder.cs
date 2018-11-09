@@ -37,7 +37,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public bool IsMatch(string reportTaskName)
         {
-            return reportTaskName == ReportTaskName;
+            return string.Equals(reportTaskName, ReportTaskName, StringComparison.OrdinalIgnoreCase);
         }
 
         public string GetExternalFilename(string ukPrn, long jobId, DateTime submissionDateTime)

@@ -179,7 +179,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                                 (learningDelivery.FworkCode == null || x.FworkCode == learningDelivery.FworkCode) &&
                                 (learningDelivery.ProgType == null || x.ProgType == learningDelivery.ProgType) &&
                                 (learningDelivery.PwayCode == null || x.PwayCode == learningDelivery.PwayCode) &&
-                                x.LearnAimRef == learningDelivery.LearningDeliveryLearnAimRef &&
+                                string.Equals(x.LearnAimRef, learningDelivery.LearningDeliveryLearnAimRef, StringComparison.OrdinalIgnoreCase) &&
                                 x.EffectiveFrom < learningDelivery.LearningDeliveryLearnStartDate &&
                                 x.EffectiveTo > learningDelivery.LearningDeliveryLearnStartDate)?.FrameworkComponentType;
                         }

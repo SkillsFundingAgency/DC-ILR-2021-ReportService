@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -89,10 +90,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var additionalPaymentsModels = new List<AppsAdditionalPaymentsModel>();
             foreach (string validLearnerRefNum in validLearnersTask.Result)
             {
-                var learner =
-                    ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
 
-                var fm36Data = fm36Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
+                var fm36Data = fm36Task.Result?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
 
                 if (learner == null || fm36Data == null)
                 {

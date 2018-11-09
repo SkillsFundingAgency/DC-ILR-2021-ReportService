@@ -123,8 +123,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             foreach (ILearner learner in learners)
             {
-                LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => x.Key == learner.LearnRefNumber).Value;
-                FM36Learner fm36Learner = fm36Data?.Learners?.SingleOrDefault(x => x.LearnRefNumber == learner.LearnRefNumber);
+                LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => string.Equals(x.Key, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase)).Value;
+                FM36Learner fm36Learner = fm36Data?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {

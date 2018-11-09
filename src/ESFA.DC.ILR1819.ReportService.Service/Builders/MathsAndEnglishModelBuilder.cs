@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -22,9 +23,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 ConditionOfFundingEnglish = fm25Data.ConditionOfFundingEnglish,
                 RateBand = fm25Data.RateBand,
                 ProvSpecLearnMonA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 LearnerStartDate = fm25Data.LearnerStartDate
             };
         }
