@@ -114,7 +114,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, jobContextMessage.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn.ToString(), jobId, jobContextMessage.SubmissionDateTimeUtc);
 
-            string csv = WriteResults(dataMatchModels);
+            string csv = WriteResults();
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
@@ -421,7 +421,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return new DateTime(episodeStartDate.Year, 8, 1);
         }
 
-        private string WriteResults(IReadOnlyCollection<DataMatchModel> models)
+        private string WriteResults()
         {
             using (var ms = new MemoryStream())
             {
@@ -430,7 +430,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<DataMatchReportMapper, DataMatchModel>(csvWriter, models);
+                        WriteCsvRecords<DataMatchReportMapper, DataMatchModel>(csvWriter, dataMatchModels);
                         csvWriter.Flush();
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());
