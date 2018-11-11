@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using ESFA.DC.EAS1819.EF;
+using ESFA.DC.ILR1819.ReportService.Model.Eas;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Interface.Builders

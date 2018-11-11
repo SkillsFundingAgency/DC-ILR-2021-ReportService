@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using Aspose.Cells;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.EAS1819.EF;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
@@ -28,6 +27,7 @@ using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -1160,6 +1160,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             using (MemoryStream ms = new MemoryStream())
             {
+                workbook.Worksheets[0].Name = "FundingSummaryReport";
                 workbook.Save(ms, SaveFormat.Xlsx);
                 await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
