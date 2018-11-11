@@ -1,17 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.EAS1819.EF;
-using ESFA.DC.JobContextManager.Model.Interface;
-
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+﻿namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using ESFA.DC.JobContextManager.Model.Interface;
+    using Model.Eas;
+
     public interface IEasProviderService
     {
         Task<DateTime> GetLastEasUpdate(int ukprn, CancellationToken cancellationToken);
 
-        List<ESFA.DC.EAS1819.EF.PaymentTypes> GetAllPaymentTypes();
+        List<EasPaymentTypes> GetAllPaymentTypes();
 
         Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
     }
