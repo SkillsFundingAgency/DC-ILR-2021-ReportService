@@ -5,22 +5,16 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.EAS1819.EF;
-using ESFA.DC.EAS1819.EF.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
-using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
-using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model;
@@ -54,7 +48,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
 
-            EasConfiguration easConfiguration = new EasConfiguration() { EasConnectionString = new TestConfigurationHelper().GetSectionValues<EasConfiguration>("EasSection").EasConnectionString };
+            EasConfiguration easConfiguration = new EasConfiguration() { EasConnectionString = ConfigurationManager.AppSettings["EasdbConnectionString"] };
             IEasProviderService easProviderService = new EasProviderService(logger.Object, easConfiguration);
 
             Mock <IPostcodeProviderService> postcodeProverServiceMock = new Mock<IPostcodeProviderService>();
