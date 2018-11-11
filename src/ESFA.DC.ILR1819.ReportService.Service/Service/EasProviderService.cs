@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.EAS1819.EF;
-using ESFA.DC.EAS1819.EF.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
+using ESFA.DC.ILR1819.ReportService.Model.Eas;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
@@ -63,11 +64,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedLastEasUpdate[ukprn];
         }
 
-        public List<PaymentTypes> GetAllPaymentTypes()
+        public List<EasPaymentTypes> GetAllPaymentTypes()
         {
             var easDbContext = new EasdbContext(_easConfiguration.EasConnectionString);
             var paymentTypesList = easDbContext.PaymentTypes.OrderBy(s => s.PaymentId).ThenBy(s => s.PaymentName).ToList();
-            return paymentTypesList;
+            List<EasPaymentTypes> easPaymentTypeList = paymentTypesList.Select(x => x.ToEasPaymentTypes()).ToList();
+            return easPaymentTypeList;
         }
 
         public async Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
@@ -83,8 +85,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     .OrderByDescending(x => x.UpdatedOn).FirstOrDefault();
                 if (easSubmission != null)
                 {
-                    easSubmissionValues = easDbContext.EasSubmissionValues
-                        .Where(x => x.SubmissionId == easSubmission.SubmissionId).ToList();
+                    var easSubmissionValuesList = easDbContext.EasSubmissionValues.Where(x => x.SubmissionId == easSubmission.SubmissionId).ToList();
+                    easSubmissionValues = easSubmissionValuesList.Select(x => x.ToEasSubmissionValues()).ToList();
                 }
 
                 _loadedEasSubmissionValuesList = easSubmissionValues;

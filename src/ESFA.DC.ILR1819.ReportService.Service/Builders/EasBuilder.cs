@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Aspose.Cells;
-using ESFA.DC.EAS1819.EF;
-using ESFA.DC.EAS1819.EF.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Eas;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
@@ -57,8 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         private int GetPaymentTypeId(string paymentTypeName)
         {
-            var paymentId = _easProviderService.GetAllPaymentTypes()
-                .FirstOrDefault(pt => pt.PaymentName == paymentTypeName).PaymentId;
+            var paymentId = _easProviderService.GetAllPaymentTypes().FirstOrDefault(pt => pt.PaymentName == paymentTypeName).PaymentId;
             return paymentId;
         }
 
