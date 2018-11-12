@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using ESFA.DC.EAS1819.EF;
-using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.ReportService.Interface.Builders;
-using ESFA.DC.ILR1819.ReportService.Model.ILR;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+﻿namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using ESFA.DC.ILR1819.ReportService.Interface.Builders;
+    using ESFA.DC.ILR1819.ReportService.Model.Eas;
+    using ESFA.DC.ILR1819.ReportService.Model.ILR;
+    using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+
     public class AdultFundingClaimBuilder : IAdultFundingClaimBuilder
     {
         public AdultFundingClaimModel BuildAdultFundingClaimModel(
@@ -63,6 +62,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             loansBursaryFunding12Months = AlbDeliveryValues12Months(albLearningDeliveryPeriodisedValues, new[] { "ALBSupportPayment" }, new[] { "Advanced Learner Loans Bursary" });
             loansAreaCosts6Months = AlbDeliveryValues6Months(albLearningDeliveryPeriodisedValues, new[] { "AreaUpliftBalPayment", "AreaUpliftOnProgPayment" }, new[] { "Advanced Learner Loans Bursary" });
             loansAreaCosts12Months = AlbDeliveryValues12Months(albLearningDeliveryPeriodisedValues, new[] { "AreaUpliftBalPayment", "AreaUpliftOnProgPayment" }, new[] { "Advanced Learner Loans Bursary" });
+
+            // EAS
 
             adultFundingClaimModel.OtherLearningProgrammeFunding6Months = otherLearningProgramFunding6MonthsFm35 + otherLearningProgramFunding6MonthsEas;
             adultFundingClaimModel.OtherLearningProgrammeFunding12Months = otherLearningProgramFunding12MonthsFm35 + otherLearningProgramFunding12MonthsEas;

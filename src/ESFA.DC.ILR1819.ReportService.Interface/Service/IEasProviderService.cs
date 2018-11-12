@@ -11,7 +11,7 @@
     {
         Task<DateTime> GetLastEasUpdate(int ukprn, CancellationToken cancellationToken);
 
-        List<EasPaymentTypes> GetAllPaymentTypes();
+        List<EasPaymentType> GetAllPaymentTypes();
 
         Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
     }

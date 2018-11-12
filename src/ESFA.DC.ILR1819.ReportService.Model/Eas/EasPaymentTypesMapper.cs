@@ -2,9 +2,9 @@
 {
     public static class EasPaymentTypesMapper
     { 
-        public static EasPaymentTypes ToEasPaymentTypes(this EAS1819.EF.PaymentTypes paymentTypes)
+        public static EasPaymentType ToEasPaymentTypes(this EAS1819.EF.PaymentTypes paymentTypes)
         {
-            return new EasPaymentTypes()
+            return new EasPaymentType()
             {
                 PaymentId = paymentTypes.PaymentId,
                 PaymentName =  paymentTypes.PaymentName
