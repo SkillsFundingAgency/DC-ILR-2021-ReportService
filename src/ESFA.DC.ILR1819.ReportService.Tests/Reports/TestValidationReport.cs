@@ -65,8 +65,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
-
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+            IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
 
             IReport validationErrorsReport = new ValidationErrorsReport(
                 logger.Object,
@@ -76,7 +76,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 ilrProviderService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks);
+                topicsAndTasks,
+                validationStageOutputCache);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";

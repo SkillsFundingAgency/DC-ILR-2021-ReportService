@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IKeyValuePersistenceService _redis;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IValidationStageOutputCache _validationStageOutputCache;
 
         private string _externalFileName;
         private string _fileName;
@@ -48,7 +49,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            IValidationStageOutputCache validationStageOutputCache)
         : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
@@ -56,6 +58,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _redis = redis;
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
+            _validationStageOutputCache = validationStageOutputCache;
 
             ReportFileName = "Validation Errors Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport;
@@ -94,7 +97,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 TotalWarnings = warnings.Length,
                 TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber),
                 TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber),
-                ErrorMessage = validationErrorDtos.FirstOrDefault(x => string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase))?.ErrorMessage
+                ErrorMessage = validationErrorDtos.FirstOrDefault(x => string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase))?.ErrorMessage,
+                TotalDataMatchErrors = _validationStageOutputCache.DataMatchProblemCount,
+                TotalDataMatchLearners = _validationStageOutputCache.DataMatchProblemLearnersCount
             };
         }
 

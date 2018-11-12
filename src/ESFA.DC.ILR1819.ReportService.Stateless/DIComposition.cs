@@ -332,6 +332,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.RegisterType<ValueProvider>().As<IValueProvider>()
                 .SingleInstance();
+
+            containerBuilder.RegisterType<ValidationStageOutputCache>().As<IValidationStageOutputCache>()
+                .InstancePerLifetimeScope();
         }
 
         private static void RegisterBuilders(ContainerBuilder containerBuilder)

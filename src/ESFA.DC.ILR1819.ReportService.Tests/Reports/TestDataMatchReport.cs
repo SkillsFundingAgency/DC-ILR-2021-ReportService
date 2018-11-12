@@ -94,6 +94,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
+            IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
 
             var report = new DataMatchReport(
                 logger.Object,
@@ -105,7 +106,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 storage.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks);
+                topicsAndTasks,
+                validationStageOutputCache);
 
             await report.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 

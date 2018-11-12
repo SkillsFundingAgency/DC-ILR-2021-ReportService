@@ -19,6 +19,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
+using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.ReferenceData;
 using ESFA.DC.IO.Interfaces;
@@ -39,6 +40,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IDasCommitmentsService _dasCommitmentsService;
         private readonly IPeriodProviderService _periodProviderService;
         private readonly IKeyValuePersistenceService _storage;
+        private readonly IValidationStageOutputCache _validationStageOutputCache;
 
         private readonly List<DataMatchModel> dataMatchModels;
 
@@ -52,7 +54,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            IValidationStageOutputCache validationStageOutputCache)
             : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
@@ -62,6 +65,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _dasCommitmentsService = dasCommitmentsService;
             _periodProviderService = periodProviderService;
             _storage = blob;
+            _validationStageOutputCache = validationStageOutputCache;
 
             dataMatchModels = new List<DataMatchModel>();
             ReportFileName = "Apprenticeship Data Match Report";
@@ -108,6 +112,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 cancellationToken.ThrowIfCancellationRequested();
 
                 BuildReportData(rawEarnings, commitments, ukPrn);
+
+                _validationStageOutputCache.DataMatchProblemCount = dataMatchModels.Count;
+                _validationStageOutputCache.DataMatchProblemLearnersCount = dataMatchModels.DistinctBy(x => x.LearnRefNumber).Count();
             }
 
             var jobId = jobContextMessage.JobId;
