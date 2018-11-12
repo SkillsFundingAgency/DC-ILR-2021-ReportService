@@ -16,4 +16,10 @@
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.6-beta0001" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ESFA.DC.EAS1819.EF">
+      <HintPath>..\packages\ESFA.DC.EAS1819.EF.0.1.0\lib\net461\ESFA.DC.EAS1819.EF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

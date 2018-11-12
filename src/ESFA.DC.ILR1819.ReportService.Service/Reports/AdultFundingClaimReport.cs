@@ -17,14 +17,20 @@ using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR1819.DataStore.EF;
+using ESFA.DC.ILR1819.DataStore.EF.Interfaces;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
+using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Model.Styling;
+using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
@@ -83,6 +89,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IVersionInfo _versionInfo;
         private readonly IExcelStyleProvider _excelStyleProvider;
         private readonly IEasBuilder _easBuilder;
+        private readonly IAdultFundingClaimBuilder _adultFundingClaimBuilder;
         private readonly IAllbBuilder _allbBuilder;
         private readonly IFm25Builder _fm25Builder;
         private readonly IFm35Builder _fm35Builder;
@@ -107,7 +114,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IVersionInfo versionInfo,
             IExcelStyleProvider excelStyleProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            IEasBuilder easBuilder)
+            IEasBuilder easBuilder,
+            IAdultFundingClaimBuilder adultFundingClaimBuilder)
             : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
@@ -128,6 +136,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _excelStyleProvider = excelStyleProvider;
             _dateTimeProvider = dateTimeProvider;
             _easBuilder = easBuilder;
+            _adultFundingClaimBuilder = adultFundingClaimBuilder;
 
             ReportFileName = "Adult Funding Claim Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;
@@ -141,7 +150,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             //Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             //Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            //Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
+
+            IILR1819_DataStoreEntities _ilrContext = new ILR1819_DataStoreEntities("data source=(local);initial catalog=Easdb;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90");
+            var _easdbContext = new EasdbContext("data source=(local);initial catalog=Easdb;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90");
+
+            var easProviderService = new EasProviderService(null, new EasConfiguration { EasConnectionString = "data source=(local);initial catalog=Easdb;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" });
+
+           // var easProviderService = new EasProviderService(null, new EasConfiguration() { EasConnectionString = "data source=(local);initial catalog=Easdb;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" });
+            var ilrConnectionString =
+                "metadata=res://*/DataStoreModel.csdl|res://*/DataStoreModel.ssdl|res://*/DataStoreModel.msl;provider=System.Data.SqlClient;provider connection string='data source =(local); initial catalog = ilr1819DataStore; integrated security = True; MultipleActiveResultSets = True; App = EntityFramework'";
+            var fm35ProviderService = new FM35ProviderService(_logger, null, null, null, new ILRConfiguration
+            {
+                ILRConnectionString = ilrConnectionString
+            });
+
+            var allbProviderService = new AllbProviderService(_logger, null, null, null, new ILRConfiguration
+            {
+                ILRConnectionString = ilrConnectionString
+            });
+
+            Task<List<EasSubmissionValues>> easSubmissionValuesAsync = easProviderService.GetEasSubmissionValuesAsync(jobContextMessage, cancellationToken);
+            Task<List<FM35LearningDeliveryValues>> fm35AdultFundingLineDataFromDataStore = fm35ProviderService.GetFM35AdultFundingLineDataFromDataStore(jobContextMessage, cancellationToken);
+            Task<List<ALBLearningDeliveryValues>> albfm35AdultFundingLineDataFromDataStore = allbProviderService.GetALBFM35AdultFundingLineDataFromDataStore(jobContextMessage, cancellationToken);
+
+            // await Task.WhenAll(easSubmissionValuesAsync, fm35AdultFundingLineDataFromDataStore, albfm35AdultFundingLineDataFromDataStore);
+
+            var fundingClaimModel = new AdultFundingClaimBuilder().BuildAdultFundingClaimModel(fm35AdultFundingLineDataFromDataStore.Result, easSubmissionValuesAsync.Result, albfm35AdultFundingLineDataFromDataStore.Result);
             //Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             //Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
 
@@ -202,7 +236,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 memoryStream.Position = 0;
                 Workbook workbook = new Workbook(memoryStream);
-                PopulateWorkbook(workbook, adultFundingClaimModel);
+                PopulateWorkbook(workbook, fundingClaimModel);
                 using (MemoryStream ms = new MemoryStream())
                 {
                     workbook.Save(ms, SaveFormat.Xlsx);
