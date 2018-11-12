@@ -31,4 +31,13 @@
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ESFA.DC.EAS1819.EF">
+      <HintPath>..\packages\ESFA.DC.EAS1819.EF.0.1.0\lib\net461\ESFA.DC.EAS1819.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR1819.DataStore.EF">
+      <HintPath>..\packages\ESFA.DC.ILR1819.Database.EF.0.1.8-beta0001\lib\net46\ESFA.DC.ILR1819.DataStore.EF.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
