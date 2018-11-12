@@ -98,6 +98,7 @@
     </Reference>
     <Reference Include="ESFA.DC.EAS1819.EF, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.EAS1819.EF.0.1.0\lib\net461\ESFA.DC.EAS1819.EF.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.1.297.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.0.1.297\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
@@ -122,6 +123,18 @@
     </Reference>
     <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR1819.Database.EF, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR1819.Database.EF.0.1.8-beta0001\lib\net46\ESFA.DC.ILR1819.Database.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR1819.DataStore.EF, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR1819.Database.EF.0.1.8-beta0001\lib\net46\ESFA.DC.ILR1819.DataStore.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR1819.DataStore.EF.Invalid, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR1819.Database.EF.0.1.8-beta0001\lib\net46\ESFA.DC.ILR1819.DataStore.EF.Invalid.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR1819.DataStore.EF.Valid, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR1819.Database.EF.0.1.8-beta0001\lib\net46\ESFA.DC.ILR1819.DataStore.EF.Valid.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.IO.AzureStorage, Version=0.1.14.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.IO.AzureStorage.0.1.14-beta0001\lib\netstandard2.0\ESFA.DC.IO.AzureStorage.dll</HintPath>
@@ -281,6 +294,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builders\AdultFundingClaimBuilder.cs" />
     <Compile Include="Builders\AllbBuilder.cs" />
     <Compile Include="Builders\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
@@ -339,6 +353,7 @@
     <Compile Include="Reports\AppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\AppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\DataMatchReport.cs" />
+    <Compile Include="Reports\AdultFundingClaimReport.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
     <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\SummaryOfFunding1619Report.cs" />

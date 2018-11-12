@@ -4,12 +4,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.EAS1819.EF;
-using ESFA.DC.EAS1819.EF.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
+using ESFA.DC.ILR1819.ReportService.Model.Eas;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
@@ -22,16 +23,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private List<EasSubmissionValues> _loadedEasSubmissionValuesList;
         private readonly SemaphoreSlim _getLastEastUpdateLock;
 
-        //private readonly IEasdbContext _easDbContext;
-
-        public EasProviderService(ILogger logger, EasConfiguration easConfiguration) //, IEasdbContext easDbContext)
+        public EasProviderService(ILogger logger, EasConfiguration easConfiguration)
         {
             _logger = logger;
             _easConfiguration = easConfiguration;
             _loadedLastEasUpdate = new Dictionary<int, DateTime>();
             _loadedEasSubmissionValuesList = new List<EasSubmissionValues>();
 
-            //_easDbContext = easDbContext;
             _getLastEastUpdateLock = new SemaphoreSlim(1, 1);
         }
 
@@ -47,6 +45,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 {
                     _loadedLastEasUpdate[ukprn] = DateTime.MinValue;
                 }
+
+                var easDbContext = new EasdbContext(_easConfiguration.EasConnectionString);
+                var easSubmission = easDbContext.EasSubmission.Where(x => x.Ukprn == ukprn.ToString())
+                    .OrderByDescending(x => x.UpdatedOn).FirstOrDefault();
+
+                _loadedLastEasUpdate[ukprn] = easSubmission?.UpdatedOn ?? DateTime.MinValue;
             }
             catch (Exception ex)
             {
@@ -60,17 +64,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedLastEasUpdate[ukprn];
         }
 
-        public List<PaymentTypes> GetAllPaymentTypes()
+        public List<EasPaymentType> GetAllPaymentTypes()
         {
             var easDbContext = new EasdbContext(_easConfiguration.EasConnectionString);
             var paymentTypesList = easDbContext.PaymentTypes.OrderBy(s => s.PaymentId).ThenBy(s => s.PaymentName).ToList();
-            return paymentTypesList;
+            List<EasPaymentType> easPaymentTypeList = paymentTypesList.Select(x => x.ToEasPaymentTypes()).ToList();
+            return easPaymentTypeList;
         }
 
         public async Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             await _getLastEastUpdateLock.WaitAsync(cancellationToken);
             string UkPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            var allPaymentTypes = GetAllPaymentTypes();
             try
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -80,8 +86,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     .OrderByDescending(x => x.UpdatedOn).FirstOrDefault();
                 if (easSubmission != null)
                 {
-                    easSubmissionValues = easDbContext.EasSubmissionValues
-                        .Where(x => x.SubmissionId == easSubmission.SubmissionId).ToList();
+                    var easSubmissionValuesList = easDbContext.EasSubmissionValues.Where(x => x.SubmissionId == easSubmission.SubmissionId).ToList();
+                    easSubmissionValues = easSubmissionValuesList.Select(x => new EasSubmissionValues()
+                    {
+                        PaymentTypeName = GetPaymentNameById(x.PaymentId, allPaymentTypes),
+                        PaymentId = x.PaymentId,
+                        CollectionPeriod = x.CollectionPeriod,
+                        PaymentValue = x.PaymentValue
+                    }).ToList();
                 }
 
                 _loadedEasSubmissionValuesList = easSubmissionValues;
@@ -96,6 +108,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _loadedEasSubmissionValuesList;
+        }
+
+        private string GetPaymentNameById(int paymentId, List<EasPaymentType> allPaymentTypes)
+        {
+            var payment = allPaymentTypes.FirstOrDefault(pt => pt.PaymentId == paymentId);
+            if (payment != null)
+            {
+                return payment.PaymentName;
+            }
+
+            return string.Empty;
         }
     }
 }

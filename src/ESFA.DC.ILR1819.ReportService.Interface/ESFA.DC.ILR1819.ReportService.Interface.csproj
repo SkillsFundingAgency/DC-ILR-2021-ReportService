@@ -12,7 +12,6 @@
     <PackageReference Include="Aspose.Cells" Version="18.10.0" />
     <PackageReference Include="ESFA.DC.Data.DAS.Model" Version="0.1.0" />
     <PackageReference Include="ESFA.DC.Data.LARS.Model" Version="0.1.4-beta0001" />
-    <PackageReference Include="ESFA.DC.EAS1819.EF" Version="0.1.0" />
     <PackageReference Include="ESFA.DC.ILR.1819.Model" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model" Version="0.1.297" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.FM25.FundingOutput.Model" Version="0.1.297" />
@@ -30,6 +29,15 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="ESFA.DC.EAS1819.EF">
+      <HintPath>..\packages\ESFA.DC.EAS1819.EF.0.1.0\lib\net461\ESFA.DC.EAS1819.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR1819.DataStore.EF">
+      <HintPath>..\packages\ESFA.DC.ILR1819.Database.EF.0.1.8-beta0001\lib\net46\ESFA.DC.ILR1819.DataStore.EF.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>
