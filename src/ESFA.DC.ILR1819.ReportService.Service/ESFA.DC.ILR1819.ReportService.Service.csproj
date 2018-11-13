@@ -331,6 +331,8 @@
     <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\Eas\EasPaymentTypesExtensions.cs" />
+    <Compile Include="Extensions\Eas\EasSubmissionValuesExtensions.cs" />
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Helper\IlrFileHelper.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />

@@ -368,7 +368,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 apprenticeshipTotal.ExcelRecordStyle = 3;
                 fundingSummaryModels.Add(apprenticeshipTotal);
 
-                // Todo: EAS
+                // EAS
                 FundingSummaryModel eas1923FrameworksAuditAdjustments = _easBuilder.BuildWithEasSubValueLine("EAS 19-23 Apprenticeship Frameworks Audit Adjustments (£)", easSubmissionsValuesTask.Result, "Audit Adjustments: 19-23 Apprenticeships", periodTask.Result);
                 fundingSummaryModels.Add(eas1923FrameworksAuditAdjustments);
 
@@ -940,7 +940,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(totalAeb);
 
             fundingSummaryModels.Add(new FundingSummaryModel());
-            FundingSummaryModel totalNonProcuredAdult = _totalBuilder.TotalRecords("Total Adult Education Budget – Non-procured delivery (£)", traineeship1924Total, aebTotal); // Todo: EAS
+            FundingSummaryModel totalNonProcuredAdult = _totalBuilder.TotalRecords("Total Adult Education Budget – Non-procured delivery (£)", traineeship1924Total, totalAeb);
             totalNonProcuredAdult.ExcelHeaderStyle = 0;
             totalNonProcuredAdult.ExcelRecordStyle = 0;
             fundingSummaryModels.Add(totalNonProcuredAdult);
@@ -1028,7 +1028,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(totalAebProcured);
 
             fundingSummaryModels.Add(new FundingSummaryModel());
-            FundingSummaryModel totalProcuredAdult = _totalBuilder.TotalRecords("Total Adult Education Budget – Procured delivery from 1 Nov 2017 (£)", traineeship1924Total, totalAebProcured); // Todo: EAS
+            FundingSummaryModel totalProcuredAdult = _totalBuilder.TotalRecords("Total Adult Education Budget – Procured delivery from 1 Nov 2017 (£)", traineeship1924Total, totalAebProcured); // EAS
             totalProcuredAdult.ExcelHeaderStyle = 0;
             totalProcuredAdult.ExcelRecordStyle = 0;
             fundingSummaryModels.Add(totalProcuredAdult);
