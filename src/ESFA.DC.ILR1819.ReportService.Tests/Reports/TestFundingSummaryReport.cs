@@ -47,7 +47,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null);
 
             // Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
             IOrgProviderService orgProviderService = new OrgProviderService(logger.Object, new OrgConfiguration() { OrgConnectionString = ConfigurationManager.AppSettings["OrgConnectionString"] });
