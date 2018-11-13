@@ -330,6 +330,10 @@
     <Compile Include="Comparer\SummaryOfFunding1619ModelComparer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Extensions\DataMatch\EarningExtensions.cs" />
+    <Compile Include="Extensions\DataMatch\PriceEpisodeMatchExtensions.cs" />
+    <Compile Include="Extensions\DataMatch\PriceEpisodePeriodMatchExtensions.cs" />
+    <Compile Include="Extensions\DataMatch\ValidationErrorExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Helper\IlrFileHelper.cs" />
@@ -364,7 +368,8 @@
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\CacheProviderService.cs" />
-    <Compile Include="Service\DasCommitmentsService.cs" />
+    <Compile Include="Service\DataMatch\DasCommitmentsService.cs" />
+    <Compile Include="Service\DataMatch\DatalockValidationResultBuilder.cs" />
     <Compile Include="Service\EasProviderService.cs" />
     <Compile Include="Service\ExcelStyleProvider.cs" />
     <Compile Include="Service\FM25ProviderService.cs" />

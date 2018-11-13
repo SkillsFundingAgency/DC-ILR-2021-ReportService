@@ -6,5 +6,6 @@
         FirstEmployerProviderIncentives = 2,
         SecondEmployerProviderIncentives = 3,
         Completion = 4,
+        CareLeaverApprenticePayments = 5
     }
 }

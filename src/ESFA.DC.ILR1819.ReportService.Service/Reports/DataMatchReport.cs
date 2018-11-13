@@ -13,12 +13,15 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
+using ESFA.DC.ILR1819.ReportService.Service.Extensions.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.ReferenceData;
@@ -41,6 +44,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IPeriodProviderService _periodProviderService;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IValidationStageOutputCache _validationStageOutputCache;
+        private readonly IDatalockValidationResultBuilder _datalockValidationResultBuilder;
+        private readonly ITotalBuilder _totalBuilder;
 
         private readonly List<DataMatchModel> dataMatchModels;
 
@@ -55,7 +60,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            IValidationStageOutputCache validationStageOutputCache)
+            IValidationStageOutputCache validationStageOutputCache,
+            IDatalockValidationResultBuilder datalockValidationResultBuilder,
+            ITotalBuilder totalBuilder)
             : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
@@ -66,6 +73,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _periodProviderService = periodProviderService;
             _storage = blob;
             _validationStageOutputCache = validationStageOutputCache;
+            _datalockValidationResultBuilder = datalockValidationResultBuilder;
+            _totalBuilder = totalBuilder;
 
             dataMatchModels = new List<DataMatchModel>();
             ReportFileName = "Apprenticeship Data Match Report";
@@ -135,6 +144,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 if (!commitmentsToMatch.Any())
                 {
                     AddError(DataLockValidationMessages.DLOCK_02, rawEarning, rawEarning.Uln.ToString());
+                    AddError(DataLockValidationMessages.DLOCK_02, rawEarning, commitmentsToMatch);
                     continue;
                 }
 
@@ -143,6 +153,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 if (!commitmentsToMatch2.Any())
                 {
                     AddError(DataLockValidationMessages.DLOCK_01, rawEarning, rawEarning.Ukprn.ToString(), ukPrn.ToString());
+                    AddError(DataLockValidationMessages.DLOCK_01, rawEarning, commitmentsToMatch);
                     continue;
                 }
 
@@ -159,6 +170,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     if (!commitmentsToMatch2.Any())
                     {
+                        AddError(DataLockValidationMessages.DLOCK_03, rawEarning, commitmentsToMatch);
                         foreach (DasCommitment dasCommitment in commitmentsToMatch)
                         {
                             AddError(
@@ -186,6 +198,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     if (!commitmentsToMatch2.Any())
                     {
+                        AddError(DataLockValidationMessages.DLOCK_04, rawEarning, commitmentsToMatch);
                         foreach (DasCommitment dasCommitment in commitmentsToMatch)
                         {
                             AddError(
@@ -212,6 +225,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     if (!commitmentsToMatch2.Any())
                     {
+                        AddError(DataLockValidationMessages.DLOCK_06, rawEarning, commitmentsToMatch);
                         foreach (DasCommitment dasCommitment in commitmentsToMatch)
                         {
                             AddError(
@@ -235,6 +249,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                     if (!commitmentsToMatch2.Any())
                     {
+                        AddError(DataLockValidationMessages.DLOCK_05, rawEarning, commitmentsToMatch);
                         foreach (DasCommitment dasCommitment in commitmentsToMatch)
                         {
                             AddError(
@@ -254,6 +269,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 if (!commitmentsToMatch2.Any())
                 {
+                    AddError(DataLockValidationMessages.DLOCK_07, rawEarning, commitmentsToMatch);
                     foreach (DasCommitment dasCommitment in commitmentsToMatch)
                     {
                         AddError(
@@ -284,6 +300,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         DataLockValidationMessages.DLOCK_09,
                         rawEarning,
                         rawEarning.LearningDeliveryStartDate.ToString("dd/MM/yyyy HH:mm"));
+                    AddError(DataLockValidationMessages.DLOCK_09, rawEarning, commitmentsToMatch);
                 }
                 else
                 {
@@ -302,15 +319,82 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 if (withdrawnCommitments.Any() && !activeWithdrawnCommitments.Any())
                 {
                     AddError(DataLockValidationMessages.DLOCK_10, rawEarning);
+                    AddError(DataLockValidationMessages.DLOCK_10, rawEarning, commitmentsToMatch);
                 }
 
                 if (commitmentsToMatch.Any(x => x.PaymentStatus == (int)PaymentStatus.Paused))
                 {
                     AddError(DataLockValidationMessages.DLOCK_12, rawEarning);
+                    AddError(DataLockValidationMessages.DLOCK_12, rawEarning, commitmentsToMatch);
                 }
             }
 
+            RemoveErrorsInAdditionToDLOCK_09();
+
             dataMatchModels.Sort(DataMatchModelComparer);
+        }
+
+        private void AddError(string ruleName, RawEarning rawEarning, List<DasCommitment> dasCommitments)
+        {
+            if (rawEarning.HasNonIncentiveEarnings())
+            {
+                foreach (DasCommitment dasCommitment in dasCommitments)
+                {
+                    _datalockValidationResultBuilder.Add(
+                        rawEarning,
+                        new List<string> { ruleName },
+                        TransactionTypesFlag.AllLearning,
+                        dasCommitment);
+                }
+            }
+
+            if (rawEarning.HasCompletionPayment())
+            {
+                foreach (DasCommitment dasCommitment in dasCommitments)
+                {
+                    _datalockValidationResultBuilder.Add(
+                        rawEarning,
+                        new List<string> { ruleName },
+                        TransactionTypesFlag.Completion,
+                        dasCommitment);
+                }
+            }
+
+            if (rawEarning.HasFirstIncentive())
+            {
+                foreach (DasCommitment dasCommitment in dasCommitments)
+                {
+                    _datalockValidationResultBuilder.Add(
+                        rawEarning,
+                        new List<string> { ruleName },
+                        TransactionTypesFlag.FirstEmployerProviderIncentives,
+                        dasCommitment);
+                }
+            }
+
+            if (rawEarning.HasSecondIncentive())
+            {
+                foreach (DasCommitment dasCommitment in dasCommitments)
+                {
+                    _datalockValidationResultBuilder.Add(
+                        rawEarning,
+                        new List<string> { ruleName },
+                        TransactionTypesFlag.SecondEmployerProviderIncentives,
+                        dasCommitment);
+                }
+            }
+
+            if (rawEarning.HasCareLeaverApprenticePayment())
+            {
+                foreach (DasCommitment dasCommitment in dasCommitments)
+                {
+                    _datalockValidationResultBuilder.Add(
+                        rawEarning,
+                        new List<string> { ruleName },
+                        TransactionTypesFlag.CareLeaverApprenticePayments,
+                        dasCommitment);
+                }
+            }
         }
 
         private void AddError(string ruleName, RawEarning rawEarning, string ilrValue = "", string calculatedValue = "")
@@ -325,7 +409,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 ILRValue = ilrValue,
                 ApprenticeshipServiceValue = calculatedValue,
                 PriceEpisodeStartDate = rawEarning.EpisodeStartDate?.ToString("dd/MM/yyyy HH:mm") ?? rawEarning.EpisodeEffectiveTnpStartDate?.ToString("dd/MM/yyyy HH:mm") ?? string.Empty,
-                PriceEpisodeActualEndDate = rawEarning.EndDate?.ToString("dd/MM/yyyy HH:mm") ?? string.Empty
+                PriceEpisodeActualEndDate = rawEarning.EndDate?.ToString("dd/MM/yyyy HH:mm") ?? string.Empty,
+                PriceEpisodeIdentifier = rawEarning.PriceEpisodeIdentifier
             });
         }
 
@@ -359,7 +444,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 foreach (ILearningDelivery learnerLearningDelivery in learningDeliveries)
                 {
-                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber).ToList();
+                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, "Levy Contract", StringComparison.OrdinalIgnoreCase)).ToList();
 
                     if (!priceEpisode.Any())
                     {
@@ -387,6 +472,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         rawEarning.AgreedPrice = episode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice;
 
                         rawEarning.LearningDeliveryStartDate = learnerLearningDelivery.LearnStartDate;
+
+                        rawEarning.PriceEpisodeIdentifier = episode.PriceEpisodeIdentifier;
+
+                        rawEarning.TransactionType01 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType02 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType03 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm3PriceEpisodeBalancePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType04 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType05 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType06 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType07 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType08 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType09 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType10 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType11 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType12 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType15 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLSFCashAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.TransactionType16 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                        rawEarning.FirstIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeFirstAdditionalPaymentThresholdDate;
+                        rawEarning.SecondIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate;
+                        rawEarning.LearnerAdditionalPaymentsDate = episode.PriceEpisodeValues.PriceEpisodeLearnerAdditionalPaymentThresholdDate;
 
                         rawEarnings.Add(rawEarning);
                     }
@@ -442,6 +547,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());
                     }
+                }
+            }
+        }
+
+        private void RemoveErrorsInAdditionToDLOCK_09()
+        {
+            var groupedErrors = dataMatchModels.GroupBy(x => x.PriceEpisodeIdentifier);
+            foreach (var groupedError in groupedErrors)
+            {
+                if (groupedError.Any(x => x.RuleName == DataLockValidationMessages.DLOCK_09))
+                {
+                    dataMatchModels.RemoveAll(x => x.PriceEpisodeIdentifier == groupedError.Key &&
+                                                    x.RuleName != DataLockValidationMessages.DLOCK_09);
                 }
             }
         }

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch;
 using ESFA.DC.Logging.Interfaces;
 using Moq;
 using Xunit;

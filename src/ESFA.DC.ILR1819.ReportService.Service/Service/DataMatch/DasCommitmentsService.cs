@@ -12,7 +12,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch
 {
     public sealed class DasCommitmentsService : IDasCommitmentsService
     {

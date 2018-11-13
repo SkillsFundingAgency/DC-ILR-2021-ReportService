@@ -1,9 +1,12 @@
 ﻿using System;
+using ESFA.DC.ILR1819.ReportService.Interface.DataMatch;
 
 namespace ESFA.DC.ILR1819.ReportService.Model.DasCommitments
 {
-    public sealed class RawEarning
+    public sealed class RawEarning : IIdentifyCommitments
     {
+        public string PriceEpisodeIdentifier { get; set; }
+
         public long Ukprn { get; set; }
 
         public string LearnRefNumber { get; set; }
@@ -31,5 +34,25 @@ namespace ESFA.DC.ILR1819.ReportService.Model.DasCommitments
         public DateTime? EndDate { get; set; }
 
         public DateTime LearningDeliveryStartDate { get; set; }
+
+        public decimal TransactionType01 { get; set; }
+        public decimal TransactionType02 { get; set; }
+        public decimal TransactionType03 { get; set; }
+        public decimal TransactionType04 { get; set; }
+        public decimal TransactionType05 { get; set; }
+        public decimal TransactionType06 { get; set; }
+        public decimal TransactionType07 { get; set; }
+        public decimal TransactionType08 { get; set; }
+        public decimal TransactionType09 { get; set; }
+        public decimal TransactionType10 { get; set; }
+        public decimal TransactionType11 { get; set; }
+        public decimal TransactionType12 { get; set; }
+
+        public decimal TransactionType15 { get; set; }
+        public decimal TransactionType16 { get; set; }
+
+        public DateTime? FirstIncentiveCensusDate { get; set; }
+        public DateTime? SecondIncentiveCensusDate { get; set; }
+        public DateTime? LearnerAdditionalPaymentsDate { get; set; }
     }
 }

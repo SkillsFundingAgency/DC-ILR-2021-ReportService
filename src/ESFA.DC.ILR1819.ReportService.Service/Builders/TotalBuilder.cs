@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Builders;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
@@ -35,6 +36,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             }
 
             return fundingSummaryModel;
+        }
+
+        public decimal TotalRecords(PriceEpisodePeriodisedValues priceEpisodePeriodisedValues)
+        {
+            if (priceEpisodePeriodisedValues == null)
+            {
+                return 0;
+            }
+
+            return TotalRecords(
+                priceEpisodePeriodisedValues.Period1,
+                priceEpisodePeriodisedValues.Period2,
+                priceEpisodePeriodisedValues.Period3,
+                priceEpisodePeriodisedValues.Period4,
+                priceEpisodePeriodisedValues.Period5,
+                priceEpisodePeriodisedValues.Period6,
+                priceEpisodePeriodisedValues.Period7,
+                priceEpisodePeriodisedValues.Period8,
+                priceEpisodePeriodisedValues.Period9,
+                priceEpisodePeriodisedValues.Period10,
+                priceEpisodePeriodisedValues.Period11,
+                priceEpisodePeriodisedValues.Period12);
         }
 
         public decimal TotalRecords(params decimal?[] values)

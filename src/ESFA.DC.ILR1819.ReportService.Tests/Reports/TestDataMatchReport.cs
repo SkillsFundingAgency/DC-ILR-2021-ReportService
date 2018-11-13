@@ -6,14 +6,18 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.DAS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.ILR1819.ReportService.Tests.Models;
@@ -95,6 +99,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
+            IDatalockValidationResultBuilder datalockValidationResultBuilder = new DatalockValidationResultBuilder();
+            ITotalBuilder totalBuilder = new TotalBuilder();
 
             var report = new DataMatchReport(
                 logger.Object,
@@ -107,7 +113,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 dateTimeProviderMock.Object,
                 valueProvider,
                 topicsAndTasks,
-                validationStageOutputCache);
+                validationStageOutputCache,
+                datalockValidationResultBuilder,
+                totalBuilder);
 
             await report.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 

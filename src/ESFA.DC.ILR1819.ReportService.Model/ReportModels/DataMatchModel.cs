@@ -21,5 +21,8 @@
         public string PriceEpisodeActualEndDate { get; set; }
 
         public string OfficalSensitive { get; }
+
+        // For duplicate removal
+        public string PriceEpisodeIdentifier { get; set; }
     }
 }
