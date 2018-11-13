@@ -18,6 +18,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
 
         public string TopicReports_TaskGenerateFundingSummaryReport { get; set; }
 
+        public string TopicReports_TaskGenerateAdultFundingClaimReport { get; set; }
+
         public string TopicDeds_TaskPersistDataToDeds { get; set; }
 
         public string TopicReports_TaskGenerateMainOccupancyReport { get; set; }

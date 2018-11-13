@@ -16,6 +16,8 @@
 
         string TopicReports_TaskGenerateFundingSummaryReport { get; set; }
 
+        string TopicReports_TaskGenerateAdultFundingClaimReport { get; set; }
+
         string TopicDeds_TaskPersistDataToDeds { get; set; }
 
         string TopicReports_TaskGenerateMainOccupancyReport { get; set; }

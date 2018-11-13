@@ -47,12 +47,15 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
-            Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
-            Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null);
 
-            EasConfiguration easConfiguration = new EasConfiguration() { EasConnectionString = ConfigurationManager.AppSettings["EasdbConnectionString"] };
-            IEasProviderService easProviderService = new EasProviderService(logger.Object, easConfiguration);
+            // Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
+            IOrgProviderService orgProviderService = new OrgProviderService(logger.Object, new OrgConfiguration() { OrgConnectionString = ConfigurationManager.AppSettings["OrgConnectionString"] });
+
+            // Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
+            ILarsProviderService larsProviderService = new LarsProviderService(logger.Object, new LarsConfiguration() { LarsConnectionString = ConfigurationManager.AppSettings["LarsConnectionString"] });
+
+            IEasProviderService easProviderService = new EasProviderService(logger.Object, new EasConfiguration() { EasConnectionString = ConfigurationManager.AppSettings["EasdbConnectionString"] });
 
             Mock <IPostcodeProviderService> postcodeProverServiceMock = new Mock<IPostcodeProviderService>();
             Mock<ILargeEmployerProviderService> largeEmployerProviderService = new Mock<ILargeEmployerProviderService>();
@@ -106,9 +109,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             largeEmployerProviderService.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync("NA");
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
-            orgProviderService
-                .Setup(x => x.GetProviderName(It.IsAny<IJobContextMessage>(), It.IsAny<CancellationToken>()))
-                .ReturnsAsync("Test Provider");
+            //orgProviderService
+            //    .Setup(x => x.GetProviderName(It.IsAny<IJobContextMessage>(), It.IsAny<CancellationToken>()))
+            //    .ReturnsAsync("Test Provider");
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
@@ -117,7 +120,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 logger.Object,
                 storage.Object,
                 ilrProviderService,
-                orgProviderService.Object,
+                orgProviderService,
                 allbProviderService,
                 fm25ProviderService,
                 fm35ProviderService,
@@ -128,7 +131,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 periodProviderService.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                larsProviderService.Object,
+                larsProviderService,
                 easProviderService,
                 postcodeProverServiceMock.Object,
                 largeEmployerProviderService.Object,

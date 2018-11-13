@@ -21,9 +21,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         {
             FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
 
-            var paymentTypeId = GetPaymentTypeId(paymentTypeName);
             List<EasSubmissionValues> paymentWiseSubmissionValues = easSubmissionValues
-                .Where(sv => sv.PaymentId == paymentTypeId).ToList();
+                .Where(sv => string.Equals(sv.PaymentTypeName, paymentTypeName, StringComparison.OrdinalIgnoreCase)).ToList();
 
             fundingSummaryModel.Period1 = paymentWiseSubmissionValues.Where(x => x.CollectionPeriod == 1).Sum(x => x.PaymentValue);
             fundingSummaryModel.Period2 = paymentWiseSubmissionValues.Where(x => x.CollectionPeriod == 2).Sum(x => x.PaymentValue);
@@ -49,13 +48,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             fundingSummaryModel.Total = GetYearToDate(fundingSummaryModel, 12);
 
             return fundingSummaryModel;
-        }
-
-        private int GetPaymentTypeId(string paymentTypeName)
-        {
-            var paymentId = _easProviderService.GetAllPaymentTypes()
-                .FirstOrDefault(pt => string.Equals(pt.PaymentName, paymentTypeName, StringComparison.OrdinalIgnoreCase))?.PaymentId ?? 0;
-            return paymentId;
         }
 
         private decimal? GetYearToDate(FundingSummaryModel fundingSummaryModel, int period)
