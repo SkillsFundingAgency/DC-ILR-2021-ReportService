@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IKeyValuePersistenceService _redis;
         private readonly IKeyValuePersistenceService _blob;
         private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly ILRConfiguration _ilrConfiguration;
+        private readonly DataStoreConfiguration _dataStoreConfiguration;
         private readonly SemaphoreSlim _getDataLock;
         private bool _loadedDataAlready;
         private FM35Global _fundingOutputs;
@@ -38,13 +38,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             [KeyFilter(PersistenceStorageKeys.Blob)]
             IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService,
-            ILRConfiguration ilrConfiguration)
+            DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
             _redis = redis;
             _blob = blob;
             _jsonSerializationService = jsonSerializationService;
-            _ilrConfiguration = ilrConfiguration;
+            _dataStoreConfiguration = dataStoreConfiguration;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
@@ -109,7 +109,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 var UkPrn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
 
-                using (var _ilrContext = new ILR1819_DataStoreEntities(_ilrConfiguration.ILRConnectionString))
+                using (var _ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
                     fm35LearningDeliveryPeriodisedValues = (from pv in _ilrContext.FM35_LearningDelivery_PeriodisedValues
                         join ld in _ilrContext.FM35_LearningDelivery

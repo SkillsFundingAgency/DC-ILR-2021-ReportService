@@ -57,7 +57,10 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                             "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
                     };
                 case "EasSection":
-                    return (T)(object)new EasConfiguration();
+                    return (T)(object)new EasConfiguration()
+                    {
+                        EasConnectionString = "data source=(local);initial catalog=Easdb;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90"
+                    };
                 case "LargeEmployerSection":
                     return (T)(object)new LargeEmployerConfiguration
                     {
@@ -69,6 +72,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                     {
                         PostcodeConnectionString =
                             "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
+                    };
+                case "DataStoreSection":
+                    return (T)(object)new DataStoreConfiguration()
+                    {
+                        ILRDataStoreConnectionString =
+                            "metadata=res://*/DataStoreModel.csdl|res://*/DataStoreModel.ssdl|res://*/DataStoreModel.msl;provider=System.Data.SqlClient;provider connection string='data source =(local); initial catalog = ilr1819DataStore; integrated security = True; MultipleActiveResultSets = True; App = EntityFramework'"
                     };
             }
 
@@ -82,6 +91,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 TopicReports_TaskGenerateAllbOccupancyReport = "TopicReports_TaskGenerateAllbOccupancyReport",
                 TopicReports_TaskGenerateValidationReport = "TopicReports_TaskGenerateValidationReport",
                 TopicReports_TaskGenerateFundingSummaryReport = "TopicReports_TaskGenerateFundingSummaryReport",
+                TopicReports_TaskGenerateAdultFundingClaimReport = "TopicReports_TaskGenerateAdultFundingClaimReport",
                 TopicDeds = "TopicDeds",
                 TopicDeds_TaskPersistDataToDeds = "TopicDeds_TaskPersistDataToDeds",
                 TopicFunding = "TopicFunding",

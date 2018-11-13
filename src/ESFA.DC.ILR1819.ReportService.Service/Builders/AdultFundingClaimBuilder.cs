@@ -1,4 +1,11 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+﻿using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.JobContext.Interface;
+using ESFA.DC.JobContextManager.Model.Interface;
+using ESFA.DC.Logging.Interfaces;
+
+namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     using System;
     using System.Collections.Generic;
@@ -10,76 +17,136 @@
 
     public class AdultFundingClaimBuilder : IAdultFundingClaimBuilder
     {
+        private int[] first6monthsArray => new[] { 1, 2, 3, 4, 5, 6 };
+
+        private int[] first12monthsArray => new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+
         public AdultFundingClaimModel BuildAdultFundingClaimModel(
+            ILogger logger,
+            IJobContextMessage jobContextMessage,
             List<FM35LearningDeliveryValues> fm35LearningDeliveryPeriodisedValues,
             List<EasSubmissionValues> easSubmissionValues,
-            List<ALBLearningDeliveryValues> albLearningDeliveryPeriodisedValues)
+            List<ALBLearningDeliveryValues> albLearningDeliveryPeriodisedValues,
+            string providerName,
+            ILRFileDetail ilrFileDetail,
+            IDateTimeProvider dateTimeProvider,
+            IMessage message,
+            IVersionInfo versionInfo)
         {
             var adultFundingClaimModel = new AdultFundingClaimModel();
 
-            // FM35
-            decimal otherLearningProgramFunding6MonthsFm35 = 0;
-            decimal otherLearningProgramFunding12MonthsFm35 = 0;
-            decimal otherLearningSupport6MonthsFm35 = 0;
-            decimal otherLearningSupport12MonthsFm35 = 0;
-            decimal traineeShips1924ProgrammeFunding6MonthsFm35 = 0;
-            decimal traineeShips1924ProgrammeFunding12MonthsFm35 = 0;
-            decimal traineeShips1924LearningSupport6MonthsFm35 = 0;
-            decimal traineeShips1924LearningSupport12MonthsFm35 = 0;
+            try
+            {
+                var ilrfileName = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
+                // FM35
+                decimal otherLearningProgramFunding6MonthsFm35 = 0;
+                decimal otherLearningProgramFunding12MonthsFm35 = 0;
+                decimal otherLearningSupport6MonthsFm35 = 0;
+                decimal otherLearningSupport12MonthsFm35 = 0;
+                decimal traineeShips1924ProgrammeFunding6MonthsFm35 = 0;
+                decimal traineeShips1924ProgrammeFunding12MonthsFm35 = 0;
+                decimal traineeShips1924LearningSupport6MonthsFm35 = 0;
+                decimal traineeShips1924LearningSupport12MonthsFm35 = 0;
 
-            // EAS
-            decimal otherLearningProgramFunding6MonthsEas = 0;
-            decimal otherLearningProgramFunding12MonthsEas = 0;
-            decimal otherLearningSupport6MonthsEas = 0;
-            decimal otherLearningSupport12MonthsEas = 0;
-            decimal traineeShips1924ProgrammeFunding6MonthsEas = 0;
-            decimal traineeShips1924ProgrammeFunding12MonthsEas = 0;
-            decimal traineeShips1924LearningSupport6MonthsEas = 0;
-            decimal traineeShips1924LearningSupport12MonthsEas = 0;
-            decimal loansAreasCosts6MonthsEas = 0;
-            decimal loansAreasCosts12MonthsEas = 0;
-            decimal loansExcessSupport6MonthsEas = 0;
-            decimal loansExcessSupport12MonthsEas = 0;
+                // EAS
+                decimal otherLearningProgramFunding6MonthsEas = 0;
+                decimal otherLearningProgramFunding12MonthsEas = 0;
+                decimal otherLearningSupport6MonthsEas = 0;
+                decimal otherLearningSupport12MonthsEas = 0;
+                decimal traineeShips1924ProgrammeFunding6MonthsEas = 0;
+                decimal traineeShips1924ProgrammeFunding12MonthsEas = 0;
+                decimal traineeShips1924LearningSupport6MonthsEas = 0;
+                decimal traineeShips1924LearningSupport12MonthsEas = 0;
+                decimal traineeShips1924LearnerSupport6MonthsEas = 0;
+                decimal traineeShips1924LearnerSupport12MonthsEas = 0;
+                decimal loansAreasCosts6MonthsEas = 0;
+                decimal loansAreasCosts12MonthsEas = 0;
+                decimal loansExcessSupport6MonthsEas = 0;
+                decimal loansExcessSupport12MonthsEas = 0;
 
-            // ALB
-            decimal loansBursaryFunding6Months = 0;
-            decimal loansBursaryFunding12Months = 0;
-            decimal loansAreaCosts6Months = 0;
-            decimal loansAreaCosts12Months = 0;
+                // ALB
+                decimal loansBursaryFunding6Months = 0;
+                decimal loansBursaryFunding12Months = 0;
+                decimal loansAreaCosts6Months = 0;
+                decimal loansAreaCosts12Months = 0;
 
-            // FM35
-            otherLearningProgramFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-            otherLearningProgramFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-            otherLearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-            otherLearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-            traineeShips1924ProgrammeFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
-            traineeShips1924ProgrammeFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
-            traineeShips1924LearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
-            traineeShips1924LearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
+                // FM35
+                otherLearningProgramFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
+                otherLearningProgramFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
+                otherLearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
+                otherLearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
+                traineeShips1924ProgrammeFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
+                traineeShips1924ProgrammeFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
+                traineeShips1924LearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
+                traineeShips1924LearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
 
-            // ALB
-            loansBursaryFunding6Months = AlbDeliveryValues6Months(albLearningDeliveryPeriodisedValues, new[] { "ALBSupportPayment" }, new[] { "Advanced Learner Loans Bursary" });
-            loansBursaryFunding12Months = AlbDeliveryValues12Months(albLearningDeliveryPeriodisedValues, new[] { "ALBSupportPayment" }, new[] { "Advanced Learner Loans Bursary" });
-            loansAreaCosts6Months = AlbDeliveryValues6Months(albLearningDeliveryPeriodisedValues, new[] { "AreaUpliftBalPayment", "AreaUpliftOnProgPayment" }, new[] { "Advanced Learner Loans Bursary" });
-            loansAreaCosts12Months = AlbDeliveryValues12Months(albLearningDeliveryPeriodisedValues, new[] { "AreaUpliftBalPayment", "AreaUpliftOnProgPayment" }, new[] { "Advanced Learner Loans Bursary" });
+                // ALB
+                loansBursaryFunding6Months = AlbDeliveryValues6Months(albLearningDeliveryPeriodisedValues, new[] { "ALBSupportPayment" }, new[] { "Advanced Learner Loans Bursary" });
+                loansBursaryFunding12Months = AlbDeliveryValues12Months(albLearningDeliveryPeriodisedValues, new[] { "ALBSupportPayment" }, new[] { "Advanced Learner Loans Bursary" });
+                loansAreaCosts6Months = AlbDeliveryValues6Months(albLearningDeliveryPeriodisedValues, new[] { "AreaUpliftBalPayment", "AreaUpliftOnProgPayment" }, new[] { "Advanced Learner Loans Bursary" });
+                loansAreaCosts12Months = AlbDeliveryValues12Months(albLearningDeliveryPeriodisedValues, new[] { "AreaUpliftBalPayment", "AreaUpliftOnProgPayment" }, new[] { "Advanced Learner Loans Bursary" });
 
-            // EAS
+                // EAS
 
-            adultFundingClaimModel.OtherLearningProgrammeFunding6Months = otherLearningProgramFunding6MonthsFm35 + otherLearningProgramFunding6MonthsEas;
-            adultFundingClaimModel.OtherLearningProgrammeFunding12Months = otherLearningProgramFunding12MonthsFm35 + otherLearningProgramFunding12MonthsEas;
-            adultFundingClaimModel.OtherLearningLearningSupport6Months = otherLearningSupport6MonthsFm35 + otherLearningSupport6MonthsEas;
-            adultFundingClaimModel.OtherLearningLearningSupport12Months = otherLearningSupport12MonthsFm35 + otherLearningSupport12MonthsEas;
-            adultFundingClaimModel.Traineeships1924ProgrammeFunding6Months = traineeShips1924ProgrammeFunding6MonthsFm35 + traineeShips1924ProgrammeFunding6MonthsEas;
-            adultFundingClaimModel.Traineeships1924ProgrammeFunding12Months = traineeShips1924ProgrammeFunding12MonthsFm35 + traineeShips1924ProgrammeFunding12MonthsEas;
-            adultFundingClaimModel.Traineeships1924LearningSupport6Months = traineeShips1924LearningSupport6MonthsFm35 + traineeShips1924LearningSupport6MonthsEas;
-            adultFundingClaimModel.Traineeships1924LearningSupport12Months = traineeShips1924LearningSupport12MonthsFm35 + traineeShips1924LearningSupport12MonthsEas;
+                otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB – Other Learning", "Princes Trust: AEB – Other Learning" }.Contains(x.PaymentTypeName) &&
+                                                         first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB – Other Learning", "Princes Trust: AEB – Other Learning" }.Contains(x.PaymentTypeName) &&
+                                                                                       first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
-            adultFundingClaimModel.LoansBursaryFunding6Months = loansBursaryFunding6Months;
-            adultFundingClaimModel.LoansBursaryFunding12Months = loansBursaryFunding12Months;
-            adultFundingClaimModel.LoansAreaCosts6Months = loansAreaCosts6Months + loansAreasCosts6MonthsEas;
-            adultFundingClaimModel.LoansAreaCosts12Months = loansAreaCosts12Months + loansAreasCosts12MonthsEas;
-            adultFundingClaimModel.LoansExcessSupport6Months = loansExcessSupport6MonthsEas;
-            adultFundingClaimModel.LoansExcessSupport12Months = loansExcessSupport12MonthsEas;
+                otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB–Other Learning" }.Contains(x.PaymentTypeName)
+                                                                                && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                otherLearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB–Other Learning" }.Contains(x.PaymentTypeName)
+                                                                                 && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+
+                traineeShips1924ProgrammeFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                                                                                && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                traineeShips1924ProgrammeFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                                                                                            && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+
+                traineeShips1924LearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                                                                                            && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                traineeShips1924LearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                                                                                           && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+
+                traineeShips1924LearnerSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                                                                                           && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                traineeShips1924LearnerSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                                                                                           && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                adultFundingClaimModel.OtherLearningProgrammeFunding6Months = otherLearningProgramFunding6MonthsFm35 + otherLearningProgramFunding6MonthsEas;
+                adultFundingClaimModel.OtherLearningProgrammeFunding12Months = otherLearningProgramFunding12MonthsFm35 + otherLearningProgramFunding12MonthsEas;
+                adultFundingClaimModel.OtherLearningLearningSupport6Months = otherLearningSupport6MonthsFm35 + otherLearningSupport6MonthsEas;
+                adultFundingClaimModel.OtherLearningLearningSupport12Months = otherLearningSupport12MonthsFm35 + otherLearningSupport12MonthsEas;
+                adultFundingClaimModel.Traineeships1924ProgrammeFunding6Months = traineeShips1924ProgrammeFunding6MonthsFm35 + traineeShips1924ProgrammeFunding6MonthsEas;
+                adultFundingClaimModel.Traineeships1924ProgrammeFunding12Months = traineeShips1924ProgrammeFunding12MonthsFm35 + traineeShips1924ProgrammeFunding12MonthsEas;
+                adultFundingClaimModel.Traineeships1924LearningSupport6Months = traineeShips1924LearningSupport6MonthsFm35 + traineeShips1924LearningSupport6MonthsEas;
+                adultFundingClaimModel.Traineeships1924LearningSupport12Months = traineeShips1924LearningSupport12MonthsFm35 + traineeShips1924LearningSupport12MonthsEas;
+                adultFundingClaimModel.Traineeships1924LearnerSupport6Months = traineeShips1924LearnerSupport6MonthsEas;
+                adultFundingClaimModel.Traineeships1924LearnerSupport12Months = traineeShips1924LearnerSupport12MonthsEas;
+
+                adultFundingClaimModel.LoansBursaryFunding6Months = loansBursaryFunding6Months;
+                adultFundingClaimModel.LoansBursaryFunding12Months = loansBursaryFunding12Months;
+                adultFundingClaimModel.LoansAreaCosts6Months = loansAreaCosts6Months + loansAreasCosts6MonthsEas;
+                adultFundingClaimModel.LoansAreaCosts12Months = loansAreaCosts12Months + loansAreasCosts12MonthsEas;
+                adultFundingClaimModel.LoansExcessSupport6Months = loansExcessSupport6MonthsEas;
+                adultFundingClaimModel.LoansExcessSupport12Months = loansExcessSupport12MonthsEas;
+
+                adultFundingClaimModel.ProviderName = providerName ?? "Unknown";
+                adultFundingClaimModel.Ukprn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
+                adultFundingClaimModel.IlrFile = ilrfileName == string.Empty ? ilrFileDetail.Filename : ilrfileName;
+                adultFundingClaimModel.Year = "2018/19";
+                adultFundingClaimModel.ReportGeneratedAt = dateTimeProvider.GetNowUtc().ToString("HH:mm:ss tt") + " on " +
+                                                      dateTimeProvider.GetNowUtc().ToString("dd/MM/yyyy");
+                adultFundingClaimModel.FilePreparationDate = message == null
+                    ? ilrFileDetail.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
+                    : message.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                adultFundingClaimModel.ApplicationVersion = versionInfo.ServiceReleaseVersion;
+                adultFundingClaimModel.ComponentSetVersion = "NA";
+            }
+            catch (Exception ex)
+            {
+                logger.LogError($"Failed building Adult funding claim report, ex: {ex}");
+                throw ex;
+            }
 
             return adultFundingClaimModel;
         }

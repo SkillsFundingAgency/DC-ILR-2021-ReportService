@@ -66,8 +66,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             var easConfiguration = configHelper.GetSectionValues<EasConfiguration>("EasSection");
             containerBuilder.RegisterInstance(easConfiguration).As<EasConfiguration>().SingleInstance();
 
-            var ilrConfiguration = configHelper.GetSectionValues<ILRConfiguration>("ILRSection");
-            containerBuilder.RegisterInstance(ilrConfiguration).As<ILRConfiguration>().SingleInstance();
+            var dataStoreConfiguration = configHelper.GetSectionValues<DataStoreConfiguration>("DataStoreSection");
+            containerBuilder.RegisterInstance(dataStoreConfiguration).As<DataStoreConfiguration>().SingleInstance();
 
             var largeEmployeeConfiguration = configHelper.GetSectionValues<LargeEmployerConfiguration>("LargeEmployerSection");
             containerBuilder.RegisterInstance(largeEmployeeConfiguration).As<LargeEmployerConfiguration>().SingleInstance();
@@ -227,6 +227,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<AdultFundingClaimReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<SummaryOfFunding1619Report>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
@@ -356,6 +360,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>().SingleInstance();
             containerBuilder.RegisterType<EasBuilder>().As<IEasBuilder>().SingleInstance();
+            containerBuilder.RegisterType<AdultFundingClaimBuilder>().As<IAdultFundingClaimBuilder>().SingleInstance();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)
