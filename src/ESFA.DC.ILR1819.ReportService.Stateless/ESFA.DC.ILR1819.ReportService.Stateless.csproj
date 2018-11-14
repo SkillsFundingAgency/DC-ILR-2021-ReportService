@@ -395,6 +395,9 @@
     <Compile Include="ServiceEventSource.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AdultFundingClaimReportTemplate.xlsx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="ESFA.DC.ILR1819.ReportService.Stateless.ruleset">
       <SubType>Designer</SubType>
     </None>

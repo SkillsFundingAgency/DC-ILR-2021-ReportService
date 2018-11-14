@@ -31,7 +31,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             ILRFileDetail ilrFileDetail,
             IDateTimeProvider dateTimeProvider,
             IMessage message,
-            IVersionInfo versionInfo)
+            IVersionInfo versionInfo,
+            string orgData,
+            string largeEmployersData,
+            string postcodeData,
+            string larsData)
         {
             var adultFundingClaimModel = new AdultFundingClaimModel();
 
@@ -141,6 +145,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     : message.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
                 adultFundingClaimModel.ApplicationVersion = versionInfo.ServiceReleaseVersion;
                 adultFundingClaimModel.ComponentSetVersion = "NA";
+
+                adultFundingClaimModel.LargeEmployerData = largeEmployersData;
+                adultFundingClaimModel.OrganisationData = orgData;
+                adultFundingClaimModel.PostcodeData = postcodeData;
+                adultFundingClaimModel.LarsData = larsData;
             }
             catch (Exception ex)
             {

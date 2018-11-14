@@ -23,6 +23,11 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
             ILRFileDetail ilrFileDetail,
             IDateTimeProvider dateTimeProvider,
             IMessage message,
-            IVersionInfo versionInfo);
+            IVersionInfo versionInfo,
+            string orgData,
+            string largeEmployersData,
+            string postcodeData,
+            string larsData);
+
     }
 }

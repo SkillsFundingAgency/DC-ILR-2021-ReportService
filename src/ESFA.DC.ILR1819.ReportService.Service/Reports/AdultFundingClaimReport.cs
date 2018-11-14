@@ -1,44 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.IO.Compression;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Aspose.Cells;
-using CsvHelper;
-using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.EAS1819.EF;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Interfaces;
-using ESFA.DC.ILR1819.ReportService.Interface.Builders;
-using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
-using ESFA.DC.ILR1819.ReportService.Interface.Reports;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.Generation;
-using ESFA.DC.ILR1819.ReportService.Model.ILR;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-using ESFA.DC.ILR1819.ReportService.Model.Styling;
-using ESFA.DC.ILR1819.ReportService.Service.Builders;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-using ESFA.DC.ILR1819.ReportService.Service.Service;
-using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
-using ESFA.DC.Logging.Interfaces;
-using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
-
-namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+﻿namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using Aspose.Cells;
+    using ESFA.DC.DateTimeProvider.Interface;
+    using ESFA.DC.ILR.Model.Interface;
+    using ESFA.DC.ILR1819.ReportService.Interface.Builders;
+    using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+    using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+    using ESFA.DC.ILR1819.ReportService.Interface.Service;
+    using ESFA.DC.ILR1819.ReportService.Model.ILR;
+    using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+    using ESFA.DC.IO.Interfaces;
+    using ESFA.DC.JobContext.Interface;
+    using ESFA.DC.JobContextManager.Model.Interface;
+    using ESFA.DC.Logging.Interfaces;
+    using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
+
     public sealed class AdultFundingClaimReport : AbstractReportBuilder, IReport
     {
         private const string ProviderNameCellName = "D5";
@@ -128,7 +109,24 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Task<List<FM35LearningDeliveryValues>> fm35AdultFundingLineDataFromDataStore = _fm35ProviderService.GetFM35AdultFundingLineDataFromDataStore(jobContextMessage, cancellationToken);
             Task<List<ALBLearningDeliveryValues>> albadultFundingLineDataFromDataStore = _allbProviderService.GetALBFM35AdultFundingLineDataFromDataStore(jobContextMessage, cancellationToken);
             var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(jobContextMessage, cancellationToken);
-            await Task.WhenAll(easSubmissionValuesAsync, fm35AdultFundingLineDataFromDataStore, albadultFundingLineDataFromDataStore, providerNameTask, ilrFileTask, lastSubmittedIlrFileTask);
+
+            var organisationDataTask = _orgProviderService.GetVersionAsync(cancellationToken);
+            var largeEmployerDataTask = _largeEmployerProviderService.GetVersionAsync(cancellationToken);
+            var larsDataTask = _larsProviderService.GetVersionAsync(cancellationToken);
+            var postcodeDataTask = _postcodeProviderService.GetVersionAsync(cancellationToken);
+
+            await Task.WhenAll(
+                easSubmissionValuesAsync,
+                fm35AdultFundingLineDataFromDataStore,
+                albadultFundingLineDataFromDataStore,
+                providerNameTask,
+                ilrFileTask,
+                lastSubmittedIlrFileTask,
+                organisationDataTask,
+                largeEmployerDataTask,
+                larsDataTask,
+                postcodeDataTask);
+
             var fundingClaimModel = _adultFundingClaimBuilder.BuildAdultFundingClaimModel(
                 _logger,
                 jobContextMessage,
@@ -139,7 +137,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 lastSubmittedIlrFileTask.Result,
                 _dateTimeProvider,
                 ilrFileTask.Result,
-                _versionInfo);
+                _versionInfo,
+                organisationDataTask.Result,
+                largeEmployerDataTask.Result,
+                postcodeDataTask.Result,
+                larsDataTask.Result);
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -151,57 +153,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
-            var adultFundingClaimModel = new AdultFundingClaimModel()
+            Workbook workbook = new Workbook("AdultFundingClaimReportTemplate.xlsx");
+            PopulateWorkbook(workbook, fundingClaimModel, isFis);
+            using (MemoryStream ms = new MemoryStream())
             {
-                ProviderName = "Milton Keynes Council",
-                Ukprn = 10004376,
-                IlrFile = "ILR-A-10004376-1819-20181119-151322-01.xml",
-                Year = "2018/19",
-
-                OtherLearningProgrammeFunding6Months = 1006,
-                OtherLearningProgrammeFunding12Months = 1012,
-                OtherLearningLearningSupport6Months = 2006,
-                OtherLearningLearningSupport12Months = 2012,
-                Traineeships1924ProgrammeFunding6Months = 3006,
-                Traineeships1924ProgrammeFunding12Months = 3012,
-                Traineeships1924LearningSupport6Months = 4006,
-                Traineeships1924LearningSupport12Months = 4012,
-                Traineeships1924LearnerSupport6Months = 5006,
-                Traineeships1924LearnerSupport12Months = 5012,
-                LoansBursaryFunding6Months = 6006,
-                LoansBursaryFunding12Months = 6012,
-                LoansAreaCosts6Months = 7006,
-                LoansAreaCosts12Months = 7012,
-                LoansExcessSupport6Months = 8006,
-                LoansExcessSupport12Months = 8012,
-
-                ComponentSetVersion = "12",
-                ApplicationVersion = "1.2.3.4",
-                FilePreparationDate = "07/11/2018",
-                LarsData = "Version 1.1.1: " + _dateTimeProvider.GetNowUtc().ToString("dd MMM yyyy HH:mm:ss"),
-                OrganisationData = "Version 2.2.2: " + _dateTimeProvider.GetNowUtc().ToString("dd MMM yyyy HH:mm:ss"),
-                PostcodeData = "Version 3.3.3: " + _dateTimeProvider.GetNowUtc().ToString("dd MMM yyyy HH:mm:ss"),
-                LargeEmployerData = "Version 4.4.4: " + _dateTimeProvider.GetNowUtc().ToString("dd MMM yyyy HH:mm:ss"),
-                ReportGeneratedAt = _dateTimeProvider.GetNowUtc().ToString("HH:mm:ss tt") + " on " + _dateTimeProvider.GetNowUtc().ToString("dd/MM/yyyy")
-            };
-
-            using (MemoryStream memoryStream = new MemoryStream())
-            {
-               await _storage.GetAsync("AdultFundingClaimReportTemplate", memoryStream, cancellationToken);
-
-                memoryStream.Position = 0;
-                Workbook workbook = new Workbook(memoryStream);
-                PopulateWorkbook(workbook, fundingClaimModel);
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    workbook.Save(ms, SaveFormat.Xlsx);
-                    await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
-                    await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
-                }
+                workbook.Save(ms, SaveFormat.Xlsx);
+                await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }
         }
 
-        private void PopulateWorkbook(Workbook workbook, AdultFundingClaimModel adultFundingClaimModel)
+        private void PopulateWorkbook(Workbook workbook, AdultFundingClaimModel adultFundingClaimModel, bool isFis)
         {
             Worksheet worksheet = workbook.Worksheets[0];
             Cells cells = worksheet.Cells;
@@ -209,6 +171,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             cells[UkprnCellName].PutValue(adultFundingClaimModel.Ukprn);
             cells[IlrFileCellName].PutValue(adultFundingClaimModel.IlrFile);
             cells[YearCellName].PutValue(adultFundingClaimModel.Year);
+            if (!isFis)
+            {
+                worksheet.Cells.DeleteRange(8, 0, 8, 100, ShiftType.None);
+            }
 
             cells[OtherLearningProgrammeFunding6MonthsCellName]
                 .PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding6Months);
