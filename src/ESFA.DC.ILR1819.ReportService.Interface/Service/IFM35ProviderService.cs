@@ -12,6 +12,6 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
     {
         Task<FM35Global> GetFM35Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
 
-        Task<List<FM35LearningDeliveryValues>> GetFM35AdultFundingLineDataFromDataStore(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
+        Task<List<FM35LearningDeliveryValues>> GetFM35DataFromDataStore(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
     }
 }

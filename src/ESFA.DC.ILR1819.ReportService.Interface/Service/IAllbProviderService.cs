@@ -12,6 +12,6 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
     {
         Task<ALBGlobal> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
 
-        Task<List<ALBLearningDeliveryValues>> GetALBFM35AdultFundingLineDataFromDataStore(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
+        Task<List<ALBLearningDeliveryValues>> GetALBDataFromDataStore(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
     }
 }
