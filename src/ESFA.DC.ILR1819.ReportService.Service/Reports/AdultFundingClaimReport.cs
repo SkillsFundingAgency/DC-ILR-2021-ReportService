@@ -106,8 +106,8 @@
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             Task<List<EasSubmissionValues>> easSubmissionValuesAsync = _easProviderService.GetEasSubmissionValuesAsync(jobContextMessage, cancellationToken);
-            Task<List<FM35LearningDeliveryValues>> fm35AdultFundingLineDataFromDataStore = _fm35ProviderService.GetFM35AdultFundingLineDataFromDataStore(jobContextMessage, cancellationToken);
-            Task<List<ALBLearningDeliveryValues>> albadultFundingLineDataFromDataStore = _allbProviderService.GetALBFM35AdultFundingLineDataFromDataStore(jobContextMessage, cancellationToken);
+            Task<List<FM35LearningDeliveryValues>> fm35AdultFundingLineDataFromDataStore = _fm35ProviderService.GetFM35DataFromDataStore(jobContextMessage, cancellationToken);
+            Task<List<ALBLearningDeliveryValues>> albadultFundingLineDataFromDataStore = _allbProviderService.GetALBDataFromDataStore(jobContextMessage, cancellationToken);
             var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(jobContextMessage, cancellationToken);
 
             var organisationDataTask = _orgProviderService.GetVersionAsync(cancellationToken);

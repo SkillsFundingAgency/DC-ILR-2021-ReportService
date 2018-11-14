@@ -87,7 +87,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _fundingOutputs;
         }
 
-        public async Task<List<ALBLearningDeliveryValues>> GetALBFM35AdultFundingLineDataFromDataStore(
+        public async Task<List<ALBLearningDeliveryValues>> GetALBDataFromDataStore(
             IJobContextMessage jobContextMessage,
             CancellationToken cancellationToken)
         {
@@ -100,25 +100,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                //var UkPrn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
-                var UkPrn = 10000046;
-
-                using (var _ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                var ukPrn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
+                using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
-                    albLearningDeliveryPeriodisedValues = (from pv in _ilrContext.ALB_LearningDelivery_PeriodisedValues
-                        join ld in _ilrContext.ALB_LearningDelivery
+                    albLearningDeliveryPeriodisedValues = (from pv in ilrContext.ALB_LearningDelivery_PeriodisedValues
+                        join ld in ilrContext.ALB_LearningDelivery
                             on new { pv.LearnRefNumber, pv.AimSeqNumber, pv.UKPRN } equals new { ld.LearnRefNumber, ld.AimSeqNumber, ld.UKPRN }
-                        where pv.UKPRN == UkPrn &&
-                              new[]
-                              {
-                                  "Advanced Learner Loans Bursary"
-                              }.Contains(ld.FundLine) &&
-                              new[]
-                              {
-                                  "ALBSupportPayment",
-                                  "AreaUpliftBalPayment",
-                                  "AreaUpliftOnProgPayment"
-                              }.Contains(pv.AttributeName)
+                        where pv.UKPRN == ukPrn
                         select new ALBLearningDeliveryValues()
                         {
                             AttributeName = pv.AttributeName,
