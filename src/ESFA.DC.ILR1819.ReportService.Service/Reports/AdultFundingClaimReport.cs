@@ -26,30 +26,55 @@
         private const string UkprnCellName = "D6";
         private const string IlrFileCellName = "D7";
         private const string YearCellName = "G7";
-        private const string OtherLearningProgrammeFunding6MonthsCellName = "F12";
-        private const string OtherLearningProgrammeFunding12MonthsCellName = "G12";
-        private const string OtherLearningLearningSupport6MonthsCellName = "F13";
-        private const string OtherLearningLearningSupport12MonthsCellName = "G13";
-        private const string Traineeships1924ProgrammeFunding6MonthsCellName = "F14";
-        private const string Traineeships1924ProgrammeFunding12MonthsCellName = "G14";
-        private const string Traineeships1924LearningSupport6MonthsCellName = "F15";
-        private const string Traineeships1924LearningSupport12MonthsCellName = "G15";
-        private const string Traineeships1924LearnerSupport6MonthsCellName = "F16";
-        private const string Traineeships1924LearnerSupport12MonthsCellName = "G16";
-        private const string LoansBursaryFunding6MonthsCellName = "F21";
-        private const string LoansBursaryFunding12MonthsCellName = "G21";
-        private const string LoansAreaCosts6MonthsCellName = "F22";
-        private const string LoansAreaCosts12MonthsCellName = "G22";
-        private const string LoansExcessSupport6MonthsCellName = "F23";
-        private const string LoansExcessSupport12MonthsCellName = "G23";
-        private const string ComponentSetVersionCellName = "D36";
-        private const string ApplicationVersionCellName = "D37";
-        private const string FilePreparationDateCellName = "D38";
-        private const string LarsDataCellName = "F36";
-        private const string OrganisationDataCellName = "F37";
-        private const string PostcodeDataCellName = "F38";
-        private const string LargeEmployerDataCellName = "F39";
-        private const string ReportGeneratedAtCellName = "D40";
+        private const string OtherLearningProgrammeFunding6MonthsCellName = "F11";
+        private const string OtherLearningProgrammeFunding12MonthsCellName = "G11";
+        private const string OtherLearningLearningSupport6MonthsCellName = "F12";
+        private const string OtherLearningLearningSupport12MonthsCellName = "G12";
+        private const string Traineeships1924ProgrammeFunding6MonthsCellName = "F13";
+        private const string Traineeships1924ProgrammeFunding12MonthsCellName = "G13";
+        private const string Traineeships1924LearningSupport6MonthsCellName = "F14";
+        private const string Traineeships1924LearningSupport12MonthsCellName = "G14";
+        private const string Traineeships1924LearnerSupport6MonthsCellName = "F15";
+        private const string Traineeships1924LearnerSupport12MonthsCellName = "G15";
+        private const string LoansBursaryFunding6MonthsCellName = "F20";
+        private const string LoansBursaryFunding12MonthsCellName = "G20";
+        private const string LoansAreaCosts6MonthsCellName = "F21";
+        private const string LoansAreaCosts12MonthsCellName = "G21";
+        private const string LoansExcessSupport6MonthsCellName = "F22";
+        private const string LoansExcessSupport12MonthsCellName = "G22";
+        private const string ComponentSetVersionCellName = "D35";
+        private const string ApplicationVersionCellName = "D36";
+        private const string FilePreparationDateCellName = "D37";
+        private const string LarsDataCellName = "F35";
+        private const string OrganisationDataCellName = "F36";
+        private const string PostcodeDataCellName = "F37";
+        private const string LargeEmployerDataCellName = "F38";
+        private const string ReportGeneratedAtCellName = "D39";
+
+        private const string OtherLearningProgrammeFunding6MonthsCellNameFis = "F12";
+        private const string OtherLearningProgrammeFunding12MonthsCellNameFis = "G12";
+        private const string OtherLearningLearningSupport6MonthsCellNameFis = "F13";
+        private const string OtherLearningLearningSupport12MonthsCellNameFis = "G13";
+        private const string Traineeships1924ProgrammeFunding6MonthsCellNameFis = "F14";
+        private const string Traineeships1924ProgrammeFunding12MonthsCellNameFis = "G14";
+        private const string Traineeships1924LearningSupport6MonthsCellNameFis = "F15";
+        private const string Traineeships1924LearningSupport12MonthsCellNameFis = "G15";
+        private const string Traineeships1924LearnerSupport6MonthsCellNameFis = "F16";
+        private const string Traineeships1924LearnerSupport12MonthsCellNameFis = "G16";
+        private const string LoansBursaryFunding6MonthsCellNameFis = "F21";
+        private const string LoansBursaryFunding12MonthsCellNameFis = "G21";
+        private const string LoansAreaCosts6MonthsCellNameFis = "F22";
+        private const string LoansAreaCosts12MonthsCellNameFis = "G22";
+        private const string LoansExcessSupport6MonthsCellNameFis = "F23";
+        private const string LoansExcessSupport12MonthsCellNameFis = "G23";
+        private const string ComponentSetVersionCellNameFis = "D36";
+        private const string ApplicationVersionCellNameFis = "D37";
+        private const string FilePreparationDateCellNameFis = "D38";
+        private const string LarsDataCellNameFis = "F36";
+        private const string OrganisationDataCellNameFis = "F37";
+        private const string PostcodeDataCellNameFis = "F38";
+        private const string LargeEmployerDataCellNameFis = "F39";
+        private const string ReportGeneratedAtCellNameFis = "D40";
 
         private readonly ILogger _logger;
         private readonly IStreamableKeyValuePersistenceService _storage;
@@ -173,44 +198,59 @@
             cells[YearCellName].PutValue(adultFundingClaimModel.Year);
             if (!isFis)
             {
-                worksheet.Cells.DeleteRange(8, 0, 8, 100, ShiftType.None);
+                cells.DeleteRow(8);
+                cells[OtherLearningProgrammeFunding6MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding6Months);
+                cells[OtherLearningProgrammeFunding12MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding12Months);
+                cells[OtherLearningLearningSupport6MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningLearningSupport6Months);
+                cells[OtherLearningLearningSupport12MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningLearningSupport12Months);
+                cells[Traineeships1924ProgrammeFunding6MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding6Months);
+                cells[Traineeships1924ProgrammeFunding12MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding12Months);
+                cells[Traineeships1924LearningSupport6MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport6Months);
+                cells[Traineeships1924LearningSupport12MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport12Months);
+                cells[Traineeships1924LearnerSupport6MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport6Months);
+                cells[Traineeships1924LearnerSupport12MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport12Months);
+                cells[LoansBursaryFunding6MonthsCellName].PutValue(adultFundingClaimModel.LoansBursaryFunding6Months);
+                cells[LoansBursaryFunding12MonthsCellName].PutValue(adultFundingClaimModel.LoansBursaryFunding12Months);
+                cells[LoansAreaCosts6MonthsCellName].PutValue(adultFundingClaimModel.LoansAreaCosts6Months);
+                cells[LoansAreaCosts12MonthsCellName].PutValue(adultFundingClaimModel.LoansAreaCosts12Months);
+                cells[LoansExcessSupport6MonthsCellName].PutValue(adultFundingClaimModel.LoansExcessSupport6Months);
+                cells[LoansExcessSupport12MonthsCellName].PutValue(adultFundingClaimModel.LoansExcessSupport12Months);
+                cells[ComponentSetVersionCellName].PutValue(adultFundingClaimModel.ComponentSetVersion);
+                cells[ApplicationVersionCellName].PutValue(adultFundingClaimModel.ApplicationVersion);
+                cells[FilePreparationDateCellName].PutValue(adultFundingClaimModel.FilePreparationDate);
+                cells[LarsDataCellName].PutValue(adultFundingClaimModel.LarsData);
+                cells[OrganisationDataCellName].PutValue(adultFundingClaimModel.OrganisationData);
+                cells[PostcodeDataCellName].PutValue(adultFundingClaimModel.PostcodeData);
+                cells[LargeEmployerDataCellName].PutValue(adultFundingClaimModel.LargeEmployerData);
+                cells[ReportGeneratedAtCellName].PutValue(adultFundingClaimModel.ReportGeneratedAt);
             }
-
-            cells[OtherLearningProgrammeFunding6MonthsCellName]
-                .PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding6Months);
-            cells[OtherLearningProgrammeFunding12MonthsCellName]
-                .PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding12Months);
-            cells[OtherLearningLearningSupport6MonthsCellName]
-                .PutValue(adultFundingClaimModel.OtherLearningLearningSupport6Months);
-            cells[OtherLearningLearningSupport12MonthsCellName]
-                .PutValue(adultFundingClaimModel.OtherLearningLearningSupport12Months);
-            cells[Traineeships1924ProgrammeFunding6MonthsCellName]
-                .PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding6Months);
-            cells[Traineeships1924ProgrammeFunding12MonthsCellName]
-                .PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding12Months);
-            cells[Traineeships1924LearningSupport6MonthsCellName]
-                .PutValue(adultFundingClaimModel.Traineeships1924LearningSupport6Months);
-            cells[Traineeships1924LearningSupport12MonthsCellName]
-                .PutValue(adultFundingClaimModel.Traineeships1924LearningSupport12Months);
-            cells[Traineeships1924LearnerSupport6MonthsCellName]
-                .PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport6Months);
-            cells[Traineeships1924LearnerSupport12MonthsCellName]
-                .PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport12Months);
-            cells[LoansBursaryFunding6MonthsCellName].PutValue(adultFundingClaimModel.LoansBursaryFunding6Months);
-            cells[LoansBursaryFunding12MonthsCellName].PutValue(adultFundingClaimModel.LoansBursaryFunding12Months);
-            cells[LoansAreaCosts6MonthsCellName].PutValue(adultFundingClaimModel.LoansAreaCosts6Months);
-            cells[LoansAreaCosts12MonthsCellName].PutValue(adultFundingClaimModel.LoansAreaCosts12Months);
-            cells[LoansExcessSupport6MonthsCellName].PutValue(adultFundingClaimModel.LoansExcessSupport6Months);
-            cells[LoansExcessSupport12MonthsCellName].PutValue(adultFundingClaimModel.LoansExcessSupport12Months);
-
-            cells[ComponentSetVersionCellName].PutValue(adultFundingClaimModel.ComponentSetVersion);
-            cells[ApplicationVersionCellName].PutValue(adultFundingClaimModel.ApplicationVersion);
-            cells[FilePreparationDateCellName].PutValue(adultFundingClaimModel.FilePreparationDate);
-            cells[LarsDataCellName].PutValue(adultFundingClaimModel.LarsData);
-            cells[OrganisationDataCellName].PutValue(adultFundingClaimModel.OrganisationData);
-            cells[PostcodeDataCellName].PutValue(adultFundingClaimModel.PostcodeData);
-            cells[LargeEmployerDataCellName].PutValue(adultFundingClaimModel.LargeEmployerData);
-            cells[ReportGeneratedAtCellName].PutValue(adultFundingClaimModel.ReportGeneratedAt);
+            else
+            {
+                cells[OtherLearningProgrammeFunding6MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding6Months);
+                cells[OtherLearningProgrammeFunding12MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding12Months);
+                cells[OtherLearningLearningSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningLearningSupport6Months);
+                cells[OtherLearningLearningSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningLearningSupport12Months);
+                cells[Traineeships1924ProgrammeFunding6MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding6Months);
+                cells[Traineeships1924ProgrammeFunding12MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding12Months);
+                cells[Traineeships1924LearningSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport6Months);
+                cells[Traineeships1924LearningSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport12Months);
+                cells[Traineeships1924LearnerSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport6Months);
+                cells[Traineeships1924LearnerSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport12Months);
+                cells[LoansBursaryFunding6MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansBursaryFunding6Months);
+                cells[LoansBursaryFunding12MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansBursaryFunding12Months);
+                cells[LoansAreaCosts6MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansAreaCosts6Months);
+                cells[LoansAreaCosts12MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansAreaCosts12Months);
+                cells[LoansExcessSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansExcessSupport6Months);
+                cells[LoansExcessSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansExcessSupport12Months);
+                cells[ComponentSetVersionCellNameFis].PutValue(adultFundingClaimModel.ComponentSetVersion);
+                cells[ApplicationVersionCellNameFis].PutValue(adultFundingClaimModel.ApplicationVersion);
+                cells[FilePreparationDateCellNameFis].PutValue(adultFundingClaimModel.FilePreparationDate);
+                cells[LarsDataCellNameFis].PutValue(adultFundingClaimModel.LarsData);
+                cells[OrganisationDataCellNameFis].PutValue(adultFundingClaimModel.OrganisationData);
+                cells[PostcodeDataCellNameFis].PutValue(adultFundingClaimModel.PostcodeData);
+                cells[LargeEmployerDataCellNameFis].PutValue(adultFundingClaimModel.LargeEmployerData);
+                cells[ReportGeneratedAtCellNameFis].PutValue(adultFundingClaimModel.ReportGeneratedAt);
+            }
         }
     }
 }
