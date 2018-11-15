@@ -33,7 +33,7 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public string SWSupAimId { get; set; }
 
-        public int FundModel { get; set; }
+        public int? FundModel { get; set; }
 
         public int? PartnerUKPRN { get; set; }
 

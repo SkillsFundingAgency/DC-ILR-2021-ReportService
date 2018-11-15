@@ -222,6 +222,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     column += widestColumn;
                     localRow = currentRow;
                 }
+                else
+                {
+                    column = 0;
+                    localRow++;
+                }
             }
 
             if (pivot)

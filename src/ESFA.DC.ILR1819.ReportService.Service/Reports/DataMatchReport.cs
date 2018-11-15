@@ -423,6 +423,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             int period = await _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
             List<long> ulns = new List<long>();
+
+            //foreach (FM36Learner fm36DataLearner in fm36Data.Learners)
+            //{
+            //    foreach (LearningDelivery learningDelivery in fm36DataLearner.LearningDeliveries.Where(x => x.))
+            //    {
+            //    }
+            //}
+
             foreach (ILearner learner in message.Learners)
             {
                 FM36Learner fm36Entry =
@@ -437,14 +445,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 ILearningDelivery[] learningDeliveries = learner.LearningDeliveries.Where(x =>
                     x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y =>
-                        string.Equals(y.LearnDelFAMType, "ACT", StringComparison.OrdinalIgnoreCase) &&
-                        string.Equals(y.LearnDelFAMCode, "1", StringComparison.OrdinalIgnoreCase))).ToArray();
+                        string.Equals(y.LearnDelFAMType, Constants.Fm36LearnDelFAMTypeAct, StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(y.LearnDelFAMCode, Constants.Fm36LearnDelFAMCodeOne, StringComparison.OrdinalIgnoreCase))).ToArray();
 
-                _logger.LogWarning($"Found {learningDeliveries.Length} FM36 ACT 1 learning deliveries for learner {learner.LearnRefNumber}");
+                _logger.LogWarning($"Found {learningDeliveries.Length} FM36 {Constants.Fm36LearnDelFAMTypeAct} {Constants.Fm36LearnDelFAMCodeOne} learning deliveries for learner {learner.LearnRefNumber}");
 
                 foreach (ILearningDelivery learnerLearningDelivery in learningDeliveries)
                 {
-                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, "Levy Contract", StringComparison.OrdinalIgnoreCase)).ToList();
+                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, Constants.Fm36PriceEpisodeContractTypeLevyContract, StringComparison.OrdinalIgnoreCase)).ToList();
 
                     if (!priceEpisode.Any())
                     {

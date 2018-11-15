@@ -338,6 +338,7 @@
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
     <Compile Include="Reports\TestSummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\TestSummaryOfFunding1619Report.cs" />
+    <Compile Include="Reports\Validation\TestValidationReportLotsOfErrors.cs" />
     <Compile Include="Service\DasCommitmentsServiceTest.cs" />
     <Compile Include="Service\PeriodProviderServiceTest.cs" />
     <Compile Include="Reports\TestAllbOccupancyReport.cs" />
@@ -351,6 +352,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\Main Occupancy\ILR-10033670-1819-20181030-101919-07.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\Validation\ILR-10000020-1819-20181005-120953-03.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="AdultFundingClaimReportTemplate.xlsx">
@@ -393,6 +397,12 @@
     <Content Include="Reports\ALB\ValidationValidLearners2.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Reports\Validation\ValidationErrors.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Reports\Validation\ValidationErrorsLookup.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="ValidationErrors.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

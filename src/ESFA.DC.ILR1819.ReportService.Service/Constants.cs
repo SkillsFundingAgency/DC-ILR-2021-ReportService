@@ -67,6 +67,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service
         public const string Fm36LearnDelSecondEmp1618Pay = "LearnDelSecondEmp1618Pay";
         public const string Fm36LearnSuppFundCash = "LearnSuppFundCash";
         public const string Fm36LearnDelLearnAddPayment = "LearnDelLearnAddPayment";
+        public const string Fm36PriceEpisodeContractTypeLevyContract = "Levy Contract";
+        public const string Fm36LearnDelFAMTypeAct = "ACT";
+        public const string Fm36LearnDelFAMCodeOne = "1";
 
         // FM81
         public const string Fm81CoreGovContPayment = "CoreGovContPayment";
