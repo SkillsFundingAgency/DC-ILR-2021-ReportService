@@ -94,7 +94,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _fundingOutputs;
         }
 
-        public async Task<List<FM35LearningDeliveryValues>> GetFM35AdultFundingLineDataFromDataStore(
+        public async Task<List<FM35LearningDeliveryValues>> GetFM35DataFromDataStore(
             IJobContextMessage jobContextMessage,
             CancellationToken cancellationToken)
         {
@@ -114,22 +114,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     fm35LearningDeliveryPeriodisedValues = (from pv in _ilrContext.FM35_LearningDelivery_PeriodisedValues
                         join ld in _ilrContext.FM35_LearningDelivery
                             on new { pv.LearnRefNumber, pv.AimSeqNumber, pv.UKPRN } equals new { ld.LearnRefNumber, ld.AimSeqNumber, ld.UKPRN }
-                        where pv.UKPRN == UkPrn &&
-                              new[]
-                              {
-                                  "AEB – Other Learning",
-                                  "AEB – Other Learning (non-procured)",
-                                  "19-24 Traineeship",
-                                  "19-24 Traineeship (non-procured)"
-                              }.Contains(ld.FundLine) &&
-                              new[]
-                              {
-                                  "OnProgPayment",
-                                  "BalancePayment ",
-                                  "AchievePayment ",
-                                  "EmpOutcomePay",
-                                  "LearnSuppFundCash"
-                              }.Contains(pv.AttributeName)
+                        where pv.UKPRN == UkPrn
                         select new FM35LearningDeliveryValues()
                         {
                             AttributeName = pv.AttributeName,

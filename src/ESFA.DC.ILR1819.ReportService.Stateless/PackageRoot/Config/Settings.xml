@@ -7,7 +7,7 @@
   </Section>
   <Section Name="ServiceBusSettings">
     <Parameter Name="AuditQueueName" Value="" />
-    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="ServiceBusConnectionString" Value="Endpoint=sb://xx-hd-servicebus-weu.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=WQajG93nz/B51rfO8tQ5vQ/pH7IeYZlVc870dZm6Zg8=" />
     <Parameter Name="TopicName" Value="" />
     <Parameter Name="ReportingSubscriptionName" Value="" />
   </Section>
