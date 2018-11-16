@@ -17,9 +17,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
     public class AdultFundingClaimBuilder : IAdultFundingClaimBuilder
     {
-        private int[] first6monthsArray => new[] { 1, 2, 3, 4, 5, 6 };
+        private int[] First6MonthsArray => new[] { 1, 2, 3, 4, 5, 6 };
 
-        private int[] first12monthsArray => new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
+        private int[] First12MonthsArray => new[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 };
 
         public AdultFundingClaimModel BuildAdultFundingClaimModel(
             ILogger logger,
@@ -93,29 +93,29 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 // EAS
 
                 otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB – Other Learning", "Princes Trust: AEB – Other Learning" }.Contains(x.PaymentTypeName) &&
-                                                         first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                         First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB – Other Learning", "Princes Trust: AEB – Other Learning" }.Contains(x.PaymentTypeName) &&
-                                                                                       first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                       First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
                 otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB–Other Learning" }.Contains(x.PaymentTypeName)
-                                                                                && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 otherLearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB–Other Learning" }.Contains(x.PaymentTypeName)
-                                                                                 && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                 && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
                 traineeShips1924ProgrammeFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
-                                                                                && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 traineeShips1924ProgrammeFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
-                                                                                            && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                            && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
                 traineeShips1924LearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
-                                                                                            && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                            && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 traineeShips1924LearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
-                                                                                           && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                           && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
                 traineeShips1924LearnerSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
-                                                                                           && first6monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                           && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 traineeShips1924LearnerSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
-                                                                                           && first12monthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                                                                                           && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 adultFundingClaimModel.OtherLearningProgrammeFunding6Months = otherLearningProgramFunding6MonthsFm35 + otherLearningProgramFunding6MonthsEas;
                 adultFundingClaimModel.OtherLearningProgrammeFunding12Months = otherLearningProgramFunding12MonthsFm35 + otherLearningProgramFunding12MonthsEas;
                 adultFundingClaimModel.OtherLearningLearningSupport6Months = otherLearningSupport6MonthsFm35 + otherLearningSupport6MonthsEas;
@@ -136,16 +136,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 adultFundingClaimModel.ProviderName = providerName ?? "Unknown";
                 adultFundingClaimModel.Ukprn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
-                adultFundingClaimModel.IlrFile = ilrfileName == string.Empty ? ilrFileDetail.Filename : ilrfileName;
                 adultFundingClaimModel.Year = "2018/19";
                 adultFundingClaimModel.ReportGeneratedAt = dateTimeProvider.GetNowUtc().ToString("HH:mm:ss tt") + " on " +
                                                       dateTimeProvider.GetNowUtc().ToString("dd/MM/yyyy");
-                adultFundingClaimModel.FilePreparationDate = message == null
-                    ? ilrFileDetail.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
-                    : message.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+
+                if (message == null)
+                {
+                    if (ilrFileDetail.Filename == null)
+                    {
+                        adultFundingClaimModel.IlrFile = "Last Submitted ILR File not found";
+                        adultFundingClaimModel.FilePreparationDate = string.Empty;
+                    }
+                    else
+                    {
+                        adultFundingClaimModel.IlrFile = ilrFileDetail.Filename;
+                        adultFundingClaimModel.FilePreparationDate = ilrFileDetail.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy");
+                    }
+                }
+                else
+                {
+                    adultFundingClaimModel.IlrFile = ilrfileName;
+                    adultFundingClaimModel.FilePreparationDate =
+                        message.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                }
+
                 adultFundingClaimModel.ApplicationVersion = versionInfo.ServiceReleaseVersion;
                 adultFundingClaimModel.ComponentSetVersion = "NA";
-
                 adultFundingClaimModel.LargeEmployerData = largeEmployersData;
                 adultFundingClaimModel.OrganisationData = orgData;
                 adultFundingClaimModel.PostcodeData = postcodeData;

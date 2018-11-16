@@ -1,19 +1,21 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.ILR1819.ReportService.Interface.Reports;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
-using ESFA.DC.Logging.Interfaces;
+﻿using System;
 
 namespace ESFA.DC.ILR1819.ReportService.Service
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+    using ESFA.DC.ILR1819.ReportService.Interface.Service;
+    using ESFA.DC.IO.Interfaces;
+    using ESFA.DC.JobContext.Interface;
+    using ESFA.DC.JobContextManager.Model;
+    using ESFA.DC.JobContextManager.Model.Interface;
+    using ESFA.DC.Logging.Interfaces;
+
     public sealed class EntryPoint
     {
         private readonly ILogger _logger;
@@ -40,19 +42,45 @@ namespace ESFA.DC.ILR1819.ReportService.Service
         {
             _logger.LogInfo("Reporting callback invoked");
 
-            using (var memoryStream = new MemoryStream())
+            var reportZipFileKey = $"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId}_Reports.zip";
+            if (cancellationToken.IsCancellationRequested)
             {
-                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                {
-                    await ExecuteTasks(jobContextMessage, archive, cancellationToken);
-                }
+                return false;
+            }
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return false;
-                }
+            MemoryStream updateMemoryStream = new MemoryStream();
+            try
+            {
+                await _streamableKeyValuePersistenceService.GetAsync(reportZipFileKey, updateMemoryStream, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInfo("Report zip key '" + reportZipFileKey + "' not found.");
+            }
 
-                await _streamableKeyValuePersistenceService.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId}_Reports.zip", memoryStream, cancellationToken);
+            if (updateMemoryStream.Length > 0)
+            {
+                using (updateMemoryStream)
+                {
+                    using (var archive = new ZipArchive(updateMemoryStream, ZipArchiveMode.Update, true))
+                    {
+                        await ExecuteTasks(jobContextMessage, archive, cancellationToken);
+                    }
+
+                    await _streamableKeyValuePersistenceService.SaveAsync(reportZipFileKey, updateMemoryStream, cancellationToken);
+                }
+            }
+            else
+            {
+                using (var memoryStream = new MemoryStream())
+                {
+                    using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                    {
+                        await ExecuteTasks(jobContextMessage, archive, cancellationToken);
+                    }
+
+                    await _streamableKeyValuePersistenceService.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId}_Reports.zip", memoryStream, cancellationToken);
+                }
             }
 
             return true;
