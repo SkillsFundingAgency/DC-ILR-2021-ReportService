@@ -142,7 +142,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     if (fm36Learner?.PriceEpisodes.Any() ?? false)
                     {
                         List<PriceEpisode> episodesInRange = fm36Learner.PriceEpisodes
-                            .Where(p => p.PriceEpisodeValues.EpisodeStartDate >= Constants.FirstOfAugust &&
+                            .Where(p => p.PriceEpisodeValues.EpisodeStartDate >= Constants.BeginningOfYear &&
                                         p.PriceEpisodeValues.EpisodeStartDate <= Constants.EndOfYear).ToList();
 
                         if (episodesInRange.Any())

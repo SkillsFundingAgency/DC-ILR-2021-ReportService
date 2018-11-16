@@ -185,10 +185,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             }
 
             List<IAppFinRecord> previousYearData = learningDelivery.AppFinRecords
-                .Where(x => x.AFinDate < Constants.FirstOfAugust &&
+                .Where(x => x.AFinDate < Constants.BeginningOfYear &&
                             string.Equals(x.AFinType, "PMR", StringComparison.OrdinalIgnoreCase)).ToList();
             List<IAppFinRecord> currentYearData = learningDelivery.AppFinRecords
-                .Where(x => x.AFinDate >= Constants.FirstOfAugust && x.AFinDate <= Constants.EndOfYear &&
+                .Where(x => x.AFinDate >= Constants.BeginningOfYear && x.AFinDate <= Constants.EndOfYear &&
                             string.Equals(x.AFinType, "PMR", StringComparison.OrdinalIgnoreCase)).ToList();
 
             model.TotalPRMPreviousFundingYear =

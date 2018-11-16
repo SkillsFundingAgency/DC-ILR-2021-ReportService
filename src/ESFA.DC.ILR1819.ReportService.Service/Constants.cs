@@ -87,7 +87,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
         public const string ExceptionalLearningInfoText = "Exceptional learning support is paid out of a separate budget, not the budgets noted above. This is provided for information only and you will be informed separately of any payments made. Note payments are made following the last ILR collection of the funding year.";
 
         // Dates
-        public static readonly DateTime FirstOfAugust = new DateTime(2018, 8, 1);
+        public static readonly DateTime BeginningOfYear = new DateTime(2018, 8, 1);
         public static readonly DateTime EndOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
     }
 }

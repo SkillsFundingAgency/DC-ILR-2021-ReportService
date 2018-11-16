@@ -56,13 +56,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
-            IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             Mock<IDasCommitmentsService> dasCommitmentsService = new Mock<IDasCommitmentsService>();
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
-            IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
 
             List<DasCommitment> dasCommitments = new List<DasCommitment>
@@ -81,13 +77,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 })
             };
 
-            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($"{ilr}.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
-                new List<string>
-                {
-                    "3DOB01"
-                }));
             redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
             dasCommitmentsService
                 .Setup(x => x.GetCommitments(It.IsAny<long>(), It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
@@ -104,8 +94,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             var report = new DataMatchReport(
                 logger.Object,
-                ilrProviderService,
-                validLearnersService,
                 fm36ProviderService,
                 dasCommitmentsService.Object,
                 periodProviderService.Object,
