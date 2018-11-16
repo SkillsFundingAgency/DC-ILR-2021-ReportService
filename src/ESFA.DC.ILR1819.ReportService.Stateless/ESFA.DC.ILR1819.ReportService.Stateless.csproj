@@ -388,6 +388,7 @@
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="DIComposition.cs" />
     <Compile Include="Handlers\MessageHandler.cs" />
+    <Compile Include="Interfaces\IAzureStorageOptions.cs" />
     <Compile Include="Modules\LoggerModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stateless.cs" />

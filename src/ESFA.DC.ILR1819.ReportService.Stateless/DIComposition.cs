@@ -23,6 +23,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Handlers;
+using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;
 using ESFA.DC.ILR1819.ReportService.Stateless.Modules;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -94,6 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             // register azure blob storage service
             var azureBlobStorageOptions = configHelper.GetSectionValues<AzureStorageOptions>("AzureStorageSection");
+            containerBuilder.RegisterInstance(azureBlobStorageOptions).As<IAzureStorageOptions>();
             containerBuilder.Register(c =>
                     new AzureStorageKeyValuePersistenceConfig(
                         azureBlobStorageOptions.AzureBlobConnectionString,

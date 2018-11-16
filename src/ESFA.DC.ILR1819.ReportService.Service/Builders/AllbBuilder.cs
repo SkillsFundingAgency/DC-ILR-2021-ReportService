@@ -72,35 +72,41 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
-
-            foreach (string validLearnerRefNum in validLearners.Result)
+            try
             {
-                var learner = ilrFile?.Result.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
-                if (learner == null)
+                foreach (string validLearnerRefNum in validLearners.Result)
                 {
-                    ilrError.Add(validLearnerRefNum);
-                    continue;
+                    var learner = ilrFile?.Result.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
+                    if (learner == null)
+                    {
+                        ilrError.Add(validLearnerRefNum);
+                        continue;
+                    }
+
+                    ALBLearner albLearner =
+                        albData?.Result.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
+                    if (albLearner == null)
+                    {
+                        albLearnerError.Add(validLearnerRefNum);
+                        continue;
+                    }
+
+                    TotalAlb(albLearner, fundingSummaryModelAlbFunding, period.Result, fundingSummaryModelAlbAreaCosts);
                 }
 
-                ALBLearner albLearner =
-                    albData?.Result.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
-                if (albLearner == null)
+                if (ilrError.Any())
                 {
-                    albLearnerError.Add(validLearnerRefNum);
-                    continue;
+                    _logger.LogWarning($"Failed to get one or more ILR learners while {nameof(AllbBuilder)}.{nameof(BuildAsync)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
                 }
 
-                TotalAlb(albLearner, fundingSummaryModelAlbFunding, period.Result, fundingSummaryModelAlbAreaCosts);
+                if (albLearnerError.Any())
+                {
+                    _logger.LogWarning($"Failed to get one or more ALB learners while {nameof(AllbBuilder)}.{nameof(BuildAsync)}: {_stringUtilitiesService.JoinWithMaxLength(albLearnerError)}");
+                }
             }
-
-            if (ilrError.Any())
+            catch (Exception ex)
             {
-                _logger.LogWarning($"Failed to get one or more ILR learners while {nameof(AllbBuilder)}.{nameof(BuildAsync)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
-            }
-
-            if (albLearnerError.Any())
-            {
-                _logger.LogWarning($"Failed to get one or more ALB learners while {nameof(AllbBuilder)}.{nameof(BuildAsync)}: {_stringUtilitiesService.JoinWithMaxLength(albLearnerError)}");
+                _logger.LogError(" AlbBuklder BuildAsync failed with Exception: " + ex);
             }
 
             return fundingSummaryModels;
