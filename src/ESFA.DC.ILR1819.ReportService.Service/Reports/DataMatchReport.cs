@@ -11,7 +11,6 @@ using Autofac.Features.AttributeFilters;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
@@ -37,8 +36,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private static readonly DataMatchModelComparer DataMatchModelComparer = new DataMatchModelComparer();
 
         private readonly ILogger _logger;
-        private readonly IIlrProviderService _ilrProviderService;
-        private readonly IValidLearnersService _validLearnersService;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IDasCommitmentsService _dasCommitmentsService;
         private readonly IPeriodProviderService _periodProviderService;
@@ -51,8 +48,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public DataMatchReport(
             ILogger logger,
-            IIlrProviderService ilrProviderService,
-            IValidLearnersService validLearnersService,
             IFM36ProviderService fm36ProviderService,
             IDasCommitmentsService dasCommitmentsService,
             IPeriodProviderService periodProviderService,
@@ -66,8 +61,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
-            _ilrProviderService = ilrProviderService;
-            _validLearnersService = validLearnersService;
             _fm36ProviderService = fm36ProviderService;
             _dasCommitmentsService = dasCommitmentsService;
             _periodProviderService = periodProviderService;
@@ -89,13 +82,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+            FM36Global fm36Data = await _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken).ConfigureAwait(false);
 
-            await Task.WhenAll(ilrFileTask, fm36Task, validLearnersTask).ConfigureAwait(false);
-
-            if (fm36Task.Result?.Learners == null)
+            if (fm36Data?.Learners == null)
             {
                 _logger.LogWarning($"No FM36 learner data for {nameof(DataMatchReport)}. It will be empty.");
             }
@@ -105,8 +94,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 List<RawEarning> rawEarnings = new List<RawEarning>();
                 List<long> ulns = await GetUlnsForValidLearners(
-                    ilrFileTask.Result,
-                    fm36Task.Result,
+                    fm36Data,
                     rawEarnings,
                     jobContextMessage,
                     cancellationToken);
@@ -415,7 +403,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         }
 
         private async Task<List<long>> GetUlnsForValidLearners(
-            IMessage message,
             FM36Global fm36Data,
             List<RawEarning> rawEarnings,
             IJobContextMessage jobContextMessage,
@@ -424,62 +411,38 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             int period = await _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
             List<long> ulns = new List<long>();
 
-            //foreach (FM36Learner fm36DataLearner in fm36Data.Learners)
-            //{
-            //    foreach (LearningDelivery learningDelivery in fm36DataLearner.LearningDeliveries.Where(x => x.))
-            //    {
-            //    }
-            //}
-
-            foreach (ILearner learner in message.Learners)
+            foreach (FM36Learner fm36DataLearner in fm36Data.Learners)
             {
-                FM36Learner fm36Entry =
-                    fm36Data.Learners.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
-
-                if (fm36Entry == null)
+                foreach (LearningDelivery learningDelivery in fm36DataLearner.LearningDeliveries)
                 {
-                    continue;
-                }
-
-                ulns.Add(learner.ULN);
-
-                ILearningDelivery[] learningDeliveries = learner.LearningDeliveries.Where(x =>
-                    x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y =>
-                        string.Equals(y.LearnDelFAMType, Constants.Fm36LearnDelFAMTypeAct, StringComparison.OrdinalIgnoreCase) &&
-                        string.Equals(y.LearnDelFAMCode, Constants.Fm36LearnDelFAMCodeOne, StringComparison.OrdinalIgnoreCase))).ToArray();
-
-                _logger.LogWarning($"Found {learningDeliveries.Length} FM36 {Constants.Fm36LearnDelFAMTypeAct} {Constants.Fm36LearnDelFAMCodeOne} learning deliveries for learner {learner.LearnRefNumber}");
-
-                foreach (ILearningDelivery learnerLearningDelivery in learningDeliveries)
-                {
-                    List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, Constants.Fm36PriceEpisodeContractTypeLevyContract, StringComparison.OrdinalIgnoreCase)).ToList();
+                    List<PriceEpisode> priceEpisode = fm36DataLearner.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber && x.PriceEpisodeValues.EpisodeStartDate > Constants.BeginningOfYear && x.PriceEpisodeValues.EpisodeStartDate < Constants.EndOfYear && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, Constants.Fm36PriceEpisodeContractTypeLevyContract, StringComparison.OrdinalIgnoreCase)).ToList();
 
                     if (!priceEpisode.Any())
                     {
-                        _logger.LogWarning($"Can't find any price episodes for learner {learner.LearnRefNumber} with learning delivery aim sequence no. {learnerLearningDelivery.AimSeqNumber} skipping {nameof(DataMatchReport)} {nameof(RawEarning)} model");
+                        _logger.LogWarning($"Can't find any price episodes for learner {fm36DataLearner.LearnRefNumber} with learning delivery aim sequence no. {learningDelivery.AimSeqNumber} skipping {nameof(DataMatchReport)} {nameof(RawEarning)} model");
                         continue;
                     }
 
                     foreach (PriceEpisode episode in priceEpisode)
                     {
                         RawEarning rawEarning = new RawEarning();
-                        rawEarning.Uln = learner.ULN;
-                        rawEarning.LearnRefNumber = learner.LearnRefNumber;
-                        rawEarning.AimSeqNumber = learnerLearningDelivery.AimSeqNumber;
-                        rawEarning.Ukprn = message.HeaderEntity.SourceEntity.UKPRN;
+                        rawEarning.Uln = fm36DataLearner.ULN;
+                        rawEarning.LearnRefNumber = fm36DataLearner.LearnRefNumber;
+                        rawEarning.AimSeqNumber = learningDelivery.AimSeqNumber;
+                        rawEarning.Ukprn = fm36Data.UKPRN;
                         rawEarning.EpisodeStartDate = episode.PriceEpisodeValues.EpisodeStartDate;
                         rawEarning.EpisodeEffectiveTnpStartDate =
                             episode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
                         rawEarning.EndDate = episode.PriceEpisodeValues.PriceEpisodeActualEndDate ??
                                              episode.PriceEpisodeValues.PriceEpisodePlannedEndDate;
                         rawEarning.Period = period;
-                        rawEarning.ProgrammeType = learnerLearningDelivery.ProgTypeNullable;
-                        rawEarning.FrameworkCode = learnerLearningDelivery.FworkCodeNullable;
-                        rawEarning.PathwayCode = learnerLearningDelivery.PwayCodeNullable;
-                        rawEarning.StandardCode = learnerLearningDelivery.StdCodeNullable;
+                        rawEarning.ProgrammeType = learningDelivery.LearningDeliveryValues.ProgType;
+                        rawEarning.FrameworkCode = learningDelivery.LearningDeliveryValues.FworkCode;
+                        rawEarning.PathwayCode = learningDelivery.LearningDeliveryValues.PwayCode;
+                        rawEarning.StandardCode = learningDelivery.LearningDeliveryValues.StdCode;
                         rawEarning.AgreedPrice = episode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice;
 
-                        rawEarning.LearningDeliveryStartDate = learnerLearningDelivery.LearnStartDate;
+                        rawEarning.LearningDeliveryStartDate = learningDelivery.LearningDeliveryValues.LearnStartDate;
 
                         rawEarning.PriceEpisodeIdentifier = episode.PriceEpisodeIdentifier;
 
@@ -505,6 +468,81 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     }
                 }
             }
+
+            //foreach (ILearner learner in message.Learners)
+            //{
+            //    FM36Learner fm36Entry =
+            //        fm36Data.Learners.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
+
+            //    if (fm36Entry == null)
+            //    {
+            //        continue;
+            //    }
+
+            //    ulns.Add(learner.ULN);
+
+            //    ILearningDelivery[] learningDeliveries = learner.LearningDeliveries.Where(x =>
+            //        x.FundModel == 36 && x.LearningDeliveryFAMs.Any(y =>
+            //            string.Equals(y.LearnDelFAMType, Constants.Fm36LearnDelFAMTypeAct, StringComparison.OrdinalIgnoreCase) &&
+            //            string.Equals(y.LearnDelFAMCode, Constants.Fm36LearnDelFAMCodeOne, StringComparison.OrdinalIgnoreCase))).ToArray();
+
+            //    _logger.LogWarning($"Found {learningDeliveries.Length} FM36 {Constants.Fm36LearnDelFAMTypeAct} {Constants.Fm36LearnDelFAMCodeOne} learning deliveries for learner {learner.LearnRefNumber}");
+
+            //    foreach (ILearningDelivery learnerLearningDelivery in learningDeliveries)
+            //    {
+            //        List<PriceEpisode> priceEpisode = fm36Entry.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learnerLearningDelivery.AimSeqNumber && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, Constants.Fm36PriceEpisodeContractTypeLevyContract, StringComparison.OrdinalIgnoreCase)).ToList();
+
+            //        if (!priceEpisode.Any())
+            //        {
+            //            _logger.LogWarning($"Can't find any price episodes for learner {learner.LearnRefNumber} with learning delivery aim sequence no. {learnerLearningDelivery.AimSeqNumber} skipping {nameof(DataMatchReport)} {nameof(RawEarning)} model");
+            //            continue;
+            //        }
+
+            //        foreach (PriceEpisode episode in priceEpisode)
+            //        {
+            //            RawEarning rawEarning = new RawEarning();
+            //            rawEarning.Uln = learner.ULN;
+            //            rawEarning.LearnRefNumber = learner.LearnRefNumber;
+            //            rawEarning.AimSeqNumber = learnerLearningDelivery.AimSeqNumber;
+            //            rawEarning.Ukprn = message.HeaderEntity.SourceEntity.UKPRN;
+            //            rawEarning.EpisodeStartDate = episode.PriceEpisodeValues.EpisodeStartDate;
+            //            rawEarning.EpisodeEffectiveTnpStartDate =
+            //                episode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
+            //            rawEarning.EndDate = episode.PriceEpisodeValues.PriceEpisodeActualEndDate ??
+            //                                 episode.PriceEpisodeValues.PriceEpisodePlannedEndDate;
+            //            rawEarning.Period = period;
+            //            rawEarning.ProgrammeType = learnerLearningDelivery.ProgTypeNullable;
+            //            rawEarning.FrameworkCode = learnerLearningDelivery.FworkCodeNullable;
+            //            rawEarning.PathwayCode = learnerLearningDelivery.PwayCodeNullable;
+            //            rawEarning.StandardCode = learnerLearningDelivery.StdCodeNullable;
+            //            rawEarning.AgreedPrice = episode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice;
+
+            //            rawEarning.LearningDeliveryStartDate = learnerLearningDelivery.LearnStartDate;
+
+            //            rawEarning.PriceEpisodeIdentifier = episode.PriceEpisodeIdentifier;
+
+            //            rawEarning.TransactionType01 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType02 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType03 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm3PriceEpisodeBalancePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType04 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType05 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType06 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType07 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType08 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType09 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType10 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType11 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType12 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType15 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLSFCashAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.TransactionType16 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+            //            rawEarning.FirstIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeFirstAdditionalPaymentThresholdDate;
+            //            rawEarning.SecondIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate;
+            //            rawEarning.LearnerAdditionalPaymentsDate = episode.PriceEpisodeValues.PriceEpisodeLearnerAdditionalPaymentThresholdDate;
+
+            //            rawEarnings.Add(rawEarning);
+            //        }
+            //    }
+            //}
 
             return ulns;
         }
