@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
             List<EasSubmissionValues> easSubmissionValues,
             List<ALBLearningDeliveryValues> albLearningDeliveryPeriodisedValues,
             string providerName,
-            ILRFileDetail ilrFileDetail,
+            ILRSourceFileInfo ilrSourceFileInfo,
             IDateTimeProvider dateTimeProvider,
             IMessage message,
             IVersionInfo versionInfo,
