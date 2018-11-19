@@ -1262,10 +1262,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return workbook;
         }
 
-        private async Task<FundingSummaryHeaderModel> GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<Model.ILR.ILRFileDetail> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
+        private async Task<FundingSummaryHeaderModel> GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
-            FundingSummaryHeaderModel fundingSummaryHeaderModel;
-            fundingSummaryHeaderModel = new FundingSummaryHeaderModel
+            var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
                 IlrFile = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString()),
                 Ukprn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString()),
@@ -1276,29 +1275,22 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             if (messageTask.Result != null)
             {
-                fundingSummaryHeaderModel.LastIlrFileUpdate =
-                    messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                fundingSummaryHeaderModel.LastIlrFileUpdate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
             }
             else
             {
-                if (lastSubmittedIlrFileTask.Result != null)
-                {
-                    fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy");
-                }
-                else
-                {
-                    fundingSummaryHeaderModel.LastIlrFileUpdate = string.Empty;
-                }
+                fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null ?
+                                                                                                lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
             }
 
             return fundingSummaryHeaderModel;
         }
 
-        private async Task<FundingSummaryFooterModel> GetFooterAsync(Task<IMessage> messageTask, Task<Model.ILR.ILRFileDetail> lastSubmittedILRFileTask, CancellationToken cancellationToken)
+        private async Task<FundingSummaryFooterModel> GetFooterAsync(Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, CancellationToken cancellationToken)
         {
             var dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             var dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
-            FundingSummaryFooterModel fundingSummaryFooterModel = new FundingSummaryFooterModel
+            var fundingSummaryFooterModel = new FundingSummaryFooterModel
             {
                 ReportGeneratedAt = "Report generated at " + dateTimeNowUk.ToString("HH:mm:ss") + " on " + dateTimeNowUk.ToString("dd/MM/yyyy"),
                 ApplicationVersion = _versionInfo.ServiceReleaseVersion,
@@ -1311,16 +1303,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             if (messageTask.Result != null)
             {
-                fundingSummaryFooterModel.FilePreparationDate =
-                    messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                fundingSummaryFooterModel.FilePreparationDate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
             }
             else
             {
-                //if (lastSubmittedILRFileTask.Result != null)
-                //{
-                //    fundingSummaryFooterModel.FilePreparationDate = lastSubmittedILRFileTask.Result.
-                //}
-                fundingSummaryFooterModel.FilePreparationDate = string.Empty;
+                fundingSummaryFooterModel.FilePreparationDate = lastSubmittedIlrFileTask.Result != null ?
+                                                                                lastSubmittedIlrFileTask.Result.FilePreparationDate.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
             }
 
             return fundingSummaryFooterModel;

@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             List<EasSubmissionValues> easSubmissionValues,
             List<ALBLearningDeliveryValues> albLearningDeliveryPeriodisedValues,
             string providerName,
-            ILRFileDetail ilrFileDetail,
+            ILRSourceFileInfo ilrSourceFileInfo,
             IDateTimeProvider dateTimeProvider,
             IMessage message,
             IVersionInfo versionInfo,
@@ -142,15 +142,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 if (message == null)
                 {
-                    if (ilrFileDetail.Filename == null)
+                    if (ilrSourceFileInfo.Filename == null)
                     {
                         adultFundingClaimModel.IlrFile = "Last Submitted ILR File not found";
                         adultFundingClaimModel.FilePreparationDate = string.Empty;
                     }
                     else
                     {
-                        adultFundingClaimModel.IlrFile = ilrFileDetail.Filename;
-                        adultFundingClaimModel.FilePreparationDate = ilrFileDetail.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy");
+                        adultFundingClaimModel.IlrFile = ilrSourceFileInfo.Filename;
+                        adultFundingClaimModel.FilePreparationDate = ilrSourceFileInfo.FilePreparationDate.GetValueOrDefault().ToString("dd/MM/yyyy");
                     }
                 }
                 else
