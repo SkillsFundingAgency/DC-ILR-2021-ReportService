@@ -41,22 +41,22 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string ilr = "ILR-10033670-1819-20180704-120055-03";
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10033670;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = ilr;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output] = "FundingFm36Output";
 
             Mock<ILogger> logger = new Mock<ILogger>();
+            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
-            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             ITotalBuilder totalBuilder = new TotalBuilder();
 
             List<IAppsIndicativeCommand> commands = new List<IAppsIndicativeCommand>();
@@ -65,6 +65,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($"{ilr}.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
+            storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {

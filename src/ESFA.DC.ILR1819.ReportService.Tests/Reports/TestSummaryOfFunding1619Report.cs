@@ -35,15 +35,15 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string filename = $"10033670_1_16-19 Summary of Funding by Student Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
+            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
-            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             IValueProvider valueProvider = new ValueProvider();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ILR-10033670-1819-20180712-144437-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
@@ -74,7 +74,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10033670;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output] = "FundingFm25Output";

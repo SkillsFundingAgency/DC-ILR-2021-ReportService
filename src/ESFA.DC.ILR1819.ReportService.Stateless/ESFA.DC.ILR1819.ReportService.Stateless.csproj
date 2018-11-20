@@ -66,8 +66,8 @@
     <Reference Include="ESFA.DC.CollectionsManagement.Data, Version=0.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.CollectionsManagement.Services.0.1.17-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Data.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
+    <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.CollectionsManagement.Services, Version=0.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.CollectionsManagement.Services.0.1.17-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Services.dll</HintPath>

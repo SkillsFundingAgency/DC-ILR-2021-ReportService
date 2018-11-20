@@ -43,11 +43,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string filename = $"10033670_1_Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
+            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null);
 
             // Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
             IOrgProviderService orgProviderService = new OrgProviderService(logger.Object, new OrgConfiguration() { OrgConnectionString = ConfigurationManager.AppSettings["OrgConnectionString"] });
@@ -61,13 +62,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<ILargeEmployerProviderService> largeEmployerProviderService = new Mock<ILargeEmployerProviderService>();
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
             IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
-            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };
             ITotalBuilder totalBuilder = new TotalBuilder();
             IFm25Builder fm25Builder = new Fm25Builder();
@@ -92,6 +92,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                         }
                     })
                 .Returns(Task.CompletedTask);
+            storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ALBOutput1000.json"));
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>

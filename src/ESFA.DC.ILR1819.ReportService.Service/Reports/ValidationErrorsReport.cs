@@ -215,8 +215,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     ILearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == validationErrorDto.AimSequenceNumber);
                     if (learningDelivery == null)
                     {
-                        _logger.LogWarning(
-                            $"Can't find learning delivery {validationErrorDto.AimSequenceNumber} for learner {validationErrorDto.LearnerReferenceNumber}. This may be ok for some validation rules.");
+                        // _logger.LogWarning($"Can't find learning delivery {validationErrorDto.AimSequenceNumber} for learner {validationErrorDto.LearnerReferenceNumber}. This may be ok for some validation rules.");
                     }
 
                     validationErrors.Add(new ValidationErrorModel(

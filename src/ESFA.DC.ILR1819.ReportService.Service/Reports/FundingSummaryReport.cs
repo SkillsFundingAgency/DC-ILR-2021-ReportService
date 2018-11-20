@@ -1169,7 +1169,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             using (MemoryStream ms = new MemoryStream())
             {
                 workbook.Worksheets[0].Name = "FundingSummaryReport";
-                workbook.Save(ms, SaveFormat.Xlsx);
+                using (MemoryStream img = new MemoryStream())
+                {
+                    byte[] imgBytes = File.ReadAllBytes("EuFlag.png");
+                    img.Write(imgBytes, 0, imgBytes.Length);
+                    workbook.Worksheets[0].Pictures.Add(1, 22, ms);
+                    workbook.Save(ms, SaveFormat.Xlsx);
+                }
+
                 await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }

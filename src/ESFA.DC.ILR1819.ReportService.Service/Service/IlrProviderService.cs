@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.DataStore.EF;
@@ -25,6 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IStreamableKeyValuePersistenceService _storage;
 
         private readonly IXmlSerializationService _xmlSerializationService;
+        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
 
         private readonly SemaphoreSlim _getIlrLock;
@@ -35,11 +37,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IXmlSerializationService xmlSerializationService,
+            IDateTimeProvider dateTimeProvider,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
             _storage = storage;
             _xmlSerializationService = xmlSerializationService;
+            _dateTimeProvider = dateTimeProvider;
             _dataStoreConfiguration = dataStoreConfiguration;
             _message = null;
             _getIlrLock = new SemaphoreSlim(1, 1);
@@ -61,14 +65,34 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                using (MemoryStream ms = new MemoryStream())
+                string filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
+                int ukPrn = (int)jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn];
+                if (await _storage.ContainsAsync(filename, cancellationToken))
                 {
-                    await _storage.GetAsync(
-                            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString(),
-                            ms,
-                            cancellationToken);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    _message = _xmlSerializationService.Deserialize<Message>(ms);
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        await _storage.GetAsync(filename, ms, cancellationToken);
+                        ms.Seek(0, SeekOrigin.Begin);
+                        _message = _xmlSerializationService.Deserialize<Message>(ms);
+                    }
+                }
+                else
+                {
+                    _message = new Message
+                    {
+                        Header = new MessageHeader
+                        {
+                            Source = new MessageHeaderSource
+                            {
+                                UKPRN = ukPrn
+                            }
+                        }
+                    };
+
+                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    {
+                        _message.Header.Source.DateTime = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                    }
                 }
             }
             catch (Exception ex)

@@ -52,12 +52,13 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
                 .Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($@"Reports\ALB\{ilr}").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
+            storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText($@"Reports\ALB\{alb}"));
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText($@"Reports\ALB\{validLearners}"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null);
 
             ILarsProviderService larsProviderService = new LarsProviderService(logger.Object, new LarsConfiguration
             {
@@ -87,7 +88,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
                 topicsAndTasks);
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10033670;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = ilr.Replace(".xml", string.Empty);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
