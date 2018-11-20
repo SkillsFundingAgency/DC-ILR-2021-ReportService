@@ -2,7 +2,7 @@
 
 namespace ESFA.DC.ILR1819.ReportService.Model.ILR
 {
-    public class ILRFileDetail
+    public class ILRSourceFileInfo
     {
 
         public long ID { get; set; }
@@ -13,5 +13,6 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ILR
 
         public DateTime? SubmittedTime { get; set; }
 
+        public DateTime? FilePreparationDate { get; set; }
     }
 }

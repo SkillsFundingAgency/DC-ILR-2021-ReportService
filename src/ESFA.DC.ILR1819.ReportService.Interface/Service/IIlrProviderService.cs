@@ -10,6 +10,6 @@
     {
         Task<IMessage> GetIlrFile(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
 
-        Task<ILRFileDetail> GetLastSubmittedIlrFile(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
+        Task<ILRSourceFileInfo> GetLastSubmittedIlrFile(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
     }
 }

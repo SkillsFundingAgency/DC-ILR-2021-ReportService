@@ -8,6 +8,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.DataStore.EF;
+using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
@@ -107,12 +108,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _message;
         }
 
-        public async Task<ILRFileDetail> GetLastSubmittedIlrFile(
+        public async Task<ILRSourceFileInfo> GetLastSubmittedIlrFile(
            IJobContextMessage jobContextMessage,
            CancellationToken cancellationToken)
         {
             await _getIlrLock.WaitAsync(cancellationToken);
-            var ilrFileDetail = new ILRFileDetail();
+            var ilrFileDetail = new ILRSourceFileInfo();
             try
             {
                 if (cancellationToken.IsCancellationRequested)
@@ -121,14 +122,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 var ukPrn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
-                using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
-                    var fileDetail = ilrContext.FileDetails.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.ID).FirstOrDefault();
+                    var fileDetail = ilrContext.SourceFiles.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.DateTime).FirstOrDefault();
                     if (fileDetail != null)
                     {
                         ilrFileDetail.UKPRN = fileDetail.UKPRN;
-                        ilrFileDetail.Filename = fileDetail.Filename;
-                        ilrFileDetail.SubmittedTime = fileDetail.SubmittedTime;
+                        ilrFileDetail.Filename = fileDetail.SourceFileName;
+                        ilrFileDetail.SubmittedTime = fileDetail.DateTime;
+                        ilrFileDetail.FilePreparationDate = fileDetail.FilePreparationDate;
                     }
                 }
             }

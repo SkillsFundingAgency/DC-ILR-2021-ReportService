@@ -48,39 +48,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service
                 return false;
             }
 
-            MemoryStream updateMemoryStream = new MemoryStream();
-            try
+            MemoryStream memoryStream = new MemoryStream();
+            var zipFileExists = await _streamableKeyValuePersistenceService.ContainsAsync(reportZipFileKey, cancellationToken);
+            if (zipFileExists)
             {
-                await _streamableKeyValuePersistenceService.GetAsync(reportZipFileKey, updateMemoryStream, cancellationToken);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogInfo("Report zip key '" + reportZipFileKey + "' not found.");
+                await _streamableKeyValuePersistenceService.GetAsync(reportZipFileKey, memoryStream, cancellationToken);
             }
 
-            if (updateMemoryStream.Length > 0)
+            using (memoryStream)
             {
-                using (updateMemoryStream)
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Update, true))
                 {
-                    using (var archive = new ZipArchive(updateMemoryStream, ZipArchiveMode.Update, true))
-                    {
-                        await ExecuteTasks(jobContextMessage, archive, cancellationToken);
-                    }
-
-                    await _streamableKeyValuePersistenceService.SaveAsync(reportZipFileKey, updateMemoryStream, cancellationToken);
+                    await ExecuteTasks(jobContextMessage, archive, cancellationToken);
                 }
-            }
-            else
-            {
-                using (var memoryStream = new MemoryStream())
-                {
-                    using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
-                    {
-                        await ExecuteTasks(jobContextMessage, archive, cancellationToken);
-                    }
 
-                    await _streamableKeyValuePersistenceService.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId}_Reports.zip", memoryStream, cancellationToken);
-                }
+                await _streamableKeyValuePersistenceService.SaveAsync(reportZipFileKey, memoryStream, cancellationToken);
             }
 
             return true;
