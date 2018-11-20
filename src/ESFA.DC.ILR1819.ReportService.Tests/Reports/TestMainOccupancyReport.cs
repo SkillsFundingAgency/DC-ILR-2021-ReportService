@@ -44,7 +44,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string filename = $"10033670_1_Main Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10033670;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = ilrFilename;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
             jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output] = "FundingFm35Output";

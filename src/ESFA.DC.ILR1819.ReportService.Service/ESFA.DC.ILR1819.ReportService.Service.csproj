@@ -436,6 +436,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="EuFlag.bmp">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Folder Include="Templates\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

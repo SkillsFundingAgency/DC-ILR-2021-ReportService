@@ -73,6 +73,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                         }
                     })
                 .Returns(Task.CompletedTask);
+            storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             largeEmployerProviderService.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
@@ -100,7 +101,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 new AdultFundingClaimBuilder());
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
 
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10000116";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10000116;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10000116-1819-20180704-120055-03";
             await adultFundingClaimReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 
