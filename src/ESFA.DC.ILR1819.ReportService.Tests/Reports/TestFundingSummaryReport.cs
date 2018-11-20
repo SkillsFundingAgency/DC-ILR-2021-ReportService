@@ -55,7 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             // Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             ILarsProviderService larsProviderService = new LarsProviderService(logger.Object, new LarsConfiguration() { LarsConnectionString = ConfigurationManager.AppSettings["LarsConnectionString"] });
 
-            IEasProviderService easProviderService = new EasProviderService(logger.Object, new EasConfiguration() { EasConnectionString = ConfigurationManager.AppSettings["EasdbConnectionString"] });
+            IEasProviderService easProviderService = new EasProviderService(logger.Object, new EasConfiguration() { EasConnectionString = new TestConfigurationHelper().GetSectionValues<EasConfiguration>("EasSection").EasConnectionString });
 
             Mock <IPostcodeProviderService> postcodeProverServiceMock = new Mock<IPostcodeProviderService>();
             Mock<ILargeEmployerProviderService> largeEmployerProviderService = new Mock<ILargeEmployerProviderService>();
