@@ -1,11 +1,11 @@
-﻿using System.Fabric;
-
-namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+﻿namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     using System;
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
+    using System.Linq;
+    using System.Reflection;
     using System.Threading;
     using System.Threading.Tasks;
     using Aspose.Cells;
@@ -181,23 +181,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
-           try
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("AdultFundingClaimReportTemplate.xlsx"));
+            var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
+            Workbook workbook = new Workbook(manifestResourceStream);
+            PopulateWorkbook(workbook, fundingClaimModel, isFis);
+            using (MemoryStream ms = new MemoryStream())
             {
-                var codePackageActivationContext = FabricRuntime.GetActivationContext();
-                var dataPackage = codePackageActivationContext.GetDataPackageObject("Data");
-                string templateFile = Path.Combine(dataPackage.Path, "AdultFundingClaimReportTemplate.xlsx");
-                Workbook workbook = new Workbook(templateFile);
-                PopulateWorkbook(workbook, fundingClaimModel, isFis);
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    workbook.Save(ms, SaveFormat.Xlsx);
-                    await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
-                    await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to retrieve the template file- AdultFundingClaimReportTemplate.xlsx, exception: " + ex);
+                workbook.Save(ms, SaveFormat.Xlsx);
+                await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }
         }
 
