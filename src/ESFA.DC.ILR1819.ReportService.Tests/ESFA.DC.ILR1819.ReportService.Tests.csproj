@@ -59,8 +59,8 @@
     <Reference Include="ESFA.DC.Auditing.Interface, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Auditing.Interface.0.2.0-beta0001\lib\netstandard2.0\ESFA.DC.Auditing.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
+    <Reference Include="ESFA.DC.CollectionsManagement.Models, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.CollectionsManagement.Models.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Models.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.CollectionsManagement.Services.Interface, Version=0.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.CollectionsManagement.Services.Interface.0.1.17-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Services.Interface.dll</HintPath>

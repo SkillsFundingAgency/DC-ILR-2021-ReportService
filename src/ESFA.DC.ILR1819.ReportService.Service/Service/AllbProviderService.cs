@@ -25,6 +25,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IKeyValuePersistenceService _redis;
         private readonly IKeyValuePersistenceService _blob;
         private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
         private readonly SemaphoreSlim _getDataLock;
         private bool _loadedDataAlready;
@@ -35,12 +36,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService,
+            IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
             _redis = redis;
             _blob = blob;
             _jsonSerializationService = jsonSerializationService;
+            _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
@@ -100,7 +103,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                var ukPrn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
+                var ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
                 using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
                     albLearningDeliveryPeriodisedValues = (from pv in ilrContext.ALB_LearningDelivery_PeriodisedValues

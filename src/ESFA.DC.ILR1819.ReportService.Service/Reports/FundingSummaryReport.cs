@@ -50,6 +50,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IFM81TrailBlazerProviderService _fm81TrailBlazerProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
+        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly IPeriodProviderService _periodProviderService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILarsProviderService _larsProviderService;
@@ -78,6 +79,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService,
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
+            IIntUtilitiesService intUtilitiesService,
             IPeriodProviderService periodProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
@@ -108,6 +110,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _fm81TrailBlazerProviderService = fm81TrailBlazerProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
+            _intUtilitiesService = intUtilitiesService;
             _periodProviderService = periodProviderService;
             _larsProviderService = larsProviderService;
             _easProviderService = easProviderService;
@@ -1271,9 +1274,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
                 IlrFile = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString()),
-                Ukprn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString()),
+                Ukprn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]),
                 ProviderName = providerNameTask.Result ?? "Unknown",
-                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString()), cancellationToken)).ToString("dd/MM/yyyy") : null,
+                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]), cancellationToken)).ToString("dd/MM/yyyy") : null,
                 SecurityClassification = "OFFICIAL - SENSITIVE"
             };
 
