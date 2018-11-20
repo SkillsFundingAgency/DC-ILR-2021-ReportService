@@ -29,7 +29,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             }
 
             FM25Learner[] fundLineObject = fm25Global.Learners.Where(x =>
-                string.Equals(x.FundLine, fundLine, StringComparison.OrdinalIgnoreCase)).ToArray();
+                string.Equals(x.FundLine, fundLine, StringComparison.OrdinalIgnoreCase) &&
+                validLearners.Contains(x.LearnRefNumber)).ToArray();
 
             LearnerPeriodisedValues[] periodisedValues = fundLineObject.SelectMany(x => x.LearnerPeriodisedValues)
                 .Where(x => string.Equals(x.AttributeName, "OnProgPayment")).ToArray();

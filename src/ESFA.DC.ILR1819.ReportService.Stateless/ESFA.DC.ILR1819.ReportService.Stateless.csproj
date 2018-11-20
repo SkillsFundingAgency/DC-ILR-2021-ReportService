@@ -396,17 +396,11 @@
     <Compile Include="ServiceEventSource.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="AdultFundingClaimReportTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Include="ESFA.DC.ILR1819.ReportService.Stateless.ruleset">
       <SubType>Designer</SubType>
     </None>
     <None Include="PackageRoot\Config\Settings.xml">
       <SubType>Designer</SubType>
-    </None>
-    <None Include="PackageRoot\Data\AdultFundingClaimReportTemplate.xlsx">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="PackageRoot\ServiceManifest.xml" />
     <None Include="App.config" />
