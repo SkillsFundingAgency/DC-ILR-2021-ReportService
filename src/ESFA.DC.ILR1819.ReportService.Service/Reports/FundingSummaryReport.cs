@@ -1172,9 +1172,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 workbook.Worksheets[0].Name = "FundingSummaryReport";
                 using (MemoryStream img = new MemoryStream())
                 {
-                    byte[] imgBytes = File.ReadAllBytes("EuFlag.png");
+                    byte[] imgBytes = File.ReadAllBytes("EuFlag.bmp");
                     img.Write(imgBytes, 0, imgBytes.Length);
-                    workbook.Worksheets[0].Pictures.Add(1, 22, ms);
+                    workbook.Worksheets[0].Pictures.Add(1, 22, img);
                     workbook.Save(ms, SaveFormat.Xlsx);
                 }
 
