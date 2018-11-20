@@ -1,5 +1,8 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+﻿using System.Fabric;
+
+namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.IO.Compression;
@@ -178,14 +181,29 @@
             var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 
-            Workbook workbook = new Workbook("AdultFundingClaimReportTemplate.xlsx");
-            PopulateWorkbook(workbook, fundingClaimModel, isFis);
-            using (MemoryStream ms = new MemoryStream())
+           try
             {
-                workbook.Save(ms, SaveFormat.Xlsx);
-                await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
-                await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
+                var codePackageActivationContext = FabricRuntime.GetActivationContext();
+                var dataPackage = codePackageActivationContext.GetDataPackageObject("Data");
+                string templateFile = Path.Combine(dataPackage.Path, "AdultFundingClaimReportTemplate.xlsx");
+                Workbook workbook = new Workbook(templateFile);
+                PopulateWorkbook(workbook, fundingClaimModel, isFis);
+                using (MemoryStream ms = new MemoryStream())
+                {
+                    workbook.Save(ms, SaveFormat.Xlsx);
+                    await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                    await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
+                }
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to retrieve the template file- AdultFundingClaimReportTemplate.xlsx, exception: " + ex);
+            }
+        }
+
+        private void PopulateWorkbook(object workbook, AdultFundingClaimModel fundingClaimModel, bool isFis)
+        {
+            throw new NotImplementedException();
         }
 
         private void PopulateWorkbook(Workbook workbook, AdultFundingClaimModel adultFundingClaimModel, bool isFis)
