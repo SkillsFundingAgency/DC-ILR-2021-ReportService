@@ -2,7 +2,6 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.JobContextManager.Model.Interface;
 
