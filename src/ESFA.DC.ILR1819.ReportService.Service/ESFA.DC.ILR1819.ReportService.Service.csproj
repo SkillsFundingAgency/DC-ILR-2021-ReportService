@@ -410,10 +410,10 @@
     <Compile Include="Service\ValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Reports\Templates\AdultFundingClaimReportTemplate.xlsx" />
     <EmbeddedResource Include="App.config">
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reports\Templates\AdultFundingClaimReportTemplate.xlsx" />
     <None Include="ESFA.DC.ILR1819.ReportService.Service.ruleset">
       <SubType>Designer</SubType>
     </None>
