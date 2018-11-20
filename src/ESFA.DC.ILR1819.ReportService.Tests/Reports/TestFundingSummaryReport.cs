@@ -46,9 +46,10 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
+            IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
 
             // Mock<IOrgProviderService> orgProviderService = new Mock<IOrgProviderService>();
             IOrgProviderService orgProviderService = new OrgProviderService(logger.Object, new OrgConfiguration() { OrgConnectionString = ConfigurationManager.AppSettings["OrgConnectionString"] });
@@ -60,9 +61,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             Mock <IPostcodeProviderService> postcodeProverServiceMock = new Mock<IPostcodeProviderService>();
             Mock<ILargeEmployerProviderService> largeEmployerProviderService = new Mock<ILargeEmployerProviderService>();
-            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
-            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
+            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
             IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
@@ -129,6 +130,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 fm81TrailBlazerProviderService,
                 validLearnersService,
                 stringUtilitiesService,
+                intUtilitiesService,
                 periodProviderService.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,

@@ -310,6 +310,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<StringUtilitiesService>().As<IStringUtilitiesService>()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<IntUtilitiesService>().As<IIntUtilitiesService>()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<OrgProviderService>().As<IOrgProviderService>()
                 .InstancePerLifetimeScope();
 

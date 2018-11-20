@@ -26,6 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IKeyValuePersistenceService _blob;
 
         private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly IIntUtilitiesService _intUtilitiesService;
 
         private readonly DataStoreConfiguration _dataStoreConfiguration;
 
@@ -40,12 +41,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService,
+            IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
             _redis = redis;
             _blob = blob;
             _jsonSerializationService = jsonSerializationService;
+            _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
@@ -69,7 +72,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 _loadedDataAlready = true;
                 string fm25Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output].ToString();
-                int ukPrn = (int)jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn];
+                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
                 if (await _redis.ContainsAsync(fm25Filename, cancellationToken))
                 {
                     string fm25 = await _redis.GetAsync(fm25Filename, cancellationToken);

@@ -397,6 +397,7 @@
     <Compile Include="Service\FM36ProviderService.cs" />
     <Compile Include="Service\FM81TrailBlazerProviderService.cs" />
     <Compile Include="Service\IlrProviderService.cs" />
+    <Compile Include="Service\IntUtilitiesService.cs" />
     <Compile Include="Service\InvalidLearnersService.cs" />
     <Compile Include="Service\LargeEmployerProviderService.cs" />
     <Compile Include="Service\PostcodeProviderService.cs" />

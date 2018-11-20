@@ -28,6 +28,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly IXmlSerializationService _xmlSerializationService;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
 
         private readonly SemaphoreSlim _getIlrLock;
@@ -39,12 +40,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             IStreamableKeyValuePersistenceService storage,
             IXmlSerializationService xmlSerializationService,
             IDateTimeProvider dateTimeProvider,
+            IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
             _storage = storage;
             _xmlSerializationService = xmlSerializationService;
             _dateTimeProvider = dateTimeProvider;
+            _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
             _message = null;
             _getIlrLock = new SemaphoreSlim(1, 1);
@@ -67,7 +70,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 string filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
-                int ukPrn = (int)jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn];
+                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
                 if (await _storage.ContainsAsync(filename, cancellationToken))
                 {
                     using (MemoryStream ms = new MemoryStream())
@@ -121,7 +124,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                var ukPrn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
+                var ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
                 using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
                     var fileDetail = ilrContext.SourceFiles.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.DateTime).FirstOrDefault();

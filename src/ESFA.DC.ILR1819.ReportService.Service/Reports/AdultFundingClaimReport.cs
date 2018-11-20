@@ -86,6 +86,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IAllbProviderService _allbProviderService;
         private readonly IFM35ProviderService _fm35ProviderService;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly ILarsProviderService _larsProviderService;
         private readonly IEasProviderService _easProviderService;
         private readonly IPostcodeProviderService _postcodeProviderService;
@@ -101,6 +102,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IAllbProviderService allbProviderService,
             IFM35ProviderService fm35ProviderService,
             IDateTimeProvider dateTimeProvider,
+            IIntUtilitiesService intUtilitiesService,
             IValueProvider valueProvider,
             ILarsProviderService larsProviderService,
             IEasProviderService easProviderService,
@@ -123,6 +125,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _largeEmployerProviderService = largeEmployerProviderService;
             _versionInfo = versionInfo;
             _dateTimeProvider = dateTimeProvider;
+            _intUtilitiesService = intUtilitiesService;
             _adultFundingClaimBuilder = adultFundingClaimBuilder;
 
             ReportFileName = "Adult Funding Claim Report";
@@ -164,6 +167,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 providerNameTask.Result,
                 lastSubmittedIlrFileTask.Result,
                 _dateTimeProvider,
+                _intUtilitiesService,
                 ilrFileTask.Result,
                 _versionInfo,
                 organisationDataTask.Result,
@@ -176,8 +180,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            long jobId = jobContextMessage.JobId;
+            string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
             var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
 

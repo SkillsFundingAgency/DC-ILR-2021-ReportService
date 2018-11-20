@@ -1,6 +1,7 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -30,6 +31,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             string providerName,
             ILRSourceFileInfo ilrSourceFileInfo,
             IDateTimeProvider dateTimeProvider,
+            IIntUtilitiesService intUtilitiesService,
             IMessage message,
             IVersionInfo versionInfo,
             string orgData,
@@ -135,7 +137,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 adultFundingClaimModel.LoansExcessSupport12Months = loansExcessSupport12MonthsEas;
 
                 adultFundingClaimModel.ProviderName = providerName ?? "Unknown";
-                adultFundingClaimModel.Ukprn = int.Parse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
+                adultFundingClaimModel.Ukprn = intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
                 adultFundingClaimModel.Year = "2018/19";
                 adultFundingClaimModel.ReportGeneratedAt = dateTimeProvider.GetNowUtc().ToString("HH:mm:ss tt") + " on " +
                                                       dateTimeProvider.GetNowUtc().ToString("dd/MM/yyyy");

@@ -45,6 +45,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
 
@@ -58,14 +59,14 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
 
             ILarsProviderService larsProviderService = new LarsProviderService(logger.Object, new LarsConfiguration
             {
                 LarsConnectionString = ConfigurationManager.AppSettings["LarsConnectionString"]
             });
 
-            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, null);
+            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
 
