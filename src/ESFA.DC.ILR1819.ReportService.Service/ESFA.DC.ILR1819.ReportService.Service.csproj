@@ -346,6 +346,7 @@
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
     <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFunding1619ModelComparer.cs" />
+    <Compile Include="Comparer\ValidationErrorsModelComparer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
     <Compile Include="Extensions\DataMatch\EarningExtensions.cs" />

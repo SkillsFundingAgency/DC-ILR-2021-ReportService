@@ -17,6 +17,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
@@ -30,6 +31,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class ValidationErrorsReport : AbstractReportBuilder, IReport
     {
+        private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
+
         private readonly ILogger _logger;
         private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IKeyValuePersistenceService _redis;
@@ -80,7 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
             GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
 
-            await PeristValuesToStorage(validationErrors, archive, cancellationToken);
+            await PersistValuesToStorage(validationErrors, archive, cancellationToken);
         }
 
         private void GenerateFrontEndValidationReport(
@@ -129,6 +132,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         ErrorMessage = validationErrorMessageLookups?.SingleOrDefault(y => string.Equals(x.RuleName, y.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
                         FieldValues = x.ValidationErrorParameters == null ? string.Empty : GetValidationErrorParameters(x.ValidationErrorParameters.ToList()),
                     }));
+
+                result.Sort(ValidationErrorsModelComparer);
             }
             catch (Exception ex)
             {
@@ -151,7 +156,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return result;
         }
 
-        private async Task PeristValuesToStorage(List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
+        private async Task PersistValuesToStorage(List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(validationErrors);
             await _storage.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
