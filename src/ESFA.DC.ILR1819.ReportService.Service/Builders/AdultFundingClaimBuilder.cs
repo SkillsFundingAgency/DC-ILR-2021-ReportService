@@ -94,9 +94,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 // EAS
 
-                otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB – Other Learning", "Princes Trust: AEB – Other Learning" }.Contains(x.PaymentTypeName) &&
+                otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB–Other Learning", "Princes Trust: AEB–Other Learning" }.Contains(x.PaymentTypeName) &&
                                                          First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB – Other Learning", "Princes Trust: AEB – Other Learning" }.Contains(x.PaymentTypeName) &&
+                otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB–Other Learning", "Princes Trust: AEB–Other Learning" }.Contains(x.PaymentTypeName) &&
                                                                                        First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
                 otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB–Other Learning" }.Contains(x.PaymentTypeName)
