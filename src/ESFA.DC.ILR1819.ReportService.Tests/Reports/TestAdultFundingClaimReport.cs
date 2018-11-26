@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
+using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -106,7 +107,22 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10000116;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10000116-1819-20180704-120055-03";
-            await adultFundingClaimReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
+            MemoryStream memoryStream = new MemoryStream();
+
+            using (memoryStream)
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Update, true))
+                {
+                    await adultFundingClaimReport.GenerateReport(jobContextMessage, archive, false, CancellationToken.None);
+                    //await adultFundingClaimReport.GenerateReport(jobContextMessage, archive, false, CancellationToken.None);
+                }
+
+                using (var fileStream = new FileStream($"{filename}.zip", FileMode.Create))
+                {
+                    memoryStream.Seek(0, SeekOrigin.Begin);
+                    memoryStream.CopyTo(fileStream);
+                }
+            }
 
             xlsx.Should().NotBeNullOrEmpty();
 

@@ -384,6 +384,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
+            var entry = archive.GetEntry(filename);
+            if (entry != null)
+            {
+                entry.Delete();
+            }
+
             ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
             using (Stream sw = archivedFile.Open())
             {
