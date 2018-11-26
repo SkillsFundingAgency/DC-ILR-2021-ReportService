@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -147,7 +148,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         continue;
                     }
 
-                    var learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
+                    ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
                         ?.LearningDeliveries?.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
 
                     mainOccupancyFm35Models.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
@@ -157,7 +158,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         frameworkAim,
                         learnerFm35Data));
 
-                    var learnerFm25Data =
+                    if (!learningDelivery.LearningDeliveryFAMs.Any(x =>
+                        string.Equals(x.LearnDelFAMCode, "105", StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(x.LearnDelFAMType, "SOF", StringComparison.OrdinalIgnoreCase)))
+                    {
+                        continue;
+                    }
+
+                    FM25Learner learnerFm25Data =
                         fm25Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber);
 
                     mainOccupancyFm25Models.Add(_mainOccupancyReportModelBuilder.BuildFm25Model(

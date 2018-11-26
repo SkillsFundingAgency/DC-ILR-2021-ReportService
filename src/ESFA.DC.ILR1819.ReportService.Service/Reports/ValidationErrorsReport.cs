@@ -63,7 +63,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
             _validationStageOutputCache = validationStageOutputCache;
 
-            ReportFileName = "Validation Errors Report";
+            ReportFileName = "Rule Violation Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport;
         }
 
