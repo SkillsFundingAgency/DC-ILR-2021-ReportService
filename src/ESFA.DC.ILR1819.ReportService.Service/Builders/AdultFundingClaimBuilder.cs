@@ -77,10 +77,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 decimal loansAreaCosts12Months = 0;
 
                 // FM35
-                otherLearningProgramFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-                otherLearningProgramFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-                otherLearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-                otherLearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
+                otherLearningProgramFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
+                otherLearningProgramFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
+                otherLearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
+                otherLearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
                 traineeShips1924ProgrammeFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
                 traineeShips1924ProgrammeFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
                 traineeShips1924LearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
@@ -94,14 +94,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 // EAS
 
-                otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB–Other Learning", "Princes Trust: AEB–Other Learning" }.Contains(x.PaymentTypeName) &&
+                otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Contains(x.PaymentTypeName) &&
                                                          First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB–Other Learning", "Princes Trust: AEB–Other Learning" }.Contains(x.PaymentTypeName) &&
+                otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Contains(x.PaymentTypeName) &&
                                                                                        First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
-                otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB–Other Learning" }.Contains(x.PaymentTypeName)
+                otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Contains(x.PaymentTypeName)
                                                                                 && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                otherLearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB–Other Learning" }.Contains(x.PaymentTypeName)
+                otherLearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Contains(x.PaymentTypeName)
                                                                                  && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
                 traineeShips1924ProgrammeFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
