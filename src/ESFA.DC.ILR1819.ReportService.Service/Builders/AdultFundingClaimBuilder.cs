@@ -120,6 +120,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                                                                                            && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 traineeShips1924LearnerSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
                                                                                            && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+
+                loansAreasCosts6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                                                                           && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                loansAreasCosts12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                                                                           && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                loansExcessSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                                                                           && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
+                loansExcessSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                                                                            && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
                 adultFundingClaimModel.OtherLearningProgrammeFunding6Months = otherLearningProgramFunding6MonthsFm35 + otherLearningProgramFunding6MonthsEas;
                 adultFundingClaimModel.OtherLearningProgrammeFunding12Months = otherLearningProgramFunding12MonthsFm35 + otherLearningProgramFunding12MonthsEas;
                 adultFundingClaimModel.OtherLearningLearningSupport6Months = otherLearningSupport6MonthsFm35 + otherLearningSupport6MonthsEas;
