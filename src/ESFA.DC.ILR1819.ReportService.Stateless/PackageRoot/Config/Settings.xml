@@ -4,6 +4,7 @@
 
   <Section Name="DataStoreSection">
     <Parameter Name="ILRDataStoreConnectionString" Value="" />
+    <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
   </Section>
   <Section Name="ServiceBusSettings">
     <Parameter Name="AuditQueueName" Value="" />

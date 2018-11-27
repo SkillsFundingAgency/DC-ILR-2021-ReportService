@@ -91,11 +91,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                     using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                     {
+                        var fm25GlobalDb = await ilrContext.FM25_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                         FM25_Learner[] learners = await ilrContext.FM25_Learner.Where(x => x.UKPRN == ukPrn).Include(x => x.FM25_FM35_Learner_PeriodisedValues).ToArrayAsync(cancellationToken);
                         foreach (FM25_Learner fm25Learner in learners)
                         {
                             List<LearnerPeriodisedValues> learnerPeriodisedValues = new List<LearnerPeriodisedValues>();
-                            foreach (FM25_FM35_Learner_PeriodisedValues learnerPeriodisedValue in fm25Learner.FM25_FM35_Learner_PeriodisedValues)
+                            foreach (var learnerPeriodisedValue in fm25Learner.FM25_FM35_Learner_PeriodisedValues)
                             {
                                 learnerPeriodisedValues.Add(new LearnerPeriodisedValues
                                 {
@@ -121,6 +122,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                                 FundLine = fm25Learner.FundLine,
                                 LearnerPeriodisedValues = learnerPeriodisedValues
                             });
+                        }
+
+                        if (fm25GlobalDb != null)
+                        {
+                            fm25Global.LARSVersion = fm25GlobalDb.LARSVersion;
+                            fm25Global.OrgVersion = fm25GlobalDb.OrgVersion;
+                            fm25Global.PostcodeDisadvantageVersion = fm25GlobalDb.PostcodeDisadvantageVersion;
+                            fm25Global.RulebaseVersion = fm25GlobalDb.RulebaseVersion;
+                            fm25Global.UKPRN = fm25GlobalDb.UKPRN;
                         }
                     }
 

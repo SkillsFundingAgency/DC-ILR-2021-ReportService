@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -125,9 +126,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 var ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
-                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
                 {
-                    var fileDetail = ilrContext.SourceFiles.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.DateTime).FirstOrDefault();
+                    var fileDetail = await ilrContext.SourceFiles.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.DateTime).FirstOrDefaultAsync(cancellationToken);
                     if (fileDetail != null)
                     {
                         ilrFileDetail.UKPRN = fileDetail.UKPRN;

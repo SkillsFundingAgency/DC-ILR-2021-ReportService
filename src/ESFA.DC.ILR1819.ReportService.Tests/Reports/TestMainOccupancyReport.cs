@@ -60,7 +60,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
             IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IValidLearnersService validLearnersService =
+                new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
@@ -68,16 +69,23 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IValueProvider valueProvider = new ValueProvider();
 
             var validLearnersStr = File.ReadAllText(validLearnRefNumbersFilename);
-            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead(ilrFilename).CopyTo(sr)).Returns(Task.CompletedTask);
-            storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
+            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
+                .Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead(ilrFilename).CopyTo(sr))
+                .Returns(Task.CompletedTask);
+            storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>()))
+                .Callback<string, string, CancellationToken>((key, value, ct) => csv = value)
+                .Returns(Task.CompletedTask);
             storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
-            redis.Setup(x => x.GetAsync("FundingFm35Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm35Filename));
-            redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm25Filename));
+            redis.Setup(x => x.GetAsync("FundingFm35Output", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(File.ReadAllText(fm35Filename));
+            redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>()))
+                .ReturnsAsync(File.ReadAllText(fm25Filename));
             redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(validLearnersStr);
 
             IMessage message = await ilrProviderService.GetIlrFile(jobContextMessage, CancellationToken.None);
             List<string> validLearners = jsonSerializationService.Deserialize<List<string>>(validLearnersStr);
-            Dictionary<string, LarsLearningDelivery> learningDeliveriesDict = new Dictionary<string, LarsLearningDelivery>();
+            Dictionary<string, LarsLearningDelivery> learningDeliveriesDict =
+                new Dictionary<string, LarsLearningDelivery>();
             List<LearnerAndDeliveries> learnerAndDeliveries = new List<LearnerAndDeliveries>();
             foreach (ILearner messageLearner in message.Learners)
             {
@@ -103,12 +111,16 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                         };
                     }
 
-                    learnerAndDeliveries.Add(new LearnerAndDeliveries(messageLearner.LearnRefNumber, learningDeliveries));
+                    learnerAndDeliveries.Add(
+                        new LearnerAndDeliveries(messageLearner.LearnRefNumber, learningDeliveries));
                 }
             }
 
-            larsProviderService.Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
-            larsProviderService.Setup(x => x.GetFrameworkAimsAsync(It.IsAny<string[]>(), It.IsAny<List<ILearner>>(), It.IsAny<CancellationToken>())).ReturnsAsync(learnerAndDeliveries);
+            larsProviderService
+                .Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(learningDeliveriesDict);
+            larsProviderService
+                .Setup(x => x.GetFrameworkAimsAsync(It.IsAny<string[]>(), It.IsAny<List<ILearner>>(), It.IsAny<CancellationToken>())).ReturnsAsync(learnerAndDeliveries);
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
@@ -131,7 +143,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             csv.Should().NotBeNullOrEmpty();
 
-            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MainOccupancyFM25Mapper(), 14), new CsvEntry(new MainOccupancyFM35Mapper(), 14));
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MainOccupancyFM25Mapper(), 15), new CsvEntry(new MainOccupancyFM35Mapper(), 15));
         }
     }
 }
