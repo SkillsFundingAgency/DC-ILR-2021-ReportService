@@ -341,8 +341,7 @@
     <Compile Include="Comparer\AppsIndicativeEarningsModelComparer.cs" />
     <Compile Include="Comparer\DasCommitmentsComparer.cs" />
     <Compile Include="Comparer\DataMatchModelComparer.cs" />
-    <Compile Include="Comparer\MainOccupancyFM25ModelComparer.cs" />
-    <Compile Include="Comparer\MainOccupancyFM35ModelComparer.cs" />
+    <Compile Include="Comparer\MainOccupancyModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
     <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFunding1619ModelComparer.cs" />
@@ -365,8 +364,7 @@
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
     <Compile Include="Mapper\FundingSummaryHeaderMapper.cs" />
     <Compile Include="Mapper\FundingSummaryMapper.cs" />
-    <Compile Include="Mapper\MainOccupancyFM25Mapper.cs" />
-    <Compile Include="Mapper\MainOccupancyFM35Mapper.cs" />
+    <Compile Include="Mapper\MainOccupancyMapper.cs" />
     <Compile Include="Mapper\MathsAndEnglishMapper.cs" />
     <Compile Include="Mapper\SummaryOfFM35FundingMapper.cs" />
     <Compile Include="Mapper\SummaryOfFunding1619Mapper.cs" />

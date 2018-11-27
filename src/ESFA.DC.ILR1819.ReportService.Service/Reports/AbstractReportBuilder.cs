@@ -74,9 +74,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             csvWriter.WriteHeader<TModel>();
-
             csvWriter.NextRecord();
-            csvWriter.WriteRecords(records);
+
+            if (mapperOverride == null)
+            {
+                csvWriter.WriteRecords(records);
+            }
+            else
+            {
+                ModelProperty[] names = mapperOverride.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
+                foreach (TModel record in records)
+                {
+                    WriteCsvRecords(csvWriter, mapperOverride, names, record);
+                }
+            }
 
             csvWriter.Configuration.UnregisterClassMap();
         }
@@ -102,7 +113,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<object> values = new List<object>();
             foreach (var modelProperty in modelProperties)
             {
-                _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record));
+                _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record), mapper, modelProperty);
             }
 
             WriteCsvRecords(csvWriter, values.ToArray());
@@ -191,10 +202,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 int widestColumn = 1;
 
-                foreach (var modelProperty in modelProperties)
+                foreach (ModelProperty modelProperty in modelProperties)
                 {
                     List<object> values = new List<object>();
-                    _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record));
+                    _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record), classMap, modelProperty);
 
                     worksheet.Cells.ImportObjectArray(values.ToArray(), localRow, column, false);
                     if (recordStyle != null)
@@ -293,9 +304,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
 
             List<object> values = new List<object>();
-            foreach (var modelProperty in modelProperties)
+            foreach (ModelProperty modelProperty in modelProperties)
             {
-                _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record));
+                _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record), classMap, modelProperty);
             }
 
             worksheet.Cells.ImportObjectArray(values.ToArray(), currentRow, column, pivot);
@@ -362,11 +373,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            var entry = archive.GetEntry(filename);
-            if (entry != null)
-            {
-                entry.Delete();
-            }
+            ZipArchiveEntry entry = archive.GetEntry(filename);
+            entry?.Delete();
 
             ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
             using (StreamWriter sw = new StreamWriter(archivedFile.Open()))
@@ -390,11 +398,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            var entry = archive.GetEntry(filename);
-            if (entry != null)
-            {
-                entry.Delete();
-            }
+            ZipArchiveEntry entry = archive.GetEntry(filename);
+            entry?.Delete();
 
             ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
             using (Stream sw = archivedFile.Open())

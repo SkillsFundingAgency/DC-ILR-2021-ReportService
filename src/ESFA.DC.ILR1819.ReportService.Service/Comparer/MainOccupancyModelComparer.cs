@@ -3,9 +3,9 @@ using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
 {
-    public sealed class MainOccupancyFM25ModelComparer : IComparer<MainOccupancyFM25Model>
+    public sealed class MainOccupancyModelComparer : IComparer<MainOccupancyModel>
     {
-        public int Compare(MainOccupancyFM25Model x, MainOccupancyFM25Model y)
+        public int Compare(MainOccupancyModel x, MainOccupancyModel y)
         {
             if (x == null && y == null)
             {
