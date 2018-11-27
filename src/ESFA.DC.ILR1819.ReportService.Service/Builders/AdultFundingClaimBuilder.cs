@@ -248,10 +248,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 // FM35
                 var fm35LearningDeliveryPeriodisedValues = GetFM35LearningDeliveryPeriodisedValues(fm35Global, ukPrn);
-                otherLearningProgramFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-                otherLearningProgramFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-                otherLearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
-                otherLearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB – Other Learning", "AEB – Other Learning (non-procured)" });
+                otherLearningProgramFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
+                otherLearningProgramFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
+                otherLearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
+                otherLearningSupport12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" });
                 traineeShips1924ProgrammeFunding6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
                 traineeShips1924ProgrammeFunding12MonthsFm35 = Fm35DeliveryValues12Months(fm35LearningDeliveryPeriodisedValues, new[] { "OnProgPayment", "BalancePayment", "AchievePayment", "EmpOutcomePay" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });
                 traineeShips1924LearningSupport6MonthsFm35 = Fm35DeliveryValues6Months(fm35LearningDeliveryPeriodisedValues, new[] { "LearnSuppFundCash" }, new[] { "19-24 Traineeship’", "19-24 Traineeship (non-procured)" });

@@ -72,12 +72,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                string albFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString();
-
                 int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
 
-                if (await _redis.ContainsAsync(albFilename, cancellationToken))
+                if (jobContextMessage.KeyValuePairs.ContainsKey(JobContextMessageKey.FundingAlbOutput)
+                    && await _redis.ContainsAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString(), cancellationToken))
                 {
+                    string albFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString();
                     string alb = await _redis.GetAsync(albFilename, cancellationToken);
 
                     if (string.IsNullOrEmpty(alb))

@@ -74,20 +74,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                string fm35Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output].ToString();
-                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
-                if (await _redis.ContainsAsync(fm35Filename, cancellationToken))
+                int ukPrn = _intUtilitiesService.ObjectToInt(
+                    jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+
+                if (jobContextMessage.KeyValuePairs.ContainsKey(JobContextMessageKey.FundingFm35Output)
+                            && await _redis.ContainsAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output].ToString(), cancellationToken))
                 {
-                    string fm35 = await _redis.GetAsync(fm35Filename, cancellationToken);
+                    string fm35Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output].ToString();
 
-                    if (string.IsNullOrEmpty(fm35))
+                    if (await _redis.ContainsAsync(fm35Filename, cancellationToken))
                     {
-                        _fundingOutputs = null;
-                        return _fundingOutputs;
-                    }
+                        string fm35 = await _redis.GetAsync(fm35Filename, cancellationToken);
 
-                    // await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Fm35.json", fm35, cancellationToken);
-                    _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(fm35);
+                        if (string.IsNullOrEmpty(fm35))
+                        {
+                            _fundingOutputs = null;
+                            return _fundingOutputs;
+                        }
+
+                        // await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Fm35.json", fm35, cancellationToken);
+                        _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(fm35);
+                    }
                 }
                 else
                 {
