@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
@@ -12,7 +13,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
     public class MainOccupancyReportModelBuilder : IMainOccupancyReportModelBuilder
     {
-        public MainOccupancyFM35Model BuildFm35Model(
+        public MainOccupancyModel BuildFm35Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
@@ -29,6 +30,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, StringComparison.OrdinalIgnoreCase));
             var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35LearningSupportAttributeName, StringComparison.OrdinalIgnoreCase));
+            var ldms = GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, "LDM", StringComparison.OrdinalIgnoreCase)), 4);
 
             var totalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
                                      (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) +
@@ -68,7 +70,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             LearningDeliveryPeriodisedValue aimPercent = fm35Data?.LearningDeliveryPeriodisedValues?.SingleOrDefault(attr =>
                 string.Equals(attr.AttributeName, Constants.Fm35AimAchievementPercentAttributeName, StringComparison.OrdinalIgnoreCase));
 
-            return new MainOccupancyFM35Model
+            return new MainOccupancyModel
             {
                 LearnRefNumber = learner.LearnRefNumber,
                 Uln = learner.ULN,
@@ -120,14 +122,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 LearnDelFamCodeLsfLatest = learningDelivery.LearningDeliveryFAMs
                     ?.Where(x => string.Equals(x.LearnDelFAMType, "LSF", StringComparison.OrdinalIgnoreCase))
                     .Min(x => x.LearnDelFAMDateToNullable)?.ToString("dd/MM/yyyy"),
-                LearnDelFamCodeLdm1 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "LDM1", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                LearnDelFamCodeLdm2 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "LDM2", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                LearnDelFamCodeLdm3 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "LDM3", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                LearnDelFamCodeLdm4 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "LDM4", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
+                LearnDelFamCodeLdm1 = ldms[0],
+                LearnDelFamCodeLdm2 = ldms[1],
+                LearnDelFamCodeLdm3 = ldms[2],
+                LearnDelFamCodeLdm4 = ldms[3],
                 LearnDelFamCodeRes = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "RES", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 ProvSpecDelMonA = learningDelivery.ProviderSpecDeliveryMonitorings
@@ -240,7 +238,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             };
         }
 
-        public MainOccupancyFM25Model BuildFm25Model(
+        public MainOccupancyModel BuildFm25Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
             FM25Learner fm25Data)
@@ -261,7 +259,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                                      + onProgPayment?.Period11
                                      + onProgPayment?.Period12;
 
-            return new MainOccupancyFM25Model
+            return new MainOccupancyModel
             {
                 LearnRefNumber = learner.LearnRefNumber,
                 Uln = learner.ULN,
@@ -274,11 +272,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
                     ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                NatRate = fm25Data?.NatRate,
+                ApplicWeightFundRate = fm25Data?.NatRate,
                 FundModel = learningDelivery.FundModel,
-                LearnerStartDate = fm25Data?.LearnerStartDate?.ToString("dd/MM/yyyy"),
-                LearnerPlanEndDate = fm25Data?.LearnerPlanEndDate?.ToString("dd/MM/yyyy"),
-                LearnerActEndDate = fm25Data?.LearnerActEndDate?.ToString("dd/MM/yyyy"),
+                LearnStartDate = fm25Data?.LearnerStartDate?.ToString("dd/MM/yyyy"),
+                LearnPlanEndDate = fm25Data?.LearnerPlanEndDate?.ToString("dd/MM/yyyy"),
+                LearnActEndDate = fm25Data?.LearnerActEndDate?.ToString("dd/MM/yyyy"),
                 FundLine = fm25Data?.FundLine,
                 Period1OnProgPayment = onProgPayment?.Period1,
                 Period2OnProgPayment = onProgPayment?.Period2,
@@ -292,8 +290,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 Period10OnProgPayment = onProgPayment?.Period10,
                 Period11OnProgPayment = onProgPayment?.Period11,
                 Period12OnProgPayment = onProgPayment?.Period12,
-                PeriodOnProgPaymentTotal = onProgPaymentTotal,
-                Total = onProgPaymentTotal
+                TotalOnProgPayment = onProgPaymentTotal,
+                TotalEarnedCash = onProgPaymentTotal
             };
         }
 
@@ -361,6 +359,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             }
 
             return max;
+        }
+
+        private string[] GetArrayEntries(IEnumerable<ILearningDeliveryFAM> availableValues, int size)
+        {
+            if (size < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size), $"{nameof(size)} should be greater than 0");
+            }
+
+            string[] values = new string[size];
+            int pointer = 0;
+            foreach (ILearningDeliveryFAM learningDeliveryFam in availableValues)
+            {
+                values[pointer++] = learningDeliveryFam.LearnDelFAMCode;
+                if (pointer == size)
+                {
+                    break;
+                }
+            }
+
+            return values;
         }
     }
 }

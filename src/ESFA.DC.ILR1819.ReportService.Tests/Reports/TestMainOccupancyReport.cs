@@ -131,7 +131,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             csv.Should().NotBeNullOrEmpty();
 
-            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MainOccupancyFM25Mapper(), 14), new CsvEntry(new MainOccupancyFM35Mapper(), 14));
+#if DEBUG
+            File.WriteAllText($"{filename}.csv", csv);
+#endif
+
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MainOccupancyMapper(), 14));
         }
     }
 }

@@ -108,49 +108,62 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage)
         {
-            string validationErrorsStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors]
-                .ToString());
-
-            string validationErrorLookups = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups]
-                .ToString());
-
             List<ValidationErrorDto> result = new List<ValidationErrorDto>();
+
             try
             {
-                List<ValidationError> validationErrors = _jsonSerializationService.Deserialize<List<ValidationError>>(validationErrorsStr);
+                string validationErrorsStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors]
+                    .ToString());
 
-                List<ValidationErrorMessageLookup> validationErrorMessageLookups =
-                    _jsonSerializationService.Deserialize<List<ValidationErrorMessageLookup>>(validationErrorLookups);
+                string validationErrorLookups = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups]
+                    .ToString());
 
-                validationErrors?.ToList().ForEach(x =>
-                    result.Add(new ValidationErrorDto
-                    {
-                        AimSequenceNumber = x.AimSequenceNumber,
-                        LearnerReferenceNumber = x.LearnerReferenceNumber,
-                        RuleName = x.RuleName,
-                        Severity = x.Severity,
-                        ErrorMessage = validationErrorMessageLookups?.SingleOrDefault(y => string.Equals(x.RuleName, y.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
-                        FieldValues = x.ValidationErrorParameters == null ? string.Empty : GetValidationErrorParameters(x.ValidationErrorParameters.ToList()),
-                    }));
-
-                result.Sort(ValidationErrorsModelComparer);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to merge validation error messages", ex);
-            }
-
-            if (result.Count == 0)
-            {
-                _logger.LogError("Falling back to old behaviour");
                 try
                 {
-                    result = _jsonSerializationService.Deserialize<List<ValidationErrorDto>>(validationErrorsStr);
+                    List<ValidationError> validationErrors = _jsonSerializationService.Deserialize<List<ValidationError>>(validationErrorsStr);
+
+                    List<ValidationErrorMessageLookup> validationErrorMessageLookups =
+                        _jsonSerializationService.Deserialize<List<ValidationErrorMessageLookup>>(validationErrorLookups);
+
+                    foreach (ValidationError validationError in validationErrors)
+                    {
+                        result.Add(new ValidationErrorDto
+                        {
+                            AimSequenceNumber = validationError.AimSequenceNumber,
+                            LearnerReferenceNumber = validationError.LearnerReferenceNumber,
+                            RuleName = validationError.RuleName,
+                            Severity = validationError.Severity,
+                            ErrorMessage = validationErrorMessageLookups?.SingleOrDefault(y =>
+                                string.Equals(validationError.RuleName, y.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
+                            FieldValues = validationError.ValidationErrorParameters == null
+                                ? string.Empty
+                                : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
+                        });
+                    }
+
+                    result.Sort(ValidationErrorsModelComparer);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("Old behaviour failed", ex);
+                    _logger.LogError("Failed to merge validation error messages", ex);
                 }
+
+                if (result.Count == 0)
+                {
+                    _logger.LogError("Falling back to old behaviour");
+                    try
+                    {
+                        result = _jsonSerializationService.Deserialize<List<ValidationErrorDto>>(validationErrorsStr);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError("Old behaviour failed", ex);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Can't process validation errors", ex);
             }
 
             return result;

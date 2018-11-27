@@ -30,8 +30,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class MainOccupancyReport : AbstractReportBuilder, IReport
     {
-        private static readonly MainOccupancyFM25ModelComparer MainOccupancyFm25ModelComparer = new MainOccupancyFM25ModelComparer();
-        private static readonly MainOccupancyFM35ModelComparer MainOccupancyFm35ModelComparer = new MainOccupancyFM35ModelComparer();
+        private static readonly MainOccupancyModelComparer MainOccupancyModelComparer = new MainOccupancyModelComparer();
 
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
@@ -112,10 +111,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            var larsErrors = new List<string>();
+            List<string> larsErrors = new List<string>();
 
-            var mainOccupancyFm25Models = new List<MainOccupancyFM25Model>();
-            var mainOccupancyFm35Models = new List<MainOccupancyFM35Model>();
+            List<MainOccupancyModel> mainOccupancyModels = new List<MainOccupancyModel>();
             foreach (var learner in learners)
             {
                 var fm25Data = fm25Task.Result;
@@ -151,12 +149,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
                         ?.LearningDeliveries?.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                    mainOccupancyFm35Models.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
-                        learner,
-                        learningDelivery,
-                        larsModel,
-                        frameworkAim,
-                        learnerFm35Data));
+                    if (learnerFm35Data != null)
+                    {
+                        mainOccupancyModels.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
+                            learner,
+                            learningDelivery,
+                            larsModel,
+                            frameworkAim,
+                            learnerFm35Data));
+                    }
 
                     if (!learningDelivery.LearningDeliveryFAMs.Any(x =>
                         string.Equals(x.LearnDelFAMCode, "105", StringComparison.OrdinalIgnoreCase) &&
@@ -168,7 +169,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     FM25Learner learnerFm25Data =
                         fm25Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber);
 
-                    mainOccupancyFm25Models.Add(_mainOccupancyReportModelBuilder.BuildFm25Model(
+                    mainOccupancyModels.Add(_mainOccupancyReportModelBuilder.BuildFm25Model(
                         learner,
                         learningDelivery,
                         learnerFm25Data));
@@ -177,10 +178,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             LogWarnings(larsErrors);
 
-            mainOccupancyFm25Models.Sort(MainOccupancyFm25ModelComparer);
-            mainOccupancyFm35Models.Sort(MainOccupancyFm35ModelComparer);
+            mainOccupancyModels.Sort(MainOccupancyModelComparer);
 
-            string csv = GetReportCsv(mainOccupancyFm25Models, mainOccupancyFm35Models);
+            string csv = GetReportCsv(mainOccupancyModels);
 
             var jobId = jobContextMessage.JobId;
             var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
@@ -197,7 +197,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                       || (learningDelivery.FundModel == 25 && learningDelivery.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType == "SOF" && fam.LearnDelFAMCode == "105"));
         }
 
-        private string GetReportCsv(List<MainOccupancyFM25Model> mainOccupancyFm25Models, List<MainOccupancyFM35Model> mainOccupancyFm35Models)
+        private string GetReportCsv(List<MainOccupancyModel> mainOccupancyModels)
         {
             using (MemoryStream ms = new MemoryStream())
             {
@@ -206,8 +206,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<MainOccupancyFM25Mapper, MainOccupancyFM25Model>(csvWriter, mainOccupancyFm25Models);
-                        WriteCsvRecords<MainOccupancyFM35Mapper, MainOccupancyFM35Model>(csvWriter, mainOccupancyFm35Models);
+                        WriteCsvRecords<MainOccupancyMapper, MainOccupancyModel>(csvWriter, mainOccupancyModels, new MainOccupancyMapper());
                         csvWriter.Flush();
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());
