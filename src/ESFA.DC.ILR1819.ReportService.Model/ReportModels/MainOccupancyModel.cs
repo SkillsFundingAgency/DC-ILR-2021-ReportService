@@ -1,6 +1,6 @@
 ﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 {
-    public sealed class MainOccupancyFM35Model
+    public sealed class MainOccupancyModel
     {
         public string LearnRefNumber { get; set; }
 
