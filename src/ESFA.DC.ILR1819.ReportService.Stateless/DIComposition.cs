@@ -69,6 +69,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             var easConfiguration = configHelper.GetSectionValues<EasConfiguration>("EasSection");
             containerBuilder.RegisterInstance(easConfiguration).As<EasConfiguration>().SingleInstance();
 
+            var ilrValidationErrorsConfiguration = configHelper.GetSectionValues<IlrValidationErrorsConfiguration>("IlrValidationErrorsSection");
+            containerBuilder.RegisterInstance(ilrValidationErrorsConfiguration).As<IlrValidationErrorsConfiguration>().SingleInstance();
+
             var dataStoreConfiguration = configHelper.GetSectionValues<DataStoreConfiguration>("DataStoreSection");
             containerBuilder.RegisterInstance(dataStoreConfiguration).As<DataStoreConfiguration>().SingleInstance();
 
@@ -345,6 +348,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .SingleInstance();
 
             containerBuilder.RegisterType<ValidationStageOutputCache>().As<IValidationStageOutputCache>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ValidationErrorsService>().As<IValidationErrorsService>()
                 .InstancePerLifetimeScope();
         }
 

@@ -16,6 +16,7 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Poco;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
@@ -38,6 +39,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IKeyValuePersistenceService _redis;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IValidationErrorsService _validationErrorsService;
         private readonly IValidationStageOutputCache _validationStageOutputCache;
 
         private string _externalFileName;
@@ -53,6 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            IValidationErrorsService validationErrorsService,
             IValidationStageOutputCache validationStageOutputCache)
         : base(dateTimeProvider, valueProvider)
         {
@@ -61,6 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _redis = redis;
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
+            _validationErrorsService = validationErrorsService;
             _validationStageOutputCache = validationStageOutputCache;
 
             ReportFileName = "Rule Violation Report";
@@ -70,7 +74,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(jobContextMessage);
+            Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(jobContextMessage, cancellationToken);
             await Task.WhenAll(ilrTask, validationErrorDtosTask);
 
             long jobId = jobContextMessage.JobId;
@@ -106,7 +110,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             };
         }
 
-        private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage)
+        private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
         {
             List<ValidationErrorDto> result = new List<ValidationErrorDto>();
 
@@ -115,26 +119,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 string validationErrorsStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors]
                     .ToString());
 
-                string validationErrorLookups = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups]
-                    .ToString());
-
                 try
                 {
                     List<ValidationError> validationErrors = _jsonSerializationService.Deserialize<List<ValidationError>>(validationErrorsStr);
 
-                    List<ValidationErrorMessageLookup> validationErrorMessageLookups =
-                        _jsonSerializationService.Deserialize<List<ValidationErrorMessageLookup>>(validationErrorLookups);
+                    // Extract the rules names and fetch the details for them.
+                    string[] rulesNames = validationErrors.Select(x => x.RuleName).Distinct().ToArray();
+                    List<ValidationErrorDetails> validationErrorDetails = rulesNames.Select(x => new ValidationErrorDetails(x)).ToList();
+                    await _validationErrorsService.PopulateValidationErrors(rulesNames, validationErrorDetails, cancellationToken);
 
                     foreach (ValidationError validationError in validationErrors)
                     {
+                        ValidationErrorDetails validationErrorDetail = validationErrorDetails.SingleOrDefault(x => string.Equals(x.RuleName, validationError.RuleName, StringComparison.OrdinalIgnoreCase));
+
                         result.Add(new ValidationErrorDto
                         {
                             AimSequenceNumber = validationError.AimSequenceNumber,
                             LearnerReferenceNumber = validationError.LearnerReferenceNumber,
                             RuleName = validationError.RuleName,
                             Severity = validationError.Severity,
-                            ErrorMessage = validationErrorMessageLookups?.SingleOrDefault(y =>
-                                string.Equals(validationError.RuleName, y.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
+                            ErrorMessage = validationErrorDetail?.Message,
                             FieldValues = validationError.ValidationErrorParameters == null
                                 ? string.Empty
                                 : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
@@ -146,19 +150,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 catch (Exception ex)
                 {
                     _logger.LogError("Failed to merge validation error messages", ex);
-                }
-
-                if (result.Count == 0)
-                {
-                    _logger.LogError("Falling back to old behaviour");
-                    try
-                    {
-                        result = _jsonSerializationService.Deserialize<List<ValidationErrorDto>>(validationErrorsStr);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Old behaviour failed", ex);
-                    }
                 }
             }
             catch (Exception ex)

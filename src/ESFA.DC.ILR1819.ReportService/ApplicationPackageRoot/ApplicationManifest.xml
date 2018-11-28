@@ -45,6 +45,8 @@
     <Parameter Name="OrgConnectionString" DefaultValue="" />
     <!-- Collections Management -->
     <Parameter Name="CollectionsManagementConnectionString" DefaultValue="" />
+    <!-- ILR Validation Errors -->
+    <Parameter Name="IlrValidationErrorsConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -118,6 +120,9 @@
           </Section>
           <Section Name="CollectionsManagementSection">
             <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />
+          </Section>
+          <Section Name="IlrValidationErrorsSection">
+            <Parameter Name="IlrValidationErrorsConnectionString" Value="[IlrValidationErrorsConnectionString]" />
           </Section>
         </Settings>
       </ConfigOverride>

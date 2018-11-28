@@ -43,6 +43,8 @@
     <Parameter Name="LargeEmployerConnectionString" Value="__LargeEmployerConnectionStringRO__" />
     <!-- Collections Management -->
     <Parameter Name="CollectionsManagementConnectionString" Value="__JobManagementDbConnectionStringRO__" />
+    <!-- ILR Validation Errors -->
+    <Parameter Name="IlrValidationErrorsConnectionString" Value="__ValidationErrorsConnectionString__" />
     <Parameter Name="ProcessingServicePlacementConstraints" Value="__ProcessingServicePlacementConstraints__" />
   </Parameters>
 </Application>

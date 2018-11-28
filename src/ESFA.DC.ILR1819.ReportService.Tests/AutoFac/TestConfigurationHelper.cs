@@ -79,6 +79,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                         ILRDataStoreConnectionString =
                             "metadata=res://*/DataStoreModel.csdl|res://*/DataStoreModel.ssdl|res://*/DataStoreModel.msl;provider=System.Data.SqlClient;provider connection string='data source =(local); initial catalog = ilr1819DataStore; integrated security = True; MultipleActiveResultSets = True; App = EntityFramework'"
                     };
+                case "IlrValidationErrorsSection":
+                    return (T)(object)new IlrValidationErrorsConfiguration();
             }
 
             return default(T);

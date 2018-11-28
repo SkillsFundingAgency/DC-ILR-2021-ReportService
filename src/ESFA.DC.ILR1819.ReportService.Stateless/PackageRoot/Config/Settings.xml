@@ -89,4 +89,8 @@
   <Section Name="LargeEmployerSection">
     <Parameter Name="LargeEmployerConnectionString" Value="" />
   </Section>
+
+  <Section Name="IlrValidationErrorsSection">
+    <Parameter Name="IlrValidationErrorsConnectionString" Value="" />
+  </Section>
 </Settings>
