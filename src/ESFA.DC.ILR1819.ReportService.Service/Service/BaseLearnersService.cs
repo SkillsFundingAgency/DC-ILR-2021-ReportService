@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interfaces;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
@@ -19,6 +24,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IKeyValuePersistenceService _redis;
         private readonly IKeyValuePersistenceService _blob;
         private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly IIntUtilitiesService _intUtilitiesService;
+        private readonly DataStoreConfiguration _dataStoreConfiguration;
 
         private readonly SemaphoreSlim _getDataLock;
 
@@ -31,13 +38,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
-            IJsonSerializationService jsonSerializationService)
+            IJsonSerializationService jsonSerializationService,
+            IIntUtilitiesService intUtilitiesService,
+            DataStoreConfiguration dataStoreConfiguration)
         {
             _messageKey = key;
             _logger = logger;
             _redis = redis;
             _blob = blob;
             _jsonSerializationService = jsonSerializationService;
+            _intUtilitiesService = intUtilitiesService;
+            _dataStoreConfiguration = dataStoreConfiguration;
             _loadedData = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
@@ -59,9 +70,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[_messageKey].ToString(), cancellationToken);
-                // await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_{_messageKey}.json", learnersValidStr, cancellationToken);
-                _loadedData = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
+                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+
+                if (jobContextMessage.KeyValuePairs.ContainsKey(_messageKey)
+                    && await _redis.ContainsAsync(
+                        jobContextMessage.KeyValuePairs[_messageKey].ToString(),
+                        cancellationToken))
+                {
+                    string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[_messageKey].ToString(), cancellationToken);
+                    _loadedData = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
+                }
+                else
+                {
+                    var validLearnersList = new List<string>();
+
+                    using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                    {
+                        validLearnersList = ilrValidContext.Learners.Where(x => x.UKPRN == ukPrn).Select(x => x.LearnRefNumber).ToList();
+                    }
+
+                    _loadedData = validLearnersList;
+                }
             }
             catch (Exception ex)
             {

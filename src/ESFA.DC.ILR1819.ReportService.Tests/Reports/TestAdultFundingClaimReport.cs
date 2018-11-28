@@ -111,8 +111,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10000116;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10000116-1819-20180704-120055-03";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output] = "FundingFm35Output";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
 
             MemoryStream memoryStream = new MemoryStream();
 

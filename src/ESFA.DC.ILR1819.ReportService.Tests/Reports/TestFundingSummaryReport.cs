@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, dataStoreConfiguration);
             IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, dataStoreConfiguration);
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, dataStoreConfiguration);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, dataStoreConfiguration);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };

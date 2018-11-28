@@ -47,7 +47,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
             IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             IMathsAndEnglishFm25Rules reportFm25Rules = new MathsAndEnglishFm25Rules();
