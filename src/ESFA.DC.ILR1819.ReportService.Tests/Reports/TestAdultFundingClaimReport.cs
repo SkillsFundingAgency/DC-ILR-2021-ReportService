@@ -56,7 +56,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
 
             EasConfiguration easConfiguration = new EasConfiguration() { EasConnectionString = new TestConfigurationHelper().GetSectionValues<EasConfiguration>("EasSection").EasConnectionString };
-            DataStoreConfiguration dataStoreConfiguration = new DataStoreConfiguration() { ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString };
+            DataStoreConfiguration dataStoreConfiguration = new DataStoreConfiguration()
+            {
+                ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString,
+                ILRDataStoreValidConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreValidConnectionString
+            };
             IEasProviderService easProviderService = new EasProviderService(logger.Object, easConfiguration);
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, dataStoreConfiguration);
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, dataStoreConfiguration);
@@ -107,6 +111,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10000116;
             jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10000116-1819-20180704-120055-03";
+
             MemoryStream memoryStream = new MemoryStream();
 
             using (memoryStream)

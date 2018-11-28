@@ -1,4 +1,7 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+﻿using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+
+namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     using System;
     using System.Collections.Generic;
@@ -137,8 +140,8 @@
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
             Task<List<EasSubmissionValues>> easSubmissionValuesAsync = _easProviderService.GetEasSubmissionValuesAsync(jobContextMessage, cancellationToken);
-            Task<List<FM35LearningDeliveryValues>> fm35AdultFundingLineDataFromDataStore = _fm35ProviderService.GetFM35DataFromDataStore(jobContextMessage, cancellationToken);
-            Task<List<ALBLearningDeliveryValues>> albadultFundingLineDataFromDataStore = _allbProviderService.GetALBDataFromDataStore(jobContextMessage, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
+            Task<ALBGlobal> albGlobalTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
             var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(jobContextMessage, cancellationToken);
 
             var organisationDataTask = _orgProviderService.GetVersionAsync(cancellationToken);
@@ -148,8 +151,8 @@
 
             await Task.WhenAll(
                 easSubmissionValuesAsync,
-                fm35AdultFundingLineDataFromDataStore,
-                albadultFundingLineDataFromDataStore,
+                fm35Task,
+                albGlobalTask,
                 providerNameTask,
                 ilrFileTask,
                 lastSubmittedIlrFileTask,
@@ -161,9 +164,9 @@
             var fundingClaimModel = _adultFundingClaimBuilder.BuildAdultFundingClaimModel(
                 _logger,
                 jobContextMessage,
-                fm35AdultFundingLineDataFromDataStore.Result,
+                fm35Task.Result,
                 easSubmissionValuesAsync.Result,
-                albadultFundingLineDataFromDataStore.Result,
+                albGlobalTask.Result,
                 providerNameTask.Result,
                 lastSubmittedIlrFileTask.Result,
                 _dateTimeProvider,

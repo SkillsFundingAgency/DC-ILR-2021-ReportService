@@ -50,7 +50,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
                         }
 
                         CheckHeader(currentRow, csvEntry.Mapper);
-                        for (int i = 0; i < csvEntry.DataRows; i++)
+                        for (int i = 1; i < csvEntry.DataRows; i++)
                         {
                             currentRow = textFieldParser.ReadFields();
                             Assert.NotNull(currentRow);
