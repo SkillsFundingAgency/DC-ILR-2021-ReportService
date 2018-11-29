@@ -33,5 +33,7 @@
         string TopicReports_TaskGenerateAppsIndicativeEarningsReport { get; set; }
 
         string TopicReports_TaskGenerateDataMatchReport { get; set; }
+
+        string TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport { get; set; }
     }
 }

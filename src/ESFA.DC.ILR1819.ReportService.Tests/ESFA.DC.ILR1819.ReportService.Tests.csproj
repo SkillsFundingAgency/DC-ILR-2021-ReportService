@@ -338,6 +338,7 @@
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />
     <Compile Include="Reports\TestSummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\TestSummaryOfFunding1619Report.cs" />
+    <Compile Include="Reports\TestTrailblazerEmployerIncentiveReport.cs" />
     <Compile Include="Reports\Validation\TestValidationReportLotsOfErrors.cs" />
     <Compile Include="Service\DasCommitmentsServiceTest.cs" />
     <Compile Include="Service\PeriodProviderServiceTest.cs" />
@@ -373,6 +374,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Fm36.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Fm81.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="packages.config" />
