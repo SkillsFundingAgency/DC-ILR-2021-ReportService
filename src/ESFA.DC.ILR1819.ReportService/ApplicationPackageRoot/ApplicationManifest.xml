@@ -32,6 +32,7 @@
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" DefaultValue="GenerateMainOccupancyReport" />
     <Parameter Name="TopicReports_TaskGenerateDataMatchReport" DefaultValue="GenerateDataMatchReport" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
+    <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport"/>
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
     <!-- DAS Commitments -->
@@ -101,6 +102,7 @@
             <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="[TopicReports_TaskGenerateMainOccupancyReport]" />
             <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="[TopicReports_TaskGenerateDataMatchReport]" />
             <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
+            <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="[TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport]" />
           </Section>
           <Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />

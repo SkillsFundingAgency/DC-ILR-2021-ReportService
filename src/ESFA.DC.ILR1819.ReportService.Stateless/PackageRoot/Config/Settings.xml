@@ -61,6 +61,7 @@
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value=""/>
   </Section>
   
   <Section Name="LarsSection">
