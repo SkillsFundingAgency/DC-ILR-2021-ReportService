@@ -116,13 +116,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             List<MainOccupancyModel> mainOccupancyModels = new List<MainOccupancyModel>();
             foreach (var learner in learners)
             {
-                var fm25Data = fm25Task.Result;
-                var fm35Data = fm35Task.Result;
-
                 if (learner.LearningDeliveries == null)
                 {
                     continue;
                 }
+
+                FM25Global fm25Data = fm25Task.Result;
+                FM35Global fm35Data = fm35Task.Result;
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
@@ -137,26 +137,35 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         continue;
                     }
 
-                    LearningDelivery frameworkAim = larsFrameworkAimsTask.Result?.SingleOrDefault(x => x.LearnerLearnRefNumber == learner.LearnRefNumber)
-                        ?.LearningDeliveries?.SingleOrDefault(x =>
-                            x.LearningDeliveryLearnAimRef == learningDelivery.LearnAimRef && x.LearningDeliveryAimSeqNumber == learningDelivery.AimSeqNumber);
+                    LearningDelivery frameworkAim = larsFrameworkAimsTask.Result?.SingleOrDefault(x => string.Equals(x.LearnerLearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase))
+                        ?.LearningDeliveries?.SingleOrDefault(x => string.Equals(x.LearningDeliveryLearnAimRef, learningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)
+                                                                   && x.LearningDeliveryAimSeqNumber == learningDelivery.AimSeqNumber);
                     if (frameworkAim == null)
                     {
                         larsErrors.Add(learningDelivery.LearnAimRef);
                         continue;
                     }
 
-                    ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
-                        ?.LearningDeliveries?.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
-
-                    if (learnerFm35Data != null)
+                    if (learningDelivery.FundModel == 35)
                     {
-                        mainOccupancyModels.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
-                            learner,
-                            learningDelivery,
-                            larsModel,
-                            frameworkAim,
-                            learnerFm35Data));
+                        ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery learnerFm35Data = fm35Data
+                            ?.Learners?.SingleOrDefault(l => string.Equals(l.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase))
+                            ?.LearningDeliveries?.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
+
+                        if (learnerFm35Data != null)
+                        {
+                            mainOccupancyModels.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
+                                learner,
+                                learningDelivery,
+                                larsModel,
+                                frameworkAim,
+                                learnerFm35Data));
+                        }
+                    }
+
+                    if (learningDelivery.FundModel != 25)
+                    {
+                        continue;
                     }
 
                     if (!learningDelivery.LearningDeliveryFAMs.Any(x =>
@@ -167,7 +176,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     }
 
                     FM25Learner learnerFm25Data =
-                        fm25Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber);
+                        fm25Data?.Learners?.SingleOrDefault(l => string.Equals(l.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
 
                     mainOccupancyModels.Add(_mainOccupancyReportModelBuilder.BuildFm25Model(
                         learner,
