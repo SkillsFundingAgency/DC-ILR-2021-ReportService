@@ -58,33 +58,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
                 }
             }
 
-            var isleftNumber = long.TryParse(x.LearnRefNumber, out long xLearnRefNumber);
-            var isrightNumber = long.TryParse(y.LearnRefNumber, out long yLearnRefNumber);
-
-            if (isleftNumber)
-            {
-                if (!isrightNumber)
-                {
-                    return -1;
-                }
-
-                if (xLearnRefNumber < yLearnRefNumber)
-                {
-                    return -1;
-                }
-
-                if (yLearnRefNumber < xLearnRefNumber)
-                {
-                    return 1;
-                }
-
-                if (xLearnRefNumber == yLearnRefNumber)
-                {
-                    return 0;
-                }
-            }
-
-            return 0;
+            return string.Compare(x.LearnRefNumber, y.LearnRefNumber, StringComparison.OrdinalIgnoreCase);
         }
 
         private int Compare(MathsAndEnglishModel x, MathsAndEnglishModel y, string str)
