@@ -346,6 +346,7 @@
     <Compile Include="Reports\TestFundingSummaryReport.cs" />
     <Compile Include="Reports\TestValidationReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Service\ValueProviderServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Reports\ALB\ILR-10033670-1819-20180909-090909-99.xml">
@@ -443,6 +444,7 @@
     </Content>
     <Content Include="ILR-10033670-1819-20180831-094549-03.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Reports\ALB\ILR-10033670-1819-20181018-093353-03.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

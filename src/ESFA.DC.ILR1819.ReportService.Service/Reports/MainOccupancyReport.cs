@@ -168,13 +168,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         continue;
                     }
 
-                    if (!learningDelivery.LearningDeliveryFAMs.Any(x =>
-                        string.Equals(x.LearnDelFAMCode, "105", StringComparison.OrdinalIgnoreCase) &&
-                        string.Equals(x.LearnDelFAMType, "SOF", StringComparison.OrdinalIgnoreCase)))
-                    {
-                        continue;
-                    }
-
                     FM25Learner learnerFm25Data =
                         fm25Data?.Learners?.SingleOrDefault(l => string.Equals(l.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
 
@@ -203,7 +196,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private bool CheckIsApplicableLearner(ILearningDelivery learningDelivery)
         {
             return learningDelivery.FundModel == 35
-                      || (learningDelivery.FundModel == 25 && learningDelivery.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType == "SOF" && fam.LearnDelFAMCode == "105"));
+                    || (learningDelivery.FundModel == 25 && learningDelivery.LearningDeliveryFAMs.Any(fam =>
+                              string.Equals(fam.LearnDelFAMType, "SOF", StringComparison.OrdinalIgnoreCase) &&
+                              string.Equals(fam.LearnDelFAMCode, "105", StringComparison.OrdinalIgnoreCase)));
         }
 
         private string GetReportCsv(List<MainOccupancyModel> mainOccupancyModels)

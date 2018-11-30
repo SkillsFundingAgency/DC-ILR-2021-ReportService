@@ -1,0 +1,60 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Generation;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+using ESFA.DC.ILR1819.ReportService.Service.Service;
+using FluentAssertions;
+using Xunit;
+
+namespace ESFA.DC.ILR1819.ReportService.Tests.Service
+{
+    public sealed class ValueProviderServiceTest
+    {
+        public decimal TestDecimal { get; set; }
+
+        public decimal? TestNullableDecimal { get; set; }
+
+        [Fact]
+        public void DecimalPointsPaddingTest()
+        {
+            TestDecimal = (decimal)12.34;
+            List<object> expected = new List<object> { "12.34000" };
+            List<object> values = new List<object>();
+            MainOccupancyMapper mapper = new MainOccupancyMapper();
+
+            IValueProvider valueProvider = new ValueProvider();
+            valueProvider.GetFormattedValue(
+                values,
+                TestDecimal,
+                mapper,
+                new ModelProperty(
+                    mapper.MemberMaps.Single(x => string.Equals(x.Data.Member.Name, nameof(MainOccupancyModel.TotalEarnedCash), StringComparison.Ordinal)).Data.Names.Names.ToArray(),
+                    GetType().GetProperty(nameof(TestDecimal))));
+
+            values.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void NullDecimalPointsPaddingTest()
+        {
+            TestNullableDecimal = null;
+            List<object> expected = new List<object> { "0.00000" };
+            List<object> values = new List<object>();
+            MainOccupancyMapper mapper = new MainOccupancyMapper();
+
+            IValueProvider valueProvider = new ValueProvider();
+            valueProvider.GetFormattedValue(
+                values,
+                TestNullableDecimal,
+                mapper,
+                new ModelProperty(
+                    mapper.MemberMaps.Single(x => string.Equals(x.Data.Member.Name, nameof(MainOccupancyModel.TotalEarnedCash), StringComparison.Ordinal)).Data.Names.Names.ToArray(),
+                    GetType().GetProperty(nameof(TestNullableDecimal))));
+
+            values.Should().BeEquivalentTo(expected);
+        }
+    }
+}
