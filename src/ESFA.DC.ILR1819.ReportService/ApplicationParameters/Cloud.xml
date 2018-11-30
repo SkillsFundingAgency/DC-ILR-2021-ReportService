@@ -31,6 +31,7 @@
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="__TopicReports_TaskGenerateMainOccupancyReport__" />
     <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="__TopicReports_TaskGenerateDataMatchReport__" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="__TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport__"/>
+    <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="__TopicReports_TaskGenerateTrailblazerAppsOccupancyReport__"/>
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- Org -->
