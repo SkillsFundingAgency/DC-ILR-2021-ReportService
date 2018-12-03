@@ -40,6 +40,26 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
         }
 
         [Fact]
+        public void ZeroDecimalPointsPaddingTest()
+        {
+            TestDecimal = 0;
+            List<object> expected = new List<object> { "0.00" };
+            List<object> values = new List<object>();
+            FundingSummaryMapper mapper = new FundingSummaryMapper();
+
+            IValueProvider valueProvider = new ValueProvider();
+            valueProvider.GetFormattedValue(
+                values,
+                TestDecimal,
+                mapper,
+                new ModelProperty(
+                    mapper.MemberMaps.Single(x => string.Equals(x.Data.Member.Name, nameof(FundingSummaryModel.Total), StringComparison.Ordinal)).Data.Names.Names.ToArray(),
+                    GetType().GetProperty(nameof(TestDecimal))));
+
+            values.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
         public void NullDecimalPointsPaddingTest()
         {
             TestNullableDecimal = null;

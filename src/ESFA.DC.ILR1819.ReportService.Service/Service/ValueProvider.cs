@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (IsNullable(propertyType) && propertyType == typeof(decimal?))
                 {
                     int decimalPoints = GetDecimalPoints(mapper, modelProperty);
-                    values.Add($"0.{PadDecimal(0, decimalPoints)}");
+                    values.Add(PadDecimal(0, decimalPoints));
                     return;
                 }
 
@@ -98,7 +98,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private string PadDecimal(decimal value, int decimalPoints)
         {
             string valueStr = value.ToString(CultureInfo.InvariantCulture);
-            int actualDecimalPoints = valueStr.Length - (valueStr.IndexOf('.') + 1);
+            int decimalPointPos = valueStr.IndexOf('.');
+            int actualDecimalPoints = 0;
+            if (decimalPointPos > -1)
+            {
+                actualDecimalPoints = valueStr.Length - (decimalPointPos + 1);
+            }
+            else
+            {
+                valueStr += ".";
+            }
+
             return valueStr + new string('0', decimalPoints - actualDecimalPoints);
         }
     }
