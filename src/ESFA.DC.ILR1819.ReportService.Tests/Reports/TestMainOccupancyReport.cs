@@ -37,7 +37,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         private static SqlProviderServices instance = SqlProviderServices.Instance;
 
         [Theory]
-        [InlineData("ILR-10033670-1819-20180831-094549-03.xml", "ValidLearnRefNumbers.json", "Alb.json", "Fm25.json", "Fm35.json")]
+        [InlineData("ILR-10033670-1819-20180704-120055-03.xml", "ValidLearnRefNumbers.json", "Alb.json", "Fm25.json", "Fm35.json")]
         public async Task TestMainOccupancyReportGeneration(string ilrFilename, string validLearnRefNumbersFilename, string albFilename, string fm25Filename, string fm35Filename)
         {
             string csv = string.Empty;
