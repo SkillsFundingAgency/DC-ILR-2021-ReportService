@@ -17,6 +17,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
 
         public decimal? TestNullableDecimal { get; set; }
 
+        public string TestDateTime { get; set; }
+
         [Fact]
         public void DecimalPointsPaddingTest()
         {
@@ -53,6 +55,27 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
                 new ModelProperty(
                     mapper.MemberMaps.Single(x => string.Equals(x.Data.Member.Name, nameof(MainOccupancyModel.TotalEarnedCash), StringComparison.Ordinal)).Data.Names.Names.ToArray(),
                     GetType().GetProperty(nameof(TestNullableDecimal))));
+
+            values.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void NullCoercedDateTimeTest()
+        {
+            TestDateTime = DateTime.MinValue.ToString("dd/MM/yyyy");
+
+            List<object> expected = new List<object> { string.Empty };
+            List<object> values = new List<object>();
+            MainOccupancyMapper mapper = new MainOccupancyMapper();
+
+            IValueProvider valueProvider = new ValueProvider();
+            valueProvider.GetFormattedValue(
+                values,
+                TestDateTime,
+                mapper,
+                new ModelProperty(
+                    mapper.MemberMaps.Single(x => string.Equals(x.Data.Member.Name, nameof(MainOccupancyModel.DateOfBirth), StringComparison.Ordinal)).Data.Names.Names.ToArray(),
+                    GetType().GetProperty(nameof(TestDateTime))));
 
             values.Should().BeEquivalentTo(expected);
         }

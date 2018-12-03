@@ -32,7 +32,7 @@
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" DefaultValue="GenerateMainOccupancyReport" />
     <Parameter Name="TopicReports_TaskGenerateDataMatchReport" DefaultValue="GenerateDataMatchReport" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
-    <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport"/>
+    <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
     <!-- DAS Commitments -->
