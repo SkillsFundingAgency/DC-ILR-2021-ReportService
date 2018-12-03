@@ -159,7 +159,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             File.WriteAllText($"{filename}.csv", csv);
 #endif
 
-            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MainOccupancyMapper(), 14));
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new MainOccupancyMapper(), 1));
         }
     }
 }
