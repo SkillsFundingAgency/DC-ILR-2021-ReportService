@@ -1172,7 +1172,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             using (MemoryStream ms = new MemoryStream())
             {
-                workbook.Worksheets[0].Name = "FundingSummaryReport";
+                workbook.Worksheets[0].Name = "Funding Summary Report";
                 var assembly = Assembly.GetExecutingAssembly();
                 string euFlagBmp = assembly.GetManifestResourceNames().Single(str => str.EndsWith("EuFlag.bmp"));
                 Stream manifestResourceStream = assembly.GetManifestResourceStream(euFlagBmp);

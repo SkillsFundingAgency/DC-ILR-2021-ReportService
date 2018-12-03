@@ -30,6 +30,8 @@
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" DefaultValue="GenerateSummaryOfFunding1619Report" />
     <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" DefaultValue="GenerateMathsAndEnglishReport" />
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" DefaultValue="GenerateMainOccupancyReport" />
+    <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" DefaultValue="GenerateAppsAdditionalPaymentsReport" />
+    <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" DefaultValue="GenerateAppsIndicativeEarningsReport" />
     <Parameter Name="TopicReports_TaskGenerateDataMatchReport" DefaultValue="GenerateDataMatchReport" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport" />
@@ -102,6 +104,8 @@
             <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="[TopicReports_TaskGenerateMainOccupancyReport]" />
             <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="[TopicReports_TaskGenerateDataMatchReport]" />
             <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
+            <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="[TopicReports_TaskGenerateAppsAdditionalPaymentsReport]" />
+            <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="[TopicReports_TaskGenerateAppsIndicativeEarningsReport]" />
             <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="[TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport]" />
           </Section>
           <Section Name="LarsSection">
