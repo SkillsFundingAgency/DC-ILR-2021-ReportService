@@ -116,10 +116,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
                         WriteCsvRecords<AppsAdditionalPaymentsMapper, AppsAdditionalPaymentsModel>(csvWriter, additionalPaymentsModels);
-                    }
 
-                    textWriter.Flush();
-                    return Encoding.UTF8.GetString(ms.ToArray());
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
                 }
             }
         }

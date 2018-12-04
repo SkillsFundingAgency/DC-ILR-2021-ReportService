@@ -37,9 +37,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             bool earliestEpisode,
             bool hasPriceEpisodes)
         {
-            DateTime employmentStatusDate = learner.LearnerEmploymentStatuses
+            DateTime employmentStatusDate = learner.LearnerEmploymentStatuses?
                 .Where(x => x.DateEmpStatApp <= learningDelivery.LearnStartDate).Select(x => x.DateEmpStatApp)
-                .DefaultIfEmpty(DateTime.MinValue).Max();
+                .DefaultIfEmpty(DateTime.MinValue).Max() ?? DateTime.MinValue;
             ILearnerEmploymentStatus employmentStatus =
                 learner.LearnerEmploymentStatuses?.SingleOrDefault(x => x.DateEmpStatApp == employmentStatusDate);
             LearningDeliveryFamSimple[] learningDeliveryFams = GetLearningDeliveryFams(learningDelivery);

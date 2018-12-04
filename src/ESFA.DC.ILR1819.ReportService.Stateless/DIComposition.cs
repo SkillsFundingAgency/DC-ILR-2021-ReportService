@@ -266,6 +266,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<TrailblazerEmployerIncentivesReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
                 .As<IList<IReport>>();
         }
@@ -376,6 +380,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<DatalockValidationResultBuilder>().As<IDatalockValidationResultBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AdultFundingClaimBuilder>().As<IAdultFundingClaimBuilder>().SingleInstance();
+            containerBuilder.RegisterType<TrailblazerEmployerIncentivesModelBuilder>().As<ITrailblazerEmployerIncentivesModelBuilder>()
+                .InstancePerLifetimeScope();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)

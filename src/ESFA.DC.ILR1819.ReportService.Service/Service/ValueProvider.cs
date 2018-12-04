@@ -10,6 +10,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
     public sealed class ValueProvider : IValueProvider
     {
+        private readonly string DateTimeMin = DateTime.MinValue.ToString("dd/MM/yyyy");
+
         public void GetFormattedValue(List<object> values, object value, ClassMap mapper, ModelProperty modelProperty)
         {
             Type propertyType = modelProperty.MethodInfo.PropertyType;
@@ -19,7 +21,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (IsNullable(propertyType) && propertyType == typeof(decimal?))
                 {
                     int decimalPoints = GetDecimalPoints(mapper, modelProperty);
-                    values.Add($"0.{PadDecimal(0, decimalPoints)}");
+                    values.Add(PadDecimal(0, decimalPoints));
                     return;
                 }
 
@@ -48,6 +50,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 decimal rounded = decimal.Round(d.GetValueOrDefault(0), decimalPoints);
                 values.Add(PadDecimal(rounded, decimalPoints));
                 return;
+            }
+
+            if (value is string str)
+            {
+                if (str == DateTimeMin)
+                {
+                    values.Add(string.Empty);
+                    return;
+                }
             }
 
             values.Add(value);
@@ -87,7 +98,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private string PadDecimal(decimal value, int decimalPoints)
         {
             string valueStr = value.ToString(CultureInfo.InvariantCulture);
-            int actualDecimalPoints = valueStr.Length - (valueStr.IndexOf('.') + 1);
+            int decimalPointPos = valueStr.IndexOf('.');
+            int actualDecimalPoints = 0;
+            if (decimalPointPos > -1)
+            {
+                actualDecimalPoints = valueStr.Length - (decimalPointPos + 1);
+            }
+            else
+            {
+                valueStr += ".";
+            }
+
             return valueStr + new string('0', decimalPoints - actualDecimalPoints);
         }
     }
