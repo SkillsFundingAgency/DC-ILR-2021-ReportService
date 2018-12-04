@@ -55,7 +55,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private const string OrganisationDataCellName = "F36";
         private const string PostcodeDataCellName = "F37";
         private const string LargeEmployerDataCellName = "F38";
-        private const string ReportGeneratedAtCellName = "D39";
+        private const string ReportGeneratedAtCellName = "B39";
 
         private const string OtherLearningProgrammeFunding6MonthsCellNameFis = "F12";
         private const string OtherLearningProgrammeFunding12MonthsCellNameFis = "G12";
@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private const string OrganisationDataCellNameFis = "F37";
         private const string PostcodeDataCellNameFis = "F38";
         private const string LargeEmployerDataCellNameFis = "F39";
-        private const string ReportGeneratedAtCellNameFis = "D40";
+        private const string ReportGeneratedAtCellNameFis = "B40";
 
         private readonly ILogger _logger;
         private readonly IStreamableKeyValuePersistenceService _storage;
@@ -201,11 +201,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private void PopulateWorkbook(object workbook, AdultFundingClaimModel fundingClaimModel, bool isFis)
-        {
-            throw new NotImplementedException();
-        }
-
         private void PopulateWorkbook(Workbook workbook, AdultFundingClaimModel adultFundingClaimModel, bool isFis)
         {
             Worksheet worksheet = workbook.Worksheets[0];
@@ -213,7 +208,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             cells[ProviderNameCellName].PutValue(adultFundingClaimModel.ProviderName);
             cells[UkprnCellName].PutValue(adultFundingClaimModel.Ukprn);
             cells[IlrFileCellName].PutValue(adultFundingClaimModel.IlrFile);
-            cells[YearCellName].PutValue(adultFundingClaimModel.Year);
             if (!isFis)
             {
                 cells.DeleteRow(8);
