@@ -28,9 +28,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly SemaphoreSlim _getStandardsLock;
 
-        private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
+        private readonly Dictionary<int, string> _loadedStandards;
 
-        private Dictionary<int, string> _loadedStandards;
+        private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
 
         private List<LearnerAndDeliveries> _loadedFrameworkAims;
 
@@ -48,6 +48,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getLearningDeliveriesLock = new SemaphoreSlim(1, 1);
             _getFrameworkAimsLock = new SemaphoreSlim(1, 1);
             _getVersionLock = new SemaphoreSlim(1, 1);
+            _getStandardsLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveriesAsync(
