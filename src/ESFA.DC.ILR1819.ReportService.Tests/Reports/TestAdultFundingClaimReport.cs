@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string csv = string.Empty;
             byte[] xlsx = null;
             DateTime dateTime = DateTime.UtcNow;
-            string filename = $"10000116_1_Adult Funding Claim Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10007924_1_Adult Funding Claim Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
@@ -109,8 +109,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 new AdultFundingClaimBuilder());
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
 
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10000116;
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10000116-1819-20180704-120055-03";
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10007924;
+            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10007924-1819-20180704-120055-03";
 
             MemoryStream memoryStream = new MemoryStream();
 

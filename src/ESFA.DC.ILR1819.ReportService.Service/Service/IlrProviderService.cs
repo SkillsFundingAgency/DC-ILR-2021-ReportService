@@ -126,15 +126,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 var ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
-                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+
+                using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
-                    var fileDetail = await ilrContext.SourceFiles.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.DateTime).FirstOrDefaultAsync(cancellationToken);
+                    var fileDetail = await ilrContext.FileDetails.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.ID).FirstOrDefaultAsync(cancellationToken);
                     if (fileDetail != null)
                     {
+                        var filename = fileDetail.Filename.Contains('/') ? fileDetail.Filename.Split('/')[1] : fileDetail.Filename;
+
                         ilrFileDetail.UKPRN = fileDetail.UKPRN;
-                        ilrFileDetail.Filename = fileDetail.SourceFileName;
-                        ilrFileDetail.SubmittedTime = fileDetail.DateTime;
-                        ilrFileDetail.FilePreparationDate = fileDetail.FilePreparationDate;
+                        ilrFileDetail.Filename = filename;
+                        ilrFileDetail.SubmittedTime = fileDetail.SubmittedTime;
+                    }
+                }
+
+                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                {
+                    var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
+                    if (collectionDetail != null)
+                    {
+                      ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
                     }
                 }
             }

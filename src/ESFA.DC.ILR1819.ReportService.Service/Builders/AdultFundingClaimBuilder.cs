@@ -157,7 +157,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 adultFundingClaimModel.ReportGeneratedAt = "Report generated at: " + dateTimeProvider.GetNowUtc().ToString("HH:mm:ss tt") + " on " +
                                                       dateTimeProvider.GetNowUtc().ToString("dd/MM/yyyy");
 
-                if (message == null)
+                if (message == null) // NON - ILR Submission.
                 {
                     if (ilrSourceFileInfo.Filename == null)
                     {
@@ -174,7 +174,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 {
                     adultFundingClaimModel.IlrFile = ilrfileName;
                     adultFundingClaimModel.FilePreparationDate =
-                        message.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                        message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
                 }
 
                 adultFundingClaimModel.ApplicationVersion = versionInfo.ServiceReleaseVersion;
