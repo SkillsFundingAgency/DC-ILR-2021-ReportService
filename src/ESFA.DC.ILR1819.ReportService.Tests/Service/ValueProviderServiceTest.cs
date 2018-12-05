@@ -19,6 +19,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
 
         public string TestDateTime { get; set; }
 
+        public int TestInt { get; set; }
+
         [Fact]
         public void DecimalPointsPaddingTest()
         {
@@ -96,6 +98,27 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
                 new ModelProperty(
                     mapper.MemberMaps.Single(x => string.Equals(x.Data.Member.Name, nameof(MainOccupancyModel.DateOfBirth), StringComparison.Ordinal)).Data.Names.Names.ToArray(),
                     GetType().GetProperty(nameof(TestDateTime))));
+
+            values.Should().BeEquivalentTo(expected);
+        }
+
+        [Fact]
+        public void ZeroIntTest()
+        {
+            TestInt = 0;
+
+            List<object> expected = new List<object> { string.Empty };
+            List<object> values = new List<object>();
+            MainOccupancyMapper mapper = new MainOccupancyMapper();
+
+            IValueProvider valueProvider = new ValueProvider();
+            valueProvider.GetFormattedValue(
+                values,
+                TestInt,
+                mapper,
+                new ModelProperty(
+                    mapper.MemberMaps.Single(x => string.Equals(x.Data.Member.Name, nameof(MainOccupancyModel.CompStatus), StringComparison.Ordinal)).Data.Names.Names.ToArray(),
+                    GetType().GetProperty(nameof(TestInt))));
 
             values.Should().BeEquivalentTo(expected);
         }
