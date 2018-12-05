@@ -146,14 +146,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
+                    LearningDelivery albLearningDelivery = albLearner?.LearningDeliveries
+                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+
+                    if (!ValidAllbLearningDelivery(learningDelivery, albLearningDelivery))
+                    {
+                        continue;
+                    }
+
                     if (!larsLearningDeliveries.TryGetValue(learningDelivery.LearnAimRef, out LarsLearningDelivery larsModel))
                     {
                         larsError.Add(validLearnerRefNum);
                         continue;
                     }
 
-                    LearningDelivery albLearningDelivery = albLearner?.LearningDeliveries
-                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
                     LearningDeliveryValue albLearningDeliveryValue = albLearningDelivery?.LearningDeliveryValue;
                     LearningDeliveryPeriodisedValue albSupportPaymentObj =
                         albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x =>
@@ -327,6 +333,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             CheckWarnings(ilrError, larsError, albLearnerError);
             models.Sort(AllbOccupancyModelComparer);
             return WriteResults(models);
+        }
+
+        private bool ValidAllbLearningDelivery(ILearningDelivery learningDelivery, LearningDelivery albLearningDelivery)
+        {
+            return learningDelivery.FundModel == 99
+                   && learningDelivery.LearningDeliveryFAMs != null
+                   && learningDelivery.LearningDeliveryFAMs.Any(x => string.Equals(x.LearnDelFAMType, "ADL", StringComparison.OrdinalIgnoreCase))
+                   && (learningDelivery.LearningDeliveryFAMs.Any(x => string.Equals(x.LearnDelFAMType, "ALB", StringComparison.OrdinalIgnoreCase))
+                       || albLearningDelivery.LearningDeliveryValue.AreaCostFactAdj > 0)
+                   && !learningDelivery.LearningDeliveryFAMs.Any(x => string.Equals(x.LearnDelFAMType, "LDM", StringComparison.OrdinalIgnoreCase)
+                                                                      && string.Equals(x.LearnDelFAMCode, "359", StringComparison.OrdinalIgnoreCase));
         }
 
         private bool IsPayment(LearningDeliveryPeriodisedValue x)

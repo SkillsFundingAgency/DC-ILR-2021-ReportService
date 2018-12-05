@@ -29,16 +29,16 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Main_Occupancy
     public sealed class TestMainOccupancyReportWithTestData
     {
 #if DEBUG
-        [Fact]
+        [Theory]
+        //[InlineData(@"Reports\Main Occupancy\ILR-10033670-1819-20181030-101919-07.xml", @"Reports\Main Occupancy\FundingFm35Output_FM35TNP13.json", "fm35 TNP 13")]
+        [InlineData(@"Reports\Main Occupancy\ILR-10033670-1819-20181203-143338-25.xml", @"Reports\Main Occupancy\FundingFm35Output_fm25 19C 1.json", "fm25 19C 1")]
 #endif
-        public async Task TestMainOccupancyReportGeneration()
+        public async Task TestMainOccupancyReportGeneration(string ilrFilename, string fm35Filename, string validLearner)
         {
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
             string filename = $"10033670_1_Main Occupancy Report {dateTime:yyyyMMdd-HHmmss}";
-            List<string> validLearners = new List<string>() { "fm35 TNP 13" };
-            string ilrFilename = @"Reports\Main Occupancy\ILR-10033670-1819-20181030-101919-07.xml";
-            string fm35Filename = @"Reports\Main Occupancy\FundingFm35Output_FM35TNP13.json";
+            List<string> validLearners = new List<string> { validLearner };
 
             IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
             jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10033670;
