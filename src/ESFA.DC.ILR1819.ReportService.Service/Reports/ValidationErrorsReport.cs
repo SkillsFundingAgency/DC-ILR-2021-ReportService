@@ -144,8 +144,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                                 : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
                         });
                     }
-
-                    result.Sort(ValidationErrorsModelComparer);
                 }
                 catch (Exception ex)
                 {
@@ -248,6 +246,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 }
             }
 
+            validationErrors.Sort(ValidationErrorsModelComparer);
             return validationErrors;
         }
 
