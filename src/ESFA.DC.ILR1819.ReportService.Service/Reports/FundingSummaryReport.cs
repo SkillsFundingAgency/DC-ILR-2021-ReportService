@@ -1291,6 +1291,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                                                                                                 lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
             }
 
+            if (fileName.ToLower().StartsWith("eas"))
+            {
+                fundingSummaryHeaderModel.LastIlrFileUpdate = "N/A";
+            }
+
             return fundingSummaryHeaderModel;
         }
 
