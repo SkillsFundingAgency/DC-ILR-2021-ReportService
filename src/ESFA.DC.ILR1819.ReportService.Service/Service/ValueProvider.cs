@@ -20,6 +20,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             {
                 if (IsNullable(propertyType) && propertyType == typeof(decimal?))
                 {
+                    if (IsNullableMapper(mapper, modelProperty))
+                    {
+                        values.Add("n/a");
+                        return;
+                    }
+
                     int decimalPoints = GetDecimalPoints(mapper, modelProperty);
                     values.Add(PadDecimal(0, decimalPoints));
                     return;
@@ -45,8 +51,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             if (IsOfNullableType<decimal>(propertyType))
             {
-                int decimalPoints = GetDecimalPoints(mapper, modelProperty);
                 decimal? d = (decimal?)value;
+                int decimalPoints = GetDecimalPoints(mapper, modelProperty);
                 decimal rounded = decimal.Round(d.GetValueOrDefault(0), decimalPoints);
                 values.Add(PadDecimal(rounded, decimalPoints));
                 return;
@@ -74,6 +80,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             values.Add(value);
+        }
+
+        private bool IsNullableMapper(ClassMap mapper, ModelProperty modelProperty)
+        {
+            MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
+            return memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains("n/a") ?? false;
         }
 
         private bool CanAddZeroInt(ClassMap mapper, ModelProperty modelProperty)

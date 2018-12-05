@@ -89,9 +89,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             fundingSummaryModel.Period11 = Total(fundingSummaryModel.Period10, sourceFundingSummaryModel.Period11);
             fundingSummaryModel.Period12 = Total(fundingSummaryModel.Period11, sourceFundingSummaryModel.Period12);
 
-            fundingSummaryModel.Period1_8 = fundingSummaryModel.Period8;
-            fundingSummaryModel.Period9_12 = fundingSummaryModel.Period12 - fundingSummaryModel.Period8;
-            fundingSummaryModel.Total = fundingSummaryModel.Period1_8 + fundingSummaryModel.Period9_12;
+            fundingSummaryModel.Period1_8 = null;
+            fundingSummaryModel.Period9_12 = null;
+            fundingSummaryModel.YearToDate = null;
+            fundingSummaryModel.Total = null;
 
             return fundingSummaryModel;
         }

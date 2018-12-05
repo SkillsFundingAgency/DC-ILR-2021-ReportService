@@ -11,13 +11,10 @@ using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
-using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
-using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model;
@@ -160,7 +157,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             csv.Should().NotBeNullOrEmpty();
             xlsx.Should().NotBeNullOrEmpty();
 
+#if DEBUG
             File.WriteAllBytes($"{filename}.xlsx", xlsx);
+#endif
 
             //var fundingSummaryHeaderMapper = new FundingSummaryHeaderMapper();
             //var fundingSummaryMapper = new FundingSummaryMapper();
