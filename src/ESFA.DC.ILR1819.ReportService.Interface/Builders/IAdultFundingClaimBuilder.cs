@@ -16,24 +16,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
 {
     public interface IAdultFundingClaimBuilder
     {
-        AdultFundingClaimModel BuildAdultFundingClaimModel(
-            ILogger logger,
-            IJobContextMessage jobContextMessage,
-            List<FM35LearningDeliveryValues> fm35LearningDeliveryPeriodisedValues,
-            List<EasSubmissionValues> easSubmissionValues,
-            List<ALBLearningDeliveryValues> albLearningDeliveryPeriodisedValues,
-            string providerName,
-            ILRSourceFileInfo ilrSourceFileInfo,
-            IDateTimeProvider dateTimeProvider,
-            IIntUtilitiesService intUtilitiesService,
-            IMessage message,
-            IVersionInfo versionInfo,
-            string orgData,
-            string largeEmployersData,
-            string postcodeData,
-            string larsData);
-
-        AdultFundingClaimModel BuildAdultFundingClaimModel(
+       AdultFundingClaimModel BuildAdultFundingClaimModel(
             ILogger logger,
             IJobContextMessage jobContextMessage,
             FM35Global fm35Global,
