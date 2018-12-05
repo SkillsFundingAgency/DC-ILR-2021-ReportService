@@ -1261,9 +1261,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 CellStyle excelRecordStyle = _excelStyleProvider.GetCellStyle(cellStyles, fundingSummaryModel.ExcelRecordStyle);
 
-                //excelRecordStyle.Style.Custom = "[$-en-GB,1]#,##0.00";
-                //excelRecordStyle.Style.Number = 4;
-                //excelRecordStyle.Style.Update();
                 WriteExcelRecords(sheet, _fundingSummaryMapper, _cachedModelProperties, fundingSummaryModel, excelRecordStyle);
             }
 
@@ -1274,9 +1271,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<FundingSummaryHeaderModel> GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
+            var fileName = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString());
             var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
-                IlrFile = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString()),
+                IlrFile = fileName.ToLower().StartsWith("ilr") ? fileName : "N/A",
                 Ukprn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]),
                 ProviderName = providerNameTask.Result ?? "Unknown",
                 LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]), cancellationToken)).ToString("dd/MM/yyyy") : null,
