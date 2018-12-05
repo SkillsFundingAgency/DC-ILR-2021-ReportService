@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
 {
-    public sealed class ValidationErrorsModelComparer : IComparer<ValidationErrorDto>
+    public sealed class ValidationErrorsModelComparer : IComparer<ValidationErrorModel>
     {
-        public int Compare(ValidationErrorDto x, ValidationErrorDto y)
+        public int Compare(ValidationErrorModel x, ValidationErrorModel y)
         {
             if (x == null && y == null)
             {
@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
                 return -1;
             }
 
-            return string.CompareOrdinal(x.RuleName, y.RuleName);
+            return string.Compare(x.RuleName, y.RuleName, StringComparison.OrdinalIgnoreCase);
 
             //if ((IsError(x) && IsError(y)) || (IsWarning(x) && IsWarning(y)))
             //{
@@ -46,13 +46,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
             //}
         }
 
-        private bool IsError(ValidationErrorDto x)
+        private bool IsError(ValidationErrorModel x)
         {
             return string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase) ||
                    string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase);
         }
 
-        private bool IsWarning(ValidationErrorDto x)
+        private bool IsWarning(ValidationErrorModel x)
         {
             return string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase);
         }

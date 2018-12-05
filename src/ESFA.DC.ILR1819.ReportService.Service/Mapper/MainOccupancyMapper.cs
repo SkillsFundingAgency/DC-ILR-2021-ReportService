@@ -37,7 +37,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.OrigLearnStartDate).Index(26).Name("Original learning start date");
             Map(m => m.LearnStartDate).Index(27).Name("Learning start date");
             Map(m => m.LearnPlanEndDate).Index(28).Name("Learning planned end date");
-            Map(m => m.CompStatus).Index(29).Name("Completion status");
+            Map(m => m.CompStatus).Index(29).Name("Completion status").TypeConverterOption.NullValues("0");
             Map(m => m.LearnActEndDate).Index(30).Name("Learning actual end date");
             Map(m => m.Outcome).Index(31).Name("Outcome");
             Map(m => m.AchDate).Index(32).Name("Achievement date");

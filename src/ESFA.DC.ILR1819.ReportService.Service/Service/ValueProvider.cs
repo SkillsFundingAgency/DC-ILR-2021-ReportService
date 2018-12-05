@@ -53,6 +53,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 return;
             }
 
+            if (value is int i)
+            {
+                if (i == 0)
+                {
+                    if (!CanAddZeroInt(mapper, modelProperty))
+                    {
+                        values.Add(string.Empty);
+                        return;
+                    }
+                }
+            }
+
             if (value is string str)
             {
                 if (str == DateTimeMin)
@@ -63,6 +75,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             values.Add(value);
+        }
+
+        private bool CanAddZeroInt(ClassMap mapper, ModelProperty modelProperty)
+        {
+            MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
+            return !(memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains("0") ?? false);
         }
 
         private bool IsOfNullableType<T>(object o)

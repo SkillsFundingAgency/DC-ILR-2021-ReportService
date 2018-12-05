@@ -4,12 +4,15 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Poco;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -127,6 +130,28 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             ValidationErrorMapper helper = new ValidationErrorMapper();
             TestCsvHelper.CheckCsv(csv, new CsvEntry(helper, 1));
             TestXlsxHelper.CheckXlsx(xlsx, new XlsxEntry(helper, 5));
+        }
+
+        [Fact]
+        public async Task TestSorter()
+        {
+            List<ValidationErrorModel> validationErrorModels = new EditableList<ValidationErrorModel>
+            {
+                new ValidationErrorModel("W", "0R99", "AFinType_13", "...", "...", 2),
+                new ValidationErrorModel("W", "3AddHr06", "AddHours_02", "...", "...", 1),
+                new ValidationErrorModel("W", "1R99", "UKPRN_10", "...", "...", 3),
+                new ValidationErrorModel("E", "0AddHr05", "AddHours_06", "...", "...", 5),
+                new ValidationErrorModel("E", "0AddHr06", "AddHours_05", "...", "...", 4),
+                new ValidationErrorModel("E", "0AddHr07", "EmpStat_12", "...", "...", 6),
+            };
+
+            validationErrorModels.Sort(new ValidationErrorsModelComparer());
+
+            int pointer = 1;
+            foreach (ValidationErrorModel validationErrorModel in validationErrorModels)
+            {
+                validationErrorModel.AimSequenceNumber.Should().Be(pointer++);
+            }
         }
     }
 }
