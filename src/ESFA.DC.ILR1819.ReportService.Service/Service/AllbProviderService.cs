@@ -6,17 +6,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Interfaces;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
@@ -55,7 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<ALBGlobal> GetAllbData(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<ALBGlobal> GetAllbData(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -72,12 +69,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+                int ukPrn = reportServiceContext.Ukprn;
 
-                if (jobContextMessage.KeyValuePairs.ContainsKey(JobContextMessageKey.FundingAlbOutput)
-                    && await _redis.ContainsAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString(), cancellationToken))
+                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
-                    string albFilename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput].ToString();
+                    string albFilename = reportServiceContext.FundingALBOutputKey;
                     string alb = await _redis.GetAsync(albFilename, cancellationToken);
 
                     if (string.IsNullOrEmpty(alb))
@@ -177,7 +173,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         }
 
         public async Task<List<ALBLearningDeliveryValues>> GetALBDataFromDataStore(
-            IJobContextMessage jobContextMessage,
+            IReportServiceContext reportServiceContext,
             CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
@@ -189,7 +185,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                var ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+                var ukPrn = reportServiceContext.Ukprn;
                 using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
                     albLearningDeliveryPeriodisedValues = (from pv in ilrContext.ALB_LearningDelivery_PeriodisedValues

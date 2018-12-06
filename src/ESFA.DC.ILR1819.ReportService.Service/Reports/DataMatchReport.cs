@@ -14,6 +14,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -25,8 +26,6 @@ using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.ReferenceData;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
@@ -74,15 +73,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateDataMatchReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            if (!long.TryParse(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString(), out var ukPrn))
-            {
-                _logger.LogWarning($"Cannot convert {JobContextMessageKey.UkPrn} with value {jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]} to long, can't generate {nameof(DataMatchReport)}");
-                return;
-            }
-
-            FM36Global fm36Data = await _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken).ConfigureAwait(false);
+            FM36Global fm36Data = await _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken).ConfigureAwait(false);
 
             if (fm36Data?.Learners == null)
             {
@@ -96,27 +89,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 List<long> ulns = await GetUlnsForValidLearners(
                     fm36Data,
                     rawEarnings,
-                    jobContextMessage,
+                    reportServiceContext,
                     cancellationToken);
 
                 List<DasCommitment> commitments = await _dasCommitmentsService.GetCommitments(
-                    ukPrn,
+                    reportServiceContext.Ukprn,
                     ulns,
                     cancellationToken);
 
-                _logger.LogWarning($"Found {commitments.Count} commitments against UKPRN {ukPrn} and {ulns.Count} ULNs.");
+                _logger.LogWarning($"Found {commitments.Count} commitments against UKPRN {reportServiceContext.Ukprn} and {ulns.Count} ULNs.");
 
                 cancellationToken.ThrowIfCancellationRequested();
 
-                BuildReportData(rawEarnings, commitments, ukPrn);
+                BuildReportData(rawEarnings, commitments, reportServiceContext.Ukprn);
 
                 _validationStageOutputCache.DataMatchProblemCount = dataMatchModels.Count;
                 _validationStageOutputCache.DataMatchProblemLearnersCount = dataMatchModels.DistinctBy(x => x.LearnRefNumber).Count();
             }
 
-            var jobId = jobContextMessage.JobId;
-            var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn.ToString(), jobId, jobContextMessage.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var externalFileName = GetExternalFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = WriteResults();
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
@@ -405,10 +398,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private async Task<List<long>> GetUlnsForValidLearners(
             FM36Global fm36Data,
             List<RawEarning> rawEarnings,
-            IJobContextMessage jobContextMessage,
+            IReportServiceContext reportServiceContext,
             CancellationToken cancellationToken)
         {
-            int period = await _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
+            int period = await _periodProviderService.GetPeriod(reportServiceContext, cancellationToken);
             List<long> ulns = new List<long>();
 
             foreach (FM36Learner fm36DataLearner in fm36Data.Learners)

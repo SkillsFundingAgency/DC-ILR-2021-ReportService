@@ -1,28 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.EAS1819.EF;
-using ESFA.DC.EAS1819.EF.Interface;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -85,7 +76,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             largeEmployerProviderService.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
-            orgProviderService.Setup(x => x.GetProviderName(It.IsAny<IJobContextMessage>(), It.IsAny<CancellationToken>())).ReturnsAsync("Test Provider");
+            orgProviderService.Setup(x => x.GetProviderName(It.IsAny<IReportServiceContext>(), It.IsAny<CancellationToken>())).ReturnsAsync("Test Provider");
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
@@ -107,10 +98,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 versionInfo,
                 topicsAndTasks,
                 new AdultFundingClaimBuilder());
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
 
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10007924;
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10007924-1819-20180704-120055-03";
+            Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
+            reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
+            reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
+            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10007924);
+            reportServiceContextMock.SetupGet(x => x.Filename).Returns("ILR-10007924-1819-20180704-120055-03");
 
             MemoryStream memoryStream = new MemoryStream();
 
@@ -118,7 +111,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             {
                 using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Update, true))
                 {
-                    await adultFundingClaimReport.GenerateReport(jobContextMessage, archive, false, CancellationToken.None);
+                    await adultFundingClaimReport.GenerateReport(reportServiceContextMock.Object, archive, false, CancellationToken.None);
                     //await adultFundingClaimReport.GenerateReport(jobContextMessage, archive, false, CancellationToken.None);
                 }
 

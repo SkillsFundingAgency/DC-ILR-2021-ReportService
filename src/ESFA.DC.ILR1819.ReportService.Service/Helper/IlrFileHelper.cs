@@ -1,6 +1,5 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
+﻿using ESFA.DC.ILR1819.ReportService.Interface.Context;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Helper
@@ -19,9 +18,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Helper
             _logger = logger;
         }
 
-        public bool CheckIlrFileNameIsValid(IJobContextMessage jobContextMessage)
+        public bool CheckIlrFileNameIsValid(IReportServiceContext reportServiceContext)
         {
-            _ilrFileName = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
+            _ilrFileName = reportServiceContext.Filename;
             _ilrFileDateTime = _stringUtilitiesService.GetIlrFileDate(_ilrFileName)?.ToString("yyyy-MM-dd HH:mm:ssy");
 
             if (_ilrFileDateTime != null)
