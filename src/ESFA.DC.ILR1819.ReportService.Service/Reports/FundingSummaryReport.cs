@@ -915,9 +915,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("AEB - Other Learning", HeaderType.All, 2));
-            FundingSummaryModel aebFunding = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (procured from Nov 2017)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel aebFunding = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
             fundingSummaryModels.Add(aebFunding);
-            FundingSummaryModel aebSupport = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (procured from Nov 2017)" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel aebSupport = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" }, new[] { Constants.Fm35LearningSupportAttributeName });
             fundingSummaryModels.Add(aebSupport);
             FundingSummaryModel aebTotal = _totalBuilder.TotalRecords("ILR Total AEB - Other Learning (£)", aebFunding, aebSupport);
 
@@ -1261,9 +1261,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 CellStyle excelRecordStyle = _excelStyleProvider.GetCellStyle(cellStyles, fundingSummaryModel.ExcelRecordStyle);
 
-                //excelRecordStyle.Style.Custom = "[$-en-GB,1]#,##0.00";
-                //excelRecordStyle.Style.Number = 4;
-                //excelRecordStyle.Style.Update();
                 WriteExcelRecords(sheet, _fundingSummaryMapper, _cachedModelProperties, fundingSummaryModel, excelRecordStyle);
             }
 
@@ -1274,9 +1271,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<FundingSummaryHeaderModel> GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
+            var fileName = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString());
             var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
-                IlrFile = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString()),
+                IlrFile = fileName.ToLower().StartsWith("ilr") ? fileName : "N/A",
                 Ukprn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]),
                 ProviderName = providerNameTask.Result ?? "Unknown",
                 LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]), cancellationToken)).ToString("dd/MM/yyyy") : null,
@@ -1291,6 +1289,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null ?
                                                                                                 lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
+            }
+
+            if (fileName.ToLower().StartsWith("eas"))
+            {
+                fundingSummaryHeaderModel.LastIlrFileUpdate = "N/A";
             }
 
             return fundingSummaryHeaderModel;
