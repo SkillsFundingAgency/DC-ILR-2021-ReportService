@@ -5,16 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -54,7 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<FM36Global> GetFM36Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<FM36Global> GetFM36Data(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -72,11 +69,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 _loadedDataAlready = true;
 
-                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
-                if (jobContextMessage.KeyValuePairs.ContainsKey(JobContextMessageKey.FundingFm36Output)
-                            && await _redis.ContainsAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString(), cancellationToken))
+                int ukPrn = reportServiceContext.Ukprn;
+                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
-                    string fm36Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString();
+                    string fm36Filename = reportServiceContext.FundingFM36OutputKey;
                     string fm36 = await _redis.GetAsync(fm36Filename, cancellationToken);
 
                     if (string.IsNullOrEmpty(fm36))

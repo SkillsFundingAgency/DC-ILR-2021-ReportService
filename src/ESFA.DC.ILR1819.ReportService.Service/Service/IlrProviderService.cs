@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -10,12 +9,11 @@ using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -54,7 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getIlrLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<IMessage> GetIlrFile(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<IMessage> GetIlrFile(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getIlrLock.WaitAsync(cancellationToken);
 
@@ -70,8 +68,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                string filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
-                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+                string filename = reportServiceContext.Filename;
+                int ukPrn = reportServiceContext.Ukprn;
                 if (await _storage.ContainsAsync(filename, cancellationToken))
                 {
                     using (MemoryStream ms = new MemoryStream())
@@ -102,7 +100,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to get and deserialise ILR from storage, key: {JobContextMessageKey.Filename}", ex);
+                _logger.LogError($"Failed to get and deserialise ILR from storage, key: {reportServiceContext.Filename}", ex);
             }
             finally
             {
@@ -113,7 +111,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         }
 
         public async Task<ILRSourceFileInfo> GetLastSubmittedIlrFile(
-           IJobContextMessage jobContextMessage,
+           IReportServiceContext reportServiceContext,
            CancellationToken cancellationToken)
         {
             await _getIlrLock.WaitAsync(cancellationToken);
@@ -125,7 +123,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                var ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+                var ukPrn = reportServiceContext.Ukprn;
 
                 using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {

@@ -17,6 +17,7 @@ using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
@@ -24,8 +25,6 @@ using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Model.Styling;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
 
@@ -135,23 +134,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _cachedModelProperties = _fundingSummaryMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
-            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
-            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
-            Task<FM81Global> fm81Task = _fm81TrailBlazerProviderService.GetFM81Data(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
-            Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
-            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
+            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
+            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken);
+            Task<FM81Global> fm81Task = _fm81TrailBlazerProviderService.GetFM81Data(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
+            Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
+            Task<int> periodTask = _periodProviderService.GetPeriod(reportServiceContext, cancellationToken);
+            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             Task<List<EasSubmissionValues>> easSubmissionsValuesTask = null;
             if (!isFis)
             {
-                easSubmissionsValuesTask = _easProviderService.GetEasSubmissionValuesAsync(jobContextMessage, cancellationToken);
+                easSubmissionsValuesTask = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
             }
 
             await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, periodTask, easSubmissionsValuesTask);
@@ -161,7 +160,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            FundingSummaryHeaderModel fundingSummaryHeaderModel = await GetHeader(jobContextMessage, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
+            FundingSummaryHeaderModel fundingSummaryHeaderModel = await GetHeader(reportServiceContext, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
             FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(ilrFileTask, lastSubmittedIlrFileTask, cancellationToken);
 
             // Todo: Check keys & titles
@@ -1050,7 +1049,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("Advanced Loans Bursary Budget", HeaderType.TitleOnly, 0));
             fundingSummaryModels.Add(new FundingSummaryModel("Advanced Loans Bursary", HeaderType.All, 2));
-            List<FundingSummaryModel> albModels = await _allbBuilder.BuildAsync(jobContextMessage, cancellationToken);
+            List<FundingSummaryModel> albModels = await _allbBuilder.BuildAsync(reportServiceContext, cancellationToken);
             fundingSummaryModels.AddRange(albModels);
             FundingSummaryModel albIlrTotal = _totalBuilder.TotalRecords("ILR Total Advanced Loans Bursary (£)", albModels[0], albModels[1]);
 
@@ -1159,10 +1158,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             //    fundingSummaryModels.Add(new FundingSummaryModel());
             //}
 
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = GetReportCsv(fundingSummaryHeaderModel, fundingSummaryFooterModel);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
@@ -1269,15 +1268,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return workbook;
         }
 
-        private async Task<FundingSummaryHeaderModel> GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
+        private async Task<FundingSummaryHeaderModel> GetHeader(IReportServiceContext reportServiceContext, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
-            var fileName = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString());
+            var fileName = Path.GetFileName(reportServiceContext.Filename);
             var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
                 IlrFile = fileName.ToLower().StartsWith("ilr") ? fileName : "N/A",
-                Ukprn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]),
+                Ukprn = _intUtilitiesService.ObjectToInt(reportServiceContext.Ukprn),
                 ProviderName = providerNameTask.Result ?? "Unknown",
-                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]), cancellationToken)).ToString("dd/MM/yyyy") : null,
+                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(reportServiceContext.Ukprn), cancellationToken)).ToString("dd/MM/yyyy") : null,
                 SecurityClassification = "OFFICIAL - SENSITIVE"
             };
 

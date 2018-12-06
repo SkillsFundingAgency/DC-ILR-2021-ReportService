@@ -14,6 +14,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Poco;
@@ -22,8 +23,6 @@ using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -71,27 +70,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(reportServiceContext, cancellationToken);
             await Task.WhenAll(ilrTask, validationErrorDtosTask);
 
-            long jobId = jobContextMessage.JobId;
-            string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            _externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            _fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            long jobId = reportServiceContext.JobId;
+            string ukPrn = reportServiceContext.Ukprn.ToString();
+            _externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            _fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
 
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
-            GenerateFrontEndValidationReport(jobContextMessage.KeyValuePairs, validationErrorDtos);
+            GenerateFrontEndValidationReport(reportServiceContext, validationErrorDtos);
 
             await PersistValuesToStorage(validationErrors, archive, cancellationToken);
         }
 
         private void GenerateFrontEndValidationReport(
-            IDictionary<string, object> keyValuePairs,
+            IReportServiceContext reportServiceContext,
             List<ValidationErrorDto> validationErrorDtos)
         {
             var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase) || string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase)).ToArray();
@@ -99,7 +98,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             _ilrValidationResult = new FileValidationResult
             {
-                TotalLearners = GetNumberOfLearners(keyValuePairs),
+                TotalLearners = GetNumberOfLearners(reportServiceContext),
                 TotalErrors = errors.Length,
                 TotalWarnings = warnings.Length,
                 TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber),
@@ -110,14 +109,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             };
         }
 
-        private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             List<ValidationErrorDto> result = new List<ValidationErrorDto>();
 
             try
             {
-                string validationErrorsStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors]
-                    .ToString());
+                string validationErrorsStr = await _redis.GetAsync(reportServiceContext.ValidationErrorsKey, cancellationToken);
 
                 try
                 {
@@ -261,20 +259,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return result.ToString();
         }
 
-        private int GetNumberOfLearners(IDictionary<string, object> keyValuePairs)
+        private int GetNumberOfLearners(IReportServiceContext reportServiceContext)
         {
             int ret = 0;
             try
             {
-                if (keyValuePairs.ContainsKey(JobContextMessageKey.ValidLearnRefNumbersCount))
-                {
-                    ret = Convert.ToInt32(keyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount]);
-                }
-
-                if (keyValuePairs.ContainsKey(JobContextMessageKey.InvalidLearnRefNumbersCount))
-                {
-                    ret = ret + Convert.ToInt32(keyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount]);
-                }
+                ret = reportServiceContext.ValidLearnRefNumbersCount;
+                ret = ret + reportServiceContext.InvalidLearnRefNumbersCount;
             }
             catch (Exception ex)
             {

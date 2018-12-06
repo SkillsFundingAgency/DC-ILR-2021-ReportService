@@ -4,10 +4,9 @@ using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using FluentAssertions;
 using Moq;
@@ -36,9 +35,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
 
             IPeriodProviderService periodProviderService = new PeriodProviderService(dateTimeProvider, returnCalendarService.Object, logger.Object);
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], "ukPrn", "Container", "Filename", "Username", 0, nowDateTimeUtc);
+            Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
+            reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
+            reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(nowDateTimeUtc);
 
-            int period = await periodProviderService.GetPeriod(jobContextMessage, CancellationToken.None);
+            int period = await periodProviderService.GetPeriod(reportServiceContextMock.Object, CancellationToken.None);
 
             period.Should().Be(expectedPeriod);
         }

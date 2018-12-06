@@ -4,10 +4,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.Organisatons.Model;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -32,7 +31,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _orgConfiguration = orgConfiguration;
         }
 
-        public async Task<string> GetProviderName(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<string> GetProviderName(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -49,7 +48,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                string ukPrnStr = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+                string ukPrnStr = reportServiceContext.Ukprn.ToString();
                 long ukPrn = Convert.ToInt64(ukPrnStr);
                 Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
                 _loadedData = organisations.Org_Details.Where(x => x.UKPRN == ukPrn).Select(x => x.Name).SingleOrDefault();

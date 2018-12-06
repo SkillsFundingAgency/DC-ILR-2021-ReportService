@@ -5,13 +5,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
-using ESFA.DC.ILR1819.DataStore.EF.Valid.Interfaces;
 using ESFA.DC.ILR1819.ReportService.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -19,12 +16,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
     public abstract class BaseLearnersService
     {
-        private readonly string _messageKey;
+        private readonly string _filename;
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _redis;
-        private readonly IKeyValuePersistenceService _blob;
         private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
 
         private readonly SemaphoreSlim _getDataLock;
@@ -37,23 +32,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             string key,
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService,
-            IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
-            _messageKey = key;
+            _filename = key;
             _logger = logger;
             _redis = redis;
-            _blob = blob;
             _jsonSerializationService = jsonSerializationService;
-            _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
             _loadedData = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<List<string>> GetLearnersAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<List<string>> GetLearnersAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -70,14 +61,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+                int ukPrn = reportServiceContext.Ukprn;
 
-                if (jobContextMessage.KeyValuePairs.ContainsKey(_messageKey)
-                    && await _redis.ContainsAsync(
-                        jobContextMessage.KeyValuePairs[_messageKey].ToString(),
-                        cancellationToken))
+                if (await _redis.ContainsAsync(_filename, cancellationToken))
                 {
-                    string learnersValidStr = await _redis.GetAsync(jobContextMessage.KeyValuePairs[_messageKey].ToString(), cancellationToken);
+                    string learnersValidStr = await _redis.GetAsync(_filename, cancellationToken);
                     _loadedData = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
                 }
                 else
@@ -95,7 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             catch (Exception ex)
             {
                 // Todo: Check behaviour
-                _logger.LogError($"Failed to get & deserialise {_messageKey}", ex);
+                _logger.LogError($"Failed to get & deserialise {_filename}", ex);
             }
             finally
             {

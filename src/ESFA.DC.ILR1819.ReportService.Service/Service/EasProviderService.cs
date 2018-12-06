@@ -4,12 +4,11 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.EAS1819.EF;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Eas;
 using ESFA.DC.ILR1819.ReportService.Service.Extensions.Eas;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
 
@@ -73,10 +72,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return easPaymentTypeList;
         }
 
-        public async Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getLastEastUpdateLock.WaitAsync(cancellationToken);
-            string UkPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
+            string UkPrn = reportServiceContext.Ukprn.ToString();
             var allPaymentTypes = GetAllPaymentTypes();
             try
             {
