@@ -10,8 +10,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
     public sealed class ValueProvider : IValueProvider
     {
-        private readonly string DateTimeMin = DateTime.MinValue.ToString("dd/MM/yyyy");
-
         public void GetFormattedValue(List<object> values, object value, ClassMap mapper, ModelProperty modelProperty)
         {
             Type propertyType = modelProperty.MethodInfo.PropertyType;
@@ -22,7 +20,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 {
                     if (IsNullableMapper(mapper, modelProperty))
                     {
-                        values.Add("n/a");
+                        values.Add(Constants.NotApplicable);
                         return;
                     }
 
@@ -73,7 +71,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             if (value is string str)
             {
-                if (str == DateTimeMin)
+                if (str == Constants.DateTimeMin)
                 {
                     values.Add(string.Empty);
                     return;
@@ -86,13 +84,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private bool IsNullableMapper(ClassMap mapper, ModelProperty modelProperty)
         {
             MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
-            return memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains("n/a") ?? false;
+            return memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains(Constants.NotApplicable) ?? false;
         }
 
         private bool CanAddZeroInt(ClassMap mapper, ModelProperty modelProperty)
         {
             MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
-            return !(memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains("0") ?? false);
+            return !(memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains(Constants.Zero) ?? false);
         }
 
         private bool IsOfNullableType<T>(object o)

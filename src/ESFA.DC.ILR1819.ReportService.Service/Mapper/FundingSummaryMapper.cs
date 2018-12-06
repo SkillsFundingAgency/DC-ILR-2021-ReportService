@@ -21,10 +21,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.Period10).Index(10).Name("May 2019").TypeConverterOption.Format("0.00");
             Map(m => m.Period11).Index(11).Name("Jun 2019").TypeConverterOption.Format("0.00");
             Map(m => m.Period12).Index(12).Name("Jul 2019").TypeConverterOption.Format("0.00");
-            Map(m => m.Period1_8).Index(13).Name("Aug-Mar").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues("n/a");
-            Map(m => m.Period9_12).Index(14).Name("Apr-Jul").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues("n/a");
-            Map(m => m.YearToDate).Index(15).Name("Year To Date").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues("n/a");
-            Map(m => m.Total).Index(16).Name("Total").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues("n/a");
+            Map(m => m.Period1_8).Index(13).Name("Aug-Mar").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues(Constants.NotApplicable);
+            Map(m => m.Period9_12).Index(14).Name("Apr-Jul").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues(Constants.NotApplicable);
+            Map(m => m.YearToDate).Index(15).Name("Year To Date").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues(Constants.NotApplicable);
+            Map(m => m.Total).Index(16).Name("Total").TypeConverterOption.Format("0.00").TypeConverterOption.NullValues(Constants.NotApplicable);
         }
     }
 }
