@@ -1280,22 +1280,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 SecurityClassification = "OFFICIAL - SENSITIVE"
             };
 
-            if (messageTask.Result != null)
-            {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
-            }
-            else
-            {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null ?
-                                                                                                lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
-            }
+                if (messageTask.Result != null)
+                {
+                    fundingSummaryHeaderModel.LastIlrFileUpdate =
+                        messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                }
+                else
+                {
+                    fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null
+                        ? lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
+                        : string.Empty;
+                }
 
-            if (fileName.ToLower().StartsWith("eas"))
-            {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = "N/A";
+                return fundingSummaryHeaderModel;
             }
-
-            return fundingSummaryHeaderModel;
         }
 
         private async Task<FundingSummaryFooterModel> GetFooterAsync(Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, CancellationToken cancellationToken)

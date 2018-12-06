@@ -152,7 +152,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 adultFundingClaimModel.ProviderName = providerName ?? "Unknown";
                 adultFundingClaimModel.Ukprn = ukPrn;
-                adultFundingClaimModel.ReportGeneratedAt = "Report generated at: " + dateTimeProvider.GetNowUtc().ToString("HH:mm:ss tt") + " on " +
+                adultFundingClaimModel.ReportGeneratedAt = "Report generated at: " + dateTimeProvider.GetNowUtc().ToString("hh:mm:ss tt") + " on " +
                                                       dateTimeProvider.GetNowUtc().ToString("dd/MM/yyyy");
 
                 if (message == null) // NON - ILR Submission.
