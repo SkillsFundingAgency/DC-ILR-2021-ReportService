@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -1273,27 +1274,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             var fileName = Path.GetFileName(reportServiceContext.Filename);
             var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
-                IlrFile = fileName.ToLower().StartsWith("ilr") ? fileName : "N/A",
-                Ukprn = _intUtilitiesService.ObjectToInt(reportServiceContext.Ukprn),
+                IlrFile = string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase) ? fileName : "N/A",
+                Ukprn = reportServiceContext.Ukprn,
                 ProviderName = providerNameTask.Result ?? "Unknown",
-                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(reportServiceContext.Ukprn), cancellationToken)).ToString("dd/MM/yyyy") : null,
+                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(reportServiceContext.Ukprn, cancellationToken)).ToString("dd/MM/yyyy") : null,
                 SecurityClassification = "OFFICIAL - SENSITIVE"
             };
 
-                if (messageTask.Result != null)
-                {
-                    fundingSummaryHeaderModel.LastIlrFileUpdate =
-                        messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
-                }
-                else
-                {
-                    fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null
-                        ? lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
-                        : string.Empty;
-                }
-
-                return fundingSummaryHeaderModel;
+            if (messageTask.Result != null)
+            {
+                fundingSummaryHeaderModel.LastIlrFileUpdate =
+                    messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
             }
+            else
+            {
+                fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null
+                    ? lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
+                    : string.Empty;
+            }
+
+            return fundingSummaryHeaderModel;
         }
 
         private async Task<FundingSummaryFooterModel> GetFooterAsync(Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, CancellationToken cancellationToken)
