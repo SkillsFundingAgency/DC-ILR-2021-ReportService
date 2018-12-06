@@ -1271,32 +1271,39 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<FundingSummaryHeaderModel> GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
-            var fileName = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString());
-            var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
-                IlrFile = fileName.ToLower().StartsWith("ilr") ? fileName : "N/A",
-                Ukprn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]),
-                ProviderName = providerNameTask.Result ?? "Unknown",
-                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]), cancellationToken)).ToString("dd/MM/yyyy") : null,
-                SecurityClassification = "OFFICIAL - SENSITIVE"
-            };
+                var fileName =
+                    Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString());
+                var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
+                {
+                    IlrFile =
+                        fileName.ToLower().StartsWith("ilr") ? fileName : lastSubmittedIlrFileTask.Result.Filename,
+                    Ukprn = _intUtilitiesService.ObjectToInt(
+                        jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]),
+                    ProviderName = providerNameTask.Result ?? "Unknown",
+                    LastEasUpdate = !isFis
+                        ? (await _easProviderService.GetLastEasUpdate(
+                            _intUtilitiesService.ObjectToInt(
+                                jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]), cancellationToken))
+                        .ToString("dd/MM/yyyy")
+                        : null,
+                    SecurityClassification = "OFFICIAL - SENSITIVE"
+                };
 
-            if (messageTask.Result != null)
-            {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
-            }
-            else
-            {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null ?
-                                                                                                lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
-            }
+                if (messageTask.Result != null)
+                {
+                    fundingSummaryHeaderModel.LastIlrFileUpdate =
+                        messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                }
+                else
+                {
+                    fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null
+                        ? lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
+                        : string.Empty;
+                }
 
-            if (fileName.ToLower().StartsWith("eas"))
-            {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = "N/A";
+                return fundingSummaryHeaderModel;
             }
-
-            return fundingSummaryHeaderModel;
         }
 
         private async Task<FundingSummaryFooterModel> GetFooterAsync(Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, CancellationToken cancellationToken)
