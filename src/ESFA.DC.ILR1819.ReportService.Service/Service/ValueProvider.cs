@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             {
                 int decimalPoints = GetDecimalPoints(mapper, modelProperty);
                 decimal rounded = decimal.Round(d1, decimalPoints);
-                values.Add(rounded.ToString("#,##0.00", CultureInfo.GetCultureInfo("en-GB").NumberFormat));
+                values.Add(rounded.ToString($"N{decimalPoints:D}"));
                 //values.Add(PadDecimal(rounded, decimalPoints));
                 return;
             }
