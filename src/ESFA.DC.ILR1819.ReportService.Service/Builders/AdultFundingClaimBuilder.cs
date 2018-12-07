@@ -1,23 +1,21 @@
-﻿using ESFA.DC.DateTimeProvider.Interface;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
+using ESFA.DC.ILR1819.ReportService.Model.Eas;
+using ESFA.DC.ILR1819.ReportService.Model.ILR;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using ESFA.DC.ILR1819.ReportService.Interface.Builders;
-    using ESFA.DC.ILR1819.ReportService.Model.Eas;
-    using ESFA.DC.ILR1819.ReportService.Model.ILR;
-    using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-
     public class AdultFundingClaimBuilder : IAdultFundingClaimBuilder
     {
         private int[] First6MonthsArray => new[] { 1, 2, 3, 4, 5, 6 };
@@ -26,7 +24,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
       public AdultFundingClaimModel BuildAdultFundingClaimModel(
             ILogger logger,
-            IJobContextMessage jobContextMessage,
+            IReportServiceContext reportServiceContext,
             FM35Global fm35Global,
             List<EasSubmissionValues> easSubmissionValues,
             ALBGlobal albGlobal,
@@ -45,7 +43,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
             try
             {
-                var ilrfileName = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
+                var ilrfileName = reportServiceContext.Filename;
 
                 // FM35
                 decimal otherLearningProgramFunding6MonthsFm35 = 0;
@@ -79,7 +77,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 decimal loansAreaCosts6Months = 0;
                 decimal loansAreaCosts12Months = 0;
 
-                var ukPrn = intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString());
+                var ukPrn = reportServiceContext.Ukprn;
 
                 // FM35
                 var fm35LearningDeliveryPeriodisedValues = GetFM35LearningDeliveryPeriodisedValues(fm35Global, ukPrn);
@@ -154,7 +152,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 adultFundingClaimModel.ProviderName = providerName ?? "Unknown";
                 adultFundingClaimModel.Ukprn = ukPrn;
-                adultFundingClaimModel.ReportGeneratedAt = "Report generated at: " + dateTimeProvider.GetNowUtc().ToString("HH:mm:ss tt") + " on " +
+                adultFundingClaimModel.ReportGeneratedAt = "Report generated at: " + dateTimeProvider.GetNowUtc().ToString("hh:mm:ss tt") + " on " +
                                                       dateTimeProvider.GetNowUtc().ToString("dd/MM/yyyy");
 
                 if (message == null) // NON - ILR Submission.
@@ -202,7 +200,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 {
                     foreach (var ldpv in ld.LearningDeliveryPeriodisedValues)
                     {
-                        result.Add(new FM35LearningDeliveryValues()
+                        result.Add(new FM35LearningDeliveryValues
                         {
                             AimSeqNumber = ld.AimSeqNumber ?? 0,
                             LearnRefNumber = learner.LearnRefNumber,
@@ -238,7 +236,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 {
                     foreach (var ldpv in ld.LearningDeliveryPeriodisedValues)
                     {
-                        result.Add(new ALBLearningDeliveryValues()
+                        result.Add(new ALBLearningDeliveryValues
                         {
                             AimSeqNumber = ld.AimSeqNumber,
                             LearnRefNumber = learner.LearnRefNumber,

@@ -13,6 +13,7 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
@@ -20,8 +21,6 @@ using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
 
@@ -72,23 +71,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
-            string csv = await GetCsv(jobContextMessage, cancellationToken);
+            string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, albDataTask, validLearnersTask);
 
@@ -176,12 +175,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     LearningDeliveryPeriodisedValue albCode = albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x =>
                         string.Equals(x.AttributeName, AlbCode, StringComparison.OrdinalIgnoreCase));
 
-                    string albBursaryFunding = "0", albDateFrom = "NA", albDateTo = "NA";
+                    string albBursaryFunding = string.Empty, albDateFrom = string.Empty, albDateTo = string.Empty;
                     if (alb != null && alb.Any())
                     {
                         albBursaryFunding = alb.Max(x => _stringUtilitiesService.TryGetInt(x.LearnDelFAMCode, 0)).ToString();
-                        albDateFrom = _stringUtilitiesService.GetDateTimeAsString(alb.Min(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue), "NA", DateTime.MinValue);
-                        albDateTo = _stringUtilitiesService.GetDateTimeAsString(alb.Max(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue), "NA", DateTime.MinValue);
+                        albDateFrom = _stringUtilitiesService.GetDateTimeAsString(alb.Min(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue), string.Empty, DateTime.MinValue);
+                        albDateTo = _stringUtilitiesService.GetDateTimeAsString(alb.Max(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue), string.Empty, DateTime.MinValue);
                     }
 
                     models.Add(new AllbOccupancyModel

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
@@ -45,7 +45,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             _logger = logger;
         }
 
-        public async Task<List<FundingSummaryModel>> BuildAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<List<FundingSummaryModel>> BuildAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             FundingSummaryModel fundingSummaryModelAlbFunding = new FundingSummaryModel()
             {
@@ -63,10 +63,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 fundingSummaryModelAlbAreaCosts
             };
 
-            Task<IMessage> ilrFile = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearners = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<ALBGlobal> albData = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            Task<int> period = _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFile = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearners = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
+            Task<ALBGlobal> albData = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
+            Task<int> period = _periodProviderService.GetPeriod(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFile, validLearners, albData, period);
 

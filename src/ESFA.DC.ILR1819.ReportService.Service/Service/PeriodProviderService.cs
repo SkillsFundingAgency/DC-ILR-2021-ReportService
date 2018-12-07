@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -51,7 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<int> GetPeriod(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<int> GetPeriod(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -64,7 +64,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 ReturnPeriod returnPeriod = await _returnCalendarService.GetCurrentPeriodAsync(CurrentCollection);
 
-                DateTime dateTimeNowUtc = jobContextMessage.SubmissionDateTimeUtc;
+                DateTime dateTimeNowUtc = reportServiceContext.SubmissionDateTimeUtc;
                 DateTime returnPeriodEndDateTimeUk = _dateTimeProvider.ConvertUtcToUk(returnPeriod.EndDateTimeUtc);
                 DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
                 int period = 12;
