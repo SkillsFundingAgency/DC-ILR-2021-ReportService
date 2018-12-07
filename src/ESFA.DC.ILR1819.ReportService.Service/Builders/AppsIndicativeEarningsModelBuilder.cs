@@ -81,9 +81,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 FundingAdjustmentForPriorLearning = learningDelivery.PriorLearnFundAdjNullable,
                 OtherFundingAdjustment = learningDelivery.OtherFundAdjNullable,
                 LearningDeliveryFAMTypeLearningSupportFunding = learningDeliveryFams.Select(x => x.Code).Max(),
-                LearningDeliveryFAMTypeLSFDateAppliesFrom = learningDeliveryFams.Select(x => x.From).Min().ToString("dd/MM/yyyy"),
-                LearningDeliveryFAMTypeLSFDateAppliesTo = learningDeliveryFams.Select(x => x.To).Max().ToString("dd/MM/yyyy"),
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringA = learningDelivery.LearningDeliveryFAMs
+                LearningDeliveryFAMTypeLSFDateAppliesFrom =
+                    learningDeliveryFams.Select(x => x.From).Min() == DateTime.MinValue ? $"" : learningDeliveryFams.Select(x => x.From).Min().ToString("dd/MM/yyyy"),
+                LearningDeliveryFAMTypeLSFDateAppliesTo =
+                learningDeliveryFams.Select(x => x.To).Max() == DateTime.MinValue ? $"" : learningDeliveryFams.Select(x => x.To).Max().ToString("dd/MM/yyyy"),
+            LearningDeliveryFAMTypeLearningDeliveryMonitoringA = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM1, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringB = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM2, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,

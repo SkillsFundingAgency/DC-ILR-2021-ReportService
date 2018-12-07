@@ -350,6 +350,9 @@
     <Compile Include="Service\ValueProviderServiceTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ILR-10033670-1819-20181206-093952-03.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Reports\ALB\ILR-10033670-1819-20180909-090909-99.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -39,7 +39,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
             string filename = $"10033670_1_Apps Indicative Earnings Report {dateTime:yyyyMMdd-HHmmss}";
-            string ilr = "ILR-10033670-1819-20180704-120055-03";
+            string ilr = "ILR-10033670-1819-20181206-093952-03";
             DataStoreConfiguration dataStoreConfiguration = new DataStoreConfiguration()
             {
                 ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString,
@@ -77,7 +77,25 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 new List<string>
                 {
                     "3DOB01",
+                    "0fm3501",
+                    "1fm3501",
+                    "2fm3501",
+                    "3fm3501",
+                    "4fm3501",
+                    "5fm3501",
+                    "6fm3501",
+                    "7fm3501",
+                    "8fm3501",
+                    "9fm3501",
+                    "Afm3501",
+                    "Bfm3501",
+                    "Cfm3501",
+                    "Dfm3501",
+                    "Efm3501",
+                    "0fm3601"
                 }));
+            redis.Setup(x => x.ContainsAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.ContainsAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
@@ -126,6 +144,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             await report.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
+            File.WriteAllText($"{filename}.csv", csv);
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsIndicativeEarningsMapper(), 1));
         }
     }
