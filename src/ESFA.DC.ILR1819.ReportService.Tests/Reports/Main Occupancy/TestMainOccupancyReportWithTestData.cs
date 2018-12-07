@@ -29,7 +29,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Main_Occupancy
 #if DEBUG
         [Theory]
         //[InlineData(@"Reports\Main Occupancy\ILR-10033670-1819-20181030-101919-07.xml", @"Reports\Main Occupancy\FundingFm35Output_FM35TNP13.json", "fm35 TNP 13")]
-        [InlineData(@"Reports\Main Occupancy\ILR-10033670-1819-20181203-143338-25.xml", @"Reports\Main Occupancy\FundingFm35Output_fm25 19C 1.json", "fm25 19C 1")]
+        //[InlineData(@"Reports\Main Occupancy\ILR-10033670-1819-20181203-143338-25.xml", @"Reports\Main Occupancy\FundingFm35Output_fm25 19C 1.json", "fm25 19C 1")]
+        [InlineData(@"Reports\Main Occupancy\ILR-10033670-1819-20181205-135040-25.xml", @"Reports\Main Occupancy\FundingFm35Output_fm25 19T 1.json", "fm25 19T 1")]
 #endif
         public async Task TestMainOccupancyReportGeneration(string ilrFilename, string fm35Filename, string validLearner)
         {
@@ -75,6 +76,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Main_Occupancy
             reportServiceContextMock.SetupGet(x => x.Filename).Returns(ilrFilename);
             reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
             reportServiceContextMock.SetupGet(x => x.FundingFM35OutputKey).Returns("FundingFm35Output");
+            reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, null);
 

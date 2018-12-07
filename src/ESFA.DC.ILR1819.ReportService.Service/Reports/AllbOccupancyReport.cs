@@ -175,12 +175,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     LearningDeliveryPeriodisedValue albCode = albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x =>
                         string.Equals(x.AttributeName, AlbCode, StringComparison.OrdinalIgnoreCase));
 
-                    string albBursaryFunding = "0", albDateFrom = "NA", albDateTo = "NA";
+                    string albBursaryFunding = string.Empty, albDateFrom = string.Empty, albDateTo = string.Empty;
                     if (alb != null && alb.Any())
                     {
                         albBursaryFunding = alb.Max(x => _stringUtilitiesService.TryGetInt(x.LearnDelFAMCode, 0)).ToString();
-                        albDateFrom = _stringUtilitiesService.GetDateTimeAsString(alb.Min(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue), "NA", DateTime.MinValue);
-                        albDateTo = _stringUtilitiesService.GetDateTimeAsString(alb.Max(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue), "NA", DateTime.MinValue);
+                        albDateFrom = _stringUtilitiesService.GetDateTimeAsString(alb.Min(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue), string.Empty, DateTime.MinValue);
+                        albDateTo = _stringUtilitiesService.GetDateTimeAsString(alb.Max(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue), string.Empty, DateTime.MinValue);
                     }
 
                     models.Add(new AllbOccupancyModel

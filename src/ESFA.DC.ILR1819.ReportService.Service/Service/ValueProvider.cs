@@ -53,7 +53,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 decimal? d = (decimal?)value;
                 int decimalPoints = GetDecimalPoints(mapper, modelProperty);
                 decimal rounded = decimal.Round(d.GetValueOrDefault(0), decimalPoints);
-                values.Add(PadDecimal(rounded, decimalPoints));
+                values.Add(rounded.ToString($"N{decimalPoints:D}"));
+                //values.Add(PadDecimal(rounded, decimalPoints));
                 return;
             }
 
