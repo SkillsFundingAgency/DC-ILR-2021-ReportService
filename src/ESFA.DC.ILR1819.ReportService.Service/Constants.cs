@@ -8,10 +8,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         // LearningDelivery FAM Codes
         public const string LearningDeliveryFAMCodeLSF = "LSF";
-        public const string LearningDeliveryFAMCodeLDM1 = "LDM1";
-        public const string LearningDeliveryFAMCodeLDM2 = "LDM2";
-        public const string LearningDeliveryFAMCodeLDM3 = "LDM3";
-        public const string LearningDeliveryFAMCodeLDM4 = "LDM4";
+        public const string LearningDeliveryFAMCodeLDM = "LDM";
         public const string LearningDeliveryFAMCodeRES = "RES";
         public const string LearningDeliveryFAMCodeACT = "ACT";
 

@@ -174,6 +174,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     LearningDeliveryPeriodisedValue[] payments = albLearningDelivery?.LearningDeliveryPeriodisedValues?.Where(IsPayment).ToArray();
                     LearningDeliveryPeriodisedValue albCode = albLearningDelivery?.LearningDeliveryPeriodisedValues?.SingleOrDefault(x =>
                         string.Equals(x.AttributeName, AlbCode, StringComparison.OrdinalIgnoreCase));
+                    var ldms = _stringUtilitiesService.GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, "LDM", StringComparison.OrdinalIgnoreCase)), 4);
 
                     string albBursaryFunding = string.Empty, albDateFrom = string.Empty, albDateTo = string.Empty;
                     if (alb != null && alb.Any())
@@ -217,14 +218,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         AlbBursaryFunding = albBursaryFunding,
                         AlbDateFrom = albDateFrom,
                         AlbDateTo = albDateTo,
-                        LearnDelMonA = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x =>
-                            string.Equals(x.LearnDelFAMType, "LDM1", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                        LearnDelMonB = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x =>
-                            string.Equals(x.LearnDelFAMType, "LDM2", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                        LearnDelMonC = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x =>
-                            string.Equals(x.LearnDelFAMType, "LDM3", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                        LearnDelMonD = learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x =>
-                            string.Equals(x.LearnDelFAMType, "LDM4", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
+                        LearnDelMonA = ldms[0],
+                        LearnDelMonB = ldms[1],
+                        LearnDelMonC = ldms[2],
+                        LearnDelMonD = ldms[3],
                         ProvSpecDelMonA = learningDelivery.ProviderSpecDeliveryMonitorings?.SingleOrDefault(x =>
                             string.Equals(x.ProvSpecDelMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
                         ProvSpecDelMonB = learningDelivery.ProviderSpecDeliveryMonitorings?.SingleOrDefault(x =>

@@ -18,11 +18,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         private readonly IList<IAppsIndicativeCommand> _commands;
         private readonly ITotalBuilder _totalBuilder;
+        private readonly IStringUtilitiesService _stringUtilitiesService;
 
-        public AppsIndicativeEarningsModelBuilder(IList<IAppsIndicativeCommand> commands, ITotalBuilder totalBuilder)
+        public AppsIndicativeEarningsModelBuilder(IList<IAppsIndicativeCommand> commands, ITotalBuilder totalBuilder, IStringUtilitiesService stringUtilitiesService)
         {
             _commands = commands;
             _totalBuilder = totalBuilder;
+            _stringUtilitiesService = stringUtilitiesService;
 
             _blankFam = new LearningDeliveryFamSimple(string.Empty, DateTime.MinValue, DateTime.MinValue);
         }
@@ -44,6 +46,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 learner.LearnerEmploymentStatuses?.SingleOrDefault(x => x.DateEmpStatApp == employmentStatusDate);
             LearningDeliveryFamSimple[] learningDeliveryFams = GetLearningDeliveryFams(learningDelivery);
             string fundingLineType = GetFundingType(fm36DeliveryAttribute?.LearningDeliveryValues, fm36EpisodeAttribute?.PriceEpisodeValues);
+            var ldms = _stringUtilitiesService.GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase)), 4);
 
             var model = new AppsIndicativeEarningsModel
             {
@@ -82,17 +85,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 OtherFundingAdjustment = learningDelivery.OtherFundAdjNullable,
                 LearningDeliveryFAMTypeLearningSupportFunding = learningDeliveryFams.Select(x => x.Code).Max(),
                 LearningDeliveryFAMTypeLSFDateAppliesFrom =
-                    learningDeliveryFams.Select(x => x.From).Min() == DateTime.MinValue ? $"" : learningDeliveryFams.Select(x => x.From).Min().ToString("dd/MM/yyyy"),
+                    learningDeliveryFams.Select(x => x.From).Min() == DateTime.MinValue ? string.Empty : learningDeliveryFams.Select(x => x.From).Min().ToString("dd/MM/yyyy"),
                 LearningDeliveryFAMTypeLSFDateAppliesTo =
-                learningDeliveryFams.Select(x => x.To).Max() == DateTime.MinValue ? $"" : learningDeliveryFams.Select(x => x.To).Max().ToString("dd/MM/yyyy"),
-            LearningDeliveryFAMTypeLearningDeliveryMonitoringA = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM1, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringB = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM2, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringC = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM3, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringD = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM4, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
+                learningDeliveryFams.Select(x => x.To).Max() == DateTime.MinValue ? string.Empty : learningDeliveryFams.Select(x => x.To).Max().ToString("dd/MM/yyyy"),
+            LearningDeliveryFAMTypeLearningDeliveryMonitoringA = ldms[0],
+                LearningDeliveryFAMTypeLearningDeliveryMonitoringB = ldms[1],
+                LearningDeliveryFAMTypeLearningDeliveryMonitoringC = ldms[2],
+                LearningDeliveryFAMTypeLearningDeliveryMonitoringD = ldms[3],
                 LearningDeliveryFAMRestartIndicator = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeRES, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 ProviderSpecifiedDeliveryMonitoringA = learner.ProviderSpecLearnerMonitorings

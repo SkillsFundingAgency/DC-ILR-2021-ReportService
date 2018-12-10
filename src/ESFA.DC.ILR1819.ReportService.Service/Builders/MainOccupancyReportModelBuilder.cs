@@ -18,7 +18,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
             LearningDelivery frameworkAim,
-            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data)
+            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data,
+            IStringUtilitiesService stringUtilitiesService)
         {
             var onProgPayment = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35OnProgrammeAttributeName, StringComparison.OrdinalIgnoreCase));
@@ -30,7 +31,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, StringComparison.OrdinalIgnoreCase));
             var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedValues
                 ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35LearningSupportAttributeName, StringComparison.OrdinalIgnoreCase));
-            var ldms = GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, "LDM", StringComparison.OrdinalIgnoreCase)), 4);
+            var ldms = stringUtilitiesService.GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, "LDM", StringComparison.OrdinalIgnoreCase)), 4);
 
             var totalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
                                      (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) +
@@ -359,27 +360,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             }
 
             return max;
-        }
-
-        private string[] GetArrayEntries(IEnumerable<ILearningDeliveryFAM> availableValues, int size)
-        {
-            if (size < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(size), $"{nameof(size)} should be greater than 0");
-            }
-
-            string[] values = new string[size];
-            int pointer = 0;
-            foreach (ILearningDeliveryFAM learningDeliveryFam in availableValues)
-            {
-                values[pointer++] = learningDeliveryFam.LearnDelFAMCode;
-                if (pointer == size)
-                {
-                    break;
-                }
-            }
-
-            return values;
         }
     }
 }

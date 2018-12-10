@@ -73,7 +73,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 new AppsIndicativeAugustCommand()
             };
 
-            AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands, totalBuilder);
+            AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands, totalBuilder, stringUtilitiesService);
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($"{ilr}.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);

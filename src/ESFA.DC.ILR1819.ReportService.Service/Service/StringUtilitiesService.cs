@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -60,6 +61,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return dateTime.Value.ToString("dd/MM/yyyy");
+        }
+
+        public string[] GetArrayEntries(IEnumerable<ILearningDeliveryFAM> availableValues, int size)
+        {
+            if (size < 1)
+            {
+                throw new ArgumentOutOfRangeException(nameof(size), $"{nameof(size)} should be greater than 0");
+            }
+
+            string[] values = new string[size];
+            int pointer = 0;
+            foreach (ILearningDeliveryFAM learningDeliveryFam in availableValues)
+            {
+                values[pointer++] = learningDeliveryFam.LearnDelFAMCode;
+                if (pointer == size)
+                {
+                    break;
+                }
+            }
+
+            return values;
         }
     }
 }
