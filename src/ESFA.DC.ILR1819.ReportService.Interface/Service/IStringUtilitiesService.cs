@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ESFA.DC.ILR.Model.Interface;
 
 namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
@@ -12,5 +13,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
         int TryGetInt(string value, int def);
 
         string GetDateTimeAsString(DateTime? dateTime, string def, DateTime? replace = null);
+
+        string[] GetArrayEntries(IEnumerable<ILearningDeliveryFAM> availableValues, int size);
     }
 }

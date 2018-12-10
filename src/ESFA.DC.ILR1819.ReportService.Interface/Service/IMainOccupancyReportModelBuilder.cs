@@ -12,7 +12,8 @@
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
             LearningDelivery frameworkAim,
-            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data);
+            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data,
+            IStringUtilitiesService stringUtilitiesService);
 
         MainOccupancyModel BuildFm25Model(
             ILearner learner,

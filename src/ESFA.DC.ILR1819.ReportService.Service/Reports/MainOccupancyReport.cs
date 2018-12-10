@@ -158,7 +158,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                                 learningDelivery,
                                 larsModel,
                                 frameworkAim,
-                                learnerFm35Data));
+                                learnerFm35Data,
+                                _stringUtilitiesService));
                         }
                     }
 
