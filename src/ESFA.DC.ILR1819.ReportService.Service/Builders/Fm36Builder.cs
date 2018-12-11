@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             _cacheProviderService = cacheProviderService;
         }
 
-        public FundingSummaryModel BuildWithFundLine(string title, FM36Global fm36Global, List<string> validLearners, string[] fundLines, string[] attributes)
+        public FundingSummaryModel BuildWithFundLine(string title, FM36Global fm36Global, List<string> validLearners, string[] fundLines, string[] attributes, int period)
         {
             FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
 
@@ -61,47 +61,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 fundingSummaryModel.Period9 + fundingSummaryModel.Period10 + fundingSummaryModel.Period11 +
                 fundingSummaryModel.Period12;
 
-            // fundingSummaryModel.YearToDate = GetYearToDate(fundingSummaryModel, period); // todo: pass period
+            fundingSummaryModel.YearToDate = GetYearToDate(fundingSummaryModel, period);
             fundingSummaryModel.Total = GetYearToDate(fundingSummaryModel, 12);
-
-            //foreach (LearningDelivery learningDelivery in learningDeliveries)
-            //{
-            //    foreach (LearningDeliveryPeriodisedValues learningDeliveryPeriodisedValue in learningDelivery.LearningDeliveryPeriodisedValues)
-            //    {
-            //        if (attributes.Contains(learningDeliveryPeriodisedValue.AttributeName))
-            //        {
-            //            fundingSummaryModel.Period1 = _totalBuilder.Total(fundingSummaryModel.Period1, learningDeliveryPeriodisedValue.Period1);
-            //            fundingSummaryModel.Period2 = _totalBuilder.Total(fundingSummaryModel.Period2, learningDeliveryPeriodisedValue.Period2);
-            //            fundingSummaryModel.Period3 = _totalBuilder.Total(fundingSummaryModel.Period3, learningDeliveryPeriodisedValue.Period3);
-            //            fundingSummaryModel.Period4 = _totalBuilder.Total(fundingSummaryModel.Period4, learningDeliveryPeriodisedValue.Period4);
-            //            fundingSummaryModel.Period5 = _totalBuilder.Total(fundingSummaryModel.Period5, learningDeliveryPeriodisedValue.Period5);
-            //            fundingSummaryModel.Period6 = _totalBuilder.Total(fundingSummaryModel.Period6, learningDeliveryPeriodisedValue.Period6);
-            //            fundingSummaryModel.Period7 = _totalBuilder.Total(fundingSummaryModel.Period7, learningDeliveryPeriodisedValue.Period7);
-            //            fundingSummaryModel.Period8 = _totalBuilder.Total(fundingSummaryModel.Period8, learningDeliveryPeriodisedValue.Period8);
-            //            fundingSummaryModel.Period9 = _totalBuilder.Total(fundingSummaryModel.Period9, learningDeliveryPeriodisedValue.Period9);
-            //            fundingSummaryModel.Period10 = _totalBuilder.Total(fundingSummaryModel.Period10, learningDeliveryPeriodisedValue.Period10);
-            //            fundingSummaryModel.Period11 = _totalBuilder.Total(fundingSummaryModel.Period11, learningDeliveryPeriodisedValue.Period11);
-            //            fundingSummaryModel.Period12 = _totalBuilder.Total(fundingSummaryModel.Period12, learningDeliveryPeriodisedValue.Period12);
-
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period1);
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period2);
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period3);
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period4);
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period5);
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period6);
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period7);
-            //            fundingSummaryModel.Period1_8 = _totalBuilder.Total(fundingSummaryModel.Period1_8, learningDeliveryPeriodisedValue.Period8);
-
-            //            fundingSummaryModel.Period9_12 = _totalBuilder.Total(fundingSummaryModel.Period9_12, learningDeliveryPeriodisedValue.Period9);
-            //            fundingSummaryModel.Period9_12 = _totalBuilder.Total(fundingSummaryModel.Period9_12, learningDeliveryPeriodisedValue.Period10);
-            //            fundingSummaryModel.Period9_12 = _totalBuilder.Total(fundingSummaryModel.Period9_12, learningDeliveryPeriodisedValue.Period11);
-            //            fundingSummaryModel.Period9_12 = _totalBuilder.Total(fundingSummaryModel.Period9_12, learningDeliveryPeriodisedValue.Period12);
-
-            //            fundingSummaryModel.Total = _totalBuilder.Total(fundingSummaryModel.Total, fundingSummaryModel.Period1_8);
-            //            fundingSummaryModel.Total = _totalBuilder.Total(fundingSummaryModel.Total, fundingSummaryModel.Period9_12);
-            //        }
-            //    }
-            //}
 
             return fundingSummaryModel;
         }

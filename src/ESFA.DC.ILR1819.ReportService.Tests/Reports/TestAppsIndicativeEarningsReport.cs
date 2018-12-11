@@ -12,6 +12,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
+using ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -51,6 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             reportServiceContextMock.SetupGet(x => x.Filename).Returns(ilr);
             reportServiceContextMock.SetupGet(x => x.FundingFM36OutputKey).Returns("FundingFm36Output");
             reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
+            reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
@@ -66,7 +68,10 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             ITotalBuilder totalBuilder = new TotalBuilder();
 
-            List<IAppsIndicativeCommand> commands = new List<IAppsIndicativeCommand>();
+            List<IAppsIndicativeCommand> commands = new List<IAppsIndicativeCommand>()
+            {
+                new AppsIndicativeAugustCommand()
+            };
 
             AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands, totalBuilder, stringUtilitiesService);
 
@@ -92,9 +97,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     "Cfm3501",
                     "Dfm3501",
                     "Efm3501",
-                    "0fm3601"
+                    "0fm3601",
+                    "0DOB52"
                 }));
             redis.Setup(x => x.ContainsAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.ContainsAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.ContainsAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);

@@ -242,8 +242,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 .DefaultIfEmpty(DateTime.MinValue)
                 .Min();
 
-            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom.ToString("dd/MM/yyyy");
-            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo.ToString("dd/MM/yyyy");
+            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom == DateTime.MinValue ? $"" : contractAppliesFrom.ToString("dd/MM/yyyy");
+            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo == DateTime.MinValue ? $"" : contractAppliesTo.ToString("dd/MM/yyyy");
 
             model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x =>
                                       x.LearnDelFAMDateFromNullable == contractAppliesFrom &&

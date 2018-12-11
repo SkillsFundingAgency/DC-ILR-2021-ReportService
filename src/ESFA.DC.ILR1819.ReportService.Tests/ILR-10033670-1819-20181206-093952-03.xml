@@ -1570,6 +1570,91 @@
       </LearningDeliveryFAM>
     </LearningDelivery>
   </Learner>
+  <Learner>
+    <LearnRefNumber>0DOB52</LearnRefNumber>
+    <ULN>9900001701</ULN>
+    <FamilyName>Sméth</FamilyName>
+    <GivenNames>Mary Jane</GivenNames>
+    <DateOfBirth>1998-10-14</DateOfBirth>
+    <Ethnicity>31</Ethnicity>
+    <Sex>M</Sex>
+    <LLDDHealthProb>2</LLDDHealthProb>
+    <NINumber>LJ000000A</NINumber>
+    <PriorAttain>2</PriorAttain>
+    <PlanLearnHours>90</PlanLearnHours>
+    <PlanEEPHours>1</PlanEEPHours>
+    <PostcodePrior>ZZ99 9ZZ</PostcodePrior>
+    <Postcode>ZZ99 9ZZ</Postcode>
+    <AddLine1>18 Address line road</AddLine1>
+    <TelNo>07855555555</TelNo>
+    <Email>myemail@myemail.com</Email>
+    <LearnerEmploymentStatus>
+      <EmpStat>10</EmpStat>
+      <DateEmpStatApp>2017-06-10</DateEmpStatApp>
+      <EmpId>154549452</EmpId>
+      <EmploymentStatusMonitoring>
+        <ESMType>EII</ESMType>
+        <ESMCode>4</ESMCode>
+      </EmploymentStatusMonitoring>
+      <EmploymentStatusMonitoring>
+        <ESMType>LOE</ESMType>
+        <ESMCode>4</ESMCode>
+      </EmploymentStatusMonitoring>
+    </LearnerEmploymentStatus>
+    <LearningDelivery>
+      <LearnAimRef>ZPROG001</LearnAimRef>
+      <AimType>1</AimType>
+      <AimSeqNumber>1</AimSeqNumber>
+      <LearnStartDate>2017-10-14</LearnStartDate>
+      <LearnPlanEndDate>2019-07-31</LearnPlanEndDate>
+      <FundModel>36</FundModel>
+      <ProgType>2</ProgType>
+      <FworkCode>420</FworkCode>
+      <PwayCode>1</PwayCode>
+      <DelLocPostCode>ZZ99 9ZZ</DelLocPostCode>
+      <CompStatus>1</CompStatus>
+      <LearningDeliveryFAM>
+        <LearnDelFAMType>ACT</LearnDelFAMType>
+        <LearnDelFAMCode>1</LearnDelFAMCode>
+        <LearnDelFAMDateFrom>2017-10-14</LearnDelFAMDateFrom>
+      </LearningDeliveryFAM>
+      <LearningDeliveryFAM>
+        <LearnDelFAMType>SOF</LearnDelFAMType>
+        <LearnDelFAMCode>105</LearnDelFAMCode>
+      </LearningDeliveryFAM>
+      <LearningDeliveryFAM>
+        <LearnDelFAMType>HHS</LearnDelFAMType>
+        <LearnDelFAMCode>1</LearnDelFAMCode>
+      </LearningDeliveryFAM>
+      <AppFinRecord>
+        <AFinType>TNP</AFinType>
+        <AFinCode>1</AFinCode>
+        <AFinDate>2017-10-14</AFinDate>
+        <AFinAmount>1200</AFinAmount>
+      </AppFinRecord>
+    </LearningDelivery>
+    <LearningDelivery>
+      <LearnAimRef>50104767</LearnAimRef>
+      <AimType>3</AimType>
+      <AimSeqNumber>2</AimSeqNumber>
+      <LearnStartDate>2017-10-14</LearnStartDate>
+      <LearnPlanEndDate>2019-07-31</LearnPlanEndDate>
+      <FundModel>36</FundModel>
+      <ProgType>2</ProgType>
+      <FworkCode>420</FworkCode>
+      <PwayCode>1</PwayCode>
+      <DelLocPostCode>ZZ99 9ZZ</DelLocPostCode>
+      <CompStatus>1</CompStatus>
+      <LearningDeliveryFAM>
+        <LearnDelFAMType>SOF</LearnDelFAMType>
+        <LearnDelFAMCode>105</LearnDelFAMCode>
+      </LearningDeliveryFAM>
+      <LearningDeliveryFAM>
+        <LearnDelFAMType>HHS</LearnDelFAMType>
+        <LearnDelFAMCode>1</LearnDelFAMCode>
+      </LearningDeliveryFAM>
+    </LearningDelivery>
+  </Learner>
   <LearnerDestinationandProgression>
     <LearnRefNumber>Cfm3501</LearnRefNumber>
     <ULN>9900001302</ULN>

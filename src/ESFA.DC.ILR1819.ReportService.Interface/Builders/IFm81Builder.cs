@@ -11,6 +11,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
             FM81Global fm81Global,
             List<string> validLearners,
             string fundLine,
-            string[] attributes);
+            string[] attributes,
+            int period);
     }
 }

@@ -122,11 +122,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             foreach (ILearner learner in learners)
             {
-                LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => string.Equals(x.Key, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase)).Value;
                 FM36Learner fm36Learner = fm36Data?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
+                    if (learningDelivery.FundModel != 36)
+                    {
+                        continue;
+                    }
+
                     string larsStandard = null;
                     if (learningDelivery.StdCodeNullable != null)
                     {
@@ -134,6 +138,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                             learningDelivery.StdCodeNullable.Value,
                             cancellationToken);
                     }
+
+                    LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => string.Equals(x.Key, learningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)).Value;
 
                     LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries
                         ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
