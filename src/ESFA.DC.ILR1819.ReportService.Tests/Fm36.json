@@ -1682,7 +1682,7 @@
 		"PriceEpisodes": [{
 			"PriceEpisodeIdentifier": "2-420-1-14/10/2017",
 			"PriceEpisodeValues": {
-				"EpisodeStartDate": "2017-10-14T00:00:00+01:00",
+				"EpisodeStartDate": "2018-10-14T00:00:00+01:00",
 				"TNP1": 0.0,
 				"TNP2": 0.0,
 				"TNP3": 0.0,
@@ -1708,7 +1708,7 @@
 				"PriceEpisodeRemainingAmountWithinUpperLimit": null,
 				"PriceEpisodeCappedRemainingTNPAmount": null,
 				"PriceEpisodeExpectedTotalMonthlyValue": null,
-				"PriceEpisodeAimSeqNumber": 1,
+				"PriceEpisodeAimSeqNumber": 2,
 				"PriceEpisodeFirstDisadvantagePayment": null,
 				"PriceEpisodeSecondDisadvantagePayment": null,
 				"PriceEpisodeApplic1618FrameworkUpliftBalancing": 0.0,
