@@ -383,6 +383,7 @@
     <Compile Include="Reports\AppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\DataMatchReport.cs" />
     <Compile Include="Reports\AdultFundingClaimReport.cs" />
+    <Compile Include="Reports\FundingClaim1619Report.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
     <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\SummaryOfFunding1619Report.cs" />
