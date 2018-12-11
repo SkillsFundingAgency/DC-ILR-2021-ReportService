@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 
@@ -72,7 +73,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             string[] values = new string[size];
             int pointer = 0;
-            foreach (ILearningDeliveryFAM learningDeliveryFam in availableValues)
+            foreach (ILearningDeliveryFAM learningDeliveryFam in availableValues ?? Enumerable.Empty<ILearningDeliveryFAM>())
             {
                 values[pointer++] = learningDeliveryFam.LearnDelFAMCode;
                 if (pointer == size)
