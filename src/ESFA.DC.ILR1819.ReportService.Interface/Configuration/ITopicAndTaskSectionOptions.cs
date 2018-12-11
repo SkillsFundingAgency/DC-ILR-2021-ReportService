@@ -35,5 +35,7 @@
         string TopicReports_TaskGenerateDataMatchReport { get; set; }
 
         string TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport { get; set; }
+
+        string TopicReports_TaskGenerateFundingClaim1619Report { get; set; }
     }
 }

@@ -22,6 +22,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
+using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Model.Styling;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
@@ -146,7 +147,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
             Task<int> periodTask = _periodProviderService.GetPeriod(reportServiceContext, cancellationToken);
-            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
+            Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             Task<List<EasSubmissionValues>> easSubmissionsValuesTask = null;
             if (!isFis)
@@ -154,7 +155,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 easSubmissionsValuesTask = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
             }
 
-            await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, periodTask, easSubmissionsValuesTask);
+            await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, periodTask, easSubmissionsValuesTask ?? Task.CompletedTask, lastSubmittedIlrFileTask);
 
             if (cancellationToken.IsCancellationRequested)
             {
