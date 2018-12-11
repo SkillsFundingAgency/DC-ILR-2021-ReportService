@@ -89,7 +89,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     ALBGlobal albGlobal = new ALBGlobal();
                     using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                     {
-                        var albGlobalDb = await ilrContext.FM35_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
+                        var albGlobalDb = await ilrContext.ALB_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                         using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
                         {
                             ALB_LearningDelivery[] res = await ilrContext.ALB_LearningDelivery
@@ -147,11 +147,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         if (albGlobalDb != null)
                         {
                             albGlobal.LARSVersion = albGlobalDb.LARSVersion;
-                            albGlobal.PostcodeAreaCostVersion = albGlobalDb.PostcodeDisadvantageVersion;
+                            albGlobal.PostcodeAreaCostVersion = albGlobalDb.PostcodeAreaCostVersion;
                             albGlobal.RulebaseVersion = albGlobalDb.RulebaseVersion;
-                            albGlobalDb.OrgVersion = albGlobalDb.OrgVersion;
-                            albGlobalDb.CurFundYr = albGlobalDb.CurFundYr;
-                            albGlobalDb.FM35_LearningDelivery = albGlobalDb.FM35_LearningDelivery;
                             albGlobal.UKPRN = albGlobalDb.UKPRN;
                         }
                     }
