@@ -126,6 +126,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
+                    if (learningDelivery.FundModel != 36)
+                    {
+                        continue;
+                    }
+
                     string larsStandard = null;
                     if (learningDelivery.StdCodeNullable != null)
                     {
