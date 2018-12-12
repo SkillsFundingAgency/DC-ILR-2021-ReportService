@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.ProgType).Index(18).Name("Programme type");
             Map(m => m.FworkCode).Index(19).Name("Framework code");
             Map(m => m.PwayCode).Index(20).Name("Apprenticeship pathway");
-            Map(m => m.AimType).Index(21).Name("Aim type");
+            Map(m => m.AimType).Index(21).Name("Aim type").TypeConverterOption.NullValues("0");
             Map(m => m.FrameworkComponentType).Index(22).Name("Framework component type code");
             Map(m => m.FundModel).Index(23).Name("Funding model");
             Map(m => m.PriorLearnFundAdj).Index(24).Name("Funding adjustment for prior learning");
