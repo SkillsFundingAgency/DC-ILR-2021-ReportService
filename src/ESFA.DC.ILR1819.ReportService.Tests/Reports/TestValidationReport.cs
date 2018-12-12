@@ -138,12 +138,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         {
             List<ValidationErrorModel> validationErrorModels = new EditableList<ValidationErrorModel>
             {
-                new ValidationErrorModel("W", "0R99", "AFinType_13", "...", "...", 2),
-                new ValidationErrorModel("W", "3AddHr06", "AddHours_02", "...", "...", 1),
-                new ValidationErrorModel("W", "1R99", "UKPRN_10", "...", "...", 3),
-                new ValidationErrorModel("E", "0AddHr05", "AddHours_06", "...", "...", 5),
-                new ValidationErrorModel("E", "0AddHr06", "AddHours_05", "...", "...", 4),
-                new ValidationErrorModel("E", "0AddHr07", "EmpStat_12", "...", "...", 6),
+                new ValidationErrorModel("E", "0R99", "AFinType_13", "...", "...", 2),
+                new ValidationErrorModel("E", "3AddHr06", "AddHours_02", "...", "...", 1),
+                new ValidationErrorModel("E", "1R99", "UKPRN_10", "...", "...", 3),
+                new ValidationErrorModel("W", "0AddHr05", "AddHours_06", "...", "...", 5),
+                new ValidationErrorModel("W", "0AddHr06", "AddHours_05", "...", "...", 4),
+                new ValidationErrorModel("W", "0AddHr07", "EmpStat_12", "...", "...", 6),
             };
 
             validationErrorModels.Sort(new ValidationErrorsModelComparer());
