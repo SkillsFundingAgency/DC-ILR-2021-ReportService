@@ -37,7 +37,7 @@
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- Org -->
-    <Parameter Name="OrgConnectionString" Value="__OrganisationConnectionString__" />
+    <Parameter Name="OrgConnectionString" Value="__OrganisationsDbConnectionStringReadOnly__" />
     <!-- DAS Commitments -->
     <Parameter Name="DasCommitmentsConnectionString" Value="__DasCommitmentConnectionStringRO__" />
     <!-- EAS -->
