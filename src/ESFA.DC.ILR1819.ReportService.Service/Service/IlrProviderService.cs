@@ -70,7 +70,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 string filename = reportServiceContext.Filename;
                 int ukPrn = reportServiceContext.Ukprn;
-                if (await _storage.ContainsAsync(filename, cancellationToken))
+                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     using (MemoryStream ms = new MemoryStream())
                     {
