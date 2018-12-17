@@ -30,12 +30,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
 
             if (IsError(x) && !IsError(y))
             {
-                return 1;
+                return -1;
             }
 
             if (!IsError(x) && IsError(y))
             {
-                return -1;
+                return 1;
             }
 
             return string.Compare(x.RuleName, y.RuleName, StringComparison.OrdinalIgnoreCase);

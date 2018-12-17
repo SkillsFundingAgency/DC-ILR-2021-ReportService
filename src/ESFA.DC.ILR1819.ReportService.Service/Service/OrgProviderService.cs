@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Data.Organisatons.Model;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.ReferenceData.Organisations.Model;
+using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
@@ -52,9 +52,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _loadedDataAlready = true;
                 string ukPrnStr = reportServiceContext.Ukprn.ToString();
                 long ukPrn = Convert.ToInt64(ukPrnStr);
-                Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
-                _loadedData = organisations.Org_Details.Where(x => x.UKPRN == ukPrn).Select(x => x.Name).SingleOrDefault();
-                _version = (await organisations.Current_Version.SingleAsync(cancellationToken)).CurrentVersion;
+                DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_orgConfiguration.OrgConnectionString).Options;
+                using (OrganisationsContext organisations = new OrganisationsContext(options))
+                {
+                    _loadedData = organisations.OrgDetails.Where(x => x.Ukprn == ukPrn).Select(x => x.Name)
+                        .SingleOrDefault();
+                    await GetVersion(organisations, cancellationToken);
+                }
             }
             catch (Exception ex)
             {
@@ -81,8 +85,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 if (string.IsNullOrEmpty(_version))
                 {
-                    Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
-                    _version = (await organisations.Current_Version.SingleAsync(cancellationToken)).CurrentVersion;
+                    DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_orgConfiguration.OrgConnectionString).Options;
+                    using (OrganisationsContext organisations = new OrganisationsContext(options))
+                    {
+                        await GetVersion(organisations, cancellationToken);
+                    }
                 }
             }
             catch (Exception ex)
