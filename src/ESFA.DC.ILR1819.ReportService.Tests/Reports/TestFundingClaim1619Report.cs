@@ -75,9 +75,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             redis.Setup(x => x.GetAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {
-                    "0fm2501"/*,
+                    "0fm2501",
                     "3fm9901",
-                    "5fm9901"*/
+                    "5fm9901"
                 }));
             redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm25.json"));
             redis.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);

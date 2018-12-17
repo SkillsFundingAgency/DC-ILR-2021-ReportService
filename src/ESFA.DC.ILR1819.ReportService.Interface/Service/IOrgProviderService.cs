@@ -9,5 +9,7 @@ namespace ESFA.DC.ILR1819.ReportService.Interface.Service
         Task<string> GetProviderName(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
 
         Task<string> GetVersionAsync(CancellationToken cancellationToken);
+
+        Task<decimal?> GetCofRemoval(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
     }
 }
