@@ -116,9 +116,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM25Global> fm25DataTask = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
+            Task<decimal?> cofRemovalTask = _orgProviderService.GetCofRemoval(reportServiceContext, cancellationToken);
             Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
-            await Task.WhenAll(ilrFileTask, fm25DataTask, providerNameTask, lastSubmittedIlrFileTask);
+            await Task.WhenAll(ilrFileTask, fm25DataTask, providerNameTask, cofRemovalTask, lastSubmittedIlrFileTask);
 
             FundingClaim1619HeaderModel fundingSummaryHeaderModel = await GetHeaderAsync(reportServiceContext, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
             FundingClaim1619FooterModel fundingSummaryFooterModel = await GetFooterAsync(ilrFileTask, lastSubmittedIlrFileTask, cancellationToken);
@@ -169,7 +170,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             //FundingClaim1619Model subTotal = TotalFundLineAndBandRateData(ref fundLineAndRateBandData);
 
             // Todo: Get the 1819 Condition of Funding Removal
-
             // probably don't need this as this will be calculated automatically through the template
             //FundingClaim1619Model total = new FundingClaim1619Model
             //{
@@ -191,7 +191,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("1619FundingClaimReportTemplate.xlsx"));
             var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
             Workbook workbook = new Workbook(manifestResourceStream);
-            PopulateWorkbook(workbook, fundLineAndRateBandData);
+            Worksheet worksheet = workbook.Worksheets[0];
+            Cells cells = worksheet.Cells;
+            PopulateAllocationValues(cells, fundingClaim1619FundingFactorModel);
+            PopulateMainData(cells, fundLineAndRateBandData);
+            PopulateCofRemoval(cells, cofRemovalTask.Result);
             using (MemoryStream ms = new MemoryStream())
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
@@ -200,23 +204,159 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private void PopulateWorkbook(Workbook workbook, Dictionary<string, List<FundingClaim1619Model>> fundingClaimModels)
+        private void PopulateCofRemoval(Cells cells, decimal? cofRemoval)
         {
-            Worksheet worksheet = workbook.Worksheets[0];
-            Cells cells = worksheet.Cells;
+            // populating cof removal
+            cells["E45"].PutValue(cofRemoval);
+        }
 
+        private void PopulateAllocationValues(Cells cells, FundingClaim1619FundingFactorModel fundingClaimFactorModel)
+        {
+            // populating allocation values
+            cells["C1"].PutValue(fundingClaimFactorModel.PrvRetentFactHist);
+            cells["C2"].PutValue(fundingClaimFactorModel.ProgWeightHist);
+            cells["C3"].PutValue(fundingClaimFactorModel.AreaCostFact1618Hist);
+            cells["C4"].PutValue(fundingClaimFactorModel.PrvDisadvPropnHist);
+            cells["C5"].PutValue(fundingClaimFactorModel.PrvHistLrgProgPropn);
+        }
+
+        private void PopulateMainData(Cells cells, Dictionary<string, List<FundingClaim1619Model>> fundingClaimModels)
+        {
             foreach (var model in fundingClaimModels)
             {
-                if (string.Equals(model.Key, "16-19 Students (including High Needs Students)", StringComparison.OrdinalIgnoreCase))
+                foreach (var singleClaim1619Model in model.Value)
                 {
-                    foreach (var singleClaim1619Model in model.Value)
-                    {
-                        if (string.Equals(singleClaim1619Model.Title, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
-                        {
-                            cells["D22"].PutValue(singleClaim1619Model.StudentNumber);
-                            cells["E22"].PutValue(singleClaim1619Model.TotalFunding);
-                        }
-                    }
+                    PopulateStudentNumberAndTotalFundingCells(cells, model.Key, singleClaim1619Model.Title, singleClaim1619Model.StudentNumber, singleClaim1619Model.TotalFunding);
+                }
+            }
+        }
+
+        private void PopulateStudentNumberAndTotalFundingCells(Cells cells, string fundline, string band, int studentNumber, decimal? totalFunding)
+        {
+            if (string.Equals(fundline, "14-16 Direct Funded Students", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D8"].PutValue(studentNumber);
+                }
+                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D9"].PutValue(studentNumber);
+                }
+                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D10"].PutValue(studentNumber);
+                }
+                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D11"].PutValue(studentNumber);
+                }
+                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D12"].PutValue(studentNumber);
+                }
+                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D13"].PutValue(studentNumber);
+                }
+            }
+            else if (string.Equals(fundline, "16-19 Students (including High Needs Students)", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D17"].PutValue(studentNumber);
+                    cells["E17"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D18"].PutValue(studentNumber);
+                    cells["E18"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D19"].PutValue(studentNumber);
+                    cells["E19"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D20"].PutValue(studentNumber);
+                    cells["E20"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D21"].PutValue(studentNumber);
+                    cells["E21"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D22"].PutValue(studentNumber);
+                    cells["E22"].PutValue(totalFunding);
+                }
+            }
+            else if (string.Equals(fundline, "19-24 Students with an EHC plan", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D26"].PutValue(studentNumber);
+                    cells["E26"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D27"].PutValue(studentNumber);
+                    cells["E27"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D28"].PutValue(studentNumber);
+                    cells["E28"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D29"].PutValue(studentNumber);
+                    cells["E29"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D30"].PutValue(studentNumber);
+                    cells["E30"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D31"].PutValue(studentNumber);
+                    cells["E31"].PutValue(totalFunding);
+                }
+            }
+            else if (string.Equals(fundline, "19+ Continuing Students (excluding EHC plans)", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D35"].PutValue(studentNumber);
+                    cells["E35"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D36"].PutValue(studentNumber);
+                    cells["E36"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D37"].PutValue(studentNumber);
+                    cells["E37"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D38"].PutValue(studentNumber);
+                    cells["E38"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D39"].PutValue(studentNumber);
+                    cells["E39"].PutValue(totalFunding);
+                }
+                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
+                {
+                    cells["D40"].PutValue(studentNumber);
+                    cells["E40"].PutValue(totalFunding);
                 }
             }
         }

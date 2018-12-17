@@ -25,6 +25,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private string _version;
 
+        private decimal? _cofRemoval;
+
         public OrgProviderService(ILogger logger, OrgConfiguration orgConfiguration)
         {
             _logger = logger;
@@ -93,6 +95,40 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _version;
+        }
+
+        public async Task<decimal?> GetCofRemoval(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        {
+            await _getDataLock.WaitAsync(cancellationToken);
+
+            try
+            {
+                if (_loadedDataAlready)
+                {
+                    return _cofRemoval;
+                }
+
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
+                _loadedDataAlready = true;
+                string ukPrnStr = reportServiceContext.Ukprn.ToString();
+                long ukPrn = Convert.ToInt64(ukPrnStr);
+                Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
+                _cofRemoval = null; // organisations.Org_Funding.Where(x => x.UKPRN == ukPrn).Select(x => x.).SingleOrDefault();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get org provider name", ex);
+            }
+            finally
+            {
+                _getDataLock.Release();
+            }
+
+            return _cofRemoval;
         }
     }
 }
