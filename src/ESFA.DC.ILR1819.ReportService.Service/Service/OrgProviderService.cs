@@ -123,8 +123,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _loadedDataAlready = true;
                 string ukPrnStr = reportServiceContext.Ukprn.ToString();
                 long ukPrn = Convert.ToInt64(ukPrnStr);
-                Organisations organisations = new Organisations(_orgConfiguration.OrgConnectionString);
-                _cofRemoval = null; // organisations.Org_Funding.Where(x => x.UKPRN == ukPrn).Select(x => x.).SingleOrDefault();
+                DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_orgConfiguration.OrgConnectionString).Options;
+                using (OrganisationsContext organisations = new OrganisationsContext(options))
+                {
+                    _cofRemoval = organisations.ConditionOfFundingRemovals.Where(x => x.Ukprn == ukPrn).OrderByDescending(x => x.EffectiveFrom).Select(x => x.CoFremoval).SingleOrDefault();
+                }
             }
             catch (Exception ex)
             {
@@ -136,6 +139,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _cofRemoval;
+        }
+
+        private async Task GetVersion(OrganisationsContext organisations, CancellationToken cancellationToken)
+        {
+            string version = "Unknown";
+            OrgVersion versionObj = await organisations.OrgVersions.OrderByDescending(x => x.CreatedOn)
+                .FirstOrDefaultAsync(cancellationToken);
+            if (versionObj != null)
+            {
+                version = $"{versionObj.MajorNumber}.{versionObj.MinorNumber}.{versionObj.MaintenanceNumber}";
+            }
+
+            _version = version;
         }
     }
 }

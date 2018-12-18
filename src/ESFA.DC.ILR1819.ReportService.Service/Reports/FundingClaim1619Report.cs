@@ -23,44 +23,42 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class FundingClaim1619Report : AbstractReportBuilder, IReport
     {
-        private const string RetentionFactorCellName = "C1";
-        private const string ProgrammeCostWeightingCellName = "C2";
-        private const string AreaCostAllowanceCellName = "C3";
-        private const string DisAdvProportionCellName = "C4";
-        private const string LargeProgrammeProportion = "C5";
+        private const string RetentionFactorCellName = "D3";
+        private const string ProgrammeCostWeightingCellName = "D4";
+        private const string AreaCostAllowanceCellName = "D5";
+        private const string DisAdvProportionCellName = "D6";
+        private const string LargeProgrammeProportionCellName = "D7";
 
-        private const string DirectFunded1416Band5StudentNumbersCellName = "D8";
-        private const string DirectFunded1416Band4aStudentNumbersCellName = "D9";
-        private const string DirectFunded1416Band4bStudentNumbersCellName = "D10";
-        private const string DirectFunded1416Band3StudentNumbersCellName = "D11";
-        private const string DirectFunded1416Band4StudentNumbersCellName = "D12";
-        private const string DirectFunded1416Band1StudentNumbersCellName = "D13";
-        private const string DirectFunded1416StudentNumbersSubTotal = "D14";
-        private const string DirectFunded1416TotalFundingSubTotal = "E14";
+        private List<Tuple<string, string, string, string>> CellPositions = new List<Tuple<string, string, string, string>>()
+        {
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "540+ hours (Band 5)", "E10", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450+ hours (Band 4a)", "E11", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450 to 539 hours (Band 4b)", "E12", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "360 to 449 hours (Band 3)", "E13", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "280 to 359 hours (Band 2)", "E14", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "Up to 279 hours (Band 1)", "E15", string.Empty),
 
-        private const string EHCPlan1924Band5StudentNumbersCellName = "D26";
-        private const string EHCPlan1924Band4aStudentNumbersCellName = "D27";
-        private const string EHCPlan1924Band4bStudentNumbersCellName = "D28";
-        private const string EHCPlan1924Band3StudentNumbersCellName = "D29";
-        private const string EHCPlan1924Band4StudentNumbersCellName = "D30";
-        private const string EHCPlan1924Band1StudentNumbersCellName = "D31";
-        private const string EHCPlan1924StudentNumbersSubTotal = "D32";
-        private const string EHCPlan1924TotalFundingSubTotal = "E32";
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "540+ hours (Band 5)", "E19", "F19"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450+ hours (Band 4a)", "E20", "F20"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450 to 539 hours (Band 4b)", "E21", "F21"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "360 to 449 hours (Band 3)", "E22", "F22"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "280 to 359 hours (Band 2)", "E23", "F23"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "Up to 279 hours (Band 1)", "E24", "F24"),
 
-        private const string Continuing19PlusBand5StudentNumbersCellName = "D35";
-        private const string Continuing19PlusBand4aStudentNumbersCellName = "D36";
-        private const string Continuing19PlusBand4bStudentNumbersCellName = "D37";
-        private const string Continuing19PlusBand3StudentNumbersCellName = "D38";
-        private const string Continuing19PlusBand4StudentNumbersCellName = "D39";
-        private const string Continuing19PlusBand1StudentNumbersCellName = "D40";
-        private const string Continuing19PlusStudentNumbersSubTotal = "D41";
-        private const string Continuing19PlusTotalFundingSubTotal = "E41";
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "540+ hours (Band 5)", "E28", "F28"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450+ hours (Band 4a)", "E29", "F29"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450 to 539 hours (Band 4b)", "E30", "F30"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "360 to 449 hours (Band 3)", "E31", "F31"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "280 to 359 hours (Band 2)", "E32", "F32"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "Up to 279 hours (Band 1)", "E33", "F33"),
 
-        private const string OverallStudentNumbersSubTotalCellName = "D43";
-        private const string OverallTotalFundingSubTotalCellName = "E43";
-        private const string Overall1819FundingRemovalTotalFundingCellName = "E45";
-        private const string OverallStudentNumbersTotalCellName = "D47";
-        private const string OverallTotalFundingTotalCellName = "E47";
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "540+ hours (Band 5)", "E37", "F37"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450+ hours (Band 4a)", "E38", "F38"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450 to 539 hours (Band 4b)", "E39", "F39"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "360 to 449 hours (Band 3)", "E40", "F40"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "280 to 359 hours (Band 2)", "E41", "F41"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "Up to 279 hours (Band 1)", "E42", "F42")
+        };
 
         private readonly ILogger _logger;
         private readonly IStreamableKeyValuePersistenceService _storage;
@@ -169,7 +167,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             // probably don't need this as this will be calculated automatically through the template
             //FundingClaim1619Model subTotal = TotalFundLineAndBandRateData(ref fundLineAndRateBandData);
 
-            // Todo: Get the 1819 Condition of Funding Removal
             // probably don't need this as this will be calculated automatically through the template
             //FundingClaim1619Model total = new FundingClaim1619Model
             //{
@@ -193,31 +190,55 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Workbook workbook = new Workbook(manifestResourceStream);
             Worksheet worksheet = workbook.Worksheets[0];
             Cells cells = worksheet.Cells;
+            InsertHeaderFooter(workbook, fundingSummaryHeaderModel, fundingSummaryFooterModel);
             PopulateAllocationValues(cells, fundingClaim1619FundingFactorModel);
             PopulateMainData(cells, fundLineAndRateBandData);
             PopulateCofRemoval(cells, cofRemovalTask.Result);
             using (MemoryStream ms = new MemoryStream())
             {
+                workbook.Worksheets[0].Name = "16-19 Funding Claim";
                 workbook.Save(ms, SaveFormat.Xlsx);
                 await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }
         }
 
+        private void InsertHeaderFooter(Workbook workbook, FundingClaim1619HeaderModel headerModel, FundingClaim1619FooterModel footerModel)
+        {
+            PageSetup pageSetup = workbook.Worksheets[0].PageSetup;
+            pageSetup.TopMargin = 3.5D;
+            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report&10\n\nProvider: " + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn + "\nILR File: " + headerModel.IlrFile);
+            pageSetup.SetHeader(1, string.Empty);
+            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE\n\n\nYear: 20118/19");
+
+            pageSetup.BottomMargin = 4.5D;
+            pageSetup.SetFooter(0, "&10Component Set Version: \t" + footerModel.ComponentSetVersion +
+                                   "\nApplication Version: \t" + footerModel.ApplicationVersion +
+                                   "\nFile Prepartion Date: \t" + footerModel.FilePreparationDate +
+                                   "\n\n\n" + footerModel.ReportGeneratedAt);
+
+            pageSetup.SetFooter(2, "&10Lars Data: \t" + footerModel.LarsData +
+                                   "\nOrganisation Data: \t" + footerModel.OrganisationData +
+                                   "\nPostcode Data: \t" + footerModel.PostcodeData +
+                                   "\nLarge Employer Data: \t" + footerModel.LargeEmployerData +
+                                   "\nCoF Removal Data: \t" + footerModel.CofRemovalData);
+            pageSetup.SetFooter(1, "&10\n\n\n\nPage: &P of &N");
+        }
+
         private void PopulateCofRemoval(Cells cells, decimal? cofRemoval)
         {
             // populating cof removal
-            cells["E45"].PutValue(cofRemoval);
+            cells["F47"].PutValue(cofRemoval);
         }
 
         private void PopulateAllocationValues(Cells cells, FundingClaim1619FundingFactorModel fundingClaimFactorModel)
         {
             // populating allocation values
-            cells["C1"].PutValue(fundingClaimFactorModel.PrvRetentFactHist);
-            cells["C2"].PutValue(fundingClaimFactorModel.ProgWeightHist);
-            cells["C3"].PutValue(fundingClaimFactorModel.AreaCostFact1618Hist);
-            cells["C4"].PutValue(fundingClaimFactorModel.PrvDisadvPropnHist);
-            cells["C5"].PutValue(fundingClaimFactorModel.PrvHistLrgProgPropn);
+            cells[RetentionFactorCellName].PutValue(fundingClaimFactorModel.PrvRetentFactHist);
+            cells[ProgrammeCostWeightingCellName].PutValue(fundingClaimFactorModel.ProgWeightHist);
+            cells[AreaCostAllowanceCellName].PutValue(fundingClaimFactorModel.AreaCostFact1618Hist);
+            cells[DisAdvProportionCellName].PutValue(fundingClaimFactorModel.PrvDisadvPropnHist);
+            cells[LargeProgrammeProportionCellName].PutValue(fundingClaimFactorModel.PrvHistLrgProgPropn);
         }
 
         private void PopulateMainData(Cells cells, Dictionary<string, List<FundingClaim1619Model>> fundingClaimModels)
@@ -233,130 +254,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private void PopulateStudentNumberAndTotalFundingCells(Cells cells, string fundline, string band, int studentNumber, decimal? totalFunding)
         {
-            if (string.Equals(fundline, "14-16 Direct Funded Students", StringComparison.OrdinalIgnoreCase))
+            foreach (var cp in CellPositions)
             {
-                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(fundline, cp.Item1, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(band, cp.Item2, StringComparison.OrdinalIgnoreCase))
                 {
-                    cells["D8"].PutValue(studentNumber);
-                }
-                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D9"].PutValue(studentNumber);
-                }
-                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D10"].PutValue(studentNumber);
-                }
-                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D11"].PutValue(studentNumber);
-                }
-                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D12"].PutValue(studentNumber);
-                }
-                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D13"].PutValue(studentNumber);
-                }
-            }
-            else if (string.Equals(fundline, "16-19 Students (including High Needs Students)", StringComparison.OrdinalIgnoreCase))
-            {
-                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D17"].PutValue(studentNumber);
-                    cells["E17"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D18"].PutValue(studentNumber);
-                    cells["E18"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D19"].PutValue(studentNumber);
-                    cells["E19"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D20"].PutValue(studentNumber);
-                    cells["E20"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D21"].PutValue(studentNumber);
-                    cells["E21"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D22"].PutValue(studentNumber);
-                    cells["E22"].PutValue(totalFunding);
-                }
-            }
-            else if (string.Equals(fundline, "19-24 Students with an EHC plan", StringComparison.OrdinalIgnoreCase))
-            {
-                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D26"].PutValue(studentNumber);
-                    cells["E26"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D27"].PutValue(studentNumber);
-                    cells["E27"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D28"].PutValue(studentNumber);
-                    cells["E28"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D29"].PutValue(studentNumber);
-                    cells["E29"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D30"].PutValue(studentNumber);
-                    cells["E30"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D31"].PutValue(studentNumber);
-                    cells["E31"].PutValue(totalFunding);
-                }
-            }
-            else if (string.Equals(fundline, "19+ Continuing Students (excluding EHC plans)", StringComparison.OrdinalIgnoreCase))
-            {
-                if (string.Equals(band, "540+ hours (Band 5)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D35"].PutValue(studentNumber);
-                    cells["E35"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "450+ hours (Band 4a)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D36"].PutValue(studentNumber);
-                    cells["E36"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "450 to 539 hours (Band 4b)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D37"].PutValue(studentNumber);
-                    cells["E37"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "360 to 449 hours (Band 3)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D38"].PutValue(studentNumber);
-                    cells["E38"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "280 to 359 hours (Band 2)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D39"].PutValue(studentNumber);
-                    cells["E39"].PutValue(totalFunding);
-                }
-                else if (string.Equals(band, "Up to 279 hours (Band 1)", StringComparison.OrdinalIgnoreCase))
-                {
-                    cells["D40"].PutValue(studentNumber);
-                    cells["E40"].PutValue(totalFunding);
+                    cells[cp.Item3].PutValue(studentNumber);
+                    cells[cp.Item4].PutValue(totalFunding);
                 }
             }
         }
