@@ -81,7 +81,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         using (MemoryStream ms = new MemoryStream())
                         {
                             await _redis.GetAsync(fm35Filename, ms, cancellationToken);
-                            ms.Seek(0, SeekOrigin.Begin);
                             _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(ms);
                         }
                     }
