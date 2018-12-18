@@ -52,6 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             reportServiceContextMock.SetupGet(x => x.Filename).Returns(ilrFilename);
             reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
             reportServiceContextMock.SetupGet(x => x.FundingFM81OutputKey).Returns("FundingFm81Output");
+            reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, null);
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();

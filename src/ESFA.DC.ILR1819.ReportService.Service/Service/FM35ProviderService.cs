@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
@@ -16,6 +18,7 @@ using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using Newtonsoft.Json;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -23,8 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     public class FM35ProviderService : IFM35ProviderService
     {
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IKeyValuePersistenceService _blob;
+        private readonly IStreamableKeyValuePersistenceService _redis;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
@@ -35,16 +37,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         public FM35ProviderService(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Redis)]
-            IKeyValuePersistenceService redis,
-            [KeyFilter(PersistenceStorageKeys.Blob)]
-            IKeyValuePersistenceService blob,
+            IStreamableKeyValuePersistenceService redis,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
             _redis = redis;
-            _blob = blob;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
@@ -79,15 +78,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                     if (await _redis.ContainsAsync(fm35Filename, cancellationToken))
                     {
-                        string fm35 = await _redis.GetAsync(fm35Filename, cancellationToken);
-
-                        if (string.IsNullOrEmpty(fm35))
+                        using (MemoryStream ms = new MemoryStream())
                         {
-                            _fundingOutputs = null;
-                            return _fundingOutputs;
+                            await _redis.GetAsync(fm35Filename, ms, cancellationToken);
+                            ms.Seek(0, SeekOrigin.Begin);
+                            _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(ms);
                         }
-
-                        _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(fm35);
                     }
                 }
                 else

@@ -185,7 +185,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             catch (Exception ex)
             {
                 logger.LogError($"Failed building Adult funding claim report, ex: {ex}");
-                throw ex;
+                throw;
             }
 
             return adultFundingClaimModel;

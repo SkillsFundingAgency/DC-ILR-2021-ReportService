@@ -81,21 +81,34 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
                 else
                 {
+                    DateTime submittedDate;
+                    DateTime filePreparationDate;
+
+                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    {
+                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                    }
+
+                    using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    {
+                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                    }
+
                     _message = new Message
                     {
                         Header = new MessageHeader
                         {
                             Source = new MessageHeaderSource
                             {
-                                UKPRN = ukPrn
+                                UKPRN = ukPrn,
+                                DateTime = submittedDate
+                            },
+                            CollectionDetails = new MessageHeaderCollectionDetails
+                            {
+                                FilePreparationDate = filePreparationDate
                             }
                         }
                     };
-
-                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
-                    {
-                        _message.Header.Source.DateTime = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-                    }
                 }
             }
             catch (Exception ex)

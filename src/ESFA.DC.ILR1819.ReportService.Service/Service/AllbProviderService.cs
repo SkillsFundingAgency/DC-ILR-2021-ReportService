@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.ReportService.Interface;
@@ -25,8 +27,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     public sealed class AllbProviderService : IAllbProviderService
     {
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IKeyValuePersistenceService _blob;
+        private readonly IStreamableKeyValuePersistenceService _redis;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
@@ -36,15 +37,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         public AllbProviderService(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
+            [KeyFilter(PersistenceStorageKeys.Redis)] IStreamableKeyValuePersistenceService redis,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
             _redis = redis;
-            _blob = blob;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
@@ -74,15 +73,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string albFilename = reportServiceContext.FundingALBOutputKey;
-                    string alb = await _redis.GetAsync(albFilename, cancellationToken);
-
-                    if (string.IsNullOrEmpty(alb))
+                    using (MemoryStream ms = new MemoryStream())
                     {
-                        _fundingOutputs = null;
-                        return _fundingOutputs;
+                        await _redis.GetAsync(albFilename, ms, cancellationToken);
+                        ms.Seek(0, SeekOrigin.Begin);
+                        _fundingOutputs = _jsonSerializationService.Deserialize<ALBGlobal>(ms);
                     }
-
-                    _fundingOutputs = _jsonSerializationService.Deserialize<ALBGlobal>(alb);
                 }
                 else
                 {
