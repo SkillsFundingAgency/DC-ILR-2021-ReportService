@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspose.Cells;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
@@ -14,13 +16,52 @@ using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class FundingClaim1619Report : AbstractReportBuilder, IReport
     {
+        private const string RetentionFactorCellName = "D3";
+        private const string ProgrammeCostWeightingCellName = "D4";
+        private const string AreaCostAllowanceCellName = "D5";
+        private const string DisAdvProportionCellName = "D6";
+        private const string LargeProgrammeProportionCellName = "D7";
+
+        private List<Tuple<string, string, string, string>> CellPositions = new List<Tuple<string, string, string, string>>()
+        {
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "540+ hours (Band 5)", "E10", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450+ hours (Band 4a)", "E11", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450 to 539 hours (Band 4b)", "E12", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "360 to 449 hours (Band 3)", "E13", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "280 to 359 hours (Band 2)", "E14", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "Up to 279 hours (Band 1)", "E15", string.Empty),
+
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "540+ hours (Band 5)", "E19", "F19"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450+ hours (Band 4a)", "E20", "F20"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450 to 539 hours (Band 4b)", "E21", "F21"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "360 to 449 hours (Band 3)", "E22", "F22"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "280 to 359 hours (Band 2)", "E23", "F23"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "Up to 279 hours (Band 1)", "E24", "F24"),
+
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "540+ hours (Band 5)", "E28", "F28"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450+ hours (Band 4a)", "E29", "F29"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450 to 539 hours (Band 4b)", "E30", "F30"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "360 to 449 hours (Band 3)", "E31", "F31"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "280 to 359 hours (Band 2)", "E32", "F32"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "Up to 279 hours (Band 1)", "E33", "F33"),
+
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "540+ hours (Band 5)", "E37", "F37"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450+ hours (Band 4a)", "E38", "F38"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450 to 539 hours (Band 4b)", "E39", "F39"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "360 to 449 hours (Band 3)", "E40", "F40"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "280 to 359 hours (Band 2)", "E41", "F41"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "Up to 279 hours (Band 1)", "E42", "F42")
+        };
+
         private readonly ILogger _logger;
+        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
@@ -40,6 +81,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public FundingClaim1619Report(
             ILogger logger,
+            IStreamableKeyValuePersistenceService storage,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             IIlrProviderService ilrProviderService,
@@ -53,6 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
+            _storage = storage;
             _dateTimeProvider = dateTimeProvider;
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
@@ -71,9 +114,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM25Global> fm25DataTask = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
+            Task<decimal?> cofRemovalTask = _orgProviderService.GetCofRemoval(reportServiceContext, cancellationToken);
             Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
-            await Task.WhenAll(ilrFileTask, fm25DataTask, providerNameTask, lastSubmittedIlrFileTask);
+            await Task.WhenAll(ilrFileTask, fm25DataTask, providerNameTask, cofRemovalTask, lastSubmittedIlrFileTask);
 
             FundingClaim1619HeaderModel fundingSummaryHeaderModel = await GetHeaderAsync(reportServiceContext, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
             FundingClaim1619FooterModel fundingSummaryFooterModel = await GetFooterAsync(ilrFileTask, lastSubmittedIlrFileTask, cancellationToken);
@@ -106,11 +150,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 {
                     fundingClaim1619FundingFactorModel = new FundingClaim1619FundingFactorModel
                     {
-                        AreaCostFact1618Hist = learnerFm25Data.AreaCostFact1618Hist.GetValueOrDefault(0).ToString("N3:D"),
-                        ProgWeightHist = learnerFm25Data.ProgWeightHist.GetValueOrDefault(0).ToString("N3:D"),
-                        PrvDisadvPropnHist = learnerFm25Data.PrvDisadvPropnHist.GetValueOrDefault(0).ToString("N3:D"),
-                        PrvHistLrgProgPropn = learnerFm25Data.PrvHistLrgProgPropn.GetValueOrDefault(0).ToString("N3:D"),
-                        PrvRetentFactHist = learnerFm25Data.PrvRetentFactHist.GetValueOrDefault(0).ToString("N3:D")
+                        AreaCostFact1618Hist = learnerFm25Data.AreaCostFact1618Hist.GetValueOrDefault(0).ToString("N3"),
+                        ProgWeightHist = learnerFm25Data.ProgWeightHist.GetValueOrDefault(0).ToString("N3"),
+                        PrvDisadvPropnHist = learnerFm25Data.PrvDisadvPropnHist.GetValueOrDefault(0).ToString("N3"),
+                        PrvHistLrgProgPropn = learnerFm25Data.PrvHistLrgProgPropn.GetValueOrDefault(0).ToString("N3"),
+                        PrvRetentFactHist = learnerFm25Data.PrvRetentFactHist.GetValueOrDefault(0).ToString("N3")
                     };
                 }
 
@@ -120,15 +164,105 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 }
             }
 
-            FundingClaim1619Model subTotal = TotalFundLineAndBandRateData(ref fundLineAndRateBandData);
+            // probably don't need this as this will be calculated automatically through the template
+            //FundingClaim1619Model subTotal = TotalFundLineAndBandRateData(ref fundLineAndRateBandData);
 
-            // Todo: Get the 1819 Condition of Funding Removal
+            // probably don't need this as this will be calculated automatically through the template
+            //FundingClaim1619Model total = new FundingClaim1619Model
+            //{
+            //    StudentNumber = subTotal.StudentNumber,
+            //    TotalFunding = 0 // Todo
+            //};
 
-            FundingClaim1619Model total = new FundingClaim1619Model
+            if (cancellationToken.IsCancellationRequested)
             {
-                StudentNumber = subTotal.StudentNumber,
-                TotalFunding = 0 // Todo
-            };
+                return;
+            }
+
+            long jobId = reportServiceContext.JobId;
+            string ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("1619FundingClaimReportTemplate.xlsx"));
+            var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
+            Workbook workbook = new Workbook(manifestResourceStream);
+            Worksheet worksheet = workbook.Worksheets[0];
+            Cells cells = worksheet.Cells;
+            InsertHeaderFooter(workbook, fundingSummaryHeaderModel, fundingSummaryFooterModel);
+            PopulateAllocationValues(cells, fundingClaim1619FundingFactorModel);
+            PopulateMainData(cells, fundLineAndRateBandData);
+            PopulateCofRemoval(cells, cofRemovalTask.Result);
+            using (MemoryStream ms = new MemoryStream())
+            {
+                workbook.Worksheets[0].Name = "16-19 Funding Claim";
+                workbook.Save(ms, SaveFormat.Xlsx);
+                await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
+            }
+        }
+
+        private void InsertHeaderFooter(Workbook workbook, FundingClaim1619HeaderModel headerModel, FundingClaim1619FooterModel footerModel)
+        {
+            PageSetup pageSetup = workbook.Worksheets[0].PageSetup;
+            pageSetup.TopMargin = 3.5D;
+            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report&10\n\nProvider: " + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn + "\nILR File: " + headerModel.IlrFile);
+            pageSetup.SetHeader(1, string.Empty);
+            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE\n\n\nYear: 20118/19");
+
+            pageSetup.BottomMargin = 4.5D;
+            pageSetup.SetFooter(0, "&10Component Set Version: \t" + footerModel.ComponentSetVersion +
+                                   "\nApplication Version: \t" + footerModel.ApplicationVersion +
+                                   "\nFile Prepartion Date: \t" + footerModel.FilePreparationDate +
+                                   "\n\n\n" + footerModel.ReportGeneratedAt);
+
+            pageSetup.SetFooter(2, "&10Lars Data: \t" + footerModel.LarsData +
+                                   "\nOrganisation Data: \t" + footerModel.OrganisationData +
+                                   "\nPostcode Data: \t" + footerModel.PostcodeData +
+                                   "\nLarge Employer Data: \t" + footerModel.LargeEmployerData +
+                                   "\nCoF Removal Data: \t" + footerModel.CofRemovalData);
+            pageSetup.SetFooter(1, "&10\n\n\n\nPage: &P of &N");
+        }
+
+        private void PopulateCofRemoval(Cells cells, decimal? cofRemoval)
+        {
+            // populating cof removal
+            cells["F47"].PutValue(cofRemoval);
+        }
+
+        private void PopulateAllocationValues(Cells cells, FundingClaim1619FundingFactorModel fundingClaimFactorModel)
+        {
+            // populating allocation values
+            cells[RetentionFactorCellName].PutValue(fundingClaimFactorModel.PrvRetentFactHist);
+            cells[ProgrammeCostWeightingCellName].PutValue(fundingClaimFactorModel.ProgWeightHist);
+            cells[AreaCostAllowanceCellName].PutValue(fundingClaimFactorModel.AreaCostFact1618Hist);
+            cells[DisAdvProportionCellName].PutValue(fundingClaimFactorModel.PrvDisadvPropnHist);
+            cells[LargeProgrammeProportionCellName].PutValue(fundingClaimFactorModel.PrvHistLrgProgPropn);
+        }
+
+        private void PopulateMainData(Cells cells, Dictionary<string, List<FundingClaim1619Model>> fundingClaimModels)
+        {
+            foreach (var model in fundingClaimModels)
+            {
+                foreach (var singleClaim1619Model in model.Value)
+                {
+                    PopulateStudentNumberAndTotalFundingCells(cells, model.Key, singleClaim1619Model.Title, singleClaim1619Model.StudentNumber, singleClaim1619Model.TotalFunding);
+                }
+            }
+        }
+
+        private void PopulateStudentNumberAndTotalFundingCells(Cells cells, string fundline, string band, int studentNumber, decimal? totalFunding)
+        {
+            foreach (var cp in CellPositions)
+            {
+                if (string.Equals(fundline, cp.Item1, StringComparison.OrdinalIgnoreCase) &&
+                    string.Equals(band, cp.Item2, StringComparison.OrdinalIgnoreCase))
+                {
+                    cells[cp.Item3].PutValue(studentNumber);
+                    cells[cp.Item4].PutValue(totalFunding);
+                }
+            }
         }
 
         private FundingClaim1619Model TotalFundLineAndBandRateData(ref Dictionary<string, List<FundingClaim1619Model>> fundLineAndRateBandData)
@@ -245,7 +379,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 OrganisationData = await _orgProviderService.GetVersionAsync(cancellationToken),
                 LargeEmployerData = await _largeEmployerProviderService.GetVersionAsync(cancellationToken),
                 LarsData = await _larsProviderService.GetVersionAsync(cancellationToken),
-                PostcodeData = await _postcodeProviderService.GetVersionAsync(cancellationToken)
+                PostcodeData = await _postcodeProviderService.GetVersionAsync(cancellationToken),
+                CofRemovalData = string.Empty // todo: populate this
             };
 
             if (messageTask.Result != null)
