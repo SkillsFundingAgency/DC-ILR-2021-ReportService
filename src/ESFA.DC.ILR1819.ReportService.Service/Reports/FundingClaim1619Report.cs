@@ -196,7 +196,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             PopulateCofRemoval(cells, cofRemovalTask.Result);
             using (MemoryStream ms = new MemoryStream())
             {
-                workbook.Worksheets[0].Name = "16-19 Funding Claim";
                 workbook.Save(ms, SaveFormat.Xlsx);
                 await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
@@ -206,23 +205,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private void InsertHeaderFooter(Workbook workbook, FundingClaim1619HeaderModel headerModel, FundingClaim1619FooterModel footerModel)
         {
             PageSetup pageSetup = workbook.Worksheets[0].PageSetup;
-            pageSetup.TopMargin = 3.5D;
-            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report&10\n\nProvider: " + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn + "\nILR File: " + headerModel.IlrFile);
+            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report&8\n\nProvider: " + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn + "\nILR File: " + headerModel.IlrFile);
             pageSetup.SetHeader(1, string.Empty);
-            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE\n\n\nYear: 20118/19");
+            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE\n\n&8Reference Data: All\nCampus Identifier: All\nYear: 20118/19");
 
-            pageSetup.BottomMargin = 4.5D;
-            pageSetup.SetFooter(0, "&10Component Set Version: \t" + footerModel.ComponentSetVersion +
+            pageSetup.SetFooter(0, "&8Component Set Version: \t" + footerModel.ComponentSetVersion +
                                    "\nApplication Version: \t" + footerModel.ApplicationVersion +
                                    "\nFile Prepartion Date: \t" + footerModel.FilePreparationDate +
-                                   "\n\n\n" + footerModel.ReportGeneratedAt);
-
-            pageSetup.SetFooter(2, "&10Lars Data: \t" + footerModel.LarsData +
+                                   "\n\n\n" + footerModel.ReportGeneratedAt); // .Replace(" on ", " on \n"
+            pageSetup.SetFooter(2, "&8Lars Data: \t" + footerModel.LarsData +
                                    "\nOrganisation Data: \t" + footerModel.OrganisationData +
                                    "\nPostcode Data: \t" + footerModel.PostcodeData +
                                    "\nLarge Employer Data: \t" + footerModel.LargeEmployerData +
                                    "\nCoF Removal Data: \t" + footerModel.CofRemovalData);
-            pageSetup.SetFooter(1, "&10\n\n\n\nPage: &P of &N");
         }
 
         private void PopulateCofRemoval(Cells cells, decimal? cofRemoval)
