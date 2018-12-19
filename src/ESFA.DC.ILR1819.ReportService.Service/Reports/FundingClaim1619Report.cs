@@ -212,7 +212,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             pageSetup.SetFooter(0, "&8Component Set Version: \t" + footerModel.ComponentSetVersion +
                                    "\nApplication Version: \t" + footerModel.ApplicationVersion +
                                    "\nFile Prepartion Date: \t" + footerModel.FilePreparationDate +
-                                   "\n\n\n" + footerModel.ReportGeneratedAt); // .Replace(" on ", " on \n"
+                                   "\n\n\n" + footerModel.ReportGeneratedAt);
+            pageSetup.SetFooter(1, "&10Page &P");
             pageSetup.SetFooter(2, "&8Lars Data: \t" + footerModel.LarsData +
                                    "\nOrganisation Data: \t" + footerModel.OrganisationData +
                                    "\nPostcode Data: \t" + footerModel.PostcodeData +
@@ -228,12 +229,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private void PopulateAllocationValues(Cells cells, FundingClaim1619FundingFactorModel fundingClaimFactorModel)
         {
-            // populating allocation values
-            cells[RetentionFactorCellName].PutValue(fundingClaimFactorModel.PrvRetentFactHist);
-            cells[ProgrammeCostWeightingCellName].PutValue(fundingClaimFactorModel.ProgWeightHist);
-            cells[AreaCostAllowanceCellName].PutValue(fundingClaimFactorModel.AreaCostFact1618Hist);
-            cells[DisAdvProportionCellName].PutValue(fundingClaimFactorModel.PrvDisadvPropnHist);
-            cells[LargeProgrammeProportionCellName].PutValue(fundingClaimFactorModel.PrvHistLrgProgPropn);
+            if (fundingClaimFactorModel != null)
+            {
+                // populating allocation values
+                cells[RetentionFactorCellName].PutValue(fundingClaimFactorModel.PrvRetentFactHist);
+                cells[ProgrammeCostWeightingCellName].PutValue(fundingClaimFactorModel.ProgWeightHist);
+                cells[AreaCostAllowanceCellName].PutValue(fundingClaimFactorModel.AreaCostFact1618Hist);
+                cells[DisAdvProportionCellName].PutValue(fundingClaimFactorModel.PrvDisadvPropnHist);
+                cells[LargeProgrammeProportionCellName].PutValue(fundingClaimFactorModel.PrvHistLrgProgPropn);
+            }
         }
 
         private void PopulateMainData(Cells cells, Dictionary<string, List<FundingClaim1619Model>> fundingClaimModels)
