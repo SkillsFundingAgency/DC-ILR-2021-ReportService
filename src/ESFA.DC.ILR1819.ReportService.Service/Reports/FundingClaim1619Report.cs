@@ -29,6 +29,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private const string DisAdvProportionCellName = "D6";
         private const string LargeProgrammeProportionCellName = "D7";
 
+        private const string CofRemovalCellName = "F47";
+
         private List<Tuple<string, string, string, string>> CellPositions = new List<Tuple<string, string, string, string>>()
         {
             new Tuple<string, string, string, string>("14-16 Direct Funded Students", "540+ hours (Band 5)", "E10", string.Empty),
@@ -205,15 +207,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private void InsertHeaderFooter(Workbook workbook, FundingClaim1619HeaderModel headerModel, FundingClaim1619FooterModel footerModel)
         {
             PageSetup pageSetup = workbook.Worksheets[0].PageSetup;
-            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report&8\n\nProvider: " + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn + "\nILR File: " + headerModel.IlrFile);
-            pageSetup.SetHeader(1, string.Empty);
-            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE\n\n&8Reference Data: All\nCampus Identifier: All\nYear: 20118/19");
+            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report&8\n\n&8ILR File: \n" + headerModel.IlrFile + "\n\nProvider: " + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn);
+            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE\n\n&8&\"Bold\"Reference Data: All\nCampus Identifier: All\nYear: " + headerModel.Year);
 
             pageSetup.SetFooter(0, "&8Component Set Version: \t" + footerModel.ComponentSetVersion +
                                    "\nApplication Version: \t" + footerModel.ApplicationVersion +
                                    "\nFile Prepartion Date: \t" + footerModel.FilePreparationDate +
-                                   "\n\n\n" + footerModel.ReportGeneratedAt);
-            pageSetup.SetFooter(1, "&10Page &P");
+                                   "\n" + footerModel.ReportGeneratedAt +
+                                   "\n\nPage &P of &N");
             pageSetup.SetFooter(2, "&8Lars Data: \t" + footerModel.LarsData +
                                    "\nOrganisation Data: \t" + footerModel.OrganisationData +
                                    "\nPostcode Data: \t" + footerModel.PostcodeData +
@@ -224,7 +225,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private void PopulateCofRemoval(Cells cells, decimal? cofRemoval)
         {
             // populating cof removal
-            cells["F47"].PutValue(cofRemoval);
+            cells[CofRemovalCellName].PutValue(cofRemoval);
         }
 
         private void PopulateAllocationValues(Cells cells, FundingClaim1619FundingFactorModel fundingClaimFactorModel)
