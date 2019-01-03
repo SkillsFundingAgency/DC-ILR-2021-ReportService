@@ -79,7 +79,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                              dateTimeNowUk.Hour < returnPeriodEndDateTimeUk.Hour &&
                              dateTimeNowUk.Minute < returnPeriodEndDateTimeUk.Minute))
                         {
-                            period = monthToCollection[dateTimeNowUk.Month - 1];
+                            int month = dateTimeNowUk.Month - 1;
+                            if (month == 0)
+                            {
+                                month = 12;
+                            }
+
+                            period = monthToCollection[month];
                         }
                         else
                         {

@@ -341,6 +341,7 @@
     <Compile Include="Reports\TestTrailblazerEmployerIncentiveReport.cs" />
     <Compile Include="Reports\Validation\TestValidationReportLotsOfErrors.cs" />
     <Compile Include="Service\DasCommitmentsServiceTest.cs" />
+    <Compile Include="Service\FM35ProviderServiceTest.cs" />
     <Compile Include="Service\PeriodProviderServiceTest.cs" />
     <Compile Include="Reports\TestAllbOccupancyReport.cs" />
     <Compile Include="AutoFac\TestConfigurationHelper.cs" />
@@ -422,6 +423,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="Reports\Validation\ValidationErrorsLookup.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Service\FundingFm35OutputEmpty.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="ValidationErrors.json">

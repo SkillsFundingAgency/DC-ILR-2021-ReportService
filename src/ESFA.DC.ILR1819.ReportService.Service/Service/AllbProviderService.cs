@@ -73,6 +73,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string albFilename = reportServiceContext.FundingALBOutputKey;
+                    _logger.LogWarning($"Reading {albFilename}");
                     using (MemoryStream ms = new MemoryStream())
                     {
                         await _redis.GetAsync(albFilename, ms, cancellationToken);
