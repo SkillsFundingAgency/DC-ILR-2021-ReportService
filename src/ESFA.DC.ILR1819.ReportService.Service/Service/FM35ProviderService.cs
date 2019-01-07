@@ -78,9 +78,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     _logger.LogWarning($"Reading {fm35Filename}");
                     if (await _redis.ContainsAsync(fm35Filename, cancellationToken))
                     {
+                        _logger.LogWarning($"Available {fm35Filename}");
                         using (MemoryStream ms = new MemoryStream())
                         {
                             await _redis.GetAsync(fm35Filename, ms, cancellationToken);
+                            _logger.LogWarning($"Deserialising {fm35Filename} with {ms.Length}");
                             _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(ms);
                         }
                     }

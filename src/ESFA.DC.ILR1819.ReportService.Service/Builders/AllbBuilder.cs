@@ -5,7 +5,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -76,31 +75,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
             try
             {
-                ILearner[] learners = ilrFile.Result.Learners.Where(x => validLearners.Result.Contains(x.LearnRefNumber)).ToArray();
+                ILearner[] learners = ilrFile.Result?.Learners?.Where(x => validLearners.Result.Contains(x.LearnRefNumber)).ToArray();
 
-                foreach (ILearner learner in learners)
+                foreach (ILearner learner in learners ?? Enumerable.Empty<ILearner>())
                 {
-                    ALBLearner albLearner = albData?.Result.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
+                    ALBLearner albLearner = albData.Result?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
                     if (albLearner == null)
                     {
                         albLearnerError.Add(learner.LearnRefNumber);
                         continue;
                     }
 
-                    foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
+                    foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries ?? Enumerable.Empty<ILearningDelivery>())
                     {
-                        var albLearningDeliveryFunding = new LearningDelivery();
-                        var albLearnerLearningDeliveries = albLearner?.LearningDeliveries?.Where(x => x.LearningDeliveryValue.FundLine == "Advanced Learner Loans Bursary").ToList();
-                        var albLearningDeliveryAreaCosts = albLearnerLearningDeliveries?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+                        LearningDelivery albLearningDeliveryFunding = null;
+                        LearningDelivery albLearningDeliveryAreaCosts = albLearner.LearningDeliveries?.Where(x => x.LearningDeliveryValue.FundLine == "Advanced Learner Loans Bursary").SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                        if (learningDelivery.LearningDeliveryFAMs.Count(x =>
-                                !x.LearnDelFAMType.Contains("LDM") && !x.LearnDelFAMCode.Contains("359")) > 0)
+                        // Not sure what this does?
+                        if (learningDelivery.LearningDeliveryFAMs.Any(x =>
+                                !string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase) && !string.Equals(x.LearnDelFAMCode, "359", StringComparison.OrdinalIgnoreCase)))
                         {
-                            albLearningDeliveryFunding = albLearnerLearningDeliveries?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+                            albLearningDeliveryFunding = albLearningDeliveryAreaCosts;
                         }
 
-                        TotalAlbFunding(albLearningDeliveryFunding.LearningDeliveryPeriodisedValues, period.Result, AlbSupportPayment, fundingSummaryModelAlbFunding);
-                        TotalAlbAreaCosts(albLearningDeliveryAreaCosts.LearningDeliveryPeriodisedValues, period.Result, fundingSummaryModelAlbAreaCosts);
+                        TotalAlbFunding(albLearningDeliveryFunding?.LearningDeliveryPeriodisedValues, period.Result, AlbSupportPayment, fundingSummaryModelAlbFunding);
+                        TotalAlbAreaCosts(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, period.Result, fundingSummaryModelAlbAreaCosts);
                     }
                 }
 
@@ -116,7 +115,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             }
             catch (Exception ex)
             {
-                _logger.LogError(" AlbBuilder BuildAsync failed with Exception: " + ex);
+                _logger.LogError("AlbBuilder BuildAsync failed with Exception: ", ex);
             }
 
             return fundingSummaryModels;
@@ -128,7 +127,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             string attributeName,
             FundingSummaryModel fundingSummaryModelAlbFunding)
         {
-            var periodisedValue = periodisedValues.Where(x => string.Equals(x.AttributeName, attributeName, StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (periodisedValues == null)
+            {
+                return;
+            }
+
+            LearningDeliveryPeriodisedValue[] periodisedValue = periodisedValues.Where(x => string.Equals(x.AttributeName, attributeName, StringComparison.OrdinalIgnoreCase)).ToArray();
+
+            if (periodisedValue.Length == 0)
+            {
+                return;
+            }
 
             fundingSummaryModelAlbFunding.Period1 += periodisedValue.Sum(x => x.Period1 ?? 0);
             fundingSummaryModelAlbFunding.Period2 += periodisedValue.Sum(x => x.Period2 ?? 0);
@@ -155,37 +164,49 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         }
 
         private void TotalAlbAreaCosts(
-            List<LearningDeliveryPeriodisedValue> periodisedValue,
+            List<LearningDeliveryPeriodisedValue> periodisedValues,
             int period,
             FundingSummaryModel fundingSummaryModelAlbAreaCosts)
         {
-            var progPaymentPeriodisedValue = periodisedValue.Where(x => string.Equals(x.AttributeName, AlbAreaUpliftOnProgPayment, StringComparison.OrdinalIgnoreCase)).ToArray();
-            var areaUpliftPeriodisedValue = periodisedValue.Where(x => string.Equals(x.AttributeName, AlbAreaUpliftBalPayment, StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (periodisedValues == null)
+            {
+                return;
+            }
 
-            fundingSummaryModelAlbAreaCosts.Period1 += progPaymentPeriodisedValue.Sum(x => x.Period1 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period1 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period2 += progPaymentPeriodisedValue.Sum(x => x.Period2 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period2 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period3 += progPaymentPeriodisedValue.Sum(x => x.Period3 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period3 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period4 += progPaymentPeriodisedValue.Sum(x => x.Period4 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period4 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period5 += progPaymentPeriodisedValue.Sum(x => x.Period5 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period5 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period6 += progPaymentPeriodisedValue.Sum(x => x.Period6 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period6 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period7 += progPaymentPeriodisedValue.Sum(x => x.Period7 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period7 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period8 += progPaymentPeriodisedValue.Sum(x => x.Period8 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period8 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period9 += progPaymentPeriodisedValue.Sum(x => x.Period9 ?? 0) +
-                                                      areaUpliftPeriodisedValue.Sum(x => x.Period9 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period10 += progPaymentPeriodisedValue.Sum(x => x.Period10 ?? 0) +
-                                                       areaUpliftPeriodisedValue.Sum(x => x.Period10 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period11 += progPaymentPeriodisedValue.Sum(x => x.Period11 ?? 0) +
-                                                       areaUpliftPeriodisedValue.Sum(x => x.Period11 ?? 0);
-            fundingSummaryModelAlbAreaCosts.Period12 += progPaymentPeriodisedValue.Sum(x => x.Period12 ?? 0) +
-                                                       areaUpliftPeriodisedValue.Sum(x => x.Period12 ?? 0);
+            var progPaymentPeriodisedValue = periodisedValues.Where(x => string.Equals(x.AttributeName, AlbAreaUpliftOnProgPayment, StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (progPaymentPeriodisedValue.Length > 0)
+            {
+                fundingSummaryModelAlbAreaCosts.Period1 += progPaymentPeriodisedValue.Sum(x => x.Period1 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period2 += progPaymentPeriodisedValue.Sum(x => x.Period2 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period3 += progPaymentPeriodisedValue.Sum(x => x.Period3 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period4 += progPaymentPeriodisedValue.Sum(x => x.Period4 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period5 += progPaymentPeriodisedValue.Sum(x => x.Period5 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period6 += progPaymentPeriodisedValue.Sum(x => x.Period6 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period7 += progPaymentPeriodisedValue.Sum(x => x.Period7 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period8 += progPaymentPeriodisedValue.Sum(x => x.Period8 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period9 += progPaymentPeriodisedValue.Sum(x => x.Period9 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period10 += progPaymentPeriodisedValue.Sum(x => x.Period10 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period11 += progPaymentPeriodisedValue.Sum(x => x.Period11 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period12 += progPaymentPeriodisedValue.Sum(x => x.Period12 ?? 0);
+            }
+
+            var areaUpliftPeriodisedValue = periodisedValues.Where(x => string.Equals(x.AttributeName, AlbAreaUpliftBalPayment, StringComparison.OrdinalIgnoreCase)).ToArray();
+            if (areaUpliftPeriodisedValue.Length > 0)
+            {
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period1 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period2 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period3 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period4 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period5 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period6 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period7 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period8 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period9 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period10 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period11 ?? 0);
+                fundingSummaryModelAlbAreaCosts.Period1 += areaUpliftPeriodisedValue.Sum(x => x.Period12 ?? 0);
+            }
+
             fundingSummaryModelAlbAreaCosts.Period1_8 =
                 fundingSummaryModelAlbAreaCosts.Period1 + fundingSummaryModelAlbAreaCosts.Period2 + fundingSummaryModelAlbAreaCosts.Period3 +
                 fundingSummaryModelAlbAreaCosts.Period4 + fundingSummaryModelAlbAreaCosts.Period5 + fundingSummaryModelAlbAreaCosts.Period6 +
