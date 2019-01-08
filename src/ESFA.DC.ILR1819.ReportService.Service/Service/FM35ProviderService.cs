@@ -75,7 +75,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string fm35Filename = reportServiceContext.FundingFM35OutputKey;
-                    _logger.LogWarning($"Reading {fm35Filename}");
+                    _logger.LogWarning($"Reading {fm35Filename}; Redis is {_redis}; CancellationToken is {cancellationToken}");
                     if (await _redis.ContainsAsync(fm35Filename, cancellationToken))
                     {
                         _logger.LogWarning($"Available {fm35Filename}");
@@ -86,6 +86,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                             _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(ms);
                         }
                     }
+
+                    _logger.LogWarning($"Finished {fm35Filename}");
                 }
                 else
                 {
