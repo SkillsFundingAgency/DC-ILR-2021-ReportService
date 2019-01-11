@@ -27,7 +27,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     public sealed class AllbProviderService : IAllbProviderService
     {
         private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _redis;
+        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
@@ -37,13 +37,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         public AllbProviderService(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IStreamableKeyValuePersistenceService redis,
+            IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
-            _redis = redis;
+            _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
@@ -73,10 +73,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string albFilename = reportServiceContext.FundingALBOutputKey;
-                    _logger.LogWarning($"Reading {albFilename}");
+                    _logger.LogWarning($"Reading {albFilename}; Storage is {_storage}; CancellationToken is {cancellationToken}");
                     using (MemoryStream ms = new MemoryStream())
                     {
-                        await _redis.GetAsync(albFilename, ms, cancellationToken);
+                        await _storage.GetAsync(albFilename, ms, cancellationToken);
                         _fundingOutputs = _jsonSerializationService.Deserialize<ALBGlobal>(ms);
                     }
                 }

@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     public class FM35ProviderService : IFM35ProviderService
     {
         private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _redis;
+        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
@@ -36,14 +36,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         public FM35ProviderService(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)]
-            IStreamableKeyValuePersistenceService redis,
+            IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
-            _redis = redis;
+            _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
@@ -75,13 +74,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string fm35Filename = reportServiceContext.FundingFM35OutputKey;
-                    _logger.LogWarning($"Reading {fm35Filename}; Redis is {_redis}; CancellationToken is {cancellationToken}");
-                    if (await _redis.ContainsAsync(fm35Filename, cancellationToken))
+                    _logger.LogWarning($"Reading {fm35Filename}; Storage is {_storage}; CancellationToken is {cancellationToken}");
+                    if (await _storage.ContainsAsync(fm35Filename, cancellationToken))
                     {
                         _logger.LogWarning($"Available {fm35Filename}");
                         using (MemoryStream ms = new MemoryStream())
                         {
-                            await _redis.GetAsync(fm35Filename, ms, cancellationToken);
+                            await _storage.GetAsync(fm35Filename, ms, cancellationToken);
                             _logger.LogWarning($"Deserialising {fm35Filename} with {ms.Length}");
                             _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(ms);
                         }
