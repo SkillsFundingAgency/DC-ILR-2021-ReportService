@@ -93,7 +93,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                         // Not sure what this does?
                         if (learningDelivery.LearningDeliveryFAMs.Any(x =>
-                                !string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase) && !string.Equals(x.LearnDelFAMCode, "359", StringComparison.OrdinalIgnoreCase)))
+                                !(string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase) && string.Equals(x.LearnDelFAMCode, "359", StringComparison.OrdinalIgnoreCase))))
                         {
                             albLearningDeliveryFunding = albLearningDeliveryAreaCosts;
                         }
