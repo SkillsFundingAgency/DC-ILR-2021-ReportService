@@ -88,17 +88,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                     foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries ?? Enumerable.Empty<ILearningDelivery>())
                     {
-                        LearningDelivery albLearningDeliveryFunding = null;
                         LearningDelivery albLearningDeliveryAreaCosts = albLearner.LearningDeliveries?.Where(x => x.LearningDeliveryValue.FundLine == "Advanced Learner Loans Bursary").SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                        // Not sure what this does?
                         if (learningDelivery.LearningDeliveryFAMs.Any(x =>
                                 !(string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase) && string.Equals(x.LearnDelFAMCode, "359", StringComparison.OrdinalIgnoreCase))))
                         {
-                            albLearningDeliveryFunding = albLearningDeliveryAreaCosts;
+                            TotalAlbFunding(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, period.Result, AlbSupportPayment, fundingSummaryModelAlbFunding);
                         }
 
-                        TotalAlbFunding(albLearningDeliveryFunding?.LearningDeliveryPeriodisedValues, period.Result, AlbSupportPayment, fundingSummaryModelAlbFunding);
                         TotalAlbAreaCosts(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, period.Result, fundingSummaryModelAlbAreaCosts);
                     }
                 }
