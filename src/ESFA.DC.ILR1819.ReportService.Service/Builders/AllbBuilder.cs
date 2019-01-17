@@ -90,7 +90,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                     {
                         LearningDelivery albLearningDeliveryAreaCosts = albLearner.LearningDeliveries?.Where(x => x.LearningDeliveryValue.FundLine == "Advanced Learner Loans Bursary").SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                        if (learningDelivery.LearningDeliveryFAMs.Any(x =>
+                        if (learningDelivery.LearningDeliveryFAMs != null && learningDelivery.LearningDeliveryFAMs.Any(x =>
                                 !(string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase) && string.Equals(x.LearnDelFAMCode, "359", StringComparison.OrdinalIgnoreCase))))
                         {
                             TotalAlbFunding(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, period.Result, AlbSupportPayment, fundingSummaryModelAlbFunding);
