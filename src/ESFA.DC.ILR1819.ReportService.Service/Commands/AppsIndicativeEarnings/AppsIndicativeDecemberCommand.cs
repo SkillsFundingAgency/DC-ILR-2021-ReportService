@@ -37,22 +37,22 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings
                     ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36MathEngBalPayment, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0;
 
             model.DecemberDisadvantageEarnings =
-                episodeAttribute?.PriceEpisodePeriodisedValues
-                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0
-                + episodeAttribute?.PriceEpisodePeriodisedValues
-                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0;
+                (episodeAttribute?.PriceEpisodePeriodisedValues
+                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0)
+                + (episodeAttribute?.PriceEpisodePeriodisedValues
+                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0);
 
             model.December1618AdditionalPaymentForEmployers =
-                episodeAttribute?.PriceEpisodePeriodisedValues
-                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0
-                + episodeAttribute?.PriceEpisodePeriodisedValues
-                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0;
+                (episodeAttribute?.PriceEpisodePeriodisedValues
+                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0)
+                + (episodeAttribute?.PriceEpisodePeriodisedValues
+                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0);
 
             model.December1618AdditionalPaymentForProviders =
-                episodeAttribute?.PriceEpisodePeriodisedValues
-                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0
-                + episodeAttribute?.PriceEpisodePeriodisedValues
-                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0;
+                (episodeAttribute?.PriceEpisodePeriodisedValues
+                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0)
+                + (episodeAttribute?.PriceEpisodePeriodisedValues
+                    ?.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase))?.Period5 ?? 0);
 
             model.DecemberAdditionalPaymentsForApprentices =
                 episodeAttribute?.PriceEpisodePeriodisedValues
