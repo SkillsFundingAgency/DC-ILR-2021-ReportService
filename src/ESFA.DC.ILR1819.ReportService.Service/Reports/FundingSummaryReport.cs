@@ -1167,7 +1167,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             string csv = GetReportCsv(fundingSummaryHeaderModel, fundingSummaryFooterModel);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{fileName}.csv", csv);
 
             Workbook workbook = GetWorkbookReport(fundingSummaryHeaderModel, fundingSummaryFooterModel);
 
