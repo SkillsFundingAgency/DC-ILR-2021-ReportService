@@ -172,7 +172,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
                 await _storage.SaveAsync($"{_externalFileName}.xlsx", ms, cancellationToken);
-                await WriteZipEntry(archive, $"{_fileName}.xlsx", ms, cancellationToken);
             }
         }
 
