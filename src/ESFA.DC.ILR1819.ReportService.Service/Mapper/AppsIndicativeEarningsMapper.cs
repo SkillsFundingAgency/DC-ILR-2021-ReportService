@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.LearningAimReference).Index(i++).Name("Learning aim reference");
             Map(m => m.LearningAimTitle).Index(i++).Name("Learning aim title");
             Map(m => m.SoftwareSupplierAimIdentifier).Index(i++).Name("Software supplier aim identifier");
-            Map(m => m.LARS1618FrameworkUplift).Index(i++).Name("LARS 16-18 framework uplift");
+            Map(m => m.LARS1618FrameworkUplift).Index(i++).Name("LARS 16-18 framework uplift").TypeConverterOption.Format("0.00000");
             Map(m => m.NotionalNVQLevel).Index(i++).Name("Notional NVQ level");
             Map(m => m.StandardNotionalEndLevel).Index(i++).Name("Standard notional end level");
 
