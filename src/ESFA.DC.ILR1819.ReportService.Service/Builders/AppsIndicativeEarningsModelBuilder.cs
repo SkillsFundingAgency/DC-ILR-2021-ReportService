@@ -245,9 +245,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom == DateTime.MinValue ? $"" : contractAppliesFrom.ToString("dd/MM/yyyy");
             model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo == DateTime.MinValue ? $"" : contractAppliesTo.ToString("dd/MM/yyyy");
 
-            model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x =>
-                                      x.LearnDelFAMDateFromNullable == contractAppliesFrom &&
-                                      x.LearnDelFAMDateToNullable == contractAppliesTo)?.LearnDelFAMCode;
+            if (contractAppliesTo == DateTime.MinValue)
+            {
+                model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x => x.LearnDelFAMDateToNullable == null)?.LearnDelFAMCode;
+            }
+            else
+            {
+                model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x =>
+                    x.LearnDelFAMDateFromNullable == contractAppliesFrom &&
+                    x.LearnDelFAMDateToNullable == contractAppliesTo)?.LearnDelFAMCode;
+            }
         }
 
         private void GetTotals(AppsIndicativeEarningsModel model)
