@@ -94,14 +94,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 LearningDeliveryFAMTypeLearningDeliveryMonitoringD = ldms[3],
                 LearningDeliveryFAMRestartIndicator = learningDelivery.LearningDeliveryFAMs
                     ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeRES, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                ProviderSpecifiedDeliveryMonitoringA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                ProviderSpecifiedDeliveryMonitoringB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                ProviderSpecifiedDeliveryMonitoringC = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                ProviderSpecifiedDeliveryMonitoringD = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
+                ProviderSpecifiedDeliveryMonitoringA = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
+                ProviderSpecifiedDeliveryMonitoringB = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
+                ProviderSpecifiedDeliveryMonitoringC = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
+                ProviderSpecifiedDeliveryMonitoringD = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
                 EndPointAssessmentOrganisation = learningDelivery.EPAOrgID,
                 PlannedNoOfOnProgrammeInstallmentsForAim =
                     fm36DeliveryAttribute?.LearningDeliveryValues?.PlannedNumOnProgInstalm,
