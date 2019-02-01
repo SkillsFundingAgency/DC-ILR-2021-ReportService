@@ -32,13 +32,15 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 {
     public sealed class TestAppsIndicativeEarningsReport
     {
-        [Fact]
-        public async Task TestAppsIndicativeEarningsReportGeneration()
+        [Theory]
+        //[InlineData("ILR-10033670-1819-20181206-093952-03", "Fm36.json")]
+        [InlineData("ILR-10033670-1819-20181212-103550-36", "66230-FundingFm36Output.json")]
+        public async Task TestAppsIndicativeEarningsReportGeneration(string ilrFile, string fm36Output)
         {
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
             string filename = $"10033670_1_Apps Indicative Earnings Report {dateTime:yyyyMMdd-HHmmss}";
-            string ilr = "ILR-10033670-1819-20181206-093952-03";
+            string ilr = ilrFile;
             DataStoreConfiguration dataStoreConfiguration = new DataStoreConfiguration()
             {
                 ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString,
@@ -98,12 +100,13 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     "Dfm3501",
                     "Efm3501",
                     "0fm3601",
-                    "0DOB52"
+                    "0DOB52",
+                    "fm36 18 20"
                 }));
             redis.Setup(x => x.ContainsAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.ContainsAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(true);
             redis.Setup(x => x.ContainsAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(true);
-            redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
+            redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm36Output));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
 
