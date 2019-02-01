@@ -180,8 +180,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         {
             if (learningDelivery.AppFinRecords == null)
             {
-                model.TotalPRMPreviousFundingYear = 0;
-                model.TotalPRMThisFundingYear = 0;
                 return;
             }
 
