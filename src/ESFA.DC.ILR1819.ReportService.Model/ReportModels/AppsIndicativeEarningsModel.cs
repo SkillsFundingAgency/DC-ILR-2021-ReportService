@@ -120,9 +120,9 @@
 
         public decimal? CompletionElement { get; set; }
 
-        public decimal? TotalPRMPreviousFundingYear { get; set; }
+        public decimal TotalPRMPreviousFundingYear { get; set; }
 
-        public decimal? TotalPRMThisFundingYear { get; set; }
+        public decimal TotalPRMThisFundingYear { get; set; }
 
         public string LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
 

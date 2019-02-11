@@ -1,31 +1,27 @@
-﻿using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.IO.Compression;
+using System.Linq;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Aspose.Cells;
+using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
+using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
+using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Eas;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.IO.Compression;
-    using System.Linq;
-    using System.Reflection;
-    using System.Threading;
-    using System.Threading.Tasks;
-    using Aspose.Cells;
-    using ESFA.DC.DateTimeProvider.Interface;
-    using ESFA.DC.ILR.Model.Interface;
-    using ESFA.DC.ILR1819.ReportService.Interface.Builders;
-    using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
-    using ESFA.DC.ILR1819.ReportService.Interface.Reports;
-    using ESFA.DC.ILR1819.ReportService.Interface.Service;
-    using ESFA.DC.ILR1819.ReportService.Model.ILR;
-    using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-    using ESFA.DC.IO.Interfaces;
-    using ESFA.DC.JobContext.Interface;
-    using ESFA.DC.JobContextManager.Model.Interface;
-    using ESFA.DC.Logging.Interfaces;
-    using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
-
     public sealed class AdultFundingClaimReport : AbstractReportBuilder, IReport
     {
         private const string ProviderNameCellName = "D5";
@@ -55,7 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private const string OrganisationDataCellName = "F36";
         private const string PostcodeDataCellName = "F37";
         private const string LargeEmployerDataCellName = "F38";
-        private const string ReportGeneratedAtCellName = "D39";
+        private const string ReportGeneratedAtCellName = "B39";
 
         private const string OtherLearningProgrammeFunding6MonthsCellNameFis = "F12";
         private const string OtherLearningProgrammeFunding12MonthsCellNameFis = "G12";
@@ -80,7 +76,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private const string OrganisationDataCellNameFis = "F37";
         private const string PostcodeDataCellNameFis = "F38";
         private const string LargeEmployerDataCellNameFis = "F39";
-        private const string ReportGeneratedAtCellNameFis = "D40";
+        private const string ReportGeneratedAtCellNameFis = "B40";
 
         private readonly ILogger _logger;
         private readonly IStreamableKeyValuePersistenceService _storage;
@@ -135,14 +131,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAdultFundingClaimReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
-            Task<List<EasSubmissionValues>> easSubmissionValuesAsync = _easProviderService.GetEasSubmissionValuesAsync(jobContextMessage, cancellationToken);
-            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
-            Task<ALBGlobal> albGlobalTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
+            Task<List<EasSubmissionValues>> easSubmissionValuesAsync = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
+            Task<ALBGlobal> albGlobalTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
+            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             var organisationDataTask = _orgProviderService.GetVersionAsync(cancellationToken);
             var largeEmployerDataTask = _largeEmployerProviderService.GetVersionAsync(cancellationToken);
@@ -163,7 +159,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             var fundingClaimModel = _adultFundingClaimBuilder.BuildAdultFundingClaimModel(
                 _logger,
-                jobContextMessage,
+                reportServiceContext,
                 fm35Task.Result,
                 easSubmissionValuesAsync.Result,
                 albGlobalTask.Result,
@@ -183,10 +179,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            long jobId = jobContextMessage.JobId;
-            string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            long jobId = reportServiceContext.JobId;
+            string ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("AdultFundingClaimReportTemplate.xlsx"));
@@ -201,11 +197,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             }
         }
 
-        private void PopulateWorkbook(object workbook, AdultFundingClaimModel fundingClaimModel, bool isFis)
-        {
-            throw new NotImplementedException();
-        }
-
         private void PopulateWorkbook(Workbook workbook, AdultFundingClaimModel adultFundingClaimModel, bool isFis)
         {
             Worksheet worksheet = workbook.Worksheets[0];
@@ -213,7 +204,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             cells[ProviderNameCellName].PutValue(adultFundingClaimModel.ProviderName);
             cells[UkprnCellName].PutValue(adultFundingClaimModel.Ukprn);
             cells[IlrFileCellName].PutValue(adultFundingClaimModel.IlrFile);
-            cells[YearCellName].PutValue(adultFundingClaimModel.Year);
             if (!isFis)
             {
                 cells.DeleteRow(8);

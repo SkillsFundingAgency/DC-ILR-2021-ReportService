@@ -13,6 +13,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
@@ -20,8 +21,6 @@ using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery;
 
@@ -67,23 +66,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsIndicativeEarningsReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            long jobId = jobContextMessage.JobId;
-            string ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            string externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            string fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            long jobId = reportServiceContext.JobId;
+            string ukPrn = reportServiceContext.Ukprn.ToString();
+            string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
-            string csv = await GetCsv(jobContextMessage, cancellationToken);
+            string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
+            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, validLearnersTask, fm36Task);
 
@@ -123,11 +122,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             foreach (ILearner learner in learners)
             {
-                LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => string.Equals(x.Key, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase)).Value;
                 FM36Learner fm36Learner = fm36Data?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
+                    if (learningDelivery.FundModel != 36)
+                    {
+                        continue;
+                    }
+
                     string larsStandard = null;
                     if (learningDelivery.StdCodeNullable != null)
                     {
@@ -136,6 +139,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                             cancellationToken);
                     }
 
+                    LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => string.Equals(x.Key, learningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)).Value;
+
                     LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries
                         ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
 
@@ -143,7 +148,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     {
                         List<PriceEpisode> episodesInRange = fm36Learner.PriceEpisodes
                             .Where(p => p.PriceEpisodeValues.EpisodeStartDate >= Constants.BeginningOfYear &&
-                                        p.PriceEpisodeValues.EpisodeStartDate <= Constants.EndOfYear).ToList();
+                                        p.PriceEpisodeValues.EpisodeStartDate <= Constants.EndOfYear
+                                        && learningDelivery.AimSeqNumber == p.PriceEpisodeValues.PriceEpisodeAimSeqNumber).ToList();
 
                         if (episodesInRange.Any())
                         {

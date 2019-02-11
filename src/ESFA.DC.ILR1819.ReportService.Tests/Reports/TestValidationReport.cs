@@ -4,12 +4,16 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Castle.Components.DictionaryAdapter;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Poco;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -17,9 +21,6 @@ using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -93,7 +94,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     }
                 }).Returns(Task.CompletedTask);
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, dataStoreConfiguration);
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
@@ -110,15 +111,18 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 validationErrorsServiceMock.Object,
                 validationStageOutputCache);
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors] = "ValidationErrors";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups] = "ValidationErrorsLookup";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount] = 2;
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount] = 3;
+            Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
+            reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
+            reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
+            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10033670);
+            reportServiceContextMock.SetupGet(x => x.Filename).Returns("ILR-10033670-1819-20180712-144437-03");
+            reportServiceContextMock.SetupGet(x => x.ValidationErrorsKey).Returns("ValidationErrors");
+            reportServiceContextMock.SetupGet(x => x.ValidationErrorsLookupsKey).Returns("ValidationErrorsLookup");
+            reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersCount).Returns(2);
+            reportServiceContextMock.SetupGet(x => x.InvalidLearnRefNumbersCount).Returns(3);
+            reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
-            await validationErrorsReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
+            await validationErrorsReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
             json.Should().NotBeNullOrEmpty();
             csv.Should().NotBeNullOrEmpty();
@@ -127,6 +131,28 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             ValidationErrorMapper helper = new ValidationErrorMapper();
             TestCsvHelper.CheckCsv(csv, new CsvEntry(helper, 1));
             TestXlsxHelper.CheckXlsx(xlsx, new XlsxEntry(helper, 5));
+        }
+
+        [Fact]
+        public async Task TestSorter()
+        {
+            List<ValidationErrorModel> validationErrorModels = new EditableList<ValidationErrorModel>
+            {
+                new ValidationErrorModel("E", "0R99", "AFinType_13", "...", "...", 2),
+                new ValidationErrorModel("E", "3AddHr06", "AddHours_02", "...", "...", 1),
+                new ValidationErrorModel("E", "1R99", "UKPRN_10", "...", "...", 3),
+                new ValidationErrorModel("W", "0AddHr05", "AddHours_06", "...", "...", 5),
+                new ValidationErrorModel("W", "0AddHr06", "AddHours_05", "...", "...", 4),
+                new ValidationErrorModel("W", "0AddHr07", "EmpStat_12", "...", "...", 6),
+            };
+
+            validationErrorModels.Sort(new ValidationErrorsModelComparer());
+
+            int pointer = 1;
+            foreach (ValidationErrorModel validationErrorModel in validationErrorModels)
+            {
+                validationErrorModel.AimSequenceNumber.Should().Be(pointer++);
+            }
         }
     }
 }

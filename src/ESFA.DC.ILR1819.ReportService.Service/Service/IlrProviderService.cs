@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -10,12 +9,11 @@ using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -54,7 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getIlrLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<IMessage> GetIlrFile(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<IMessage> GetIlrFile(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getIlrLock.WaitAsync(cancellationToken);
 
@@ -70,9 +68,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                string filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
-                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
-                if (await _storage.ContainsAsync(filename, cancellationToken))
+                string filename = reportServiceContext.Filename;
+                int ukPrn = reportServiceContext.Ukprn;
+                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     using (MemoryStream ms = new MemoryStream())
                     {
@@ -83,26 +81,39 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
                 else
                 {
+                    DateTime submittedDate;
+                    DateTime filePreparationDate;
+
+                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    {
+                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                    }
+
+                    using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    {
+                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                    }
+
                     _message = new Message
                     {
                         Header = new MessageHeader
                         {
                             Source = new MessageHeaderSource
                             {
-                                UKPRN = ukPrn
+                                UKPRN = ukPrn,
+                                DateTime = submittedDate
+                            },
+                            CollectionDetails = new MessageHeaderCollectionDetails
+                            {
+                                FilePreparationDate = filePreparationDate
                             }
                         }
                     };
-
-                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
-                    {
-                        _message.Header.Source.DateTime = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-                    }
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Failed to get and deserialise ILR from storage, key: {JobContextMessageKey.Filename}", ex);
+                _logger.LogError($"Failed to get and deserialise ILR from storage, key: {reportServiceContext.Filename}", ex);
             }
             finally
             {
@@ -113,7 +124,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         }
 
         public async Task<ILRSourceFileInfo> GetLastSubmittedIlrFile(
-           IJobContextMessage jobContextMessage,
+           IReportServiceContext reportServiceContext,
            CancellationToken cancellationToken)
         {
             await _getIlrLock.WaitAsync(cancellationToken);
@@ -125,16 +136,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                var ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
-                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                var ukPrn = reportServiceContext.Ukprn;
+
+                using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {
-                    var fileDetail = await ilrContext.SourceFiles.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.DateTime).FirstOrDefaultAsync(cancellationToken);
+                    var fileDetail = await ilrContext.FileDetails.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.ID).FirstOrDefaultAsync(cancellationToken);
                     if (fileDetail != null)
                     {
+                        var filename = fileDetail.Filename.Contains('/') ? fileDetail.Filename.Split('/')[1] : fileDetail.Filename;
+
                         ilrFileDetail.UKPRN = fileDetail.UKPRN;
-                        ilrFileDetail.Filename = fileDetail.SourceFileName;
-                        ilrFileDetail.SubmittedTime = fileDetail.DateTime;
-                        ilrFileDetail.FilePreparationDate = fileDetail.FilePreparationDate;
+                        ilrFileDetail.Filename = filename;
+                        ilrFileDetail.SubmittedTime = fileDetail.SubmittedTime;
+                    }
+                }
+
+                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                {
+                    var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
+                    if (collectionDetail != null)
+                    {
+                      ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
                     }
                 }
             }

@@ -5,9 +5,11 @@ using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Service;
+using ESFA.DC.ILR1819.ReportService.Stateless.Context;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -45,8 +47,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
             Mock<IReport> report = new Mock<IReport>();
             report.SetupGet(x => x.ReportTaskName).Returns(topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport);
             report.Setup(x =>
-                    x.GenerateReport(It.IsAny<IJobContextMessage>(), It.IsAny<ZipArchive>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
-                .Callback<IJobContextMessage, ZipArchive, bool, CancellationToken>((j, z, b, c) =>
+                    x.GenerateReport(It.IsAny<IReportServiceContext>(), It.IsAny<ZipArchive>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
+                .Callback<IReportServiceContext, ZipArchive, bool, CancellationToken>((j, z, b, c) =>
                 {
                     ZipArchiveEntry archivedFile = z.CreateEntry("ExampleReport.csv", CompressionLevel.Optimal);
                     using (var sw = new StreamWriter(archivedFile.Open()))
@@ -58,7 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
             report.Setup(x => x.IsMatch(It.IsAny<string>())).Returns(true);
 
             Mock<IIlrFileHelper> ilrFileHelper = new Mock<IIlrFileHelper>();
-            ilrFileHelper.Setup(x => x.CheckIlrFileNameIsValid(It.IsAny<IJobContextMessage>())).Returns(true);
+            ilrFileHelper.Setup(x => x.CheckIlrFileNameIsValid(It.IsAny<IReportServiceContext>())).Returns(true);
 
             JobContextMessage jobContextMessage =
                 new JobContextMessage(
@@ -72,10 +74,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.General
             EntryPoint entryPoint = new EntryPoint(
                 logger.Object,
                 streamableKeyValuePersistenceService.Object,
-                new[] { report.Object },
-                ilrFileHelper.Object);
+                new[] { report.Object });
 
-            await entryPoint.Callback(jobContextMessage, CancellationToken.None);
+            await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), CancellationToken.None);
 
             string zipContents;
             using (MemoryStream ms = new MemoryStream(zipBytes))

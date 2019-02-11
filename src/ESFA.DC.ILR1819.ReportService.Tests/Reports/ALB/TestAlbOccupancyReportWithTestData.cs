@@ -1,9 +1,11 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
@@ -14,9 +16,6 @@ using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -43,8 +42,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
             Mock<ILogger> logger = new Mock<ILogger>();
 
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
-            Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
+            Mock<IStreamableKeyValuePersistenceService> redis = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
@@ -54,12 +54,20 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
             storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
-            redis.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
-            redis.Setup(x => x.GetAsync("FundingAlbOutput", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText($@"Reports\ALB\{alb}"));
-            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText($@"Reports\ALB\{validLearners}"));
+            redis.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.GetAsync("FundingALBOutputKey", It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ALBOutput1000.json").CopyTo(sr)).Returns(Task.CompletedTask);
+            redis.Setup(x => x.GetAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText($@"Reports\ALB\{validLearners}"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
+
+            reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
+            reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
+            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10033670);
+            reportServiceContextMock.SetupGet(x => x.Filename).Returns(ilr.Replace(".xml", string.Empty));
+            reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
+            reportServiceContextMock.SetupGet(x => x.FundingALBOutputKey).Returns("FundingAlbOutput");
+            reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
 
@@ -68,9 +76,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
                 LarsConnectionString = ConfigurationManager.AppSettings["LarsConnectionString"]
             });
 
-            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
+            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, null);
 
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, null);
 
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
@@ -90,17 +98,11 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
                 valueProvider,
                 topicsAndTasks);
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = 10033670;
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = ilr.Replace(".xml", string.Empty);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingAlbOutput] = "FundingAlbOutput";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
-
-            await allbOccupancyReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
+            await allbOccupancyReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
 #if DEBUG
-            File.WriteAllText($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename]}.csv", csv);
+            File.WriteAllText($"{reportServiceContextMock.Object.Filename}.csv", csv);
 #endif
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new AllbOccupancyMapper(), 1));
         }

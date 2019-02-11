@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -11,20 +10,15 @@ using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
-using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -63,13 +57,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM81Global> fm81Task =
-                _fm81TrailBlazerProviderService.GetFM81Data(jobContextMessage, cancellationToken);
+                _fm81TrailBlazerProviderService.GetFM81Data(reportServiceContext, cancellationToken);
             Task<List<string>> validLearnersTask =
-                _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+                _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, fm81Task, validLearnersTask);
 
@@ -114,10 +108,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             var csv = GetReportCsv(trailblazerEmployerIncentivesModels);
 
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using CsvHelper.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -11,8 +12,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         public void GetFormattedValue(List<object> values, object value, ClassMap mapper, ModelProperty modelProperty)
         {
+            Type propertyType = modelProperty.MethodInfo.PropertyType;
+
             if (value == null)
             {
+                if (IsNullable(propertyType) && propertyType == typeof(decimal?))
+                {
+                    if (IsNullableMapper(mapper, modelProperty))
+                    {
+                        values.Add(Constants.NotApplicable);
+                        return;
+                    }
+
+                    int decimalPoints = GetDecimalPoints(mapper, modelProperty);
+                    values.Add(PadDecimal(0, decimalPoints));
+                    return;
+                }
+
                 values.Add(string.Empty);
                 return;
             }
@@ -25,23 +41,67 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             if (value is decimal d1)
             {
-                values.Add(decimal.Round(d1, GetDecimalPoints(mapper, modelProperty)));
+                int decimalPoints = GetDecimalPoints(mapper, modelProperty);
+                decimal rounded = decimal.Round(d1, decimalPoints);
+                values.Add(rounded.ToString($"N{decimalPoints:D}"));
+                //values.Add(PadDecimal(rounded, decimalPoints));
                 return;
             }
 
-            if (IsOfNullableType<decimal>(value))
+            if (IsOfNullableType<decimal>(propertyType))
             {
                 decimal? d = (decimal?)value;
-                values.Add(decimal.Round(d.Value, GetDecimalPoints(mapper, modelProperty)));
+                int decimalPoints = GetDecimalPoints(mapper, modelProperty);
+                decimal rounded = decimal.Round(d.GetValueOrDefault(0), decimalPoints);
+                values.Add(rounded.ToString($"N{decimalPoints:D}"));
+                //values.Add(PadDecimal(rounded, decimalPoints));
                 return;
+            }
+
+            if (value is int i)
+            {
+                if (i == 0)
+                {
+                    if (!CanAddZeroInt(mapper, modelProperty))
+                    {
+                        values.Add(string.Empty);
+                        return;
+                    }
+                }
+            }
+
+            if (value is string str)
+            {
+                if (str == Constants.DateTimeMin)
+                {
+                    values.Add(string.Empty);
+                    return;
+                }
             }
 
             values.Add(value);
         }
 
+        private bool IsNullableMapper(ClassMap mapper, ModelProperty modelProperty)
+        {
+            MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
+            return memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains(Constants.NotApplicable) ?? false;
+        }
+
+        private bool CanAddZeroInt(ClassMap mapper, ModelProperty modelProperty)
+        {
+            MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
+            return !(memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains(Constants.Zero) ?? false);
+        }
+
         private bool IsOfNullableType<T>(object o)
         {
             return Nullable.GetUnderlyingType(o.GetType()) != null && o is T;
+        }
+
+        private bool IsNullable(Type propertyType)
+        {
+            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
         }
 
         private int GetDecimalPoints(ClassMap mapper, ModelProperty modelProperty)
@@ -63,6 +123,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return 2;
+        }
+
+        private string PadDecimal(decimal value, int decimalPoints)
+        {
+            string valueStr = value.ToString(CultureInfo.InvariantCulture);
+            int decimalPointPos = valueStr.IndexOf('.');
+            int actualDecimalPoints = 0;
+            if (decimalPointPos > -1)
+            {
+                actualDecimalPoints = valueStr.Length - (decimalPointPos + 1);
+            }
+            else
+            {
+                valueStr += ".";
+            }
+
+            return valueStr + new string('0', decimalPoints - actualDecimalPoints);
         }
     }
 }

@@ -8,12 +8,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         // LearningDelivery FAM Codes
         public const string LearningDeliveryFAMCodeLSF = "LSF";
-        public const string LearningDeliveryFAMCodeLDM1 = "LDM1";
-        public const string LearningDeliveryFAMCodeLDM2 = "LDM2";
-        public const string LearningDeliveryFAMCodeLDM3 = "LDM3";
-        public const string LearningDeliveryFAMCodeLDM4 = "LDM4";
+        public const string LearningDeliveryFAMCodeLDM = "LDM";
         public const string LearningDeliveryFAMCodeRES = "RES";
         public const string LearningDeliveryFAMCodeACT = "ACT";
+        public const string LearningDeliveryFAMCodeSOF = "SOF";
 
         // FM25 FundLines
         public const string DirectFundedStudents1416FundLine = "14-16 Direct Funded Students";
@@ -85,6 +83,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         // Exceptional Learning Support
         public const string ExceptionalLearningInfoText = "Exceptional learning support is paid out of a separate budget, not the budgets noted above. This is provided for information only and you will be informed separately of any payments made. Note payments are made following the last ILR collection of the funding year.";
+
+        // Dates
+        public const string Year = "2018/19";
+
+        // Value Provider
+        public const string Zero = "0";
+        public const string NotApplicable = "n/a";
+        public static string DateTimeMin = DateTime.MinValue.ToString("dd/MM/yyyy");
 
         // Dates
         public static readonly DateTime BeginningOfYear = new DateTime(2018, 8, 1);

@@ -1,10 +1,11 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+﻿using ESFA.DC.ILR1819.ReportService.Interface.Context;
+
+namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
     using System;
     using System.Collections.Generic;
     using System.Threading;
     using System.Threading.Tasks;
-    using ESFA.DC.JobContextManager.Model.Interface;
     using Model.Eas;
 
     public interface IEasProviderService
@@ -13,6 +14,6 @@
 
         List<EasPaymentType> GetAllPaymentTypes();
 
-        Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IJobContextMessage jobContextMessage, CancellationToken cancellationToken);
+        Task<List<EasSubmissionValues>> GetEasSubmissionValuesAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
     }
 }

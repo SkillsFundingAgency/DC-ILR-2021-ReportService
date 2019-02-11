@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -17,15 +18,15 @@ using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Generation;
+using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Model.Styling;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
 
@@ -135,33 +136,33 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _cachedModelProperties = _fundingSummaryMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(jobContextMessage, cancellationToken);
-            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
-            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
-            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(jobContextMessage, cancellationToken);
-            Task<FM81Global> fm81Task = _fm81TrailBlazerProviderService.GetFM81Data(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<string> providerNameTask = _orgProviderService.GetProviderName(jobContextMessage, cancellationToken);
-            Task<int> periodTask = _periodProviderService.GetPeriod(jobContextMessage, cancellationToken);
-            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
+            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
+            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken);
+            Task<FM81Global> fm81Task = _fm81TrailBlazerProviderService.GetFM81Data(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
+            Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
+            Task<int> periodTask = _periodProviderService.GetPeriod(reportServiceContext, cancellationToken);
+            Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             Task<List<EasSubmissionValues>> easSubmissionsValuesTask = null;
             if (!isFis)
             {
-                easSubmissionsValuesTask = _easProviderService.GetEasSubmissionValuesAsync(jobContextMessage, cancellationToken);
+                easSubmissionsValuesTask = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
             }
 
-            await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, periodTask, easSubmissionsValuesTask);
+            await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, periodTask, easSubmissionsValuesTask ?? Task.CompletedTask, lastSubmittedIlrFileTask);
 
             if (cancellationToken.IsCancellationRequested)
             {
                 return;
             }
 
-            FundingSummaryHeaderModel fundingSummaryHeaderModel = await GetHeader(jobContextMessage, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
+            FundingSummaryHeaderModel fundingSummaryHeaderModel = await GetHeader(reportServiceContext, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
             FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(ilrFileTask, lastSubmittedIlrFileTask, cancellationToken);
 
             // Todo: Check keys & titles
@@ -225,9 +226,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(new FundingSummaryModel());
 
             fundingSummaryModels.Add(new FundingSummaryModel("16-18 Apprenticeship Frameworks for starts before 1 May 2017", HeaderType.All, 2));
-            FundingSummaryModel ilrApprenticeshipProgramme = _fm35Builder.BuildWithFundLine("ILR 16-18 Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel ilrApprenticeshipProgramme = _fm35Builder.BuildWithFundLine("ILR 16-18 Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(ilrApprenticeshipProgramme);
-            FundingSummaryModel ilrApprenticeshipFrameworks = _fm35Builder.BuildWithFundLine("ILR 16-18 Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel ilrApprenticeshipFrameworks = _fm35Builder.BuildWithFundLine("ILR 16-18 Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(ilrApprenticeshipFrameworks);
             FundingSummaryModel ilrTotal1618Apprenticeship = _totalBuilder.TotalRecords("ILR Total 16-18 Apprenticeship Frameworks (£)", ilrApprenticeshipProgramme, ilrApprenticeshipFrameworks);
             FundingSummaryModel easTotal1618Apprenticeship = new FundingSummaryModel(); // EAS
@@ -263,11 +264,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("16-18 Trailblazer Apprenticeships for starts before 1 May 2017", HeaderType.All, 2));
-            FundingSummaryModel trailblazer1618Programme = _fm81Builder.BuildWithFundLine("ILR 16-18 Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", fm81Task.Result, validLearnersTask.Result, "16-18 Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment });
+            FundingSummaryModel trailblazer1618Programme = _fm81Builder.BuildWithFundLine("ILR 16-18 Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", fm81Task.Result, validLearnersTask.Result, "16-18 Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer1618Programme);
-            FundingSummaryModel trailblazer1618Incentive = _fm81Builder.BuildWithFundLine("ILR 16-18 Trailblazer Apprenticeships Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", fm81Task.Result, validLearnersTask.Result, "16-18 Trailblazer Apprenticeship", new[] { Constants.Fm81AchPayment, Constants.Fm81SmallBusPayment, Constants.Fm81YoungAppPayment });
+            FundingSummaryModel trailblazer1618Incentive = _fm81Builder.BuildWithFundLine("ILR 16-18 Trailblazer Apprenticeships Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", fm81Task.Result, validLearnersTask.Result, "16-18 Trailblazer Apprenticeship", new[] { Constants.Fm81AchPayment, Constants.Fm81SmallBusPayment, Constants.Fm81YoungAppPayment }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer1618Incentive);
-            FundingSummaryModel trailblazer1618Support = _fm81Builder.BuildWithFundLine("ILR 16-18 Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "16-18 Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash });
+            FundingSummaryModel trailblazer1618Support = _fm81Builder.BuildWithFundLine("ILR 16-18 Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "16-18 Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer1618Support);
             FundingSummaryModel trailblazerTotal = _totalBuilder.TotalRecords("ILR Total 16-18 Trailblazer Apprenticeships (£)", trailblazer1618Programme, trailblazer1618Incentive, trailblazer1618Support);
             FundingSummaryModel easTotal1618TrailblazerApprenticeship = new FundingSummaryModel(); // EAS
@@ -300,20 +301,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("16-18 Non-Levy Contracted Apprenticeships - Non-procured delivery", HeaderType.All, 2));
-            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }));
-            FundingSummaryModel nonLevyCoInvest = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest });
+            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result));
+            FundingSummaryModel nonLevyCoInvest = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyCoInvest);
-            FundingSummaryModel nonLevyMathsAndEnglish = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment });
+            FundingSummaryModel nonLevyMathsAndEnglish = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyMathsAndEnglish);
-            FundingSummaryModel nonLevyUplift = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment });
+            FundingSummaryModel nonLevyUplift = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyUplift);
-            FundingSummaryModel nonLevyDisadvantage = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment });
+            FundingSummaryModel nonLevyDisadvantage = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyDisadvantage);
-            FundingSummaryModel nonLevyProviders = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay });
+            FundingSummaryModel nonLevyProviders = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyProviders);
-            FundingSummaryModel nonLevyEmployers = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay });
+            FundingSummaryModel nonLevyEmployers = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyEmployers);
-            FundingSummaryModel nonLevySupport = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnSuppFundCash });
+            FundingSummaryModel nonLevySupport = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Non-Levy Contract", "16-18 Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(nonLevySupport);
             FundingSummaryModel nonLevyTotal = _totalBuilder.TotalRecords("ILR Total 16-18 Non-Levy Contracted Apprenticeships (£)", nonLevyCoInvest, nonLevyMathsAndEnglish, nonLevyUplift, nonLevyDisadvantage, nonLevyProviders, nonLevyEmployers, nonLevySupport);
 
@@ -359,9 +360,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("19-23 Apprenticeship Frameworks for starts before 1 May 2017", HeaderType.All, 2));
-            FundingSummaryModel apprenticeshipProgramme = _fm35Builder.BuildWithFundLine("ILR 19-23 Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-23 Apprenticeship" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel apprenticeshipProgramme = _fm35Builder.BuildWithFundLine("ILR 19-23 Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-23 Apprenticeship" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(apprenticeshipProgramme);
-            FundingSummaryModel apprenticeshipSupport = _fm35Builder.BuildWithFundLine("ILR 19-23 Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-23 Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel apprenticeshipSupport = _fm35Builder.BuildWithFundLine("ILR 19-23 Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-23 Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(apprenticeshipSupport);
             FundingSummaryModel apprenticeshipTotal = _totalBuilder.TotalRecords("ILR Total 19-23 Apprenticeship Frameworks (£)", apprenticeshipProgramme, apprenticeshipSupport);
 
@@ -398,11 +399,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("19-23 Trailblazer Apprenticeships for starts before 1 May 2017", HeaderType.All, 2));
-            FundingSummaryModel trailblazer1923Funding = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment });
+            FundingSummaryModel trailblazer1923Funding = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer1923Funding);
-            FundingSummaryModel trailblazer1923Payment = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81AchPayment, Constants.Fm81SmallBusPayment, Constants.Fm81YoungAppPayment });
+            FundingSummaryModel trailblazer1923Payment = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81AchPayment, Constants.Fm81SmallBusPayment, Constants.Fm81YoungAppPayment }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer1923Payment);
-            FundingSummaryModel trailblazer1923Support = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash });
+            FundingSummaryModel trailblazer1923Support = _fm81Builder.BuildWithFundLine("ILR 19-23 Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "19-23 Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer1923Support);
             FundingSummaryModel trailblazer1923Total = _totalBuilder.TotalRecords("ILR Total 19-23 Trailblazer Apprenticeships (£)", trailblazer1923Funding, trailblazer1923Payment, trailblazer1923Support);
 
@@ -436,9 +437,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("24+ Apprenticeship Frameworks for starts before 1 May 2017", HeaderType.All, 2));
-            FundingSummaryModel apprenticeship24Programme = _fm35Builder.BuildWithFundLine("ILR 24+ Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "24+ Apprenticeship" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel apprenticeship24Programme = _fm35Builder.BuildWithFundLine("ILR 24+ Apprenticeship Frameworks Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "24+ Apprenticeship" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(apprenticeship24Programme);
-            FundingSummaryModel apprenticeship24Support = _fm35Builder.BuildWithFundLine("ILR 24+ Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "24+ Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel apprenticeship24Support = _fm35Builder.BuildWithFundLine("ILR 24+ Apprenticeship Frameworks Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "24+ Apprenticeship" }, new[] { Constants.Fm35LearningSupportAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(apprenticeship24Support);
             FundingSummaryModel apprenticeship24Total = _totalBuilder.TotalRecords("ILR Total 24+ Apprenticeship Frameworks (£)", apprenticeship24Programme, apprenticeship24Support);
 
@@ -475,11 +476,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("24+ Trailblazer Apprenticeships for starts before 1 May 2017", HeaderType.All, 2));
-            FundingSummaryModel trailblazer24Funding = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment });
+            FundingSummaryModel trailblazer24Funding = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81CoreGovContPayment, Constants.Fm81MathEngBalPayment, Constants.Fm81MathEngOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer24Funding);
-            FundingSummaryModel trailblazer24Payment = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81AchPayment, Constants.Fm81SmallBusPayment, Constants.Fm81YoungAppPayment });
+            FundingSummaryModel trailblazer24Payment = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81AchPayment, Constants.Fm81SmallBusPayment, Constants.Fm81YoungAppPayment }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer24Payment);
-            FundingSummaryModel trailblazer24Support = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash });
+            FundingSummaryModel trailblazer24Support = _fm81Builder.BuildWithFundLine("ILR 24+ Trailblazer Apprenticeships Learning Support (£)", fm81Task.Result, validLearnersTask.Result, "24+ Trailblazer Apprenticeship", new[] { Constants.Fm81LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(trailblazer24Support);
             FundingSummaryModel trailblazer24Total = _totalBuilder.TotalRecords("ILR Total 24+ Trailblazer Apprenticeships (£)", trailblazer24Funding, trailblazer24Payment, trailblazer24Support);
 
@@ -513,20 +514,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("Adult Non-Levy Contracted Apprenticeships – Non-procured delivery", HeaderType.All, 2));
-            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }));
-            FundingSummaryModel nonLevyCoInvestAdult = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest });
+            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result));
+            FundingSummaryModel nonLevyCoInvestAdult = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyCoInvestAdult);
-            FundingSummaryModel nonLevyMathsAndEnglishAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment });
+            FundingSummaryModel nonLevyMathsAndEnglishAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyMathsAndEnglishAdult);
-            FundingSummaryModel nonLevyUpliftAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment });
+            FundingSummaryModel nonLevyUpliftAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyUpliftAdult);
-            FundingSummaryModel nonLevyDisadvantageAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment });
+            FundingSummaryModel nonLevyDisadvantageAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyDisadvantageAdult);
-            FundingSummaryModel nonLevyProvidersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay });
+            FundingSummaryModel nonLevyProvidersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyProvidersAdult);
-            FundingSummaryModel nonLevyEmployersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay });
+            FundingSummaryModel nonLevyEmployersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyEmployersAdult);
-            FundingSummaryModel nonLevySupportAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnSuppFundCash });
+            FundingSummaryModel nonLevySupportAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Non-Levy Contract", "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(nonLevySupportAdult);
             FundingSummaryModel nonLevyTotalAdult = _totalBuilder.TotalRecords("ILR Total Adult Non-Levy Contracted Apprenticeships (£)", nonLevyCoInvestAdult, nonLevyMathsAndEnglishAdult, nonLevyUpliftAdult, nonLevyDisadvantageAdult, nonLevyProvidersAdult, nonLevyEmployersAdult, nonLevySupportAdult);
 
@@ -584,20 +585,20 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(new FundingSummaryModel("Levy Contracted Apprenticeships Budget for starts on or after 1 May 2017", HeaderType.TitleOnly, 0));
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("16-18 Levy Contracted Apprenticeships", HeaderType.All, 2));
-            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }));
-            FundingSummaryModel levyMathsAndEnglish1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment });
+            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result));
+            FundingSummaryModel levyMathsAndEnglish1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyMathsAndEnglish1618);
-            FundingSummaryModel levyUplift1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment });
+            FundingSummaryModel levyUplift1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyUplift1618);
-            FundingSummaryModel levyDisadvantage1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment });
+            FundingSummaryModel levyDisadvantage1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyDisadvantage1618);
-            FundingSummaryModel levyProviders1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay });
+            FundingSummaryModel levyProviders1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(levyProviders1618);
-            FundingSummaryModel levyEmployers1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay });
+            FundingSummaryModel levyEmployers1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(levyEmployers1618);
-            FundingSummaryModel levyApprentice1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelLearnAddPayment });
+            FundingSummaryModel levyApprentice1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelLearnAddPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyApprentice1618);
-            FundingSummaryModel levySupport1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash });
+            FundingSummaryModel levySupport1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(levySupport1618);
             FundingSummaryModel levyTotal1618 = _totalBuilder.TotalRecords("ILR Total 16-18 Levy Contracted Apprenticeships (£)", levyMathsAndEnglish1618, levyUplift1618, levyDisadvantage1618, levyProviders1618, levyEmployers1618, levyApprentice1618, levySupport1618);
 
@@ -649,21 +650,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("Adult Levy Contracted Apprenticeships", HeaderType.All, 2));
-            FundingSummaryModel levyIndicativeAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment });
+            FundingSummaryModel levyIndicativeAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyIndicativeAdult);
-            FundingSummaryModel levyMathsAndEnglishAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment });
+            FundingSummaryModel levyMathsAndEnglishAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyMathsAndEnglishAdult);
-            FundingSummaryModel levyUpliftAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment });
+            FundingSummaryModel levyUpliftAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyUpliftAdult);
-            FundingSummaryModel levyDisadvantageAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment });
+            FundingSummaryModel levyDisadvantageAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyDisadvantageAdult);
-            FundingSummaryModel levyProvidersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay });
+            FundingSummaryModel levyProvidersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(levyProvidersAdult);
-            FundingSummaryModel levyEmployersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay });
+            FundingSummaryModel levyEmployersAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(levyEmployersAdult);
-            FundingSummaryModel levyApprenticesAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash });
+            FundingSummaryModel levyApprenticesAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(levyApprenticesAdult);
-            FundingSummaryModel levySupportAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash });
+            FundingSummaryModel levySupportAdult = _fm36Builder.BuildWithFundLine("ILR Adult Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(levySupportAdult);
             FundingSummaryModel levyTotalAdultIlr = _totalBuilder.TotalRecords("ILR Total Adult Levy Contracted Apprenticeships (£)", levyIndicativeAdult, levyMathsAndEnglishAdult, levyUpliftAdult, levyDisadvantageAdult, levyProvidersAdult, levyEmployersAdult, levyApprenticesAdult, levySupportAdult);
 
@@ -728,22 +729,22 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("16-18 Non-Levy Contracted Apprenticeships", HeaderType.All, 2));
-            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }));
-            FundingSummaryModel nonLevyCoInvest1618 = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest });
+            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result));
+            FundingSummaryModel nonLevyCoInvest1618 = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyCoInvest1618);
-            FundingSummaryModel nonLevyMathsAndEnglish1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment });
+            FundingSummaryModel nonLevyMathsAndEnglish1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyMathsAndEnglish1618);
-            FundingSummaryModel nonLevyUplift1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment });
+            FundingSummaryModel nonLevyUplift1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyUplift1618);
-            FundingSummaryModel nonLevyDisadvantage1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment });
+            FundingSummaryModel nonLevyDisadvantage1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyDisadvantage1618);
-            FundingSummaryModel nonLevyProviders1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay });
+            FundingSummaryModel nonLevyProviders1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyProviders1618);
-            FundingSummaryModel nonLevyEmployers1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay });
+            FundingSummaryModel nonLevyEmployers1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyEmployers1618);
-            FundingSummaryModel nonLevyApprentices1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelLearnAddPayment });
+            FundingSummaryModel nonLevyApprentices1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelLearnAddPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyApprentices1618);
-            FundingSummaryModel nonLevySupport1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnSuppFundCash });
+            FundingSummaryModel nonLevySupport1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(nonLevySupport1618);
             FundingSummaryModel nonLevyTotal1618 = _totalBuilder.TotalRecords("ILR Total 16-18 Non-Levy Contracted Apprenticeships (£)", nonLevyCoInvest1618, nonLevyMathsAndEnglish1618, nonLevyUplift1618, nonLevyDisadvantage1618, nonLevyProviders1618, nonLevyEmployers1618, nonLevyApprentices1618, nonLevySupport1618);
 
@@ -795,22 +796,22 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("Adult Non-Levy Contracted Apprenticeships", HeaderType.All, 2));
-            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }));
-            FundingSummaryModel nonLevyCoInvestProcuredAdult = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest });
+            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result));
+            FundingSummaryModel nonLevyCoInvestProcuredAdult = _fm36Builder.BuildWithFundLine("...of which Indicative Government Co-Investment Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36ProgrammeAimProgFundIndMinCoInvest }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyCoInvestProcuredAdult);
-            FundingSummaryModel nonLevyMathsAndEnglishProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment });
+            FundingSummaryModel nonLevyMathsAndEnglishProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyMathsAndEnglishProcuredAdult);
-            FundingSummaryModel nonLevyUpliftProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment });
+            FundingSummaryModel nonLevyUpliftProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyUpliftProcuredAdult);
-            FundingSummaryModel nonLevyDisadvantageProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment });
+            FundingSummaryModel nonLevyDisadvantageProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36DisadvFirstPayment, Constants.Fm36DisadvSecondPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyDisadvantageProcuredAdult);
-            FundingSummaryModel nonLevyProvidersProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay });
+            FundingSummaryModel nonLevyProvidersProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstProv1618Pay, Constants.Fm36LearnDelSecondProv1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyProvidersProcuredAdult);
-            FundingSummaryModel nonLevyEmployersProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay });
+            FundingSummaryModel nonLevyEmployersProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelFirstEmp1618Pay, Constants.Fm36LearnDelSecondEmp1618Pay }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyEmployersProcuredAdult);
-            FundingSummaryModel nonLevyApprenticesProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelLearnAddPayment });
+            FundingSummaryModel nonLevyApprenticesProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Additional Payments for Apprentices (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnDelLearnAddPayment }, periodTask.Result);
             fundingSummaryModels.Add(nonLevyApprenticesProcuredAdult);
-            FundingSummaryModel nonLevySupportProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnSuppFundCash });
+            FundingSummaryModel nonLevySupportProcuredAdult = _fm36Builder.BuildWithFundLine("ILR Adult Non-Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "19+ Apprenticeship Non-Levy Contract (procured)" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(nonLevySupportProcuredAdult);
             FundingSummaryModel nonLevyTotalProcuredAdult = _totalBuilder.TotalRecords("ILR Total Adult Non-Levy Contracted Apprenticeships (£)", nonLevyCoInvestProcuredAdult, nonLevyMathsAndEnglishProcuredAdult, nonLevyUpliftProcuredAdult, nonLevyDisadvantageProcuredAdult, nonLevyProvidersProcuredAdult, nonLevyEmployersProcuredAdult, nonLevyApprenticesProcuredAdult, nonLevySupportProcuredAdult);
 
@@ -876,9 +877,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(new FundingSummaryModel());
 
             fundingSummaryModels.Add(new FundingSummaryModel("19-24 Traineeships", HeaderType.All, 2));
-            FundingSummaryModel traineeship1924Funding = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship", "19-24 Traineeship (non-procured)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel traineeship1924Funding = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship", "19-24 Traineeship (non-procured)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(traineeship1924Funding);
-            FundingSummaryModel traineeship1924Support = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship", "19-24 Traineeship (non-procured)" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel traineeship1924Support = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship", "19-24 Traineeship (non-procured)" }, new[] { Constants.Fm35LearningSupportAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(traineeship1924Support);
             FundingSummaryModel traineeship1924Total = _totalBuilder.TotalRecords("ILR Total 19-24 Traineeships (£)", traineeship1924Funding, traineeship1924Support);
 
@@ -915,9 +916,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("AEB - Other Learning", HeaderType.All, 2));
-            FundingSummaryModel aebFunding = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel aebFunding = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(aebFunding);
-            FundingSummaryModel aebSupport = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel aebSupport = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning", "AEB - Other Learning (non-procured)" }, new[] { Constants.Fm35LearningSupportAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(aebSupport);
             FundingSummaryModel aebTotal = _totalBuilder.TotalRecords("ILR Total AEB - Other Learning (£)", aebFunding, aebSupport);
 
@@ -964,9 +965,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("19-24 Traineeships", HeaderType.All, 2));
-            FundingSummaryModel traineeship1924FundingProcured = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship (procured from Nov 2017)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel traineeship1924FundingProcured = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship (procured from Nov 2017)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(traineeship1924FundingProcured);
-            FundingSummaryModel traineeship1924SupportProcured = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship (procured from Nov 2017)" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel traineeship1924SupportProcured = _fm35Builder.BuildWithFundLine("ILR 19-24 Traineeships Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "19-24 Traineeship (procured from Nov 2017)" }, new[] { Constants.Fm35LearningSupportAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(traineeship1924SupportProcured);
             FundingSummaryModel traineeship1924ProcuredTotal = _totalBuilder.TotalRecords("ILR Total 19-24 Traineeships (£)", traineeship1924FundingProcured, traineeship1924SupportProcured);
 
@@ -1003,9 +1004,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("AEB - Other Learning", HeaderType.All, 2));
-            FundingSummaryModel aebFundingProcured = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning (procured from Nov 2017)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName });
+            FundingSummaryModel aebFundingProcured = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Programme Funding (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning (procured from Nov 2017)" }, new[] { Constants.Fm35OnProgrammeAttributeName, Constants.Fm35AimAchievementAttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, Constants.Fm35BalancingAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(aebFundingProcured);
-            FundingSummaryModel aebSupportProcured = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning (procured from Nov 2017)" }, new[] { Constants.Fm35LearningSupportAttributeName });
+            FundingSummaryModel aebSupportProcured = _fm35Builder.BuildWithFundLine("ILR AEB - Other Learning Learning Support (£)", fm35Task.Result, validLearnersTask.Result, new[] { "AEB - Other Learning (procured from Nov 2017)" }, new[] { Constants.Fm35LearningSupportAttributeName }, periodTask.Result);
             fundingSummaryModels.Add(aebSupportProcured);
             FundingSummaryModel aebProcuredTotal = _totalBuilder.TotalRecords("ILR Total AEB - Other Learning (£)", aebFundingProcured, aebSupportProcured);
 
@@ -1050,7 +1051,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("Advanced Loans Bursary Budget", HeaderType.TitleOnly, 0));
             fundingSummaryModels.Add(new FundingSummaryModel("Advanced Loans Bursary", HeaderType.All, 2));
-            List<FundingSummaryModel> albModels = await _allbBuilder.BuildAsync(jobContextMessage, cancellationToken);
+            List<FundingSummaryModel> albModels = await _allbBuilder.BuildAsync(reportServiceContext, cancellationToken);
             fundingSummaryModels.AddRange(albModels);
             FundingSummaryModel albIlrTotal = _totalBuilder.TotalRecords("ILR Total Advanced Loans Bursary (£)", albModels[0], albModels[1]);
 
@@ -1159,20 +1160,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             //    fundingSummaryModels.Add(new FundingSummaryModel());
             //}
 
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = GetReportCsv(fundingSummaryHeaderModel, fundingSummaryFooterModel);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
-            await WriteZipEntry(archive, $"{fileName}.csv", csv);
 
             Workbook workbook = GetWorkbookReport(fundingSummaryHeaderModel, fundingSummaryFooterModel);
 
             using (MemoryStream ms = new MemoryStream())
             {
-                workbook.Worksheets[0].Name = "FundingSummaryReport";
+                workbook.Worksheets[0].Name = "Funding Summary Report";
                 var assembly = Assembly.GetExecutingAssembly();
                 string euFlagBmp = assembly.GetManifestResourceNames().Single(str => str.EndsWith("EuFlag.bmp"));
                 Stream manifestResourceStream = assembly.GetManifestResourceStream(euFlagBmp);
@@ -1269,25 +1269,28 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return workbook;
         }
 
-        private async Task<FundingSummaryHeaderModel> GetHeader(IJobContextMessage jobContextMessage, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
+        private async Task<FundingSummaryHeaderModel> GetHeader(IReportServiceContext reportServiceContext, Task<IMessage> messageTask, Task<Model.ILR.ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
+            var fileName = Path.GetFileName(reportServiceContext.Filename);
             var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
-                IlrFile = Path.GetFileName(jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString()),
-                Ukprn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]),
+                IlrFile = string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase) ? fileName : "N/A",
+                Ukprn = reportServiceContext.Ukprn,
                 ProviderName = providerNameTask.Result ?? "Unknown",
-                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(_intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]), cancellationToken)).ToString("dd/MM/yyyy") : null,
+                LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(reportServiceContext.Ukprn, cancellationToken)).ToString("dd/MM/yyyy") : null,
                 SecurityClassification = "OFFICIAL - SENSITIVE"
             };
 
             if (messageTask.Result != null)
             {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                fundingSummaryHeaderModel.LastIlrFileUpdate =
+                    messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
             }
             else
             {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null ?
-                                                                                                lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
+                fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null
+                    ? lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
+                    : string.Empty;
             }
 
             return fundingSummaryHeaderModel;

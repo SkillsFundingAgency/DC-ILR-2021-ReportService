@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Interfaces;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
-using Remotion.Linq.Clauses;
+using Newtonsoft.Json;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -26,8 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     public class FM35ProviderService : IFM35ProviderService
     {
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IKeyValuePersistenceService _blob;
+        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
@@ -37,17 +36,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         public FM35ProviderService(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)]
-            IKeyValuePersistenceService redis,
-            [KeyFilter(PersistenceStorageKeys.Blob)]
-            IKeyValuePersistenceService blob,
+            IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _logger = logger;
-            _redis = redis;
-            _blob = blob;
+            _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
             _dataStoreConfiguration = dataStoreConfiguration;
@@ -56,7 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         }
 
         public async Task<FM35Global> GetFM35Data(
-            IJobContextMessage jobContextMessage,
+            IReportServiceContext reportServiceContext,
             CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
@@ -74,27 +69,24 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedDataAlready = true;
-                int ukPrn = _intUtilitiesService.ObjectToInt(
-                    jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+                int ukPrn = reportServiceContext.Ukprn;
 
-                if (jobContextMessage.KeyValuePairs.ContainsKey(JobContextMessageKey.FundingFm35Output)
-                            && await _redis.ContainsAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output].ToString(), cancellationToken))
+                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
-                    string fm35Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm35Output].ToString();
-
-                    if (await _redis.ContainsAsync(fm35Filename, cancellationToken))
+                    string fm35Filename = reportServiceContext.FundingFM35OutputKey;
+                    _logger.LogWarning($"Reading {fm35Filename}; Storage is {_storage}; CancellationToken is {cancellationToken}");
+                    if (await _storage.ContainsAsync(fm35Filename, cancellationToken))
                     {
-                        string fm35 = await _redis.GetAsync(fm35Filename, cancellationToken);
-
-                        if (string.IsNullOrEmpty(fm35))
+                        _logger.LogWarning($"Available {fm35Filename}");
+                        using (MemoryStream ms = new MemoryStream())
                         {
-                            _fundingOutputs = null;
-                            return _fundingOutputs;
+                            await _storage.GetAsync(fm35Filename, ms, cancellationToken);
+                            _logger.LogWarning($"Deserialising {fm35Filename} with {ms.Length}");
+                            _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(ms);
                         }
-
-                        // await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Fm35.json", fm35, cancellationToken);
-                        _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(fm35);
                     }
+
+                    _logger.LogWarning($"Finished {fm35Filename}");
                 }
                 else
                 {
@@ -179,7 +171,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         }
 
         public async Task<List<FM35LearningDeliveryValues>> GetFM35DataFromDataStore(
-            IJobContextMessage jobContextMessage,
+            IReportServiceContext reportServiceContext,
             CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
@@ -191,7 +183,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                var UkPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
+                var UkPrn = reportServiceContext.Ukprn;
 
                 using (ILR1819_DataStoreEntities _ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                 {

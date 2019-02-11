@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Poco;
@@ -16,9 +17,6 @@ using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -103,15 +101,18 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Validation
                 validationErrorsServiceMock.Object,
                 validationStageOutputCache);
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10000020";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = @"Reports\Validation\" + Path.GetFileNameWithoutExtension(ilrFilename);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrors] = "ValidationErrors";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidationErrorLookups] = "ValidationErrorsLookup";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbersCount] = 2;
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.InvalidLearnRefNumbersCount] = 3;
+            Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
+            reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
+            reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
+            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10000020);
+            reportServiceContextMock.SetupGet(x => x.Filename).Returns(@"Reports\Validation\" + Path.GetFileNameWithoutExtension(ilrFilename));
+            reportServiceContextMock.SetupGet(x => x.ValidationErrorsKey).Returns("ValidationErrors");
+            reportServiceContextMock.SetupGet(x => x.ValidationErrorsLookupsKey).Returns("ValidationErrorsLookup");
+            reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersCount).Returns(2);
+            reportServiceContextMock.SetupGet(x => x.InvalidLearnRefNumbersCount).Returns(3);
+            reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
-            await validationErrorsReport.GenerateReport(jobContextMessage, null, false, CancellationToken.None);
+            await validationErrorsReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
             json.Should().NotBeNullOrEmpty();
             csv.Should().NotBeNullOrEmpty();

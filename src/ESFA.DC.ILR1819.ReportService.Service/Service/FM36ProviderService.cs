@@ -5,16 +5,13 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -54,7 +51,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<FM36Global> GetFM36Data(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<FM36Global> GetFM36Data(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             await _getDataLock.WaitAsync(cancellationToken);
 
@@ -72,11 +69,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 _loadedDataAlready = true;
 
-                int ukPrn = _intUtilitiesService.ObjectToInt(jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]);
-                if (jobContextMessage.KeyValuePairs.ContainsKey(JobContextMessageKey.FundingFm36Output)
-                            && await _redis.ContainsAsync(jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString(), cancellationToken))
+                int ukPrn = reportServiceContext.Ukprn;
+                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
-                    string fm36Filename = jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output].ToString();
+                    string fm36Filename = reportServiceContext.FundingFM36OutputKey;
                     string fm36 = await _redis.GetAsync(fm36Filename, cancellationToken);
 
                     if (string.IsNullOrEmpty(fm36))
@@ -93,20 +89,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     FM36Global fm36Global = new FM36Global();
                     using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
                     {
-                        var fm36GlobalDb = await ilrContext.ALB_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
-                        ALB_LearningDelivery[] res = await ilrContext.ALB_LearningDelivery.Where(x => x.UKPRN == ukPrn)
-                            .Include(x => x.ALB_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
+                        var fm36GlobalDb = await ilrContext.AEC_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
+                        //AEC_LearningDelivery[] res = await ilrContext.AEC_LearningDelivery_Period.Where(x => x.UKPRN == ukPrn).Select(x => x.AEC_LearningDelivery)
+                        //    .Include(x => x.AEC_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
 
-                        IGrouping<string, ALB_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
+                        AEC_LearningDelivery[] res = await ilrContext.AEC_LearningDelivery.Where(x => x.UKPRN == ukPrn)
+                            .Include(x => x.AEC_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
+
+                        IGrouping<string, AEC_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
 
                         fm36Global.Learners = new List<FM36Learner>();
 
-                        foreach (IGrouping<string, ALB_LearningDelivery> albLearningDeliveries in learners)
+                        foreach (IGrouping<string, AEC_LearningDelivery> albLearningDeliveries in learners)
                         {
                             var learningDeliveryDto = new List<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery>();
                             foreach (var ld in albLearningDeliveries)
                             {
-                                var ldPeriodisedValues = ld.ALB_LearningDelivery_PeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValues()
+                                var ldPeriodisedValues = ld.AEC_LearningDelivery_PeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValues()
                                 {
                                     AttributeName = ldpv.AttributeName,
                                     Period1 = ldpv.Period_1,
@@ -129,7 +128,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                                     LearningDeliveryPeriodisedValues = ldPeriodisedValues,
                                     LearningDeliveryValues = new LearningDeliveryValues()
                                     {
-                                        LearnDelInitialFundLineType = ld.FundLine // todo : rest of the properties
+                                        LearnDelInitialFundLineType = ld.LearnDelInitialFundLineType // todo : rest of the properties
                                     }
                                 });
                             }
@@ -148,7 +147,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                             fm36Global.LARSVersion = fm36GlobalDb.LARSVersion;
                             fm36Global.RulebaseVersion = fm36GlobalDb.RulebaseVersion;
                             fm36Global.UKPRN = fm36GlobalDb.UKPRN;
-                            fm36GlobalDb.PostcodeAreaCostVersion = fm36GlobalDb.PostcodeAreaCostVersion;
                         }
                     }
 

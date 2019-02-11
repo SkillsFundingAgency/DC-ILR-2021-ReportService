@@ -1,9 +1,9 @@
-﻿using ESFA.DC.JobContextManager.Model.Interface;
+﻿using ESFA.DC.ILR1819.ReportService.Interface.Context;
 
 namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {
     public interface IIlrFileHelper
     {
-        bool CheckIlrFileNameIsValid(IJobContextMessage jobContextMessage);
+        bool CheckIlrFileNameIsValid(IReportServiceContext reportServiceContext);
     }
 }

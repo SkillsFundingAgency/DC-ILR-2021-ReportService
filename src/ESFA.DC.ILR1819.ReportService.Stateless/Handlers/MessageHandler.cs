@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
+using ESFA.DC.ILR1819.ReportService.Stateless.Context;
 using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.JobContext.Interface;
@@ -61,7 +62,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                     var result = false;
                     try
                     {
-                        result = await entryPoint.Callback(jobContextMessage, cancellationToken);
+                        result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
                     }
                     catch (Exception ex)
                     {
