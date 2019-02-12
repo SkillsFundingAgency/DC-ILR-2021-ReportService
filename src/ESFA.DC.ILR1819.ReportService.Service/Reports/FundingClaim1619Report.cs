@@ -23,43 +23,58 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class FundingClaim1619Report : AbstractReportBuilder, IReport
     {
-        private const string RetentionFactorCellName = "D3";
-        private const string ProgrammeCostWeightingCellName = "D4";
-        private const string AreaCostAllowanceCellName = "D5";
-        private const string DisAdvProportionCellName = "D6";
-        private const string LargeProgrammeProportionCellName = "D7";
+        private const string ProviderCellName = "C3";
+        private const string UKPrnCellName = "C4";
+        private const string ILRFileNameCellName = "C5";
+        private const string YearCellName = "G3";
+
+        private const string RetentionFactorCellName = "D7";
+        private const string ProgrammeCostWeightingCellName = "D8";
+        private const string AreaCostAllowanceCellName = "D9";
+        private const string DisAdvProportionCellName = "D10";
+        private const string LargeProgrammeProportionCellName = "D11";
 
         private const string CofRemovalCellName = "F47";
 
+        private const string ComponentSetVersionCellName = "C152";
+        private const string ApplicationVersionCellName = "C154";
+        private const string FilePreparationCellName = "C156";
+
+        private const string LarsDataCellName = "G152";
+        private const string OrganisationDataCellName = "G153";
+        private const string PostcodeDataCellName = "G154";
+        private const string LargeEmployerDataCellName = "G155";
+        private const string CofRemovalDataCellName = "G156";
+
         private List<Tuple<string, string, string, string>> CellPositions = new List<Tuple<string, string, string, string>>()
         {
-            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "540+ hours (Band 5)", "E10", string.Empty),
-            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450+ hours (Band 4a)", "E11", string.Empty),
-            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450 to 539 hours (Band 4b)", "E12", string.Empty),
-            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "360 to 449 hours (Band 3)", "E13", string.Empty),
-            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "280 to 359 hours (Band 2)", "E14", string.Empty),
-            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "Up to 279 hours (Band 1)", "E15", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "540+ hours (Band 5)", "E14", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450+ hours (Band 4a)", "E15", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "450 to 539 hours (Band 4b)", "E16", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "360 to 449 hours (Band 3)", "E17", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "280 to 359 hours (Band 2)", "E18", string.Empty),
+            new Tuple<string, string, string, string>("14-16 Direct Funded Students", "Up to 279 hours (Band 1)", "E19", string.Empty),
 
-            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "540+ hours (Band 5)", "E19", "F19"),
-            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450+ hours (Band 4a)", "E20", "F20"),
-            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450 to 539 hours (Band 4b)", "E21", "F21"),
-            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "360 to 449 hours (Band 3)", "E22", "F22"),
-            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "280 to 359 hours (Band 2)", "E23", "F23"),
-            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "Up to 279 hours (Band 1)", "E24", "F24"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "540+ hours (Band 5)", "E23", "F23"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450+ hours (Band 4a)", "E24", "F24"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "450 to 539 hours (Band 4b)", "E25", "F25"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "360 to 449 hours (Band 3)", "E26", "F26"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "280 to 359 hours (Band 2)", "E27", "F27"),
+            new Tuple<string, string, string, string>("16-19 Students (including High Needs Students)", "Up to 279 hours (Band 1)", "E28", "F28"),
 
-            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "540+ hours (Band 5)", "E28", "F28"),
-            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450+ hours (Band 4a)", "E29", "F29"),
-            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450 to 539 hours (Band 4b)", "E30", "F30"),
-            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "360 to 449 hours (Band 3)", "E31", "F31"),
-            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "280 to 359 hours (Band 2)", "E32", "F32"),
-            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "Up to 279 hours (Band 1)", "E33", "F33"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "540+ hours (Band 5)", "E32", "F32"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450+ hours (Band 4a)", "E33", "F33"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "450 to 539 hours (Band 4b)", "E34", "F34"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "360 to 449 hours (Band 3)", "E35", "F35"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "280 to 359 hours (Band 2)", "E36", "F36"),
+            new Tuple<string, string, string, string>("19-24 Students with an EHC plan", "Up to 279 hours (Band 1)", "E37", "F37"),
 
-            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "540+ hours (Band 5)", "E37", "F37"),
-            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450+ hours (Band 4a)", "E38", "F38"),
-            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450 to 539 hours (Band 4b)", "E39", "F39"),
-            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "360 to 449 hours (Band 3)", "E40", "F40"),
-            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "280 to 359 hours (Band 2)", "E41", "F41"),
-            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "Up to 279 hours (Band 1)", "E42", "F42")
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "540+ hours (Band 5)", "E41", "F41"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450+ hours (Band 4a)", "E42", "F42"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "450 to 539 hours (Band 4b)", "E43", "F43"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "360 to 449 hours (Band 3)", "E44", "F44"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "280 to 359 hours (Band 2)", "E45", "F45"),
+            new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "Up to 279 hours (Band 1)", "E46", "F46")
         };
 
         private readonly ILogger _logger;
@@ -207,19 +222,29 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private void InsertHeaderFooter(Workbook workbook, FundingClaim1619HeaderModel headerModel, FundingClaim1619FooterModel footerModel)
         {
             PageSetup pageSetup = workbook.Worksheets[0].PageSetup;
-            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report&8\n\n&8ILR File: \n" + headerModel.IlrFile + "\n\nProvider: " + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn);
-            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE\n\n&8&\"Bold\"Reference Data: All\nCampus Identifier: All\nYear: " + headerModel.Year);
 
-            pageSetup.SetFooter(0, "&8Component Set Version: \t" + footerModel.ComponentSetVersion +
-                                   "\nApplication Version: \t" + footerModel.ApplicationVersion +
-                                   "\nFile Prepartion Date: \t" + footerModel.FilePreparationDate +
-                                   "\n" + footerModel.ReportGeneratedAt +
-                                   "\n\nPage &P of &N");
-            pageSetup.SetFooter(2, "&8Lars Data: \t" + footerModel.LarsData +
-                                   "\nOrganisation Data: \t" + footerModel.OrganisationData +
-                                   "\nPostcode Data: \t" + footerModel.PostcodeData +
-                                   "\nLarge Employer Data: \t" + footerModel.LargeEmployerData +
-                                   "\nCoF Removal Data: \t" + footerModel.CofRemovalData);
+            pageSetup.SetHeader(0, "&14&\"Bold\"16-19 Funding Claim Report");
+            pageSetup.SetHeader(2, "&12&\"Bold\"OFFICIAL-SENSITIVE");
+
+            var cells = workbook.Worksheets[0].Cells;
+
+            cells[ProviderCellName].PutValue(headerModel.ProviderName);
+            cells[UKPrnCellName].PutValue(headerModel.Ukprn);
+            cells[ILRFileNameCellName].PutValue(headerModel.IlrFile);
+            cells[YearCellName].PutValue(headerModel.Year);
+
+            pageSetup.SetFooter(0, "&8" + footerModel.ReportGeneratedAt);
+            pageSetup.SetFooter(2, "&8Page &P of &N");
+
+            cells[ComponentSetVersionCellName].PutValue(footerModel.ComponentSetVersion);
+            cells[ApplicationVersionCellName].PutValue(footerModel.ApplicationVersion);
+            cells[FilePreparationCellName].PutValue(footerModel.FilePreparationDate);
+
+            cells[LarsDataCellName].PutValue(footerModel.LarsData);
+            cells[OrganisationDataCellName].PutValue(footerModel.OrganisationData);
+            cells[PostcodeDataCellName].PutValue(footerModel.PostcodeData);
+            cells[LargeEmployerDataCellName].PutValue(footerModel.LargeEmployerData);
+            cells[CofRemovalCellName].PutValue(footerModel.CofRemovalData);
         }
 
         private void PopulateCofRemoval(Cells cells, decimal? cofRemoval)
@@ -260,7 +285,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     string.Equals(band, cp.Item2, StringComparison.OrdinalIgnoreCase))
                 {
                     cells[cp.Item3].PutValue(studentNumber);
-                    cells[cp.Item4].PutValue(totalFunding);
+                    if (!string.IsNullOrWhiteSpace(cp.Item4))
+                    {
+                        cells[cp.Item4].PutValue(totalFunding);
+                    }
                 }
             }
         }
