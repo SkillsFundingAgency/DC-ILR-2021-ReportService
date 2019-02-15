@@ -1,1 +1,69 @@
-[{"LearnerReferenceNumber":"0fm9901","AimSequenceNumber":1,"RuleName":"LearnActEndDate_04","Severity":"E","ValidationErrorParameters":[{"PropertyName":"LearnActEndDate","Value":"13/07/2018"}]},{"LearnerReferenceNumber":"1fm9901","AimSequenceNumber":1,"RuleName":"LearnActEndDate_04","Severity":"E","ValidationErrorParameters":[{"PropertyName":"LearnActEndDate","Value":"13/07/2018"}]},{"LearnerReferenceNumber":"2fm9901","AimSequenceNumber":1,"RuleName":"LearnActEndDate_04","Severity":"E","ValidationErrorParameters":[{"PropertyName":"LearnActEndDate","Value":"13/07/2018"}]},{"LearnerReferenceNumber":"4fm9901","AimSequenceNumber":1,"RuleName":"LearnActEndDate_04","Severity":"E","ValidationErrorParameters":[{"PropertyName":"LearnActEndDate","Value":"13/07/2018"}]}]
+[
+  {
+    "LearnerReferenceNumber": "0fm9901",
+    "AimSequenceNumber": 1,
+    "RuleName": "LearnActEndDate_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "13/07/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1fm9901",
+    "AimSequenceNumber": 1,
+    "RuleName": "LearnActEndDate_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "13/07/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2fm9901",
+    "AimSequenceNumber": 1,
+    "RuleName": "LearnActEndDate_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "13/07/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "4fm9901",
+    "AimSequenceNumber": 1,
+    "RuleName": "LearnActEndDate_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "13/07/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0DtEmStAp02",
+    "AimSequenceNumber": null,
+    "RuleName": "DateEmpStatApp_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "7/31/1990 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": null,
+    "AimSequenceNumber": null,
+    "RuleName": "Entity_1",
+    "Severity": "E",
+    "ValidationErrorParameters": null
+  }
+]
