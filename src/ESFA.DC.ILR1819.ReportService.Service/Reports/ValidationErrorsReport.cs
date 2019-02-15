@@ -211,17 +211,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 else
                 {
                     ILearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationErrorDto.LearnerReferenceNumber);
-                    if (learner == null)
-                    {
-                        _logger.LogWarning($"Can't find learner {validationErrorDto.LearnerReferenceNumber}");
-                    }
-
                     ILearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == validationErrorDto.AimSequenceNumber);
-                    if (learningDelivery == null)
-                    {
-                        _logger.LogWarning(
-                            $"Can't find learning delivery {validationErrorDto.AimSequenceNumber} for learner {validationErrorDto.LearnerReferenceNumber}. This may be ok for some validation rules.");
-                    }
 
                     validationErrors.Add(new ValidationErrorModel(
                         validationErrorDto.Severity,
@@ -232,7 +222,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         validationErrorDto.AimSequenceNumber,
                         learningDelivery?.LearnAimRef,
                         learningDelivery?.SWSupAimId,
-                        learningDelivery?.FundModel ?? -1,
+                        learningDelivery?.FundModel,
                         learningDelivery?.PartnerUKPRNNullable,
                         learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                         learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
