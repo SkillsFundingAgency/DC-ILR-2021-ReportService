@@ -373,6 +373,7 @@
     <Compile Include="Mapper\FundingSummaryMapper.cs" />
     <Compile Include="Mapper\MainOccupancyMapper.cs" />
     <Compile Include="Mapper\MathsAndEnglishMapper.cs" />
+    <Compile Include="Mapper\PeriodEnd\AppsCoInvestmentContributionsMapper.cs" />
     <Compile Include="Mapper\SummaryOfFM35FundingMapper.cs" />
     <Compile Include="Mapper\SummaryOfFunding1619Mapper.cs" />
     <Compile Include="Mapper\TrailblazerAppsOccupancyMapper.cs" />
@@ -388,6 +389,7 @@
     <Compile Include="Reports\AdultFundingClaimReport.cs" />
     <Compile Include="Reports\FundingClaim1619Report.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
+    <Compile Include="Reports\PeriodEnd\AppsCoInvestmentContributionsReport.cs" />
     <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
     <Compile Include="Reports\SummaryOfFunding1619Report.cs" />
     <Compile Include="Reports\AllbOccupancyReport.cs" />

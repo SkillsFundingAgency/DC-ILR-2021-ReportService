@@ -14,7 +14,7 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
             AimSequenceNumber = aimSequenceNumber;
         }
 
-        public ValidationErrorModel(string severity, string learnerReferenceNumber, string ruleName, string fieldValues, string errorMessage, long? aimSequenceNumber, string learnAimRef, string sWSupAimId, int fundModel, int? partnerUkprn, string provSpecLearnMon1, string provSpecLearnMon2, string provSpecDelMon1, string provSpecDelMon2, string provSpecDelMon3, string provSpecDelMon4)
+        public ValidationErrorModel(string severity, string learnerReferenceNumber, string ruleName, string fieldValues, string errorMessage, long? aimSequenceNumber, string learnAimRef, string sWSupAimId, int? fundModel, int? partnerUkprn, string provSpecLearnMon1, string provSpecLearnMon2, string provSpecDelMon1, string provSpecDelMon2, string provSpecDelMon3, string provSpecDelMon4)
             : this(severity, learnerReferenceNumber, ruleName, fieldValues, errorMessage, aimSequenceNumber)
         {
             LearnAimRef = learnAimRef;
