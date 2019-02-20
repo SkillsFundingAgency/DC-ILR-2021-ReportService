@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
@@ -13,25 +14,24 @@ using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using LearningDeliveryInfo = ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment.LearningDeliveryInfo;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
     public sealed class IlrProviderService : IIlrProviderService
     {
+        private const int ApprentishipsFundModel = 36;
         private readonly ILogger _logger;
-
         private readonly IStreamableKeyValuePersistenceService _storage;
-
         private readonly IXmlSerializationService _xmlSerializationService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
-
         private readonly SemaphoreSlim _getIlrLock;
-
         private Message _message;
 
         public IlrProviderService(
@@ -156,7 +156,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                     if (collectionDetail != null)
                     {
-                      ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
+                        ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
                     }
                 }
             }
@@ -170,6 +170,82 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return ilrFileDetail;
+        }
+
+        public async Task<AppsCoInvestmentILRInfo> GetILRInfoForAppsCoInvestmentReportAsync(int ukPrn, CancellationToken cancellationToken)
+        {
+            await _getIlrLock.WaitAsync(cancellationToken);
+            var appsCoInvestmentIlrInfo = new AppsCoInvestmentILRInfo
+            {
+                UkPrn = ukPrn,
+                Learners = new List<LearnerInfo>()
+            };
+
+            try
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
+                List<Learner> learnersList;
+                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                {
+                    learnersList = await ilrContext.Learners
+                                                    .Include(x => x.LearningDeliveries.Select(y => y.AppFinRecords))
+                                                    .Include(x => x.LearnerEmploymentStatus)
+                                                    .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                    .ToListAsync(cancellationToken);
+                }
+
+                foreach (var learner in learnersList)
+                {
+                    var learnerInfo = new LearnerInfo
+                    {
+                        LearnRefNumber = learner.LearnRefNumber,
+                        LearningDeliveries = learner.LearningDeliveries.Select(x => new LearningDeliveryInfo()
+                        {
+                            UKPRN = ukPrn,
+                            LearnRefNumber = x.LearnRefNumber,
+                            LearnAimRef = x.LearnAimRef,
+                            AimType = x.AimType,
+                            AimSeqNumber = x.AimSeqNumber,
+                            LearnStartDate = x.LearnStartDate,
+                            ProgType = x.ProgType,
+                            StdCode = x.StdCode,
+                            FworkCode = x.FworkCode,
+                            PwayCode = x.PwayCode,
+                            SWSupAimId = x.SWSupAimId,
+                            AppFinRecords = x.AppFinRecords.Select(y => new AppFinRecordInfo()
+                            {
+                                LearnRefNumber = y.LearnRefNumber,
+                                AimSeqNumber = y.AimSeqNumber,
+                                AFinType = y.AFinType,
+                                AFinCode = y.AFinCode,
+                                AFinDate = y.AFinDate,
+                                AFinAmount = y.AFinAmount
+                            }).ToList()
+                        }).ToList(),
+                        LearnerEmploymentStatus = learner.LearnerEmploymentStatus.Select(x => new LearnerEmploymentStatusInfo()
+                        {
+                            LearnRefNumber = x.LearnRefNumber,
+                            DateEmpStatApp = x.DateEmpStatApp,
+                            EmpId = x.EmpId
+                        }).ToList()
+                    };
+                    appsCoInvestmentIlrInfo.Learners.Add(learnerInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get ILR Details - AppsCoInvestmentContributions  ", ex);
+            }
+            finally
+            {
+                _getIlrLock.Release();
+            }
+
+            return appsCoInvestmentIlrInfo;
         }
     }
 }

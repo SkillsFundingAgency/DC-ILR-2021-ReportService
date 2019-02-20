@@ -6,6 +6,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -14,6 +15,9 @@ using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Serialization.Json;
+using ESFA.DC.Serialization.Xml;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -27,12 +31,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestment
         {
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
-            string filename = $"10033670_1_Apps Co-Investment Contributions Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10036143_1_Apps Co-Investment Contributions Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
             reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
-            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10033670);
+            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10036143);
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
@@ -44,7 +48,19 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestment
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
 
-            var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks);
+            IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
+            IJsonSerializationService jsonSerializationService = new JsonSerializationService();
+            IXmlSerializationService xmlSerializationService = new XmlSerializationService();
+
+            DataStoreConfiguration dataStoreConfiguration = new DataStoreConfiguration()
+            {
+                ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString,
+                ILRDataStoreValidConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreValidConnectionString
+            };
+
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, dataStoreConfiguration);
+
+            var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, ilrProviderService);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
