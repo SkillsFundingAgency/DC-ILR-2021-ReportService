@@ -327,6 +327,7 @@
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\Fm35Builder.cs" />
+    <Compile Include="Builders\PeriodEnd\AppsCoInvestmentContributionsModelBuilder.cs" />
     <Compile Include="Builders\TotalBuilder.cs" />
     <Compile Include="Builders\TrailblazerEmployerIncentivesModelBuilder.cs" />
     <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />
