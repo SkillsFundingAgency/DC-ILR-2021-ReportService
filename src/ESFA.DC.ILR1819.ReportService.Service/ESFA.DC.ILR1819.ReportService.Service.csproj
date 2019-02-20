@@ -328,6 +328,7 @@
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\Fm35Builder.cs" />
     <Compile Include="Builders\TotalBuilder.cs" />
+    <Compile Include="Builders\TrailblazerAppsOccupancyModelBuilder.cs" />
     <Compile Include="Builders\TrailblazerEmployerIncentivesModelBuilder.cs" />
     <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />
     <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeAprilCommand.cs" />
@@ -349,6 +350,7 @@
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
     <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFunding1619ModelComparer.cs" />
+    <Compile Include="Comparer\TrailblazerAppsOccupancyModelComparer.cs" />
     <Compile Include="Comparer\TrailblazerEmployerIncentivesModelComparer.cs" />
     <Compile Include="Comparer\ValidationErrorsModelComparer.cs" />
     <Compile Include="Constants.cs" />
@@ -374,6 +376,7 @@
     <Compile Include="Mapper\PeriodEnd\AppsCoInvestmentContributionsMapper.cs" />
     <Compile Include="Mapper\SummaryOfFM35FundingMapper.cs" />
     <Compile Include="Mapper\SummaryOfFunding1619Mapper.cs" />
+    <Compile Include="Mapper\TrailblazerAppsOccupancyMapper.cs" />
     <Compile Include="Mapper\TrailblazerEmployerIncentiveMapper.cs" />
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -392,6 +395,7 @@
     <Compile Include="Reports\AllbOccupancyReport.cs" />
     <Compile Include="Reports\FundingSummaryReport.cs" />
     <Compile Include="Reports\MainOccupancyReport.cs" />
+    <Compile Include="Reports\TrailblazerAppsOccupancyReport.cs" />
     <Compile Include="Reports\TrailblazerEmployerIncentivesReport.cs" />
     <Compile Include="Reports\ValidationErrorsReport.cs" />
     <Compile Include="Service\AllbProviderService.cs" />

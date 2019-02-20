@@ -109,6 +109,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                 TopicReports_TaskGenerateAppsCoInvestmentContributionsReport = "TopicReports_TaskGenerateAppsCoInvestmentContributionsReport",
                 TopicReports_TaskGenerateDataMatchReport = "TopicReports_TaskGenerateDataMatchReport",
                 TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport = "TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport",
+                TopicReports_TaskGenerateTrailblazerAppsOccupancyReport = "TopicReports_TaskGenerateTrailblazerAppsOccupancyReport",
                 TopicReports_TaskGenerateFundingClaim1619Report = "TopicReports_TaskGenerateFundingClaim1619Report"
             };
         }
