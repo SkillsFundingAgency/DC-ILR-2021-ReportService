@@ -67,6 +67,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                         LargeEmployerConnectionString =
                             "Server=.;Database=myDataBase;User Id=myUsername;Password = myPassword;"
                     };
+                case "DASPaymentsSection":
+                    return (T)(object)new DASPaymentsConfiguration
+                    {
+                        DASPaymentsConnectionString =
+                            "Server=.;Database=DASPayments;User Id=myUsername;Password = myPassword;"
+                    };
                 case "PostcodeSection":
                     return (T)(object)new PostcodeConfiguration
                     {
