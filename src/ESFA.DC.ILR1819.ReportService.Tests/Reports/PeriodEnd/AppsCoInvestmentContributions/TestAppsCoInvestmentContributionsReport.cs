@@ -57,10 +57,15 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestment
                 ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString,
                 ILRDataStoreValidConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreValidConnectionString
             };
+            DASPaymentsConfiguration dasPaymentsConfiguration = new DASPaymentsConfiguration()
+            {
+                DASPaymentsConnectionString = new TestConfigurationHelper().GetSectionValues<DASPaymentsConfiguration>("DASPaymentsSection").DASPaymentsConnectionString,
+            };
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, dataStoreConfiguration);
+            var dasPaymentsProviderService = new DASPaymentsProviderService(logger.Object, dasPaymentsConfiguration);
 
-            var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, ilrProviderService);
+            var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, ilrProviderService, dasPaymentsProviderService);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

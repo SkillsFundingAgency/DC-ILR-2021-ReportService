@@ -73,6 +73,10 @@
     <Parameter Name="LarsConnectionString" Value=""/>
   </Section>
 
+  <Section Name="DASPaymentsSection">
+    <Parameter Name="DASPaymentsConnectionString" Value=""/>
+  </Section>
+
   <Section Name="OrgSection">
     <Parameter Name="OrgConnectionString" Value="" />
   </Section>

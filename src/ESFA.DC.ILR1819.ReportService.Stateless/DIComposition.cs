@@ -79,6 +79,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             var largeEmployeeConfiguration = configHelper.GetSectionValues<LargeEmployerConfiguration>("LargeEmployerSection");
             containerBuilder.RegisterInstance(largeEmployeeConfiguration).As<LargeEmployerConfiguration>().SingleInstance();
 
+            var dasPaymentsConfiguration = configHelper.GetSectionValues<DASPaymentsConfiguration>("DASPaymentsSection");
+            containerBuilder.RegisterInstance(dasPaymentsConfiguration).As<DASPaymentsConfiguration>().SingleInstance();
+
             var postcodeConfiguration = configHelper.GetSectionValues<PostcodeConfiguration>("PostcodeSection");
             containerBuilder.RegisterInstance(postcodeConfiguration).As<PostcodeConfiguration>().SingleInstance();
 
@@ -287,6 +290,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
                 .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DASPaymentsProviderService>().As<IDASPaymentsProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()

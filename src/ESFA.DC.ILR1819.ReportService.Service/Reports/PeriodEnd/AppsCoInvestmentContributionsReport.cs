@@ -24,6 +24,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
 
         public AppsCoInvestmentContributionsReport(
             ILogger logger,
@@ -31,12 +32,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            IIlrProviderService ilrProviderService)
+            IIlrProviderService ilrProviderService,
+            IDASPaymentsProviderService dasPaymentsProviderService)
         : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
             _ilrProviderService = ilrProviderService;
+            _dasPaymentsProviderService = dasPaymentsProviderService;
             ReportFileName = "Apps Co-Investment Contributions Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsCoInvestmentContributionsReport;
         }
@@ -49,6 +52,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsCoInvestmentPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
