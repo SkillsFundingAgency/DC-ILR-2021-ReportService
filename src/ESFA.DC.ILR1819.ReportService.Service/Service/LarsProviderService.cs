@@ -75,7 +75,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                             v => new LarsLearningDelivery
                             {
                                 LearningAimTitle = v.LearnAimRefTitle,
-                                NotionalNvqLevel = v.NotionalNVQLevel,
+                                NotionalNvqLevel = v.NotionalNVQLevelv2,
                                 Tier2SectorSubjectArea = v.SectorSubjectAreaTier2,
                                 FrameworkCommonComponent = v.FrameworkCommonComponent
                             },
