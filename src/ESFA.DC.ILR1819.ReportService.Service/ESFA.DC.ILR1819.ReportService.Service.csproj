@@ -324,6 +324,7 @@
     <Compile Include="Builders\Fm25Builder.cs" />
     <Compile Include="Builders\Fm36Builder.cs" />
     <Compile Include="Builders\Fm81Builder.cs" />
+    <Compile Include="Builders\HNSReportModelBuilder.cs" />
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\Fm35Builder.cs" />
@@ -345,6 +346,7 @@
     <Compile Include="Comparer\AppsIndicativeEarningsModelComparer.cs" />
     <Compile Include="Comparer\DasCommitmentsComparer.cs" />
     <Compile Include="Comparer\DataMatchModelComparer.cs" />
+    <Compile Include="Comparer\HNSModelComparer.cs" />
     <Compile Include="Comparer\MainOccupancyModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
     <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
@@ -369,6 +371,7 @@
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
     <Compile Include="Mapper\FundingSummaryHeaderMapper.cs" />
     <Compile Include="Mapper\FundingSummaryMapper.cs" />
+    <Compile Include="Mapper\HNSMapper.cs" />
     <Compile Include="Mapper\MainOccupancyMapper.cs" />
     <Compile Include="Mapper\MathsAndEnglishMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\AppsCoInvestmentContributionsMapper.cs" />
@@ -385,6 +388,7 @@
     <Compile Include="Reports\DataMatchReport.cs" />
     <Compile Include="Reports\AdultFundingClaimReport.cs" />
     <Compile Include="Reports\FundingClaim1619Report.cs" />
+    <Compile Include="Reports\HNSDetailReport.cs" />
     <Compile Include="Reports\MathsAndEnglishReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsCoInvestmentContributionsReport.cs" />
     <Compile Include="Reports\SummaryOfFM35FundingReport.cs" />
