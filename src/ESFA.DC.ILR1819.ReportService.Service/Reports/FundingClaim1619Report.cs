@@ -36,15 +36,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private const string CofRemovalCellName = "F47";
 
-        private const string ComponentSetVersionCellName = "C152";
-        private const string ApplicationVersionCellName = "C154";
-        private const string FilePreparationCellName = "C156";
+        private const string ComponentSetVersionCellName = "C149";
+        private const string ApplicationVersionCellName = "C151";
+        private const string FilePreparationCellName = "C153";
 
-        private const string LarsDataCellName = "G152";
-        private const string OrganisationDataCellName = "G153";
-        private const string PostcodeDataCellName = "G154";
+        private const string LarsDataCellName = "G149";
+        private const string OrganisationDataCellName = "G151";
+        private const string PostcodeDataCellName = "G153";
         private const string LargeEmployerDataCellName = "G155";
-        private const string CofRemovalDataCellName = "G156";
+        private const string CofRemovalDataCellName = "G157";
 
         private List<Tuple<string, string, string, string>> CellPositions = new List<Tuple<string, string, string, string>>()
         {
@@ -383,12 +383,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<FundingClaim1619HeaderModel> GetHeaderAsync(IReportServiceContext reportServiceContext, Task<IMessage> ilrFileTask, Task<ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
-            string fileName = Path.GetFileName(reportServiceContext.Filename);
             FundingClaim1619HeaderModel fundingClaim1619HeaderModel = new FundingClaim1619HeaderModel
             {
                 ProviderName = providerNameTask.Result ?? "Unknown",
                 Ukprn = reportServiceContext.Ukprn,
-                IlrFile = string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase) ? fileName : "N/A",
+                IlrFile = string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase) ? Path.GetFileName(reportServiceContext.Filename) : "N/A",
                 Year = Constants.Year
             };
 
