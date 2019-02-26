@@ -320,7 +320,6 @@
   <ItemGroup>
     <Compile Include="Builders\AdultFundingClaimBuilder.cs" />
     <Compile Include="Builders\AllbBuilder.cs" />
-    <Compile Include="Builders\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
     <Compile Include="Builders\DasCommitmentBuilder.cs" />
     <Compile Include="Builders\EasBuilder.cs" />
@@ -330,6 +329,7 @@
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\Fm35Builder.cs" />
+    <Compile Include="Builders\PeriodEnd\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\PeriodEnd\AppsCoInvestmentContributionsModelBuilder.cs" />
     <Compile Include="Builders\TotalBuilder.cs" />
     <Compile Include="Builders\TrailblazerAppsOccupancyModelBuilder.cs" />
@@ -369,7 +369,7 @@
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Helper\IlrFileHelper.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
-    <Compile Include="Mapper\AppsAdditionalPaymentsMapper.cs" />
+    <Compile Include="Mapper\PeriodEnd\AppsAdditionalPaymentsMapper.cs" />
     <Compile Include="Mapper\AppsIndicativeEarningsMapper.cs" />
     <Compile Include="Mapper\DataMatchReportMapper.cs" />
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
@@ -387,7 +387,7 @@
     <Compile Include="ReferenceData\DataLockValidationMessage.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
-    <Compile Include="Reports\AppsAdditionalPaymentsReport.cs" />
+    <Compile Include="Reports\PeriodEnd\AppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\AppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\DataMatchReport.cs" />
     <Compile Include="Reports\AdultFundingClaimReport.cs" />

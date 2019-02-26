@@ -1,27 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels.PeriodEnd;
+using ESFA.DC.ILR1819.ReportService.Service.Mapper.PeriodEnd;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
 {
     public class AppsAdditionalPaymentsReport : AbstractReportBuilder, IReport
     {
@@ -29,7 +26,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
-        private readonly IValidLearnersService _validLearnersService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
 
         private readonly IAppsAdditionalPaymentsModelBuilder _modelBuilder;
@@ -38,20 +34,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
-            IValidLearnersService validLearnersService,
             IFM36ProviderService fm36ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            IAppsAdditionalPaymentsModelBuilder modelBuilder,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            IAppsAdditionalPaymentsModelBuilder modelBuilder)
         : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
-            _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
             _modelBuilder = modelBuilder;
 
@@ -73,39 +67,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
-            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken);
-
-            await Task.WhenAll(ilrFileTask, validLearnersTask, fm36Task);
-
             if (cancellationToken.IsCancellationRequested)
             {
                 return null;
             }
 
-            var ilrError = new List<string>();
-
             var additionalPaymentsModels = new List<AppsAdditionalPaymentsModel>();
-            foreach (string validLearnerRefNum in validLearnersTask.Result)
-            {
-                var learner = ilrFileTask.Result?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
-
-                var fm36Data = fm36Task.Result?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, validLearnerRefNum, StringComparison.OrdinalIgnoreCase));
-
-                if (learner == null || fm36Data == null)
-                {
-                    ilrError.Add(validLearnerRefNum);
-                    continue;
-                }
-
-                additionalPaymentsModels.Add(_modelBuilder.BuildModel(learner, fm36Data));
-            }
-
-            if (ilrError.Any())
-            {
-                _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(AppsAdditionalPaymentsReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
-            }
 
             using (MemoryStream ms = new MemoryStream())
             {
