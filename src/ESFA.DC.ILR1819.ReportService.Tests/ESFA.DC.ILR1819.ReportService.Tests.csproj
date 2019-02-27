@@ -331,6 +331,7 @@
     <Compile Include="Reports\ALB\TestAlbOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\Data Match\TestDasCommitmentBuilder.cs" />
     <Compile Include="Reports\Main Occupancy\TestMainOccupancyReportWithTestData.cs" />
+    <Compile Include="Reports\PeriodEnd\AppsAdditionalPayments\TestAppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsCoInvestmentContributions\TestAppsCoInvestmentContributionsReport.cs" />
     <Compile Include="Reports\TestTrailblazerAppsOccupancyReport.cs" />
     <Compile Include="Reports\TestDataMatchReport.cs" />
