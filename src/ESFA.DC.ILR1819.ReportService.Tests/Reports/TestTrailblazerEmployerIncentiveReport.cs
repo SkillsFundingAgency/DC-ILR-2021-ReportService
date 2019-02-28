@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
         private static SqlProviderServices instance = SqlProviderServices.Instance;
 
         [Theory]
-        [InlineData("ILR-10033670-1819-20180831-094549-04.xml", "ValidLearnRefNumbers.json", "Fm81.json")]
+        [InlineData("ILR-10033670-1819-20180831-094549-03.xml", "ValidLearnRefNumbers.json", "Fm81.json")]
         public async Task TestTrailblazerEmployerIncentiveReportGeneration(string ilrFilename, string validLearnRefNumbersFilename, string fm81FileName)
         {
             string csv = string.Empty;

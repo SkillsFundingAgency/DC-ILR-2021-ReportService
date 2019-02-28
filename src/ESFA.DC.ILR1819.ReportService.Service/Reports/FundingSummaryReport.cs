@@ -585,7 +585,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(new FundingSummaryModel("Levy Contracted Apprenticeships Budget for starts on or after 1 May 2017", HeaderType.TitleOnly, 0));
             fundingSummaryModels.Add(new FundingSummaryModel());
             fundingSummaryModels.Add(new FundingSummaryModel("16-18 Levy Contracted Apprenticeships", HeaderType.All, 2));
-            fundingSummaryModels.Add(_fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result));
+
+            FundingSummaryModel levyAimIndicative = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36ProgrammeAimOnProgPayment, Constants.Fm36ProgrammeAimBalPayment, Constants.Fm36ProgrammeAimCompletionPayment }, periodTask.Result);
+            fundingSummaryModels.Add(levyAimIndicative);
             FundingSummaryModel levyMathsAndEnglish1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Maths and English Programme Funding (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36MathEngOnProgPayment, Constants.Fm36MathEngBalPayment }, periodTask.Result);
             fundingSummaryModels.Add(levyMathsAndEnglish1618);
             FundingSummaryModel levyUplift1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Framework Uplift (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, Constants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, Constants.Fm36LDApplic1618FrameworkUpliftOnProgPayment }, periodTask.Result);
@@ -600,7 +602,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             fundingSummaryModels.Add(levyApprentice1618);
             FundingSummaryModel levySupport1618 = _fm36Builder.BuildWithFundLine("ILR 16-18 Levy Contracted Apprenticeships Learning Support (£)", fm36Task.Result, validLearnersTask.Result, new[] { "16-18 Apprenticeship (From May 2017) Levy Contract" }, new[] { Constants.Fm36LearnSuppFundCash }, periodTask.Result);
             fundingSummaryModels.Add(levySupport1618);
-            FundingSummaryModel levyTotal1618 = _totalBuilder.TotalRecords("ILR Total 16-18 Levy Contracted Apprenticeships (£)", levyMathsAndEnglish1618, levyUplift1618, levyDisadvantage1618, levyProviders1618, levyEmployers1618, levyApprentice1618, levySupport1618);
+            FundingSummaryModel levyTotal1618 = _totalBuilder.TotalRecords("ILR Total 16-18 Levy Contracted Apprenticeships (£)", levyAimIndicative, levyMathsAndEnglish1618, levyUplift1618, levyDisadvantage1618, levyProviders1618, levyEmployers1618, levyApprentice1618, levySupport1618);
 
             FundingSummaryModel easLevyTotal1618 = new FundingSummaryModel();
             if (!isFis)
