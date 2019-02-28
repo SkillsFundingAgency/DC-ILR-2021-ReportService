@@ -14,6 +14,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
@@ -246,6 +247,50 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return appsCoInvestmentIlrInfo;
+        }
+
+        public async Task<AppsAdditionalPaymentILRInfo> GetILRInfoForAppsAdditionalPaymentsReportAsync(int ukPrn, CancellationToken cancellationToken)
+        {
+            await _getIlrLock.WaitAsync(cancellationToken);
+            var appsAdditionalPaymentIlrInfo = new AppsAdditionalPaymentILRInfo()
+            {
+                UkPrn = ukPrn,
+                Learners = new List<AppsAdditionalPaymentLearnerInfo>()
+            };
+            try
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
+                List<Learner> learnersList;
+                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                {
+                    learnersList = await ilrContext.Learners
+                                                    .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                    .ToListAsync(cancellationToken);
+                }
+
+                foreach (var learner in learnersList)
+                {
+                    var learnerInfo = new AppsAdditionalPaymentLearnerInfo
+                    {
+                        LearnRefNumber = learner.LearnRefNumber,
+                    };
+                    appsAdditionalPaymentIlrInfo.Learners.Add(learnerInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get ILR Details - AppsAdditionalPaymentILRInfo  ", ex);
+            }
+            finally
+            {
+                _getIlrLock.Release();
+            }
+
+            return appsAdditionalPaymentIlrInfo;
         }
     }
 }
