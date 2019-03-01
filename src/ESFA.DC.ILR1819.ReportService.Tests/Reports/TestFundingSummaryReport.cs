@@ -17,9 +17,6 @@ using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -127,7 +124,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             IValueProvider valueProvider = new ValueProvider();
 
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
-                logger.Object,
                 storage.Object,
                 ilrProviderService,
                 orgProviderService,
@@ -137,8 +133,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 fm36ProviderService,
                 fm81TrailBlazerProviderService,
                 validLearnersService,
-                stringUtilitiesService,
-                intUtilitiesService,
                 periodProviderService.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
