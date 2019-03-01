@@ -62,7 +62,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.EmploymentStatus).Index(i++).Name("Employment status");
             Map(m => m.EmploymentStatusDate).Index(i++).Name("Employment status date");
             Map(m => m.EmpStatusMonitoringSmallEmployer).Index(i++).Name("Employment status monitoring - small employer");
-            Map(m => m.PriceEpisodeStartDate).Index(i++).Name("Price episode start date");
+            Map(m => m.PriceEpisodeStartDate).Index(i++).Name("Price episode start date").TypeConverterOption.Format("dd/MM/yyyy");
             Map(m => m.PriceEpisodeActualEndDate).Index(i++).Name("Price episode actual end date");
 
             Map(m => m.FundingLineType).Index(i++).Name("Funding line type");
