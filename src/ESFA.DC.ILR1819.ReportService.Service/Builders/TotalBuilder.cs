@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using System.Linq;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
@@ -6,14 +7,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public sealed class TotalBuilder : ITotalBuilder
     {
-        // Registered as singleton because no parameters
-        public TotalBuilder()
-        {
-        }
-
         public FundingSummaryModel TotalRecords(string title, params FundingSummaryModel[] fundingSummaryModels)
         {
-            FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
+            var fundingSummaryModel = new FundingSummaryModel(title);
 
             foreach (FundingSummaryModel summaryModel in fundingSummaryModels)
             {
@@ -32,6 +28,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
                 fundingSummaryModel.Period1_8 = Total(fundingSummaryModel.Period1_8, summaryModel.Period1_8);
                 fundingSummaryModel.Period9_12 = Total(fundingSummaryModel.Period9_12, summaryModel.Period9_12);
+
+                fundingSummaryModel.YearToDate = Total(fundingSummaryModel.YearToDate, summaryModel.YearToDate);
                 fundingSummaryModel.Total = Total(fundingSummaryModel.Total, summaryModel.Total);
             }
 
@@ -62,14 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         public decimal TotalRecords(params decimal?[] values)
         {
-            decimal ret = 0;
-
-            foreach (decimal? value in values)
-            {
-                ret += value.GetValueOrDefault(0);
-            }
-
-            return ret;
+            return values.Sum(value => value.GetValueOrDefault(0));
         }
 
         public FundingSummaryModel TotalRecordsCumulative(string title, FundingSummaryModel sourceFundingSummaryModel)
@@ -99,16 +90,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
         public decimal? Total(decimal? original, decimal? value)
         {
-            //if (original == null && value == null)
-            //{
-            //    return null;
-            //}
-
-            //if (value == null)
-            //{
-            //    return original;
-            //}
-
             return original.GetValueOrDefault(0) + value.GetValueOrDefault(0);
         }
     }
