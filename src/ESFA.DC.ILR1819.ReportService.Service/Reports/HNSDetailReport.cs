@@ -104,6 +104,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                     FM25Learner fm25Learner =
                         fm25Data?.Learners?.SingleOrDefault(l => string.Equals(l.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
 
+                    if (fm25Learner == null)
+                    {
+                        continue;
+                    }
+
                     if (!CheckIsApplicableLearner(learningDelivery, fm25Learner))
                     {
                         continue;
