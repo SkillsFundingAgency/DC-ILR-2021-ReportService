@@ -175,7 +175,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         public async Task<AppsCoInvestmentILRInfo> GetILRInfoForAppsCoInvestmentReportAsync(int ukPrn, CancellationToken cancellationToken)
         {
-            await _getIlrLock.WaitAsync(cancellationToken);
             var appsCoInvestmentIlrInfo = new AppsCoInvestmentILRInfo
             {
                 UkPrn = ukPrn,
@@ -241,17 +240,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             {
                 _logger.LogError("Failed to get ILR Details - AppsCoInvestmentContributions  ", ex);
             }
-            finally
-            {
-                _getIlrLock.Release();
-            }
 
             return appsCoInvestmentIlrInfo;
         }
 
         public async Task<AppsAdditionalPaymentILRInfo> GetILRInfoForAppsAdditionalPaymentsReportAsync(int ukPrn, CancellationToken cancellationToken)
         {
-            await _getIlrLock.WaitAsync(cancellationToken);
             var appsAdditionalPaymentIlrInfo = new AppsAdditionalPaymentILRInfo()
             {
                 UkPrn = ukPrn,
@@ -284,10 +278,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             catch (Exception ex)
             {
                 _logger.LogError("Failed to get ILR Details - AppsAdditionalPaymentILRInfo  ", ex);
-            }
-            finally
-            {
-                _getIlrLock.Release();
             }
 
             return appsAdditionalPaymentIlrInfo;

@@ -11,13 +11,14 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
-    public class FM36ProviderService : IFM36ProviderService
+   public class FM36ProviderService : IFM36ProviderService
     {
         private readonly ILogger _logger;
 
@@ -164,6 +165,75 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _fundingOutputs;
+        }
+
+        public async Task<AppsAdditionalPaymentRulebaseInfo> GetFM36DataForAppsAdditionalPaymentReportAsync(int ukPrn, CancellationToken cancellationToken)
+        {
+            var appsAdditionalPaymentRulebaseInfo = new AppsAdditionalPaymentRulebaseInfo()
+            {
+                UkPrn = ukPrn,
+                AECApprenticeshipPriceEpisodePeriodisedValues = new List<AECApprenticeshipPriceEpisodePeriodisedValuesInfo>(),
+                AECLearningDeliveries = new List<AECLearningDeliveryInfo>()
+            };
+            try
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
+                List<AEC_ApprenticeshipPriceEpisode_PeriodisedValues> aecApprenticeshipPriceEpisodePeriodisedValues;
+                List<AEC_LearningDelivery> aecLearningDeliveries;
+
+                using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                {
+                    aecApprenticeshipPriceEpisodePeriodisedValues = await ilrContext.AEC_ApprenticeshipPriceEpisode_PeriodisedValues.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
+                    aecLearningDeliveries = await ilrContext.AEC_LearningDelivery.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
+                }
+
+                foreach (var aecApprenticeshipPriceEpisodePeriodisedValue in aecApprenticeshipPriceEpisodePeriodisedValues)
+                {
+                    var periodisedValue = new AECApprenticeshipPriceEpisodePeriodisedValuesInfo()
+                    {
+                        UKPRN = ukPrn,
+                        LearnRefNumber = aecApprenticeshipPriceEpisodePeriodisedValue.LearnRefNumber,
+                        AttributeName = aecApprenticeshipPriceEpisodePeriodisedValue.AttributeName,
+                        Period_1 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_1,
+                        Period_2 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_2,
+                        Period_3 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_3,
+                        Period_4 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_4,
+                        Period_5 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_5,
+                        Period_6 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_6,
+                        Period_7 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_7,
+                        Period_8 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_8,
+                        Period_9 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_9,
+                        Period_10 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_10,
+                        Period_11 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_11,
+                        Period_12 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_12
+                    };
+                    appsAdditionalPaymentRulebaseInfo.AECApprenticeshipPriceEpisodePeriodisedValues.Add(periodisedValue);
+                }
+
+                foreach (var aecLearningDelivery in aecLearningDeliveries)
+                {
+                    var aecLearningDeliveryInfo = new AECLearningDeliveryInfo()
+                    {
+                        UKPRN = ukPrn,
+                        LearnRefNumber = aecLearningDelivery.LearnRefNumber,
+                        AimSeqNumber = aecLearningDelivery.AimSeqNumber,
+                        LearnDelEmpIdFirstAdditionalPaymentThreshold = aecLearningDelivery.LearnDelEmpIdFirstAdditionalPaymentThreshold,
+                        LearnDelEmpIdSecondAdditionalPaymentThreshold = aecLearningDelivery.LearnDelEmpIdSecondAdditionalPaymentThreshold
+                    };
+
+                    appsAdditionalPaymentRulebaseInfo.AECLearningDeliveries.Add(aecLearningDeliveryInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get FM36 Details - AppsAdditionalPaymentRulebaseInfo  ", ex);
+            }
+
+            return appsAdditionalPaymentRulebaseInfo;
         }
     }
 }
