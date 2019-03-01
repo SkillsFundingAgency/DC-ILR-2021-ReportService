@@ -44,10 +44,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
                 return -1;
             }
 
-            if (DateTime.TryParse(x.PriceEpisodeStartDate, out DateTime xPriceEpisodeStartDate) &&
-                DateTime.TryParse(y.PriceEpisodeStartDate, out DateTime yPriceEpisodeStartDate))
+            if (x.PriceEpisodeStartDate.HasValue && y.PriceEpisodeStartDate.HasValue)
             {
-                int cmpPriceEpisodeStartDates = DateTime.Compare(xPriceEpisodeStartDate, yPriceEpisodeStartDate);
+                int cmpPriceEpisodeStartDates = DateTime.Compare(x.PriceEpisodeStartDate.Value, y.PriceEpisodeStartDate.Value);
                 if (cmpPriceEpisodeStartDates != 0)
                 {
                     return cmpPriceEpisodeStartDates;

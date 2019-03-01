@@ -1,4 +1,6 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
+﻿using System;
+
+namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 {
     public class AppsIndicativeEarningsModel
     {
@@ -104,7 +106,7 @@
 
         public int? EmpStatusMonitoringSmallEmployer { get; set; }
 
-        public string PriceEpisodeStartDate { get; set; }
+        public DateTime? PriceEpisodeStartDate { get; set; }
 
         public string PriceEpisodeActualEndDate { get; set; }
 
