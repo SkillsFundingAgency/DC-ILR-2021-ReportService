@@ -33,6 +33,7 @@
     <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" DefaultValue="GenerateAppsAdditionalPaymentsReport" />
     <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" DefaultValue="GenerateAppsIndicativeEarningsReport" />
     <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" DefaultValue="GenerateAppsCoInvestmentContributionsReport" />
+    <Parameter Name="TopicReports_TaskGenerateAppsMonthlyPaymentReport" DefaultValue="GenerateAppsMonthlyPaymentReport" />
     <Parameter Name="TopicReports_TaskGenerateDataMatchReport" DefaultValue="GenerateDataMatchReport" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport" />
@@ -115,6 +116,7 @@
             <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="[TopicReports_TaskGenerateAppsAdditionalPaymentsReport]" />
             <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="[TopicReports_TaskGenerateAppsIndicativeEarningsReport]" />
             <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" Value="[TopicReports_TaskGenerateAppsCoInvestmentContributionsReport]" />
+            <Parameter Name="TopicReports_TaskGenerateAppsMonthlyPaymentReport" Value="[TopicReports_TaskGenerateAppsMonthlyPaymentReport]" />
             <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="[TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport]" />
             <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="[TopicReports_TaskGenerateFundingClaim1619Report]" />
           </Section>

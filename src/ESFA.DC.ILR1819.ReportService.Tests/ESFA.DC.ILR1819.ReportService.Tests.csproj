@@ -333,6 +333,7 @@
     <Compile Include="Reports\Main Occupancy\TestMainOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\PeriodEnd\AppsAdditionalPayments\TestAppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsCoInvestmentContributions\TestAppsCoInvestmentContributionsReport.cs" />
+    <Compile Include="Reports\PeriodEnd\AppsMonthlyPayment\TestAppsMonthlyPaymentReport.cs" />
     <Compile Include="Reports\TestTrailblazerAppsOccupancyReport.cs" />
     <Compile Include="Reports\TestDataMatchReport.cs" />
     <Compile Include="Reports\TestAdultFundingClaimReport.cs" />
