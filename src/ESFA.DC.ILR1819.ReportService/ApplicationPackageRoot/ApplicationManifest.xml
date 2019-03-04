@@ -37,10 +37,13 @@
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport" />
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" DefaultValue="TopicReports_TaskGenerateFundingClaim1619Report" />
+    <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" DefaultValue="GenerateTrailblazerAppsOccupancyReport" />
     <Parameter Name="TopicReports_TaskGenerateHNSReport" DefaultValue="TopicReports_TaskGenerateHNSReport" />
     
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
+    <!-- LARS -->
+    <Parameter Name="DASPaymentsConnectionString" DefaultValue="" />
     <!-- DAS Commitments -->
     <Parameter Name="DasCommitmentsConnectionString" DefaultValue="" />
     <!-- EAS -->
@@ -67,6 +70,9 @@
           <Section Name="DataStoreSection">
             <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
             <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
+          </Section>
+          <Section Name="DASPaymentsSection">
+            <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
           </Section>
           <Section Name="ServiceBusSettings">
             <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />

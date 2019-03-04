@@ -114,7 +114,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 EmpStatusMonitoringSmallEmployer = employmentStatus?.EmploymentStatusMonitorings
                     ?.SingleOrDefault(x => string.Equals(x.ESMType, Constants.EmploymentStatusMonitoringTypeSEM, StringComparison.OrdinalIgnoreCase))?.ESMCode,
                 PriceEpisodeStartDate =
-                    fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate?.ToString("dd/MM/yyyy"),
+                    fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate,
                 PriceEpisodeActualEndDate =
                     fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeActualEndDate?.ToString("dd/MM/yyyy"),
                 FundingLineType = fundingLineType,

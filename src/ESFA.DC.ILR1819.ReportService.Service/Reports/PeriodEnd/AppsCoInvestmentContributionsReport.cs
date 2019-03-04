@@ -23,17 +23,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
+        private readonly IIlrProviderService _ilrProviderService;
+        private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
 
         public AppsCoInvestmentContributionsReport(
             ILogger logger,
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            IIlrProviderService ilrProviderService,
+            IDASPaymentsProviderService dasPaymentsProviderService)
         : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
+            _ilrProviderService = ilrProviderService;
+            _dasPaymentsProviderService = dasPaymentsProviderService;
             ReportFileName = "Apps Co-Investment Contributions Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsCoInvestmentContributionsReport;
         }
@@ -45,6 +51,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
             string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
+            var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsCoInvestmentPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);

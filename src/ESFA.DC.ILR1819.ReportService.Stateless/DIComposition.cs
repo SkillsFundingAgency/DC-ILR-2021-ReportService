@@ -8,6 +8,7 @@ using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -15,6 +16,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
+using ESFA.DC.ILR1819.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
 using ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
@@ -78,6 +80,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             var largeEmployeeConfiguration = configHelper.GetSectionValues<LargeEmployerConfiguration>("LargeEmployerSection");
             containerBuilder.RegisterInstance(largeEmployeeConfiguration).As<LargeEmployerConfiguration>().SingleInstance();
+
+            var dasPaymentsConfiguration = configHelper.GetSectionValues<DASPaymentsConfiguration>("DASPaymentsSection");
+            containerBuilder.RegisterInstance(dasPaymentsConfiguration).As<DASPaymentsConfiguration>().SingleInstance();
 
             var postcodeConfiguration = configHelper.GetSectionValues<PostcodeConfiguration>("PostcodeSection");
             containerBuilder.RegisterInstance(postcodeConfiguration).As<PostcodeConfiguration>().SingleInstance();
@@ -287,6 +292,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
                 .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DASPaymentsProviderService>().As<IDASPaymentsProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()

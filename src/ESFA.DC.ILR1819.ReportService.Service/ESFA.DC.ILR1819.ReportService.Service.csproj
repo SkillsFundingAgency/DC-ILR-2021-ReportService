@@ -78,6 +78,9 @@
     <Reference Include="ESFA.DC.CollectionsManagement.Services.Interface, Version=0.1.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.CollectionsManagement.Services.Interface.0.1.17-beta0001\lib\netstandard2.0\ESFA.DC.CollectionsManagement.Services.Interface.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.DASPayments.EF, Version=0.1.63.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.DASPayments.EF.0.1.63\lib\netstandard2.0\ESFA.DC.DASPayments.EF.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.Data.DAS.Model, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Data.DAS.Model.0.1.0\lib\netstandard2.0\ESFA.DC.Data.DAS.Model.dll</HintPath>
     </Reference>
@@ -178,11 +181,11 @@
     <Reference Include="Microsoft.Azure.KeyVault.Core, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.KeyVault.Core.1.0.0\lib\net40\Microsoft.Azure.KeyVault.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.2.0\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore, Version=2.2.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.2.2.2\lib\netstandard2.0\Microsoft.EntityFrameworkCore.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=2.2.2.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Abstractions.2.2.2\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore.Design, Version=2.1.4.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.Design.2.1.4\lib\net461\Microsoft.EntityFrameworkCore.Design.dll</HintPath>
@@ -317,7 +320,6 @@
   <ItemGroup>
     <Compile Include="Builders\AdultFundingClaimBuilder.cs" />
     <Compile Include="Builders\AllbBuilder.cs" />
-    <Compile Include="Builders\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
     <Compile Include="Builders\DasCommitmentBuilder.cs" />
     <Compile Include="Builders\EasBuilder.cs" />
@@ -328,7 +330,10 @@
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\Fm35Builder.cs" />
+    <Compile Include="Builders\PeriodEnd\AppsAdditionalPaymentsModelBuilder.cs" />
+    <Compile Include="Builders\PeriodEnd\AppsCoInvestmentContributionsModelBuilder.cs" />
     <Compile Include="Builders\TotalBuilder.cs" />
+    <Compile Include="Builders\TrailblazerAppsOccupancyModelBuilder.cs" />
     <Compile Include="Builders\TrailblazerEmployerIncentivesModelBuilder.cs" />
     <Compile Include="BusinessRules\MathsAndEnglishFM25Rules.cs" />
     <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeAprilCommand.cs" />
@@ -351,6 +356,7 @@
     <Compile Include="Comparer\SummaryOfFm35FundingModelComparer.cs" />
     <Compile Include="Comparer\MathsAndEnglishModelComparer.cs" />
     <Compile Include="Comparer\SummaryOfFunding1619ModelComparer.cs" />
+    <Compile Include="Comparer\TrailblazerAppsOccupancyModelComparer.cs" />
     <Compile Include="Comparer\TrailblazerEmployerIncentivesModelComparer.cs" />
     <Compile Include="Comparer\ValidationErrorsModelComparer.cs" />
     <Compile Include="Constants.cs" />
@@ -365,7 +371,7 @@
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Helper\IlrFileHelper.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
-    <Compile Include="Mapper\AppsAdditionalPaymentsMapper.cs" />
+    <Compile Include="Mapper\PeriodEnd\AppsAdditionalPaymentsMapper.cs" />
     <Compile Include="Mapper\AppsIndicativeEarningsMapper.cs" />
     <Compile Include="Mapper\DataMatchReportMapper.cs" />
     <Compile Include="Mapper\FundingSummaryFooterMapper.cs" />
@@ -377,13 +383,14 @@
     <Compile Include="Mapper\PeriodEnd\AppsCoInvestmentContributionsMapper.cs" />
     <Compile Include="Mapper\SummaryOfFM35FundingMapper.cs" />
     <Compile Include="Mapper\SummaryOfFunding1619Mapper.cs" />
+    <Compile Include="Mapper\TrailblazerAppsOccupancyMapper.cs" />
     <Compile Include="Mapper\TrailblazerEmployerIncentiveMapper.cs" />
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessage.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
-    <Compile Include="Reports\AppsAdditionalPaymentsReport.cs" />
+    <Compile Include="Reports\PeriodEnd\AppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\AppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\DataMatchReport.cs" />
     <Compile Include="Reports\AdultFundingClaimReport.cs" />
@@ -396,11 +403,13 @@
     <Compile Include="Reports\AllbOccupancyReport.cs" />
     <Compile Include="Reports\FundingSummaryReport.cs" />
     <Compile Include="Reports\MainOccupancyReport.cs" />
+    <Compile Include="Reports\TrailblazerAppsOccupancyReport.cs" />
     <Compile Include="Reports\TrailblazerEmployerIncentivesReport.cs" />
     <Compile Include="Reports\ValidationErrorsReport.cs" />
     <Compile Include="Service\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\CacheProviderService.cs" />
+    <Compile Include="Service\DASPaymentsProviderService.cs" />
     <Compile Include="Service\DataMatch\DasCommitmentsService.cs" />
     <Compile Include="Service\DataMatch\DatalockValidationResultBuilder.cs" />
     <Compile Include="Service\EasProviderService.cs" />

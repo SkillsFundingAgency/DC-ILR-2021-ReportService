@@ -13,6 +13,7 @@ using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
@@ -25,6 +26,7 @@ using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore.Internal;
+using LearningDelivery = ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
@@ -34,6 +36,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IFM81TrailBlazerProviderService _fm81TrailBlazerProviderService;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly ILarsProviderService _larsProviderService;
         private readonly IValidLearnersService _validLearnersService;
 
         private readonly ITrailblazerAppsOccupancyModelBuilder _trailblazerAppsOccupancyModelBuilder;
@@ -44,6 +47,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
+            ILarsProviderService larsProviderService,
             ITrailblazerAppsOccupancyModelBuilder trailblazerAppsOccupancyModelBuilder,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValueProvider valueProvider,
@@ -56,6 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             _fm81TrailBlazerProviderService = fm81TrailBlazerProviderService;
             _validLearnersService = validLearnersService;
             _ilrProviderService = ilrProviderService;
+            _larsProviderService = larsProviderService;
 
             _trailblazerAppsOccupancyModelBuilder = trailblazerAppsOccupancyModelBuilder;
 
@@ -63,13 +68,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateTrailblazerAppsOccupancyReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM81Global> fm81Task =
-                _fm81TrailBlazerProviderService.GetFM81Data(jobContextMessage, cancellationToken);
+                _fm81TrailBlazerProviderService.GetFM81Data(reportServiceContext, cancellationToken);
             Task<List<string>> validLearnersTask =
-                _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+                _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, fm81Task, validLearnersTask);
 
@@ -87,26 +92,31 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
+            string[] learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
+            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
+
             var fm81Data = fm81Task.Result;
             var trailblazerAppsOccupancyModels = new List<TrailblazerAppsOccupancyModel>();
 
-            var fm81EmployerIdentifierList = fm81Data?.Learners?.Select(l => l.LearningDeliveries?.Select(x =>
-                string.Join(",", x.LearningDeliveryValues.EmpIdSmallBusDate, x.LearningDeliveryValues.EmpIdFirstYoungAppDate, x.LearningDeliveryValues.EmpIdSecondYoungAppDate, x.LearningDeliveryValues.EmpIdAchDate))).FirstOrDefault();
-
-            if (fm81EmployerIdentifierList != null)
+            foreach (var learner in learners)
             {
-                var fm81EmployerIdentifierUniqueList = fm81EmployerIdentifierList.First().Split(',').ToArray()
-                    .Where(x => !string.IsNullOrWhiteSpace(x)).Distinct().ToList();
-
-                foreach (string empIdentifier in fm81EmployerIdentifierUniqueList)
+                FM81Learner fm81Learner = fm81Data?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
+                foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
-                    var learnerFm81Data = fm81Data?.Learners?.SelectMany(x => x.LearningDeliveries).ToList();
+                    if (!CheckIsApplicableLearner(learningDelivery))
+                    {
+                        continue;
+                    }
 
-                    trailblazerAppsOccupancyModels.Add(
-                        _trailblazerAppsOccupancyModelBuilder.BuildTrailblazerAppsOccupancyModel(
-                            Convert.ToInt32(empIdentifier),
-                            null,
-                            learnerFm81Data));
+                    LarsLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => string.Equals(x.Key, learningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)).Value;
+                    LearningDelivery ruleBaseLearningDelivery = fm81Learner?.LearningDeliveries
+                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+                    trailblazerAppsOccupancyModels.Add(_trailblazerAppsOccupancyModelBuilder
+                        .BuildTrailblazerAppsOccupancyModel(
+                            learner,
+                            learningDelivery,
+                            larsDelivery,
+                            ruleBaseLearningDelivery));
                 }
             }
 
@@ -114,10 +124,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             var csv = GetReportCsv(trailblazerAppsOccupancyModels);
 
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
@@ -125,7 +135,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private bool CheckIsApplicableLearner(ILearningDelivery learningDelivery)
         {
-            return learningDelivery.FundModel == 81;
+            return learningDelivery.FundModel == 81 || learningDelivery.FundModel == 25;
         }
 
         private string GetReportCsv(List<TrailblazerAppsOccupancyModel> listModels)
