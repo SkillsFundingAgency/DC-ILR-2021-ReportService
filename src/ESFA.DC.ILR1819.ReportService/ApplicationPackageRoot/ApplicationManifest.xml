@@ -37,6 +37,8 @@
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport" />
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" DefaultValue="TopicReports_TaskGenerateFundingClaim1619Report" />
+    <Parameter Name="TopicReports_TaskGenerateHNSReport" DefaultValue="TopicReports_TaskGenerateHNSReport" />
+    
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
     <!-- DAS Commitments -->
@@ -111,6 +113,7 @@
             <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" Value="[TopicReports_TaskGenerateAppsCoInvestmentContributionsReport]" />
             <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="[TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport]" />
             <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="[TopicReports_TaskGenerateFundingClaim1619Report]" />
+            <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="[TopicReports_TaskGenerateHNSReport]" />
           </Section>
           <Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />

@@ -34,6 +34,7 @@
     <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="__TopicReports_TaskGenerateAppsIndicativeEarningsReport__" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="__TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport__" />
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="__TopicReports_TaskGenerateFundingClaim1619Report__" />
+    <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="__TopicReports_TaskGenerateHNSReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- Org -->
