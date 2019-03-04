@@ -4,10 +4,11 @@
 
   <Section Name="DataStoreSection">
     <Parameter Name="ILRDataStoreConnectionString" Value="" />
+    <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
   </Section>
   <Section Name="ServiceBusSettings">
     <Parameter Name="AuditQueueName" Value="" />
-    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="ServiceBusConnectionString" Value="Endpoint=sb://xx-hd-servicebus-weu.servicebus.windows.net/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=WQajG93nz/B51rfO8tQ5vQ/pH7IeYZlVc870dZm6Zg8=" />
     <Parameter Name="TopicName" Value="" />
     <Parameter Name="ReportingSubscriptionName" Value="" />
   </Section>
@@ -54,21 +55,53 @@
     <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateAdultFundingClaimReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="" />
     <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="" />
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value=""/>
+    <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value=""/>
   </Section>
   
   <Section Name="LarsSection">
     <Parameter Name="LarsConnectionString" Value=""/>
   </Section>
 
+  <Section Name="DASPaymentsSection">
+    <Parameter Name="DASPaymentsConnectionString" Value=""/>
+  </Section>
+
   <Section Name="OrgSection">
     <Parameter Name="OrgConnectionString" Value="" />
   </Section>
 
+  <Section Name="DasCommitmentsSection">
+    <Parameter Name="DasCommitmentsConnectionString" Value="" />
+  </Section>
+
   <Section Name="CollectionsManagementSection">
     <Parameter Name="CollectionsManagementConnectionString" Value="" />
+  </Section>
+
+  <Section Name="EasSection">
+    <Parameter Name="EasConnectionString" Value="" />
+  </Section>
+
+  <Section Name="PostcodeSection">
+    <Parameter Name="PostcodeConnectionString" Value="" />
+  </Section>
+
+  <Section Name="LargeEmployerSection">
+    <Parameter Name="LargeEmployerConnectionString" Value="" />
+  </Section>
+
+  <Section Name="IlrValidationErrorsSection">
+    <Parameter Name="IlrValidationErrorsConnectionString" Value="" />
   </Section>
 </Settings>

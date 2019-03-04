@@ -1,12 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -14,9 +18,6 @@ using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -37,21 +38,33 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             string filename = $"10033670_1_Maths and English Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<ILogger> logger = new Mock<ILogger>();
+            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
+            IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
+
+            Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
+            reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
+            reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
+            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10033670);
+            reportServiceContextMock.SetupGet(x => x.Filename).Returns("ILR-10033670-1819-20180712-144437-03");
+            reportServiceContextMock.SetupGet(x => x.FundingFM25OutputKey).Returns("FundingFm25Output");
+            reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
+
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, null);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
-            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             IMathsAndEnglishFm25Rules reportFm25Rules = new MathsAndEnglishFm25Rules();
             IMathsAndEnglishModelBuilder builder = new MathsAndEnglishModelBuilder();
+            IValueProvider valueProvider = new ValueProvider();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ILR-10033670-1819-20180712-144437-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
+            storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.GetAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {
                     "0fm2501",
@@ -59,6 +72,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     "5fm9901"
                 }));
             redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm25.json"));
+            redis.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
@@ -72,20 +86,109 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 fm25ProviderService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 reportFm25Rules,
                 builder,
                 topicsAndTasks);
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, System.DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm25Output] = "FundingFm25Output";
-
-            await mathsAndEnglishReport.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await mathsAndEnglishReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new MathsAndEnglishMapper(), 1));
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_ShouldSortModels_VerifyLearnRefNumber()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    ConditionOfFundingEnglish = "A",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    ConditionOfFundingEnglish = "B",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("123", mathsAndEnglishModels[0].LearnRefNumber);
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_ShouldSortModels_VerifyFundLineType()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    FundLine = "19-24 Students with an EHCP",
+                    RateBand = "B"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    FundLine = "16-19 Students (excluding High Needs Students)",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    FundLine = "14-16 Direct Funded Students",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("14-16 Direct Funded Students", mathsAndEnglishModels[0].FundLine);
+        }
+
+        [Fact]
+        public async Task TestMathsAndEnglishComparer_ShouldSortModels_VerifySortOrder()
+        {
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>
+            {
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    FundLine = "19-24 Students with an EHCP",
+                    RateBand = "B"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "321",
+                    FundLine = "19-24 Students with an EHCP",
+                    RateBand = "A"
+                },
+                new MathsAndEnglishModel()
+                {
+                    LearnRefNumber = "123",
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
+                    RateBand = "B"
+                }
+            };
+
+            mathsAndEnglishModels.Sort(new MathsAndEnglishModelComparer());
+            Assert.Equal("19-24 Students with an EHCP", mathsAndEnglishModels[0].FundLine);
+            Assert.Equal("123", mathsAndEnglishModels[0].LearnRefNumber);
         }
     }
 }

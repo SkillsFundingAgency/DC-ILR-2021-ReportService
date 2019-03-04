@@ -4,13 +4,13 @@ namespace ESFA.DC.ILR1819.ReportService.Model.Generation
 {
     public sealed class ModelProperty
     {
-        public object Name { get; }
+        public string[] Names { get; }
 
         public PropertyInfo MethodInfo { get; }
 
-        public ModelProperty(object name, PropertyInfo methodInfo)
+        public ModelProperty(string[] names, PropertyInfo methodInfo)
         {
-            Name = name;
+            Names = names;
             MethodInfo = methodInfo;
         }
     }

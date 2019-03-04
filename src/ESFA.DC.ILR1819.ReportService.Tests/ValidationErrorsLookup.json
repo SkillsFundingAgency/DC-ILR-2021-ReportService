@@ -1,1 +1,14 @@
-[{"RuleName":"LearnActEndDate_04","Message":"The Learning actual end date must be before the file preparation date"}]
+[
+  {
+    "RuleName": "LearnActEndDate_04",
+    "Message": "The Learning actual end date must be before the file preparation date"
+  },
+  {
+    "RuleName": "DateEmpStatApp_02",
+    "Message": "The Date employment status applies must not be before 1 August 1990"
+  },
+  {
+    "RuleName": "Entity_1",
+    "Message": "There are no valid learners in either the Learner record or the Learner Destination and Progression record"
+  }
+]

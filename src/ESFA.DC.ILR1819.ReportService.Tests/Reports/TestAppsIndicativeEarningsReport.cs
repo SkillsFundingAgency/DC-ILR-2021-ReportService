@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
+using ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
@@ -17,9 +20,6 @@ using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
 using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -32,77 +32,111 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
 {
     public sealed class TestAppsIndicativeEarningsReport
     {
-        [Fact]
-        public async Task TestAppsIndicativeEarningsReportGeneration()
+        [Theory]
+        //[InlineData("ILR-10033670-1819-20181206-093952-03", "Fm36.json")]
+        [InlineData("ILR-10033670-1819-20181212-103550-36", "66230-FundingFm36Output.json")]
+        public async Task TestAppsIndicativeEarningsReportGeneration(string ilrFile, string fm36Output)
         {
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
             string filename = $"10033670_1_Apps Indicative Earnings Report {dateTime:yyyyMMdd-HHmmss}";
+            string ilr = ilrFile;
+            DataStoreConfiguration dataStoreConfiguration = new DataStoreConfiguration()
+            {
+                ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString,
+                ILRDataStoreValidConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreValidConnectionString
+            };
 
-            IJobContextMessage jobContextMessage = new JobContextMessage(1, new ITopicItem[0], 0, DateTime.UtcNow);
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn] = "10033670";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename] = "ILR-10033670-1819-20180712-144437-03";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.ValidLearnRefNumbers] = "ValidLearners";
-            jobContextMessage.KeyValuePairs[JobContextMessageKey.FundingFm36Output] = "FundingFm36Output";
+            Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
+            reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
+            reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
+            reportServiceContextMock.SetupGet(x => x.Ukprn).Returns(10033670);
+            reportServiceContextMock.SetupGet(x => x.Filename).Returns(ilr);
+            reportServiceContextMock.SetupGet(x => x.FundingFM36OutputKey).Returns("FundingFm36Output");
+            reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
+            reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
             Mock<ILogger> logger = new Mock<ILogger>();
+            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
+            IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, dataStoreConfiguration);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, dataStoreConfiguration);
+            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, redis.Object, storage.Object, jsonSerializationService, intUtilitiesService, dataStoreConfiguration);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
-            Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            ITotalBuilder totalBuilder = new TotalBuilder();
 
-            List<IAppsIndicativeCommand> commands = new List<IAppsIndicativeCommand>();
+            List<IAppsIndicativeCommand> commands = new List<IAppsIndicativeCommand>()
+            {
+                new AppsIndicativeAugustCommand()
+            };
 
-            AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands);
+            AppsIndicativeEarningsModelBuilder builder = new AppsIndicativeEarningsModelBuilder(commands, totalBuilder, stringUtilitiesService);
 
-            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("ILR-10033670-1819-20180712-144437-03.xml").CopyTo(sr)).Returns(Task.CompletedTask);
+            storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead($"{ilr}.xml").CopyTo(sr)).Returns(Task.CompletedTask);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
+            storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.GetAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(jsonSerializationService.Serialize(
                 new List<string>
                 {
-                    "0fm2501",
-                    "3fm9901",
-                    "5fm9901"
+                    "3DOB01",
+                    "0fm3501",
+                    "1fm3501",
+                    "2fm3501",
+                    "3fm3501",
+                    "4fm3501",
+                    "5fm3501",
+                    "6fm3501",
+                    "7fm3501",
+                    "8fm3501",
+                    "9fm3501",
+                    "Afm3501",
+                    "Bfm3501",
+                    "Cfm3501",
+                    "Dfm3501",
+                    "Efm3501",
+                    "0fm3601",
+                    "0DOB52",
+                    "fm36 18 20"
                 }));
-            redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
+            redis.Setup(x => x.ContainsAsync("ValidLearners", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.ContainsAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.ContainsAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm36Output));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
 
-            IMessage message = await ilrProviderService.GetIlrFile(jobContextMessage, CancellationToken.None);
-            string validLearners = await redis.Object.GetAsync("ValidLearners");
+            IMessage message = await ilrProviderService.GetIlrFile(reportServiceContextMock.Object, CancellationToken.None);
+            string validLearners = await redis.Object.GetAsync("ValidLearnRefNumbers");
             Dictionary<string, LarsLearningDelivery> learningDeliveriesDict = new Dictionary<string, LarsLearningDelivery>();
-
-            LARS_Standard standard = new LARS_Standard
-            {
-                StandardCode = 1
-            };
 
             foreach (ILearner messageLearner in message.Learners)
             {
-                if (validLearners.Contains(messageLearner.LearnRefNumber))
+                if (!validLearners.Contains(messageLearner.LearnRefNumber))
                 {
-                    foreach (ILearningDelivery learningDelivery in messageLearner.LearningDeliveries)
+                    continue;
+                }
+
+                foreach (ILearningDelivery learningDelivery in messageLearner.LearningDeliveries)
+                {
+                    learningDeliveriesDict[learningDelivery.LearnAimRef] = new LarsLearningDelivery()
                     {
-                        learningDeliveriesDict[learningDelivery.LearnAimRef] = new LarsLearningDelivery()
-                        {
-                            LearningAimTitle = "A",
-                            NotionalNvqLevel = "B",
-                            Tier2SectorSubjectArea = 3
-                        };
-                    }
+                        LearningAimTitle = "A",
+                        NotionalNvqLevel = "B",
+                        Tier2SectorSubjectArea = 3
+                    };
                 }
             }
 
-            larsProviderService.Setup(x => x.GetLearningDeliveries(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
-            larsProviderService.Setup(x => x.GetStandard(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(standard);
+            larsProviderService.Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
+            larsProviderService.Setup(x => x.GetStandardAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync("NotionalEndLevel");
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+            IValueProvider valueProvider = new ValueProvider();
 
             var report = new AppsIndicativeEarningsReport(
                 logger.Object,
@@ -114,11 +148,13 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 stringUtilitiesService,
                 builder,
                 dateTimeProviderMock.Object,
+                valueProvider,
                 topicsAndTasks);
 
-            await report.GenerateReport(jobContextMessage, null, CancellationToken.None);
+            await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
+            File.WriteAllText($"{filename}.csv", csv);
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsIndicativeEarningsMapper(), 1));
         }
     }

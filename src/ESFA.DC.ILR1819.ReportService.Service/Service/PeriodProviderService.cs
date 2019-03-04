@@ -1,10 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.CollectionsManagement.Models;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.JobContextManager.Model.Interface;
+using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
@@ -12,7 +16,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         private const string CurrentCollection = "ILR1819";
 
-        private readonly Dictionary<int, int> monthToCollection = new Dictionary<int, int>()
+        private readonly Dictionary<int, int> monthToCollection = new Dictionary<int, int>
         {
             { 1, 6 },
             { 2, 7 },
@@ -32,50 +36,86 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly IReturnCalendarService _returnCalendarService;
 
-        public PeriodProviderService(IDateTimeProvider dateTimeProvider, IReturnCalendarService returnCalendarService)
+        private readonly ILogger _logger;
+
+        private readonly SemaphoreSlim _getDataLock;
+
+        private int _cachedData = -1;
+
+        public PeriodProviderService(IDateTimeProvider dateTimeProvider, IReturnCalendarService returnCalendarService, ILogger logger)
         {
             _dateTimeProvider = dateTimeProvider;
             _returnCalendarService = returnCalendarService;
+            _logger = logger;
+
+            _getDataLock = new SemaphoreSlim(1, 1);
         }
 
-        public async Task<int> GetPeriod(IJobContextMessage jobContextMessage)
+        public async Task<int> GetPeriod(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            ReturnPeriod returnPeriod = await _returnCalendarService.GetCurrentPeriodAsync(CurrentCollection);
+            await _getDataLock.WaitAsync(cancellationToken);
 
-            System.DateTime dateTimeNowUtc = jobContextMessage.SubmissionDateTimeUtc;
-            System.DateTime returnPeriodEndDateTimeUk = _dateTimeProvider.ConvertUtcToUk(returnPeriod.EndDateTimeUtc);
-            System.DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
-
-            int period;
-
-            if (dateTimeNowUk > returnPeriodEndDateTimeUk)
+            try
             {
-                period = 12;
-            }
-            else
-            {
-                if (dateTimeNowUk.Month == returnPeriodEndDateTimeUk.Month &&
-                    dateTimeNowUk.Year == returnPeriodEndDateTimeUk.Year)
+                if (_cachedData > -1)
                 {
-                    if (dateTimeNowUk.Day < returnPeriodEndDateTimeUk.Day ||
-                        (dateTimeNowUk.Day == returnPeriodEndDateTimeUk.Day &&
-                         dateTimeNowUk.Hour < returnPeriodEndDateTimeUk.Hour &&
-                         dateTimeNowUk.Minute < returnPeriodEndDateTimeUk.Minute))
+                    return _cachedData;
+                }
+
+                ReturnPeriod returnPeriod = await _returnCalendarService.GetCurrentPeriodAsync(CurrentCollection);
+
+                DateTime dateTimeNowUtc = reportServiceContext.SubmissionDateTimeUtc;
+                DateTime returnPeriodEndDateTimeUk = _dateTimeProvider.ConvertUtcToUk(returnPeriod.EndDateTimeUtc);
+                DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
+                int period = 12;
+
+                if (dateTimeNowUk <= returnPeriodEndDateTimeUk)
+                {
+                    if (dateTimeNowUk.Month == returnPeriodEndDateTimeUk.Month &&
+                        dateTimeNowUk.Year == returnPeriodEndDateTimeUk.Year)
                     {
-                        period = monthToCollection[dateTimeNowUk.Month - 1];
+                        if (dateTimeNowUk.Day < returnPeriodEndDateTimeUk.Day ||
+                            (dateTimeNowUk.Day == returnPeriodEndDateTimeUk.Day &&
+                             dateTimeNowUk.Hour < returnPeriodEndDateTimeUk.Hour &&
+                             dateTimeNowUk.Minute < returnPeriodEndDateTimeUk.Minute))
+                        {
+                            int month = dateTimeNowUk.Month - 1;
+                            if (month == 0)
+                            {
+                                month = 12;
+                            }
+
+                            period = monthToCollection[month];
+                        }
+                        else
+                        {
+                            period = monthToCollection[dateTimeNowUk.Month];
+                        }
                     }
                     else
                     {
                         period = monthToCollection[dateTimeNowUk.Month];
                     }
                 }
-                else
-                {
-                    period = monthToCollection[dateTimeNowUk.Month];
-                }
+
+                _cachedData = period;
+            }
+            catch (Exception ex)
+            {
+                // Todo: Check behaviour
+                _logger.LogError("Failed to get period data", ex);
+            }
+            finally
+            {
+                _getDataLock.Release();
             }
 
-            return period;
+            return _cachedData;
+        }
+
+        public int MonthFromPeriod(int period)
+        {
+            return monthToCollection.Single(x => x.Value == period).Key;
         }
     }
 }

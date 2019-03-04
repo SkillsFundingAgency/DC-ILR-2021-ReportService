@@ -7,14 +7,15 @@
 
     public interface IMainOccupancyReportModelBuilder
     {
-        MainOccupancyFM35Model BuildFm35Model(
+        MainOccupancyModel BuildFm35Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
             LearningDelivery frameworkAim,
-            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data);
+            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data,
+            IStringUtilitiesService stringUtilitiesService);
 
-        MainOccupancyFM25Model BuildFm25Model(
+        MainOccupancyModel BuildFm25Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
             FM25Learner fm25Data);

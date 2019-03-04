@@ -4,6 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR1819.ReportService.Service;
+using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
+using ESFA.DC.ILR1819.ReportService.Stateless.Context;
+using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;
+using ESFA.DC.IO.AzureStorage.Config.Interfaces;
+using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
@@ -40,6 +45,12 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                 using (var childLifeTimeScope = _parentLifeTimeScope.BeginLifetimeScope(c =>
                 {
                     c.RegisterInstance(jobContextMessage).As<IJobContextMessage>();
+
+                    var azureBlobStorageOptions = _parentLifeTimeScope.Resolve<IAzureStorageOptions>();
+                    c.RegisterInstance(new AzureStorageKeyValuePersistenceConfig(
+                            azureBlobStorageOptions.AzureBlobConnectionString,
+                            jobContextMessage.KeyValuePairs[JobContextMessageKey.Container].ToString()))
+                        .As<IAzureStorageKeyValuePersistenceServiceConfig>();
                 }))
                 {
                     var executionContext = (Logging.ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
@@ -51,7 +62,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                     var result = false;
                     try
                     {
-                        result = await entryPoint.Callback(jobContextMessage, cancellationToken);
+                        result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
                     }
                     catch (Exception ex)
                     {

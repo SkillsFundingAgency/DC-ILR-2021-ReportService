@@ -1,4 +1,6 @@
-﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+﻿using System;
+using System.Collections.Generic;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
@@ -11,23 +13,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
     public class MainOccupancyReportModelBuilder : IMainOccupancyReportModelBuilder
     {
-        public MainOccupancyFM35Model BuildFm35Model(
+        public MainOccupancyModel BuildFm35Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
             LarsLearningDelivery larsModel,
             LearningDelivery frameworkAim,
-            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data)
+            ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery fm35Data,
+            IStringUtilitiesService stringUtilitiesService)
         {
             var onProgPayment = fm35Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35OnProgrammeAttributeName);
+                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35OnProgrammeAttributeName, StringComparison.OrdinalIgnoreCase));
             var balancePayment = fm35Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35BalancingAttributeName);
+                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35BalancingAttributeName, StringComparison.OrdinalIgnoreCase));
             var achievePayment = fm35Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35AimAchievementAttributeName);
+                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35AimAchievementAttributeName, StringComparison.OrdinalIgnoreCase));
             var empOutcomePayment = fm35Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35JobOutcomeAchievementAttributeName);
+                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35JobOutcomeAchievementAttributeName, StringComparison.OrdinalIgnoreCase));
             var learnSuppFundCash = fm35Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => attr.AttributeName == Constants.Fm35LearningSupportAttributeName);
+                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm35LearningSupportAttributeName, StringComparison.OrdinalIgnoreCase));
+            var ldms = stringUtilitiesService.GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, "LDM", StringComparison.OrdinalIgnoreCase)), 4);
 
             var totalOnProgPayment = (onProgPayment?.Period1 ?? 0) + (onProgPayment?.Period2 ?? 0) +
                                      (onProgPayment?.Period3 ?? 0) + (onProgPayment?.Period4 ?? 0) +
@@ -64,10 +68,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                                          (learnSuppFundCash?.Period9 ?? 0) + (learnSuppFundCash?.Period10 ?? 0) +
                                          (learnSuppFundCash?.Period11 ?? 0) + (learnSuppFundCash?.Period12 ?? 0);
 
-            var aimPercent = fm35Data?.LearningDeliveryPeriodisedValues?.SingleOrDefault(attr =>
-                attr.AttributeName == Constants.Fm35AimAchievementPercentAttributeName);
+            LearningDeliveryPeriodisedValue aimPercent = fm35Data?.LearningDeliveryPeriodisedValues?.SingleOrDefault(attr =>
+                string.Equals(attr.AttributeName, Constants.Fm35AimAchievementPercentAttributeName, StringComparison.OrdinalIgnoreCase));
 
-            return new MainOccupancyFM35Model
+            return new MainOccupancyModel
             {
                 LearnRefNumber = learner.LearnRefNumber,
                 Uln = learner.ULN,
@@ -76,9 +80,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 PmUkprn = learner.PMUKPRNNullable,
                 CampId = learner.CampId,
                 ProvSpecLearnMonA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 AimSeqNumber = learningDelivery.AimSeqNumber,
                 LearnAimRef = learningDelivery.LearnAimRef,
                 LearnAimRefTitle = larsModel.LearningAimTitle,
@@ -97,46 +101,42 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 FundModel = learningDelivery.FundModel,
                 PriorLearnFundAdj = learningDelivery.PriorLearnFundAdjNullable,
                 OtherFundAdj = learningDelivery.OtherFundAdjNullable,
-                OrigLearnStartDate = learningDelivery.OrigLearnStartDateNullable,
-                LearnStartDate = learningDelivery.LearnStartDate,
-                LearnPlanEndDate = learningDelivery.LearnPlanEndDate,
+                OrigLearnStartDate = learningDelivery.OrigLearnStartDateNullable?.ToString("dd/MM/yyyy"),
+                LearnStartDate = learningDelivery.LearnStartDate.ToString("dd/MM/yyyy"),
+                LearnPlanEndDate = learningDelivery.LearnPlanEndDate.ToString("dd/MM/yyyy"),
                 CompStatus = learningDelivery.CompStatus,
-                LearnActEndDate = learningDelivery.LearnActEndDateNullable,
+                LearnActEndDate = learningDelivery.LearnActEndDateNullable?.ToString("dd/MM/yyyy"),
                 Outcome = learningDelivery.OutcomeNullable,
-                AchDate = learningDelivery.AchDateNullable,
+                AchDate = learningDelivery.AchDateNullable?.ToString("dd/MM/yyyy"),
                 AddHours = learningDelivery.AddHoursNullable,
                 LearnDelFamCodeSof = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "SOF")?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "SOF", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearnDelFamCodeFfi = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "FFI")?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "FFI", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearnDelFamCodeEef = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "EEF")?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "EEF", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 LearnDelFamCodeLsfHighest = learningDelivery.LearningDeliveryFAMs
-                    ?.Where(x => x.LearnDelFAMType == "LSF").Max(x => x.LearnDelFAMCode),
+                    ?.Where(x => string.Equals(x.LearnDelFAMType, "LSF", StringComparison.OrdinalIgnoreCase)).Select(x => x.LearnDelFAMCode).DefaultIfEmpty().Max(),
                 LearnDelFamCodeLsfEarliest = learningDelivery.LearningDeliveryFAMs
-                    ?.Where(x => x.LearnDelFAMType == "LSF").Min(x => x.LearnDelFAMDateFromNullable)
-                    ?.ToString("dd/MM/yyyy"),
+                    ?.Where(x => string.Equals(x.LearnDelFAMType, "LSF", StringComparison.OrdinalIgnoreCase)).Select(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue)
+                    .DefaultIfEmpty(DateTime.MinValue).Min().ToString("dd/MM/yyyy"),
                 LearnDelFamCodeLsfLatest = learningDelivery.LearningDeliveryFAMs
-                    ?.Where(x => x.LearnDelFAMType == "LSF")
+                    ?.Where(x => string.Equals(x.LearnDelFAMType, "LSF", StringComparison.OrdinalIgnoreCase))
                     .Min(x => x.LearnDelFAMDateToNullable)?.ToString("dd/MM/yyyy"),
-                LearnDelFamCodeLdm1 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "LDM1")?.LearnDelFAMCode,
-                LearnDelFamCodeLdm2 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "LDM2")?.LearnDelFAMCode,
-                LearnDelFamCodeLdm3 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "LDM3")?.LearnDelFAMCode,
-                LearnDelFamCodeLdm4 = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "LDM4")?.LearnDelFAMCode,
+                LearnDelFamCodeLdm1 = ldms[0],
+                LearnDelFamCodeLdm2 = ldms[1],
+                LearnDelFamCodeLdm3 = ldms[2],
+                LearnDelFamCodeLdm4 = ldms[3],
                 LearnDelFamCodeRes = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == "RES")?.LearnDelFAMCode,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, "RES", StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
                 ProvSpecDelMonA = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "A")?.ProvSpecDelMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
                 ProvSpecDelMonB = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "B")?.ProvSpecDelMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
                 ProvSpecDelMonC = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "C")?.ProvSpecDelMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
                 ProvSpecDelMonD = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecDelMonOccur == "D")?.ProvSpecDelMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
                 FundLine = fm35Data?.LearningDeliveryValue?.FundLine,
                 PlannedNumOnProgInstalm = fm35Data?.LearningDeliveryValue?.PlannedNumOnProgInstalm,
                 PlannedNumOnProgInstalmTrans = fm35Data?.LearningDeliveryValue?.PlannedNumOnProgInstalmTrans,
@@ -154,8 +154,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 TraineeWorkPlacement = (fm35Data?.LearningDeliveryValue?.TrnWorkPlaceAim ?? false)
                                        || (fm35Data?.LearningDeliveryValue?.TrnWorkPrepAim ?? false),
                 HigherApprentishipHeAim = fm35Data?.LearningDeliveryValue?.PrscHEAim ?? false,
-                ApplicEmpFactDate = fm35Data?.LearningDeliveryValue?.ApplicEmpFactDate,
-                ApplicFactDate = fm35Data?.LearningDeliveryValue?.ApplicFactDate,
+                ApplicEmpFactDate = fm35Data?.LearningDeliveryValue?.ApplicEmpFactDate?.ToString("dd/MM/yyyy"),
+                ApplicFactDate = fm35Data?.LearningDeliveryValue?.ApplicFactDate?.ToString("dd/MM/yyyy"),
 
                 Period1OnProgPayment = onProgPayment?.Period1,
                 Period1BalancePayment = balancePayment?.Period1,
@@ -239,13 +239,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             };
         }
 
-        public MainOccupancyFM25Model BuildFm25Model(
+        public MainOccupancyModel BuildFm25Model(
             ILearner learner,
             ILearningDelivery learningDelivery,
             FM25Learner fm25Data)
         {
             var onProgPayment = fm25Data?.LearnerPeriodisedValues?.SingleOrDefault(attr =>
-                attr.AttributeName == Constants.Fm25OnProgrammeAttributeName);
+                string.Equals(attr.AttributeName, Constants.Fm25OnProgrammeAttributeName, StringComparison.OrdinalIgnoreCase));
 
             var onProgPaymentTotal = onProgPayment?.Period1
                                      + onProgPayment?.Period2
@@ -260,23 +260,24 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                                      + onProgPayment?.Period11
                                      + onProgPayment?.Period12;
 
-            return new MainOccupancyFM25Model
+            return new MainOccupancyModel
             {
                 LearnRefNumber = learner.LearnRefNumber,
                 Uln = learner.ULN,
+                AimSeqNumber = learningDelivery.AimSeqNumber,
                 DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
                 PostcodePrior = learner.PostcodePrior,
                 PmUkprn = learner.PMUKPRNNullable,
                 CampId = learner.CampId,
                 ProvSpecLearnMonA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
-                NatRate = fm25Data?.NatRate,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
+                ApplicWeightFundRate = fm25Data?.NatRate,
                 FundModel = learningDelivery.FundModel,
-                LearnerStartDate = fm25Data?.LearnerStartDate,
-                LearnerPlanEndDate = fm25Data?.LearnerPlanEndDate,
-                LearnerActEndDate = fm25Data?.LearnerActEndDate,
+                LearnStartDate = fm25Data?.LearnerStartDate?.ToString("dd/MM/yyyy"),
+                LearnPlanEndDate = fm25Data?.LearnerPlanEndDate?.ToString("dd/MM/yyyy"),
+                LearnActEndDate = fm25Data?.LearnerActEndDate?.ToString("dd/MM/yyyy"),
                 FundLine = fm25Data?.FundLine,
                 Period1OnProgPayment = onProgPayment?.Period1,
                 Period2OnProgPayment = onProgPayment?.Period2,
@@ -290,8 +291,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 Period10OnProgPayment = onProgPayment?.Period10,
                 Period11OnProgPayment = onProgPayment?.Period11,
                 Period12OnProgPayment = onProgPayment?.Period12,
-                PeriodOnProgPaymentTotal = onProgPaymentTotal,
-                Total = onProgPaymentTotal
+                TotalOnProgPayment = onProgPaymentTotal,
+                TotalEarnedCash = onProgPaymentTotal
             };
         }
 

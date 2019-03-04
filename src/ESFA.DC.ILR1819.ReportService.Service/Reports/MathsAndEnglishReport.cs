@@ -6,24 +6,27 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class MathsAndEnglishReport : AbstractReportBuilder, IReport
     {
+        private static readonly MathsAndEnglishModelComparer MathsAndEnglishModelComparer = new MathsAndEnglishModelComparer();
+
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
@@ -41,10 +44,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM25ProviderService fm25ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules,
             IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -59,23 +63,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMathsAndEnglishReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
-            string csv = await GetCsv(jobContextMessage, cancellationToken);
+            string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IJobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
-            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
+            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, validLearnersTask, fm25Task);
 
@@ -84,28 +88,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return null;
             }
 
-            var ilrError = new List<string>();
+            List<string> ilrError = new List<string>();
 
-            var mathsAndEnglishModels = new List<MathsAndEnglishModel>(validLearnersTask.Result.Count);
-            foreach (string validLearnerRefNum in validLearnersTask.Result)
+            List<MathsAndEnglishModel> mathsAndEnglishModels = new List<MathsAndEnglishModel>();
+            if (fm25Task.Result?.Learners != null)
             {
-                var learner =
-                    ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-
-                var fm25Learner = fm25Task.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
-
-                if (learner == null || fm25Learner == null)
+                foreach (string validLearnerRefNum in validLearnersTask.Result)
                 {
-                    ilrError.Add(validLearnerRefNum);
-                    continue;
-                }
+                    ILearner learner =
+                        ilrFileTask.Result?.Learners?.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Learner))
-                {
-                    continue;
-                }
+                    FM25Learner fm25Learner =
+                        fm25Task.Result.Learners.SingleOrDefault(x => x.LearnRefNumber == validLearnerRefNum);
 
-                mathsAndEnglishModels.Add(_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
+                    if (learner == null || fm25Learner == null)
+                    {
+                        ilrError.Add(validLearnerRefNum);
+                        continue;
+                    }
+
+                    if (!_mathsAndEnglishFm25Rules.IsApplicableLearner(fm25Learner))
+                    {
+                        continue;
+                    }
+
+                    mathsAndEnglishModels.Add(_mathsAndEnglishModelBuilder.BuildModel(learner, fm25Learner));
+                }
             }
 
             if (ilrError.Any())
@@ -113,10 +121,21 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 _logger.LogWarning($"Failed to get one or more ILR learners while generating {nameof(MathsAndEnglishReport)}: {_stringUtilitiesService.JoinWithMaxLength(ilrError)}");
             }
 
+            mathsAndEnglishModels.Sort(MathsAndEnglishModelComparer);
+
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildCsvReport<MathsAndEnglishMapper, MathsAndEnglishModel>(ms, mathsAndEnglishModels);
-                return Encoding.UTF8.GetString(ms.ToArray());
+                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
+                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
+                {
+                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                    {
+                        WriteCsvRecords<MathsAndEnglishMapper, MathsAndEnglishModel>(csvWriter, mathsAndEnglishModels);
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
+                }
             }
         }
     }

@@ -18,6 +18,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
 
         public string TopicReports_TaskGenerateFundingSummaryReport { get; set; }
 
+        public string TopicReports_TaskGenerateAdultFundingClaimReport { get; set; }
+
         public string TopicDeds_TaskPersistDataToDeds { get; set; }
 
         public string TopicReports_TaskGenerateMainOccupancyReport { get; set; }
@@ -31,5 +33,15 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
         public string TopicReports_TaskGenerateAppsAdditionalPaymentsReport { get; set; }
 
         public string TopicReports_TaskGenerateAppsIndicativeEarningsReport { get; set; }
+
+        public string TopicReports_TaskGenerateAppsCoInvestmentContributionsReport { get; set; }
+
+        public string TopicReports_TaskGenerateDataMatchReport { get; set; }
+
+        public string TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport { get; set; }
+
+        public string TopicReports_TaskGenerateFundingClaim1619Report { get; set; }
+
+        public string TopicReports_TaskGenerateTrailblazerAppsOccupancyReport { get; set; }
     }
 }

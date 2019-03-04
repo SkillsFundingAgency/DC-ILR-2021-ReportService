@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
             Map(m => m.ConditionOfFundingMaths).Index(i++).Name("Maths GCSE status");
             Map(m => m.ConditionOfFundingEnglish).Index(i++).Name("English GCSE status");
             Map(m => m.RateBand).Index(i++).Name("Funding band");
-            Map(m => m.OfficialSensitive).Index(i++).Name("OFFICIAL – SENSITIVE");
+            Map(m => m.OfficialSensitive).Index(i++).Name("OFFICIAL-SENSITIVE");
         }
     }
 }

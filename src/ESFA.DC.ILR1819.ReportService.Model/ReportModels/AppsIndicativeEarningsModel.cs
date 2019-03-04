@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
+﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 {
     public class AppsIndicativeEarningsModel
     {
-        public string LearnerReferenceNumber { get; set; }
+        public string LearnRefNumber { get; set; }
 
         public long UniqueLearnerNumber { get; set; }
 
-        public DateTime? DateOfBirth { get; set; }
+        public string DateOfBirth { get; set; }
 
         public string PostcodePriorToEnrollment { get; set; }
 
@@ -18,7 +16,7 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public string ProviderSpecifiedLearnerMonitoringB { get; set; }
 
-        public int? AimSequenceNumber { get; set; }
+        public int? AimSeqNumber { get; set; }
 
         public string LearningAimReference { get; set; }
 
@@ -48,15 +46,15 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public int FundingModel { get; set; }
 
-        public DateTime? OriginalLearningStartDate { get; set; }
+        public string OriginalLearningStartDate { get; set; }
 
-        public DateTime? LearningStartDate { get; set; }
+        public string LearningStartDate { get; set; }
 
-        public DateTime? LearningPlannedEndDate { get; set; }
+        public string LearningPlannedEndDate { get; set; }
 
         public int CompletionStatus { get; set; }
 
-        public DateTime? LearningActualEndDate { get; set; }
+        public string LearningActualEndDate { get; set; }
 
         public int? Outcome { get; set; }
 
@@ -66,9 +64,9 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public string LearningDeliveryFAMTypeLearningSupportFunding { get; set; }
 
-        public DateTime? LearningDeliveryFAMTypeLSFDateAppliesFrom { get; set; }
+        public string LearningDeliveryFAMTypeLSFDateAppliesFrom { get; set; }
 
-        public DateTime? LearningDeliveryFAMTypeLSFDateAppliesTo { get; set; }
+        public string LearningDeliveryFAMTypeLSFDateAppliesTo { get; set; }
 
         public string LearningDeliveryFAMTypeLearningDeliveryMonitoringA { get; set; }
 
@@ -102,13 +100,13 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public int? EmploymentStatus { get; set; }
 
-        public DateTime? EmploymentStatusDate { get; set; }
+        public string EmploymentStatusDate { get; set; }
 
         public int? EmpStatusMonitoringSmallEmployer { get; set; }
 
-        public DateTime? PriceEpisodeStartDate { get; set; }
+        public string PriceEpisodeStartDate { get; set; }
 
-        public DateTime? PriceEpisodeActualEndDate { get; set; }
+        public string PriceEpisodeActualEndDate { get; set; }
 
         public string FundingLineType { get; set; }
 
@@ -122,15 +120,15 @@ namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
 
         public decimal? CompletionElement { get; set; }
 
-        public decimal? TotalPRMPreviousFundingYear { get; set; }
+        public decimal TotalPRMPreviousFundingYear { get; set; }
 
-        public decimal? TotalPRMThisFundingYear { get; set; }
+        public decimal TotalPRMThisFundingYear { get; set; }
 
         public string LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
 
-        public DateTime? LearningDeliveryFAMTypeACTDateAppliesFrom { get; set; }
+        public string LearningDeliveryFAMTypeACTDateAppliesFrom { get; set; }
 
-        public DateTime? LearningDeliveryFAMTypeACTDateAppliesTo { get; set; }
+        public string LearningDeliveryFAMTypeACTDateAppliesTo { get; set; }
 
         public decimal? AugustOnProgrammeEarnings { get; set; }
 

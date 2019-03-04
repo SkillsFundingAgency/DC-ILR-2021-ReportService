@@ -16,6 +16,8 @@
 
         string TopicReports_TaskGenerateFundingSummaryReport { get; set; }
 
+        string TopicReports_TaskGenerateAdultFundingClaimReport { get; set; }
+
         string TopicDeds_TaskPersistDataToDeds { get; set; }
 
         string TopicReports_TaskGenerateMainOccupancyReport { get; set; }
@@ -29,5 +31,15 @@
         string TopicReports_TaskGenerateAppsAdditionalPaymentsReport { get; set; }
 
         string TopicReports_TaskGenerateAppsIndicativeEarningsReport { get; set; }
+
+        string TopicReports_TaskGenerateAppsCoInvestmentContributionsReport { get; set; }
+
+        string TopicReports_TaskGenerateDataMatchReport { get; set; }
+
+        string TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport { get; set; }
+
+        string TopicReports_TaskGenerateFundingClaim1619Report { get; set; }
+
+        string TopicReports_TaskGenerateTrailblazerAppsOccupancyReport { get; set; }
     }
 }

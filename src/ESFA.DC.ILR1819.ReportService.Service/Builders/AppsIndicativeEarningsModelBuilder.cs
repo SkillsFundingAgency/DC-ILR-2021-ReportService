@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
+using ESFA.DC.ILR1819.ReportService.Model.Poco;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery;
 
@@ -13,11 +14,19 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {
     public class AppsIndicativeEarningsModelBuilder : IAppsIndicativeEarningsModelBuilder
     {
-        private readonly IList<IAppsIndicativeCommand> _commands;
+        private readonly LearningDeliveryFamSimple _blankFam;
 
-        public AppsIndicativeEarningsModelBuilder(IList<IAppsIndicativeCommand> commands)
+        private readonly IList<IAppsIndicativeCommand> _commands;
+        private readonly ITotalBuilder _totalBuilder;
+        private readonly IStringUtilitiesService _stringUtilitiesService;
+
+        public AppsIndicativeEarningsModelBuilder(IList<IAppsIndicativeCommand> commands, ITotalBuilder totalBuilder, IStringUtilitiesService stringUtilitiesService)
         {
             _commands = commands;
+            _totalBuilder = totalBuilder;
+            _stringUtilitiesService = stringUtilitiesService;
+
+            _blankFam = new LearningDeliveryFamSimple(string.Empty, DateTime.MinValue, DateTime.MinValue);
         }
 
         public AppsIndicativeEarningsModel BuildModel(
@@ -26,34 +35,38 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             LearningDelivery fm36DeliveryAttribute,
             PriceEpisode fm36EpisodeAttribute,
             LarsLearningDelivery larsLearningDelivery,
-            LARS_Standard larsStandard,
+            string notionalEndLevel,
             bool earliestEpisode,
             bool hasPriceEpisodes)
         {
-            var employmentStatusDate = learner.LearnerEmploymentStatuses
-                .Where(x => x.DateEmpStatApp <= learningDelivery.LearnStartDate).Max(x => x.DateEmpStatApp);
-            var employmentStatus =
+            DateTime employmentStatusDate = learner.LearnerEmploymentStatuses?
+                .Where(x => x.DateEmpStatApp <= learningDelivery.LearnStartDate).Select(x => x.DateEmpStatApp)
+                .DefaultIfEmpty(DateTime.MinValue).Max() ?? DateTime.MinValue;
+            ILearnerEmploymentStatus employmentStatus =
                 learner.LearnerEmploymentStatuses?.SingleOrDefault(x => x.DateEmpStatApp == employmentStatusDate);
+            LearningDeliveryFamSimple[] learningDeliveryFams = GetLearningDeliveryFams(learningDelivery);
+            string fundingLineType = GetFundingType(fm36DeliveryAttribute?.LearningDeliveryValues, fm36EpisodeAttribute?.PriceEpisodeValues);
+            var ldms = _stringUtilitiesService.GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase)), 4);
 
             var model = new AppsIndicativeEarningsModel
             {
-                LearnerReferenceNumber = learner.LearnRefNumber,
+                LearnRefNumber = learner.LearnRefNumber,
                 UniqueLearnerNumber = learner.ULN,
-                DateOfBirth = learner.DateOfBirthNullable,
+                DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
                 PostcodePriorToEnrollment = learner.PostcodePrior,
                 CampusIdentifier = learner.CampId,
                 ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
-                AimSequenceNumber = learningDelivery.AimSeqNumber,
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
+                AimSeqNumber = learningDelivery.AimSeqNumber,
                 LearningAimReference = learningDelivery.LearnAimRef,
                 LearningAimTitle = larsLearningDelivery?.LearningAimTitle,
                 SoftwareSupplierAimIdentifier = learningDelivery.SWSupAimId,
                 LARS1618FrameworkUplift = fm36DeliveryAttribute?.LearningDeliveryValues
                     ?.LearnDelApplicProv1618FrameworkUplift,
                 NotionalNVQLevel = larsLearningDelivery?.NotionalNvqLevel,
-                StandardNotionalEndLevel = larsStandard?.NotionalEndLevel,
+                StandardNotionalEndLevel = notionalEndLevel,
                 Tier2SectorSubjectArea = larsLearningDelivery?.Tier2SectorSubjectArea,
                 ProgrammeType = learningDelivery.ProgTypeNullable,
                 StandardCode = learningDelivery.StdCodeNullable,
@@ -62,40 +75,33 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 AimType = learningDelivery.AimType,
                 CommonComponentCode = larsLearningDelivery?.FrameworkCommonComponent,
                 FundingModel = learningDelivery.FundModel,
-                OriginalLearningStartDate = learningDelivery.OrigLearnStartDateNullable,
-                LearningStartDate = learningDelivery.LearnStartDate,
-                LearningPlannedEndDate = learningDelivery.LearnPlanEndDate,
+                OriginalLearningStartDate = learningDelivery.OrigLearnStartDateNullable?.ToString("dd/MM/yyyy"),
+                LearningStartDate = learningDelivery.LearnStartDate.ToString("dd/MM/yyyy"),
+                LearningPlannedEndDate = learningDelivery.LearnPlanEndDate.ToString("dd/MM/yyyy"),
                 CompletionStatus = learningDelivery.CompStatus,
-                LearningActualEndDate = learningDelivery.LearnActEndDateNullable,
+                LearningActualEndDate = learningDelivery.LearnActEndDateNullable?.ToString("dd/MM/yyyy"),
                 Outcome = learningDelivery.OutcomeNullable,
                 FundingAdjustmentForPriorLearning = learningDelivery.PriorLearnFundAdjNullable,
                 OtherFundingAdjustment = learningDelivery.OtherFundAdjNullable,
-                LearningDeliveryFAMTypeLearningSupportFunding = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLSF)?.LearnDelFAMCode,
-                LearningDeliveryFAMTypeLSFDateAppliesFrom = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLSF)
-                    ?.LearnDelFAMDateFromNullable,
-                LearningDeliveryFAMTypeLSFDateAppliesTo = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLSF)
-                    ?.LearnDelFAMDateToNullable,
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringA = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM1)?.LearnDelFAMCode,
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringB = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM2)?.LearnDelFAMCode,
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringC = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM3)?.LearnDelFAMCode,
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringD = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeLDM4)?.LearnDelFAMCode,
+                LearningDeliveryFAMTypeLearningSupportFunding = learningDeliveryFams.Select(x => x.Code).Max(),
+                LearningDeliveryFAMTypeLSFDateAppliesFrom =
+                    learningDeliveryFams.Select(x => x.From).Min() == DateTime.MinValue ? string.Empty : learningDeliveryFams.Select(x => x.From).Min().ToString("dd/MM/yyyy"),
+                LearningDeliveryFAMTypeLSFDateAppliesTo =
+                learningDeliveryFams.Select(x => x.To).Max() == DateTime.MinValue ? string.Empty : learningDeliveryFams.Select(x => x.To).Max().ToString("dd/MM/yyyy"),
+            LearningDeliveryFAMTypeLearningDeliveryMonitoringA = ldms[0],
+                LearningDeliveryFAMTypeLearningDeliveryMonitoringB = ldms[1],
+                LearningDeliveryFAMTypeLearningDeliveryMonitoringC = ldms[2],
+                LearningDeliveryFAMTypeLearningDeliveryMonitoringD = ldms[3],
                 LearningDeliveryFAMRestartIndicator = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeRES)?.LearnDelFAMCode,
-                ProviderSpecifiedDeliveryMonitoringA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "A")?.ProvSpecLearnMon,
-                ProviderSpecifiedDeliveryMonitoringB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "B")?.ProvSpecLearnMon,
-                ProviderSpecifiedDeliveryMonitoringC = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "C")?.ProvSpecLearnMon,
-                ProviderSpecifiedDeliveryMonitoringD = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => x.ProvSpecLearnMonOccur == "D")?.ProvSpecLearnMon,
+                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeRES, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
+                ProviderSpecifiedDeliveryMonitoringA = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
+                ProviderSpecifiedDeliveryMonitoringB = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
+                ProviderSpecifiedDeliveryMonitoringC = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
+                ProviderSpecifiedDeliveryMonitoringD = learningDelivery.ProviderSpecDeliveryMonitorings
+                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
                 EndPointAssessmentOrganisation = learningDelivery.EPAOrgID,
                 PlannedNoOfOnProgrammeInstallmentsForAim =
                     fm36DeliveryAttribute?.LearningDeliveryValues?.PlannedNumOnProgInstalm,
@@ -104,14 +110,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 EmployerIdentifier = employmentStatus?.EmpIdNullable,
                 AgreementIdentifier = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeAgreeId,
                 EmploymentStatus = employmentStatus?.EmpStat,
-                EmploymentStatusDate = employmentStatus?.DateEmpStatApp,
+                EmploymentStatusDate = employmentStatus?.DateEmpStatApp.ToString("dd/MM/yyyy"),
                 EmpStatusMonitoringSmallEmployer = employmentStatus?.EmploymentStatusMonitorings
-                    ?.SingleOrDefault(x => x.ESMType == Constants.EmploymentStatusMonitoringTypeSEM)?.ESMCode,
-                PriceEpisodeStartDate = fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate,
-                PriceEpisodeActualEndDate = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeActualEndDate,
-                FundingLineType = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false
-                    ? fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelInitialFundLineType
-                    : fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeFundLineType,
+                    ?.SingleOrDefault(x => string.Equals(x.ESMType, Constants.EmploymentStatusMonitoringTypeSEM, StringComparison.OrdinalIgnoreCase))?.ESMCode,
+                PriceEpisodeStartDate =
+                    fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate?.ToString("dd/MM/yyyy"),
+                PriceEpisodeActualEndDate =
+                    fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeActualEndDate?.ToString("dd/MM/yyyy"),
+                FundingLineType = fundingLineType,
                 TotalPriceApplicableToThisEpisode =
                     fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeTotalTNPPrice,
                 FundingBandUpperLimit = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeUpperBandLimit,
@@ -122,7 +128,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 CompletionElement = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeCompletionElement
             };
 
-            CalculateApprenticeshipContractTypeFields(learningDelivery, model, fm36DeliveryAttribute, fm36EpisodeAttribute, hasPriceEpisodes);
+            if (learningDelivery?.LearningDeliveryFAMs != null)
+            {
+                CalculateApprenticeshipContractTypeFields(
+                    learningDelivery,
+                    model,
+                    fm36DeliveryAttribute,
+                    fm36EpisodeAttribute,
+                    hasPriceEpisodes);
+            }
 
             if (earliestEpisode)
             {
@@ -139,15 +153,42 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             return model;
         }
 
+        private string GetFundingType(
+            LearningDeliveryValues learningDeliveryValues,
+            PriceEpisodeValues priceEpisodeValues)
+        {
+            if (learningDeliveryValues != null && learningDeliveryValues.LearnDelMathEng.GetValueOrDefault(false))
+            {
+                return learningDeliveryValues.LearnDelInitialFundLineType;
+            }
+
+            if (priceEpisodeValues != null)
+            {
+                return priceEpisodeValues.PriceEpisodeFundLineType;
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Total employer contribution collected (PMR) in previous funding years &
+        /// Total employer contribution collected (PMR) in this funding year
+        /// </summary>
+        /// <param name="model">The model to populate.</param>
+        /// <param name="learningDelivery">The learning delivery.</param>
         private void CalculateAppFinTotals(AppsIndicativeEarningsModel model, ILearningDelivery learningDelivery)
         {
-            var firstOfAugust = new DateTime(2018, 8, 1);
-            var endOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
+            if (learningDelivery.AppFinRecords == null)
+            {
+                return;
+            }
 
-            var previousYearData = learningDelivery.AppFinRecords
-                .Where(x => x.AFinDate < firstOfAugust && x.AFinType == "PMR").ToList();
-            var currentYearData = learningDelivery.AppFinRecords
-                .Where(x => x.AFinDate >= firstOfAugust && x.AFinDate <= endOfYear && x.AFinType == "PMR").ToList();
+            List<IAppFinRecord> previousYearData = learningDelivery.AppFinRecords
+                .Where(x => x.AFinDate < Constants.BeginningOfYear &&
+                            string.Equals(x.AFinType, "PMR", StringComparison.OrdinalIgnoreCase)).ToList();
+            List<IAppFinRecord> currentYearData = learningDelivery.AppFinRecords
+                .Where(x => x.AFinDate >= Constants.BeginningOfYear && x.AFinDate <= Constants.EndOfYear &&
+                            string.Equals(x.AFinType, "PMR", StringComparison.OrdinalIgnoreCase)).ToList();
 
             model.TotalPRMPreviousFundingYear =
                 previousYearData.Where(x => x.AFinCode == 1 || x.AFinCode == 2).Sum(x => x.AFinAmount) -
@@ -158,6 +199,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 currentYearData.Where(x => x.AFinCode == 3).Sum(x => x.AFinAmount);
         }
 
+        /// <summary>
+        /// Learning delivery funding and monitoring type – apprenticeship contract type
+        /// Learning delivery funding and monitoring type – ACT date applies from
+        /// Learning delivery funding and monitoring type – ACT date applies to
+        /// </summary>
+        /// <param name="learningDelivery">The learning delivery which is not null along with the LearningDeliveryFAMs</param>
+        /// <param name="model">The row model.</param>
+        /// <param name="fm36DeliveryAttribute">The Fm36 delivery attribute.</param>
+        /// <param name="fm36PriceEpisodeAttribute">The Fm36 price episode attribute.</param>
+        /// <param name="hasPriceEpisodes">Flag indicating whether there are price episodes.</param>
         private void CalculateApprenticeshipContractTypeFields(
             ILearningDelivery learningDelivery,
             AppsIndicativeEarningsModel model,
@@ -165,225 +216,264 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             PriceEpisode fm36PriceEpisodeAttribute,
             bool hasPriceEpisodes)
         {
-            bool useDeliveryAttributeDate =
-                fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false ||
-                (!(fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false) && !hasPriceEpisodes);
+            bool learnDelMathEng = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false;
+            bool useDeliveryAttributeDate = learnDelMathEng || !hasPriceEpisodes;
+            ILearningDeliveryFAM[] acts = learningDelivery.LearningDeliveryFAMs.Where(x =>
+                string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeACT, StringComparison.OrdinalIgnoreCase)).ToArray();
 
-            if (learningDelivery.LearningDeliveryFAMs?.SingleOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT)
-                    ?.LearnDelFAMDateFromNullable == null)
+            if (acts.All(x => x.LearnDelFAMDateFromNullable == null))
             {
                 return;
             }
 
-            var contractAppliesFrom = learningDelivery.LearningDeliveryFAMs
-                ?.Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
-                            ((useDeliveryAttributeDate &&
-                              learningDelivery.LearnStartDate >= x.LearnDelFAMDateFromNullable) ||
-                             (!useDeliveryAttributeDate &&
-                              fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate >=
-                              x.LearnDelFAMDateFromNullable)))
-                .Max(x => x.LearnDelFAMDateFromNullable);
+            DateTime contractAppliesFrom = acts.Where(x =>
+                (useDeliveryAttributeDate && learningDelivery.LearnStartDate >= x.LearnDelFAMDateFromNullable) ||
+                (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate >= x.LearnDelFAMDateFromNullable))
+                .Select(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue)
+                .DefaultIfEmpty(DateTime.MinValue)
+                .Max();
 
-            var contractAppliesTo = learningDelivery.LearningDeliveryFAMs
-                ?.Where(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
-                            ((useDeliveryAttributeDate &&
-                              learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
-                             (!useDeliveryAttributeDate &&
-                              fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate <=
-                              x.LearnDelFAMDateToNullable)))
-                .Min(x => x.LearnDelFAMDateFromNullable);
+            DateTime contractAppliesTo = acts.Where(x =>
+                (useDeliveryAttributeDate && learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
+                (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate <= x.LearnDelFAMDateToNullable))
+                .Select(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue)
+                .DefaultIfEmpty(DateTime.MinValue)
+                .Min();
 
-            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom;
-            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo;
+            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom == DateTime.MinValue ? $"" : contractAppliesFrom.ToString("dd/MM/yyyy");
+            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo == DateTime.MinValue ? $"" : contractAppliesTo.ToString("dd/MM/yyyy");
 
-            model.LearningDeliveryFAMTypeApprenticeshipContractType = learningDelivery.LearningDeliveryFAMs
-                ?.FirstOrDefault(x => x.LearnDelFAMType == Constants.LearningDeliveryFAMCodeACT &&
-                    x.LearnDelFAMDateFromNullable == contractAppliesFrom && x.LearnDelFAMDateToNullable == contractAppliesTo)?.LearnDelFAMCode;
+            if (contractAppliesTo == DateTime.MinValue)
+            {
+                model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x => x.LearnDelFAMDateToNullable == null)?.LearnDelFAMCode;
+            }
+            else
+            {
+                model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x =>
+                    x.LearnDelFAMDateFromNullable == contractAppliesFrom &&
+                    x.LearnDelFAMDateToNullable == contractAppliesTo)?.LearnDelFAMCode;
+            }
         }
 
         private void GetTotals(AppsIndicativeEarningsModel model)
         {
             model.TotalOnProgrammeEarnings =
-                model.AugustOnProgrammeEarnings ?? 0 +
-                model.SeptemberOnProgrammeEarnings ?? 0 +
-                model.OctoberOnProgrammeEarnings ?? 0 +
-                model.NovemberOnProgrammeEarnings ?? 0 +
-                model.DecemberOnProgrammeEarnings ?? 0 +
-                model.JanuaryOnProgrammeEarnings ?? 0 +
-                model.FebruaryOnProgrammeEarnings ?? 0 +
-                model.MarchOnProgrammeEarnings ?? 0 +
-                model.AprilOnProgrammeEarnings ?? 0 +
-                model.MayOnProgrammeEarnings ?? 0 +
-                model.JuneOnProgrammeEarnings ?? 0 +
-                model.JulyOnProgrammeEarnings ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustOnProgrammeEarnings,
+                    model.SeptemberOnProgrammeEarnings,
+                    model.OctoberOnProgrammeEarnings,
+                    model.NovemberOnProgrammeEarnings,
+                    model.DecemberOnProgrammeEarnings,
+                    model.JanuaryOnProgrammeEarnings,
+                    model.FebruaryOnProgrammeEarnings,
+                    model.MarchOnProgrammeEarnings,
+                    model.AprilOnProgrammeEarnings,
+                    model.MayOnProgrammeEarnings,
+                    model.JuneOnProgrammeEarnings,
+                    model.JulyOnProgrammeEarnings);
 
             model.TotalBalancingPaymentEarnings =
-                model.AugustBalancingPaymentEarnings ?? 0 +
-                model.SeptemberBalancingPaymentEarnings ?? 0 +
-                model.OctoberBalancingPaymentEarnings ?? 0 +
-                model.NovemberBalancingPaymentEarnings ?? 0 +
-                model.DecemberBalancingPaymentEarnings ?? 0 +
-                model.JanuaryBalancingPaymentEarnings ?? 0 +
-                model.FebruaryBalancingPaymentEarnings ?? 0 +
-                model.MarchBalancingPaymentEarnings ?? 0 +
-                model.AprilBalancingPaymentEarnings ?? 0 +
-                model.MayBalancingPaymentEarnings ?? 0 +
-                model.JuneBalancingPaymentEarnings ?? 0 +
-                model.JulyBalancingPaymentEarnings ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustBalancingPaymentEarnings,
+                    model.SeptemberBalancingPaymentEarnings,
+                    model.OctoberBalancingPaymentEarnings,
+                    model.NovemberBalancingPaymentEarnings,
+                    model.DecemberBalancingPaymentEarnings,
+                    model.JanuaryBalancingPaymentEarnings,
+                    model.FebruaryBalancingPaymentEarnings,
+                    model.MarchBalancingPaymentEarnings,
+                    model.AprilBalancingPaymentEarnings,
+                    model.MayBalancingPaymentEarnings,
+                    model.JuneBalancingPaymentEarnings,
+                    model.JulyBalancingPaymentEarnings);
 
             model.TotalAimCompletionEarnings =
-                model.AugustAimCompletionEarnings ?? 0 +
-                model.SeptemberAimCompletionEarnings ?? 0 +
-                model.OctoberAimCompletionEarnings ?? 0 +
-                model.NovemberAimCompletionEarnings ?? 0 +
-                model.DecemberAimCompletionEarnings ?? 0 +
-                model.JanuaryAimCompletionEarnings ?? 0 +
-                model.FebruaryAimCompletionEarnings ?? 0 +
-                model.MarchAimCompletionEarnings ?? 0 +
-                model.AprilAimCompletionEarnings ?? 0 +
-                model.MayAimCompletionEarnings ?? 0 +
-                model.JuneAimCompletionEarnings ?? 0 +
-                model.JulyAimCompletionEarnings ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustAimCompletionEarnings,
+                    model.SeptemberAimCompletionEarnings,
+                    model.OctoberAimCompletionEarnings,
+                    model.NovemberAimCompletionEarnings,
+                    model.DecemberAimCompletionEarnings,
+                    model.JanuaryAimCompletionEarnings,
+                    model.FebruaryAimCompletionEarnings,
+                    model.MarchAimCompletionEarnings,
+                    model.AprilAimCompletionEarnings,
+                    model.MayAimCompletionEarnings,
+                    model.JuneAimCompletionEarnings,
+                    model.JulyAimCompletionEarnings);
 
             model.TotalLearningSupportEarnings =
-                model.AugustLearningSupportEarnings ?? 0 +
-                model.SeptemberLearningSupportEarnings ?? 0 +
-                model.OctoberLearningSupportEarnings ?? 0 +
-                model.NovemberLearningSupportEarnings ?? 0 +
-                model.DecemberLearningSupportEarnings ?? 0 +
-                model.JanuaryLearningSupportEarnings ?? 0 +
-                model.FebruaryLearningSupportEarnings ?? 0 +
-                model.MarchLearningSupportEarnings ?? 0 +
-                model.AprilLearningSupportEarnings ?? 0 +
-                model.MayLearningSupportEarnings ?? 0 +
-                model.JuneLearningSupportEarnings ?? 0 +
-                model.JulyLearningSupportEarnings ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustLearningSupportEarnings,
+                    model.SeptemberLearningSupportEarnings,
+                    model.OctoberLearningSupportEarnings,
+                    model.NovemberLearningSupportEarnings,
+                    model.DecemberLearningSupportEarnings,
+                    model.JanuaryLearningSupportEarnings,
+                    model.FebruaryLearningSupportEarnings,
+                    model.MarchLearningSupportEarnings,
+                    model.AprilLearningSupportEarnings,
+                    model.MayLearningSupportEarnings,
+                    model.JuneLearningSupportEarnings,
+                    model.JulyLearningSupportEarnings);
 
             model.TotalEnglishMathsOnProgrammeEarnings =
-                model.AugustEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.SeptemberEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.OctoberEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.NovemberEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.DecemberEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.JanuaryEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.FebruaryEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.MarchEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.AprilEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.MayEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.JuneEnglishMathsOnProgrammeEarnings ?? 0 +
-                model.JulyEnglishMathsOnProgrammeEarnings ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustEnglishMathsOnProgrammeEarnings,
+                    model.SeptemberEnglishMathsOnProgrammeEarnings,
+                    model.OctoberEnglishMathsOnProgrammeEarnings,
+                    model.NovemberEnglishMathsOnProgrammeEarnings,
+                    model.DecemberEnglishMathsOnProgrammeEarnings,
+                    model.JanuaryEnglishMathsOnProgrammeEarnings,
+                    model.FebruaryEnglishMathsOnProgrammeEarnings,
+                    model.MarchEnglishMathsOnProgrammeEarnings,
+                    model.AprilEnglishMathsOnProgrammeEarnings,
+                    model.MayEnglishMathsOnProgrammeEarnings,
+                    model.JuneEnglishMathsOnProgrammeEarnings,
+                    model.JulyEnglishMathsOnProgrammeEarnings);
 
             model.TotalEnglishMathsBalancingPaymentEarnings =
-                model.AugustEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.SeptemberEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.OctoberEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.NovemberEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.DecemberEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.JanuaryEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.FebruaryEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.MarchEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.AprilEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.MayEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.JuneEnglishMathsBalancingPaymentEarnings ?? 0 +
-                model.JulyEnglishMathsBalancingPaymentEarnings ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustEnglishMathsBalancingPaymentEarnings,
+                    model.SeptemberEnglishMathsBalancingPaymentEarnings,
+                    model.OctoberEnglishMathsBalancingPaymentEarnings,
+                    model.NovemberEnglishMathsBalancingPaymentEarnings,
+                    model.DecemberEnglishMathsBalancingPaymentEarnings,
+                    model.JanuaryEnglishMathsBalancingPaymentEarnings,
+                    model.FebruaryEnglishMathsBalancingPaymentEarnings,
+                    model.MarchEnglishMathsBalancingPaymentEarnings,
+                    model.AprilEnglishMathsBalancingPaymentEarnings,
+                    model.MayEnglishMathsBalancingPaymentEarnings,
+                    model.JuneEnglishMathsBalancingPaymentEarnings,
+                    model.JulyEnglishMathsBalancingPaymentEarnings);
 
             model.TotalDisadvantageEarnings =
-                model.AugustDisadvantageEarnings ?? 0 +
-                model.SeptemberDisadvantageEarnings ?? 0 +
-                model.OctoberDisadvantageEarnings ?? 0 +
-                model.NovemberDisadvantageEarnings ?? 0 +
-                model.DecemberDisadvantageEarnings ?? 0 +
-                model.JanuaryDisadvantageEarnings ?? 0 +
-                model.FebruaryDisadvantageEarnings ?? 0 +
-                model.MarchDisadvantageEarnings ?? 0 +
-                model.AprilDisadvantageEarnings ?? 0 +
-                model.MayDisadvantageEarnings ?? 0 +
-                model.JuneDisadvantageEarnings ?? 0 +
-                model.JulyDisadvantageEarnings ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustDisadvantageEarnings,
+                    model.SeptemberDisadvantageEarnings,
+                    model.OctoberDisadvantageEarnings,
+                    model.NovemberDisadvantageEarnings,
+                    model.DecemberDisadvantageEarnings,
+                    model.JanuaryDisadvantageEarnings,
+                    model.FebruaryDisadvantageEarnings,
+                    model.MarchDisadvantageEarnings,
+                    model.AprilDisadvantageEarnings,
+                    model.MayDisadvantageEarnings,
+                    model.JuneDisadvantageEarnings,
+                    model.JulyDisadvantageEarnings);
 
             model.Total1618AdditionalPaymentForEmployers =
-                model.August1618AdditionalPaymentForEmployers ?? 0 +
-                model.September1618AdditionalPaymentForEmployers ?? 0 +
-                model.October1618AdditionalPaymentForEmployers ?? 0 +
-                model.November1618AdditionalPaymentForEmployers ?? 0 +
-                model.December1618AdditionalPaymentForEmployers ?? 0 +
-                model.January1618AdditionalPaymentForEmployers ?? 0 +
-                model.February1618AdditionalPaymentForEmployers ?? 0 +
-                model.March1618AdditionalPaymentForEmployers ?? 0 +
-                model.April1618AdditionalPaymentForEmployers ?? 0 +
-                model.May1618AdditionalPaymentForEmployers ?? 0 +
-                model.June1618AdditionalPaymentForEmployers ?? 0 +
-                model.July1618AdditionalPaymentForEmployers ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.August1618AdditionalPaymentForEmployers,
+                    model.September1618AdditionalPaymentForEmployers,
+                    model.October1618AdditionalPaymentForEmployers,
+                    model.November1618AdditionalPaymentForEmployers,
+                    model.December1618AdditionalPaymentForEmployers,
+                    model.January1618AdditionalPaymentForEmployers,
+                    model.February1618AdditionalPaymentForEmployers,
+                    model.March1618AdditionalPaymentForEmployers,
+                    model.April1618AdditionalPaymentForEmployers,
+                    model.May1618AdditionalPaymentForEmployers,
+                    model.June1618AdditionalPaymentForEmployers,
+                    model.July1618AdditionalPaymentForEmployers);
 
             model.Total1618AdditionalPaymentForProviders =
-                model.August1618AdditionalPaymentForProviders ?? 0 +
-                model.September1618AdditionalPaymentForProviders ?? 0 +
-                model.October1618AdditionalPaymentForProviders ?? 0 +
-                model.November1618AdditionalPaymentForProviders ?? 0 +
-                model.December1618AdditionalPaymentForProviders ?? 0 +
-                model.January1618AdditionalPaymentForProviders ?? 0 +
-                model.February1618AdditionalPaymentForProviders ?? 0 +
-                model.March1618AdditionalPaymentForProviders ?? 0 +
-                model.April1618AdditionalPaymentForProviders ?? 0 +
-                model.May1618AdditionalPaymentForProviders ?? 0 +
-                model.June1618AdditionalPaymentForProviders ?? 0 +
-                model.July1618AdditionalPaymentForProviders ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.August1618AdditionalPaymentForProviders,
+                    model.September1618AdditionalPaymentForProviders,
+                    model.October1618AdditionalPaymentForProviders,
+                    model.November1618AdditionalPaymentForProviders,
+                    model.December1618AdditionalPaymentForProviders,
+                    model.January1618AdditionalPaymentForProviders,
+                    model.February1618AdditionalPaymentForProviders,
+                    model.March1618AdditionalPaymentForProviders,
+                    model.April1618AdditionalPaymentForProviders,
+                    model.May1618AdditionalPaymentForProviders,
+                    model.June1618AdditionalPaymentForProviders,
+                    model.July1618AdditionalPaymentForProviders);
 
             model.TotalAdditionalPaymentsForApprentices =
-                model.AugustAdditionalPaymentsForApprentices ?? 0 +
-                model.SeptemberAdditionalPaymentsForApprentices ?? 0 +
-                model.OctoberAdditionalPaymentsForApprentices ?? 0 +
-                model.NovemberAdditionalPaymentsForApprentices ?? 0 +
-                model.DecemberAdditionalPaymentsForApprentices ?? 0 +
-                model.JanuaryAdditionalPaymentsForApprentices ?? 0 +
-                model.FebruaryAdditionalPaymentsForApprentices ?? 0 +
-                model.MarchAdditionalPaymentsForApprentices ?? 0 +
-                model.AprilAdditionalPaymentsForApprentices ?? 0 +
-                model.MayAdditionalPaymentsForApprentices ?? 0 +
-                model.JuneAdditionalPaymentsForApprentices ?? 0 +
-                model.JulyAdditionalPaymentsForApprentices ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.AugustAdditionalPaymentsForApprentices,
+                    model.SeptemberAdditionalPaymentsForApprentices,
+                    model.OctoberAdditionalPaymentsForApprentices,
+                    model.NovemberAdditionalPaymentsForApprentices,
+                    model.DecemberAdditionalPaymentsForApprentices,
+                    model.JanuaryAdditionalPaymentsForApprentices,
+                    model.FebruaryAdditionalPaymentsForApprentices,
+                    model.MarchAdditionalPaymentsForApprentices,
+                    model.AprilAdditionalPaymentsForApprentices,
+                    model.MayAdditionalPaymentsForApprentices,
+                    model.JuneAdditionalPaymentsForApprentices,
+                    model.JulyAdditionalPaymentsForApprentices);
 
             model.Total1618FrameworkUpliftOnProgrammePayment =
-                model.August1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.September1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.October1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.November1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.December1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.January1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.February1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.March1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.April1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.May1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.June1618FrameworkUpliftOnProgrammePayment ?? 0 +
-                model.July1618FrameworkUpliftOnProgrammePayment ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.August1618FrameworkUpliftOnProgrammePayment,
+                    model.September1618FrameworkUpliftOnProgrammePayment,
+                    model.October1618FrameworkUpliftOnProgrammePayment,
+                    model.November1618FrameworkUpliftOnProgrammePayment,
+                    model.December1618FrameworkUpliftOnProgrammePayment,
+                    model.January1618FrameworkUpliftOnProgrammePayment,
+                    model.February1618FrameworkUpliftOnProgrammePayment,
+                    model.March1618FrameworkUpliftOnProgrammePayment,
+                    model.April1618FrameworkUpliftOnProgrammePayment,
+                    model.May1618FrameworkUpliftOnProgrammePayment,
+                    model.June1618FrameworkUpliftOnProgrammePayment,
+                    model.July1618FrameworkUpliftOnProgrammePayment);
 
             model.Total1618FrameworkUpliftBalancingPayment =
-                model.August1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.September1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.October1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.November1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.December1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.January1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.February1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.March1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.April1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.May1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.June1618FrameworkUpliftBalancingPayment ?? 0 +
-                model.July1618FrameworkUpliftBalancingPayment ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.August1618FrameworkUpliftBalancingPayment,
+                    model.September1618FrameworkUpliftBalancingPayment,
+                    model.October1618FrameworkUpliftBalancingPayment,
+                    model.November1618FrameworkUpliftBalancingPayment,
+                    model.December1618FrameworkUpliftBalancingPayment,
+                    model.January1618FrameworkUpliftBalancingPayment,
+                    model.February1618FrameworkUpliftBalancingPayment,
+                    model.March1618FrameworkUpliftBalancingPayment,
+                    model.April1618FrameworkUpliftBalancingPayment,
+                    model.May1618FrameworkUpliftBalancingPayment,
+                    model.June1618FrameworkUpliftBalancingPayment,
+                    model.July1618FrameworkUpliftBalancingPayment);
 
             model.Total1618FrameworkUpliftCompletionPayment =
-                model.August1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.September1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.October1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.November1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.December1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.January1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.February1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.March1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.April1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.May1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.June1618FrameworkUpliftCompletionPayment ?? 0 +
-                model.July1618FrameworkUpliftCompletionPayment ?? 0;
+                _totalBuilder.TotalRecords(
+                    model.August1618FrameworkUpliftCompletionPayment,
+                    model.September1618FrameworkUpliftCompletionPayment,
+                    model.October1618FrameworkUpliftCompletionPayment,
+                    model.November1618FrameworkUpliftCompletionPayment,
+                    model.December1618FrameworkUpliftCompletionPayment,
+                    model.January1618FrameworkUpliftCompletionPayment,
+                    model.February1618FrameworkUpliftCompletionPayment,
+                    model.March1618FrameworkUpliftCompletionPayment,
+                    model.April1618FrameworkUpliftCompletionPayment,
+                    model.May1618FrameworkUpliftCompletionPayment,
+                    model.June1618FrameworkUpliftCompletionPayment,
+                    model.July1618FrameworkUpliftCompletionPayment);
+        }
+
+        private LearningDeliveryFamSimple[] GetLearningDeliveryFams(ILearningDelivery learningDelivery)
+        {
+            List<LearningDeliveryFamSimple> ret = new List<LearningDeliveryFamSimple>();
+
+            ILearningDeliveryFAM[] lsfs = learningDelivery.LearningDeliveryFAMs
+                ?.Where(x =>
+                    string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLSF, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+            if (lsfs == null || !lsfs.Any())
+            {
+                ret.Add(_blankFam);
+            }
+            else
+            {
+                foreach (ILearningDeliveryFAM learningDeliveryFam in lsfs)
+                {
+                    ret.Add(new LearningDeliveryFamSimple(learningDeliveryFam.LearnDelFAMCode, learningDeliveryFam.LearnDelFAMDateFromNullable.GetValueOrDefault(DateTime.MinValue), learningDeliveryFam.LearnDelFAMDateToNullable.GetValueOrDefault(DateTime.MinValue)));
+                }
+            }
+
+            return ret.ToArray();
         }
     }
 }

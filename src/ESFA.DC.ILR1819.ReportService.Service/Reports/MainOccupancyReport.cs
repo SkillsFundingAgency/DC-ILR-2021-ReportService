@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -6,20 +7,21 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using LearningDelivery = ESFA.DC.ILR1819.ReportService.Model.Lars.LearningDelivery;
 
@@ -27,6 +29,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
     public sealed class MainOccupancyReport : AbstractReportBuilder, IReport
     {
+        private static readonly MainOccupancyModelComparer MainOccupancyModelComparer = new MainOccupancyModelComparer();
+
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
@@ -47,9 +51,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM35ProviderService fm35ProviderService,
             ILarsProviderService larsProviderService,
             IDateTimeProvider dateTimeProvider,
+            IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IMainOccupancyReportModelBuilder mainOccupancyReportModelBuilder)
-        : base(dateTimeProvider)
+        : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
@@ -65,12 +70,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateMainOccupancyReport;
         }
 
-        public async Task GenerateReport(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(jobContextMessage, cancellationToken);
-            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(jobContextMessage, cancellationToken);
-            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(jobContextMessage, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(jobContextMessage, cancellationToken);
+            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
+            Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, fm25Task, fm35Task, validLearnersTask);
 
@@ -89,8 +94,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             string[] learnAimRefs = learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
 
-            Task<Dictionary<string, LarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveries(learnAimRefs, cancellationToken);
-            Task<List<LearnerAndDeliveries>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAims(learnAimRefs, learners, cancellationToken);
+            Task<Dictionary<string, LarsLearningDelivery>> larsLearningDeliveriesTask = _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
+            Task<List<LearnerAndDeliveries>> larsFrameworkAimsTask = _larsProviderService.GetFrameworkAimsAsync(learnAimRefs, learners, cancellationToken);
 
             await Task.WhenAll(larsLearningDeliveriesTask, larsFrameworkAimsTask);
 
@@ -105,19 +110,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                 return;
             }
 
-            var larsErrors = new List<string>();
+            List<string> larsErrors = new List<string>();
 
-            var mainOccupancyFm25Models = new List<MainOccupancyFM25Model>();
-            var mainOccupancyFm35Models = new List<MainOccupancyFM35Model>();
+            List<MainOccupancyModel> mainOccupancyModels = new List<MainOccupancyModel>();
             foreach (var learner in learners)
             {
-                var fm25Data = fm25Task.Result;
-                var fm35Data = fm35Task.Result;
-
                 if (learner.LearningDeliveries == null)
                 {
                     continue;
                 }
+
+                FM25Global fm25Data = fm25Task.Result;
+                FM35Global fm35Data = fm35Task.Result;
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
@@ -132,29 +136,42 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
                         continue;
                     }
 
-                    LearningDelivery frameworkAim = larsFrameworkAimsTask.Result?.SingleOrDefault(x => x.LearnerLearnRefNumber == learner.LearnRefNumber)
-                        ?.LearningDeliveries?.SingleOrDefault(x =>
-                            x.LearningDeliveryLearnAimRef == learningDelivery.LearnAimRef && x.LearningDeliveryAimSeqNumber == learningDelivery.AimSeqNumber);
+                    LearningDelivery frameworkAim = larsFrameworkAimsTask.Result?.SingleOrDefault(x => string.Equals(x.LearnerLearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase))
+                        ?.LearningDeliveries?.SingleOrDefault(x => string.Equals(x.LearningDeliveryLearnAimRef, learningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)
+                                                                   && x.LearningDeliveryAimSeqNumber == learningDelivery.AimSeqNumber);
                     if (frameworkAim == null)
                     {
                         larsErrors.Add(learningDelivery.LearnAimRef);
                         continue;
                     }
 
-                    var learnerFm35Data = fm35Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber)
-                        ?.LearningDeliveries?.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
+                    if (learningDelivery.FundModel == 35)
+                    {
+                        ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery learnerFm35Data = fm35Data
+                            ?.Learners?.SingleOrDefault(l => string.Equals(l.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase))
+                            ?.LearningDeliveries?.SingleOrDefault(l => l.AimSeqNumber == learningDelivery.AimSeqNumber);
 
-                    mainOccupancyFm35Models.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
-                        learner,
-                        learningDelivery,
-                        larsModel,
-                        frameworkAim,
-                        learnerFm35Data));
+                        if (learnerFm35Data != null)
+                        {
+                            mainOccupancyModels.Add(_mainOccupancyReportModelBuilder.BuildFm35Model(
+                                learner,
+                                learningDelivery,
+                                larsModel,
+                                frameworkAim,
+                                learnerFm35Data,
+                                _stringUtilitiesService));
+                        }
+                    }
 
-                    var learnerFm25Data =
-                        fm25Data?.Learners?.SingleOrDefault(l => l.LearnRefNumber == learner.LearnRefNumber);
+                    if (learningDelivery.FundModel != 25)
+                    {
+                        continue;
+                    }
 
-                    mainOccupancyFm25Models.Add(_mainOccupancyReportModelBuilder.BuildFm25Model(
+                    FM25Learner learnerFm25Data =
+                        fm25Data?.Learners?.SingleOrDefault(l => string.Equals(l.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
+
+                    mainOccupancyModels.Add(_mainOccupancyReportModelBuilder.BuildFm25Model(
                         learner,
                         learningDelivery,
                         learnerFm25Data));
@@ -163,12 +180,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             LogWarnings(larsErrors);
 
-            string csv = GetReportCsv(mainOccupancyFm25Models, mainOccupancyFm35Models);
+            mainOccupancyModels.Sort(MainOccupancyModelComparer);
 
-            var jobId = jobContextMessage.JobId;
-            var ukPrn = jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn].ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, jobContextMessage.SubmissionDateTimeUtc);
+            string csv = GetReportCsv(mainOccupancyModels);
+
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
@@ -177,16 +196,26 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private bool CheckIsApplicableLearner(ILearningDelivery learningDelivery)
         {
             return learningDelivery.FundModel == 35
-                      || (learningDelivery.FundModel == 25 && learningDelivery.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType == "SOF" && fam.LearnDelFAMCode == "105"));
+                    || (learningDelivery.FundModel == 25 && learningDelivery.LearningDeliveryFAMs.Any(fam =>
+                              string.Equals(fam.LearnDelFAMType, "SOF", StringComparison.OrdinalIgnoreCase) &&
+                              string.Equals(fam.LearnDelFAMCode, "105", StringComparison.OrdinalIgnoreCase)));
         }
 
-        private string GetReportCsv(List<MainOccupancyFM25Model> mainOccupancyFm25Models, List<MainOccupancyFM35Model> mainOccupancyFm35Models)
+        private string GetReportCsv(List<MainOccupancyModel> mainOccupancyModels)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                BuildCsvReport<MainOccupancyFM25Mapper, MainOccupancyFM25Model>(ms, mainOccupancyFm25Models);
-                BuildCsvReport<MainOccupancyFM35Mapper, MainOccupancyFM35Model>(ms, mainOccupancyFm35Models);
-                return Encoding.UTF8.GetString(ms.ToArray());
+                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
+                using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
+                {
+                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                    {
+                        WriteCsvRecords<MainOccupancyMapper, MainOccupancyModel>(csvWriter, mainOccupancyModels, new MainOccupancyMapper());
+                        csvWriter.Flush();
+                        textWriter.Flush();
+                        return Encoding.UTF8.GetString(ms.ToArray());
+                    }
+                }
             }
         }
 

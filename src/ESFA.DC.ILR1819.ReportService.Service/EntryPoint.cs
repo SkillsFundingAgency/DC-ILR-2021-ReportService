@@ -1,19 +1,17 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.IO.Compression;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.ILR1819.ReportService.Interface.Reports;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
-using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
-using ESFA.DC.Logging.Interfaces;
+﻿using ESFA.DC.ILR1819.ReportService.Interface.Context;
 
 namespace ESFA.DC.ILR1819.ReportService.Service
 {
+    using System.Collections.Generic;
+    using System.Diagnostics;
+    using System.IO;
+    using System.IO.Compression;
+    using System.Threading;
+    using System.Threading.Tasks;
+    using ESFA.DC.ILR1819.ReportService.Interface.Reports;
+    using IO.Interfaces;
+    using Logging.Interfaces;
+
     public sealed class EntryPoint
     {
         private readonly ILogger _logger;
@@ -22,69 +20,60 @@ namespace ESFA.DC.ILR1819.ReportService.Service
 
         private readonly IList<IReport> _reports;
 
-        private readonly IIlrFileHelper _ilrFileHelper;
-
         public EntryPoint(
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
-            IList<IReport> reports,
-            IIlrFileHelper ilrFileHelper)
+            IList<IReport> reports)
         {
             _logger = logger;
             _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
             _reports = reports;
-            _ilrFileHelper = ilrFileHelper;
         }
 
-        public async Task<bool> Callback(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
+        public async Task<bool> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             _logger.LogInfo("Reporting callback invoked");
 
-            using (var memoryStream = new MemoryStream())
+            var reportZipFileKey = $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_Reports.zip";
+            if (cancellationToken.IsCancellationRequested)
             {
-                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
+                return false;
+            }
+
+            MemoryStream memoryStream = new MemoryStream();
+            var zipFileExists = await _streamableKeyValuePersistenceService.ContainsAsync(reportZipFileKey, cancellationToken);
+            if (zipFileExists)
+            {
+                await _streamableKeyValuePersistenceService.GetAsync(reportZipFileKey, memoryStream, cancellationToken);
+            }
+
+            using (memoryStream)
+            {
+                using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Update, true))
                 {
-                    await ExecuteTasks(jobContextMessage, archive, cancellationToken);
+                    await ExecuteTasks(reportServiceContext, archive, cancellationToken);
                 }
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return false;
-                }
-
-                await _streamableKeyValuePersistenceService.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId}_Reports.zip", memoryStream, cancellationToken);
+                await _streamableKeyValuePersistenceService.SaveAsync(reportZipFileKey, memoryStream, cancellationToken);
             }
 
             return true;
         }
 
-        private async Task ExecuteTasks(IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        private async Task ExecuteTasks(IReportServiceContext reportServiceContext, ZipArchive archive, CancellationToken cancellationToken)
         {
-            foreach (ITaskItem taskItem in jobContextMessage.Topics[jobContextMessage.TopicPointer].Tasks)
+            foreach (string taskItem in reportServiceContext.Tasks)
             {
-                if (taskItem.SupportsParallelExecution)
+                if (cancellationToken.IsCancellationRequested)
                 {
-                    Parallel.ForEach(
-                        taskItem.Tasks,
-                        new ParallelOptions { CancellationToken = cancellationToken },
-                        async task => { await GenerateReportAsync(task, jobContextMessage, archive, cancellationToken); });
+                    break;
                 }
-                else
-                {
-                    foreach (string task in taskItem.Tasks)
-                    {
-                        if (cancellationToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
 
-                        await GenerateReportAsync(task, jobContextMessage, archive, cancellationToken);
-                    }
-                }
+                await GenerateReportAsync(taskItem, reportServiceContext, archive, cancellationToken);
             }
         }
 
-        private async Task GenerateReportAsync(string task, IJobContextMessage jobContextMessage, ZipArchive archive, CancellationToken cancellationToken)
+        private async Task GenerateReportAsync(string task, IReportServiceContext reportServiceContext, ZipArchive archive, CancellationToken cancellationToken)
         {
             var foundReport = false;
             foreach (var report in _reports)
@@ -97,7 +86,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
                 var stopWatch = new Stopwatch();
                 stopWatch.Start();
                 _logger.LogDebug($"Attempting to generate {report.GetType().Name}");
-                await report.GenerateReport(jobContextMessage, archive, cancellationToken);
+                await report.GenerateReport(reportServiceContext, archive, false, cancellationToken);
                 stopWatch.Stop();
                 _logger.LogDebug($"Persisted {report.GetType().Name} to csv/json in: {stopWatch.ElapsedMilliseconds}");
 

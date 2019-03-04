@@ -7,19 +7,26 @@ using ESFA.DC.CollectionsManagement.Services;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+using ESFA.DC.ILR1819.ReportService.Interface.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
+using ESFA.DC.ILR1819.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Service.BusinessRules;
 using ESFA.DC.ILR1819.ReportService.Service.Commands.AppsIndicativeEarnings;
 using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
+using ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Handlers;
+using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;
 using ESFA.DC.ILR1819.ReportService.Stateless.Modules;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -44,7 +51,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless
 {
-    public class DIComposition
+    public static class DIComposition
     {
         public static ContainerBuilder BuildContainer(IConfigurationHelper configHelper)
         {
@@ -56,8 +63,29 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
             containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
 
+            var dasCommitmentsConfiguration = configHelper.GetSectionValues<DasCommitmentsConfiguration>("DasCommitmentsSection");
+            containerBuilder.RegisterInstance(dasCommitmentsConfiguration).As<DasCommitmentsConfiguration>().SingleInstance();
+
             var orgConfiguration = configHelper.GetSectionValues<OrgConfiguration>("OrgSection");
             containerBuilder.RegisterInstance(orgConfiguration).As<OrgConfiguration>().SingleInstance();
+
+            var easConfiguration = configHelper.GetSectionValues<EasConfiguration>("EasSection");
+            containerBuilder.RegisterInstance(easConfiguration).As<EasConfiguration>().SingleInstance();
+
+            var ilrValidationErrorsConfiguration = configHelper.GetSectionValues<IlrValidationErrorsConfiguration>("IlrValidationErrorsSection");
+            containerBuilder.RegisterInstance(ilrValidationErrorsConfiguration).As<IlrValidationErrorsConfiguration>().SingleInstance();
+
+            var dataStoreConfiguration = configHelper.GetSectionValues<DataStoreConfiguration>("DataStoreSection");
+            containerBuilder.RegisterInstance(dataStoreConfiguration).As<DataStoreConfiguration>().SingleInstance();
+
+            var largeEmployeeConfiguration = configHelper.GetSectionValues<LargeEmployerConfiguration>("LargeEmployerSection");
+            containerBuilder.RegisterInstance(largeEmployeeConfiguration).As<LargeEmployerConfiguration>().SingleInstance();
+
+            var dasPaymentsConfiguration = configHelper.GetSectionValues<DASPaymentsConfiguration>("DASPaymentsSection");
+            containerBuilder.RegisterInstance(dasPaymentsConfiguration).As<DASPaymentsConfiguration>().SingleInstance();
+
+            var postcodeConfiguration = configHelper.GetSectionValues<PostcodeConfiguration>("PostcodeSection");
+            containerBuilder.RegisterInstance(postcodeConfiguration).As<PostcodeConfiguration>().SingleInstance();
 
             var collectionsManagementConfiguration =
                 configHelper.GetSectionValues<CollectionsManagementConfiguration>("CollectionsManagementSection");
@@ -70,12 +98,13 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     azureRedisOptions.RedisConnectionString))
                 .As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
 
-            containerBuilder.RegisterType<RedisKeyValuePersistenceService>()
+            containerBuilder.RegisterType<AzureStorageKeyValuePersistenceService>()
                 .Keyed<IKeyValuePersistenceService>(PersistenceStorageKeys.Redis)
                 .InstancePerLifetimeScope();
 
             // register azure blob storage service
             var azureBlobStorageOptions = configHelper.GetSectionValues<AzureStorageOptions>("AzureStorageSection");
+            containerBuilder.RegisterInstance(azureBlobStorageOptions).As<IAzureStorageOptions>();
             containerBuilder.Register(c =>
                     new AzureStorageKeyValuePersistenceConfig(
                         azureBlobStorageOptions.AzureBlobConnectionString,
@@ -134,7 +163,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     c.Resolve<IJsonSerializationService>()))
                 .As<IQueuePublishService<JobStatusDto>>();
 
-            // register Jobcontext services
+            // register Job Context services
             var topicConfig = new ServiceBusTopicConfig(
                 serviceBusOptions.ServiceBusConnectionString,
                 serviceBusOptions.TopicName,
@@ -142,21 +171,21 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 Environment.ProcessorCount);
             containerBuilder.Register(c =>
             {
-                var topicSubscriptionSevice =
+                var topicSubscriptionService =
                     new TopicSubscriptionSevice<JobContextDto>(
                         topicConfig,
                         c.Resolve<IJsonSerializationService>(),
                         c.Resolve<ILogger>());
-                return topicSubscriptionSevice;
+                return topicSubscriptionService;
             }).As<ITopicSubscriptionService<JobContextDto>>();
 
             containerBuilder.Register(c =>
             {
-                var topicPublishSevice =
+                var topicPublishService =
                     new TopicPublishService<JobContextDto>(
                         topicConfig,
                         c.Resolve<IJsonSerializationService>());
-                return topicPublishSevice;
+                return topicPublishService;
             }).As<ITopicPublishService<JobContextDto>>();
 
             // register message mapper
@@ -175,16 +204,15 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.Register(context =>
             {
-                var settings = context.Resolve<CollectionsManagementConfiguration>();
-                var optionsBuilder = new DbContextOptionsBuilder();
+                CollectionsManagementConfiguration settings = context.Resolve<CollectionsManagementConfiguration>();
+                DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder();
                 optionsBuilder.UseSqlServer(
                     settings.CollectionsManagementConnectionString,
                     options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
-
                 return optionsBuilder.Options;
             })
-                .As<DbContextOptions>()
-                .InstancePerLifetimeScope();
+            .As<DbContextOptions>()
+            .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
 
@@ -212,6 +240,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<AdultFundingClaimReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<SummaryOfFunding1619Report>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
@@ -236,6 +268,22 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<DataMatchReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<TrailblazerEmployerIncentivesReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FundingClaim1619Report>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<AppsCoInvestmentContributionsReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
                 .As<IList<IReport>>();
         }
@@ -244,6 +292,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
                 .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DASPaymentsProviderService>().As<IDASPaymentsProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
@@ -265,6 +316,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<FM81TrailBlazerProviderService>().As<IFM81TrailBlazerProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<ReturnCalendarService>().As<IReturnCalendarService>()
                 .InstancePerLifetimeScope();
 
@@ -279,10 +334,44 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<StringUtilitiesService>().As<IStringUtilitiesService>()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<IntUtilitiesService>().As<IIntUtilitiesService>()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<OrgProviderService>().As<IOrgProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<PeriodProviderService>().As<IPeriodProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<DasCommitmentsService>().As<IDasCommitmentsService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<EasProviderService>().As<IEasProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<PostcodeProviderService>().As<IPostcodeProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<LargeEmployerProviderService>().As<ILargeEmployerProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ExcelStyleProvider>().As<IExcelStyleProvider>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery[]>>()
+                .InstancePerDependency();
+            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>>()
+                .InstancePerDependency();
+            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>()
+                .InstancePerDependency();
+
+            containerBuilder.RegisterType<ValueProvider>().As<IValueProvider>()
+                .SingleInstance();
+
+            containerBuilder.RegisterType<ValidationStageOutputCache>().As<IValidationStageOutputCache>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ValidationErrorsService>().As<IValidationErrorsService>()
                 .InstancePerLifetimeScope();
         }
 
@@ -290,13 +379,25 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             containerBuilder.RegisterType<MathsAndEnglishModelBuilder>().As<IMathsAndEnglishModelBuilder>()
                 .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<SummaryOfFM35FundingModelBuilder>().As<ISummaryOfFM35FundingModelBuilder>()
-                .InstancePerLifetimeScope();
             containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IMainOccupancyReportModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsAdditionalPaymentsModelBuilder>().As<IAppsAdditionalPaymentsModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>().SingleInstance();
+            containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>().SingleInstance();
+            containerBuilder.RegisterType<Fm35Builder>().As<IFm35Builder>()
+                .SingleInstance();
+            containerBuilder.RegisterType<Fm36Builder>().As<IFm36Builder>().SingleInstance();
+            containerBuilder.RegisterType<Fm81Builder>().As<IFm81Builder>().SingleInstance();
+            containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>().SingleInstance();
+            containerBuilder.RegisterType<EasBuilder>().As<IEasBuilder>().SingleInstance();
+            containerBuilder.RegisterType<DatalockValidationResultBuilder>().As<IDatalockValidationResultBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AdultFundingClaimBuilder>().As<IAdultFundingClaimBuilder>().SingleInstance();
+            containerBuilder.RegisterType<TrailblazerEmployerIncentivesModelBuilder>().As<ITrailblazerEmployerIncentivesModelBuilder>()
                 .InstancePerLifetimeScope();
         }
 

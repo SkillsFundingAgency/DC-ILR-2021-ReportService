@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using Aspose.Cells;
-using CsvHelper.Configuration;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using FluentAssertions;
 using Xunit;
 
@@ -11,16 +11,14 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
     public static class TestXlsxHelper
     {
         /// <summary>
-        /// Checks the Excel XLSX file for a header and checks a number of columns on the first data row.
+        /// Checks the Excel XLSX file matches the expected structure.
         /// </summary>
         /// <param name="xlsx">The xlsx file as a byte array.</param>
-        /// <param name="classMap">The classmap for the model stored in the XLSX.</param>
-        /// <param name="numberOfColumnsOfData">The number of columns on the first row of data expected to be non-null.</param>
-        public static void CheckXlsx(byte[] xlsx, ClassMap classMap, int numberOfColumnsOfData)
+        /// <param name="xlsxEntries">The entries to verify.</param>
+        public static void CheckXlsx(byte[] xlsx, params XlsxEntry[] xlsxEntries)
         {
             try
             {
-                object[] names = classMap.MemberMaps.OrderBy(x => x.Data.Index).Select(x => (object)x.Data.Names[0]).ToArray();
                 LoadOptions loadOptions = new LoadOptions(LoadFormat.Xlsx);
 
                 Workbook workbook;
@@ -30,8 +28,26 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
                 }
 
                 Worksheet worksheet = workbook.Worksheets[0];
-                CheckHeader(names, worksheet);
-                CheckRow(names, worksheet, numberOfColumnsOfData);
+
+                int currentRow = 0;
+
+                foreach (XlsxEntry xlsxEntry in xlsxEntries)
+                {
+                    object[] names = xlsxEntry.Mapper.MemberMaps.OrderBy(x => x.Data.Index)
+                        .Select(x => (object)x.Data.Names[0]).ToArray();
+                    if (xlsxEntry.Pivot)
+                    {
+                        CheckPivot(currentRow, names, worksheet, xlsxEntry.DataRows);
+                        currentRow += names.Length;
+                    }
+                    else
+                    {
+                        CheckHeader(currentRow, names, worksheet);
+                        currentRow++;
+                        CheckRow(currentRow, names, worksheet, xlsxEntry.DataRows);
+                        currentRow += xlsxEntry.DataRows;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -39,9 +55,88 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
             }
         }
 
-        private static void CheckRow(object[] names, Worksheet worksheet, int numberOfColumnsOfData)
+        public static void CheckXlsxWithTitles(byte[] xlsx, params XlsxEntry[] xlsxEntries)
         {
-            object[,] cells = worksheet.Cells.ExportArray(1, 0, 1, names.Length);
+            try
+            {
+                LoadOptions loadOptions = new LoadOptions(LoadFormat.Xlsx);
+
+                Workbook workbook;
+                using (MemoryStream ms = new MemoryStream(xlsx))
+                {
+                    workbook = new Workbook(ms, loadOptions);
+                }
+
+                Worksheet worksheet = workbook.Worksheets[0];
+
+                int currentRow = 0;
+                long lastKnownRow = 0;
+
+                foreach (XlsxEntry xlsxEntry in xlsxEntries)
+                {
+                    object[] names = xlsxEntry.Mapper.MemberMaps.OrderBy(x => x.Data.Index)
+                        .Select(x => (object)x.Data.Names[0]).ToArray();
+                    if (xlsxEntry.Pivot)
+                    {
+                        CheckPivot(currentRow, names, worksheet, xlsxEntry.DataRows);
+                        currentRow += names.Length;
+                    }
+                    else
+                    {
+                        currentRow++;
+                        var currentXlsxRow = worksheet.Cells.GetRow(currentRow);
+
+                        if (currentXlsxRow == null)
+                        {
+                            lastKnownRow = currentRow;
+                            currentRow++;
+                            currentXlsxRow = worksheet.Cells.GetRow(currentRow);
+                        }
+
+                        if (xlsxEntry.BlankRowsBefore > 0)
+                        {
+                            Assert.Equal(xlsxEntry.BlankRowsBefore, currentRow - lastKnownRow);
+                        }
+
+                        if (!string.IsNullOrEmpty(xlsxEntry.Title))
+                        {
+                            xlsxEntry.Mapper.MemberMaps.Single(x => x.Data.Index == 0).Name(xlsxEntry.Title);
+                        }
+
+                        if (xlsxEntry.DataRows == 0)
+                        {
+                            Assert.NotNull(currentXlsxRow.FirstCell);
+                            Assert.Equal(xlsxEntry.Title, currentXlsxRow[0].DisplayStringValue);
+                            lastKnownRow = currentRow;
+                            continue;
+                        }
+
+                        names = xlsxEntry.Mapper.MemberMaps.OrderBy(x => x.Data.Index)
+                            .Select(x => (object)x.Data.Names[0]).ToArray();
+                        CheckHeader(currentRow, names, worksheet);
+
+                        for (int i = 0; i < xlsxEntry.DataRows; i++)
+                        {
+                            currentRow++;
+                            currentXlsxRow = worksheet.Cells.GetRow(currentRow);
+                            Assert.NotNull(currentXlsxRow);
+                            CheckRow(currentRow, names, worksheet, xlsxEntry.DataRows);
+                        }
+                    }
+
+                    lastKnownRow = currentRow;
+                }
+            }
+            catch (Exception ex)
+            {
+                Assert.Null(ex);
+            }
+        }
+
+        private static void CheckPivot(int row, object[] names, Worksheet worksheet, int numberOfColumnsOfData)
+        {
+            numberOfColumnsOfData = numberOfColumnsOfData * 2;
+            object[,] cells = worksheet.Cells.ExportArray(row, 0, names.Length, 2);
             int pointer = 0;
             foreach (object cell in cells)
             {
@@ -54,13 +149,31 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
             }
         }
 
-        private static void CheckHeader(object[] names, Worksheet worksheet)
+        private static void CheckRow(int row, object[] names, Worksheet worksheet, int numberOfColumnsOfData)
         {
-            object[,] cells = worksheet.Cells.ExportArray(0, 0, 1, names.Length);
+            object[,] cells = worksheet.Cells.ExportArray(row, 0, 1, names.Length);
+            int pointer = 0;
+
+            foreach (object cell in cells)
+            {
+                cell.Should().NotBeNull();
+
+                if (pointer++ == numberOfColumnsOfData || numberOfColumnsOfData == 0)
+                {
+                    // End of mandatory data
+                    break;
+                }
+            }
+        }
+
+        private static void CheckHeader(int row, object[] names, Worksheet worksheet)
+        {
+            object[,] cells = worksheet.Cells.ExportArray(row, 0, 1, names.Length);
             int column = 0;
             foreach (object cell in cells)
             {
-                cell.Should().Be(names[column++]);
+                cell.Should().Be(names[column]);
+                column++;
             }
         }
     }

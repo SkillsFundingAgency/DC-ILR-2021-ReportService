@@ -28,9 +28,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly SemaphoreSlim _getStandardsLock;
 
-        private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
+        private readonly Dictionary<int, string> _loadedStandards;
 
-        private LARS_Standard _loadedStandard;
+        private Dictionary<string, LarsLearningDelivery> _loadedLearningDeliveries;
 
         private List<LearnerAndDeliveries> _loadedFrameworkAims;
 
@@ -43,12 +43,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             _loadedLearningDeliveries = null;
             _loadedFrameworkAims = null;
             _version = null;
+
+            _loadedStandards = new Dictionary<int, string>();
             _getLearningDeliveriesLock = new SemaphoreSlim(1, 1);
             _getFrameworkAimsLock = new SemaphoreSlim(1, 1);
             _getVersionLock = new SemaphoreSlim(1, 1);
-    }
+            _getStandardsLock = new SemaphoreSlim(1, 1);
+        }
 
-        public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveries(
+        public async Task<Dictionary<string, LarsLearningDelivery>> GetLearningDeliveriesAsync(
             string[] validLearnerAimRefs,
             CancellationToken cancellationToken)
         {
@@ -72,7 +75,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                             v => new LarsLearningDelivery
                             {
                                 LearningAimTitle = v.LearnAimRefTitle,
-                                NotionalNvqLevel = v.NotionalNVQLevel,
+                                NotionalNvqLevel = v.NotionalNVQLevelv2,
                                 Tier2SectorSubjectArea = v.SectorSubjectAreaTier2,
                                 FrameworkCommonComponent = v.FrameworkCommonComponent
                             },
@@ -91,7 +94,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             return _loadedLearningDeliveries;
         }
 
-        public async Task<LARS_Standard> GetStandard(
+        public async Task<string> GetStandardAsync(
             int learningDeliveryStandardCode,
             CancellationToken cancellationToken)
         {
@@ -104,11 +107,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return null;
                 }
 
-                if (_loadedLearningDeliveries == null)
+                if (!_loadedStandards.ContainsKey(learningDeliveryStandardCode))
                 {
                     ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
-                    _loadedStandard = await larsContext.LARS_Standard
+                    LARS_Standard larsStandard = await larsContext.LARS_Standard
                         .SingleOrDefaultAsync(l => l.StandardCode == learningDeliveryStandardCode, cancellationToken);
+                    _loadedStandards[learningDeliveryStandardCode] = larsStandard?.NotionalEndLevel ?? "NA";
                 }
             }
             catch (Exception ex)
@@ -120,10 +124,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _getStandardsLock.Release();
             }
 
-            return _loadedStandard;
+            return _loadedStandards[learningDeliveryStandardCode];
         }
 
-        public async Task<List<LearnerAndDeliveries>> GetFrameworkAims(
+        public async Task<List<LearnerAndDeliveries>> GetFrameworkAimsAsync(
             string[] learnAimRefs,
             List<ILearner> learners,
             CancellationToken cancellationToken)
@@ -176,7 +180,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                                 (learningDelivery.FworkCode == null || x.FworkCode == learningDelivery.FworkCode) &&
                                 (learningDelivery.ProgType == null || x.ProgType == learningDelivery.ProgType) &&
                                 (learningDelivery.PwayCode == null || x.PwayCode == learningDelivery.PwayCode) &&
-                                x.LearnAimRef == learningDelivery.LearningDeliveryLearnAimRef &&
+                                string.Equals(x.LearnAimRef, learningDelivery.LearningDeliveryLearnAimRef, StringComparison.OrdinalIgnoreCase) &&
                                 x.EffectiveFrom < learningDelivery.LearningDeliveryLearnStartDate &&
                                 x.EffectiveTo > learningDelivery.LearningDeliveryLearnStartDate)?.FrameworkComponentType;
                         }

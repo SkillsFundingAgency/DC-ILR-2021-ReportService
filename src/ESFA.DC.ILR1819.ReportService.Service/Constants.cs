@@ -1,4 +1,6 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service
+﻿using System;
+
+namespace ESFA.DC.ILR1819.ReportService.Service
 {
     public static class Constants
     {
@@ -6,12 +8,10 @@
 
         // LearningDelivery FAM Codes
         public const string LearningDeliveryFAMCodeLSF = "LSF";
-        public const string LearningDeliveryFAMCodeLDM1 = "LDM1";
-        public const string LearningDeliveryFAMCodeLDM2 = "LDM2";
-        public const string LearningDeliveryFAMCodeLDM3 = "LDM3";
-        public const string LearningDeliveryFAMCodeLDM4 = "LDM4";
+        public const string LearningDeliveryFAMCodeLDM = "LDM";
         public const string LearningDeliveryFAMCodeRES = "RES";
         public const string LearningDeliveryFAMCodeACT = "ACT";
+        public const string LearningDeliveryFAMCodeSOF = "SOF";
 
         // FM25 FundLines
         public const string DirectFundedStudents1416FundLine = "14-16 Direct Funded Students";
@@ -38,7 +38,6 @@
         public const string Fm36LearnSuppFundCashAttributeName = "LearnSuppFundCash";
         public const string Fm36PriceEpisodeLSFCashAttributeName = "PriceEpisodeLSFCash";
         public const string Fm36MathEngOnProgPaymentAttributeName = "MathEngOnProgPayment";
-        public const string Fm36MathEngBalPaymentAttributeName = "MathEngBalPayment";
         public const string Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName = "PriceEpisodeFirstDisadvantagePayment";
         public const string Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName = "PriceEpisodeSecondDisadvantagePayment";
         public const string Fm36PriceEpisodeFirstEmp1618PayAttributeName = "PriceEpisodeFirstEmp1618Pay";
@@ -49,5 +48,52 @@
         public const string Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName = "PriceEpisodeApplic1618FrameworkUpliftOnProgPayment";
         public const string Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName = "PriceEpisodeApplic1618FrameworkUpliftBalancing";
         public const string Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName = "PriceEpisodeApplic1618FrameworkUpliftCompletionPayment";
+        public const string Fm36ProgrammeAimOnProgPayment = "ProgrammeAimOnProgPayment";
+        public const string Fm36ProgrammeAimBalPayment = "ProgrammeAimBalPayment";
+        public const string Fm36ProgrammeAimCompletionPayment = "ProgrammeAimCompletionPayment";
+        public const string Fm36ProgrammeAimProgFundIndMinCoInvest = "ProgrammeAimProgFundIndMinCoInvest";
+        public const string Fm36MathEngOnProgPayment = "MathEngOnProgPayment";
+        public const string Fm36MathEngBalPayment = "MathEngBalPayment";
+        public const string Fm36LDApplic1618FrameworkUpliftBalancingPayment = "LDApplic1618FrameworkUpliftBalancingPayment";
+        public const string Fm36LDApplic1618FrameworkUpliftCompletionPayment = "LDApplic1618FrameworkUpliftCompletionPayment";
+        public const string Fm36LDApplic1618FrameworkUpliftOnProgPayment = "LDApplic1618FrameworkUpliftOnProgPayment";
+        public const string Fm36DisadvFirstPayment = "DisadvFirstPayment";
+        public const string Fm36DisadvSecondPayment = "DisadvSecondPayment";
+        public const string Fm36LearnDelFirstProv1618Pay = "LearnDelFirstProv1618Pay";
+        public const string Fm36LearnDelSecondProv1618Pay = "LearnDelSecondProv1618Pay";
+        public const string Fm36LearnDelFirstEmp1618Pay = "LearnDelFirstEmp1618Pay";
+        public const string Fm36LearnDelSecondEmp1618Pay = "LearnDelSecondEmp1618Pay";
+        public const string Fm36LearnSuppFundCash = "LearnSuppFundCash";
+        public const string Fm36LearnDelLearnAddPayment = "LearnDelLearnAddPayment";
+        public const string Fm36PriceEpisodeContractTypeLevyContract = "Levy Contract";
+        public const string Fm36LearnDelFAMTypeAct = "ACT";
+        public const string Fm36LearnDelFAMCodeOne = "1";
+
+        // FM81
+        public const string Fm81CoreGovContPayment = "CoreGovContPayment";
+        public const string Fm81MathEngBalPayment = "MathEngBalPayment";
+        public const string Fm81MathEngOnProgPayment = "MathEngOnProgPayment";
+        public const string Fm81AchPayment = "AchPayment";
+        public const string Fm81SmallBusPayment = "SmallBusPayment";
+        public const string Fm81YoungAppPayment = "YoungAppPayment";
+        public const string Fm81LearnSuppFundCash = "LearnSuppFundCash";
+
+        // Funding Summary
+        public const string ALBInfoText = "Please note that loads bursary funding for learners who are funded within the Career Learning Pilot is not included here. Please refer to the separate Career Learning Pilot report.";
+
+        // Exceptional Learning Support
+        public const string ExceptionalLearningInfoText = "Exceptional learning support is paid out of a separate budget, not the budgets noted above. This is provided for information only and you will be informed separately of any payments made. Note payments are made following the last ILR collection of the funding year.";
+
+        // Dates
+        public const string Year = "2018/19";
+
+        // Value Provider
+        public const string Zero = "0";
+        public const string NotApplicable = "n/a";
+        public static string DateTimeMin = DateTime.MinValue.ToString("dd/MM/yyyy");
+
+        // Dates
+        public static readonly DateTime BeginningOfYear = new DateTime(2018, 8, 1);
+        public static readonly DateTime EndOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
     }
 }
