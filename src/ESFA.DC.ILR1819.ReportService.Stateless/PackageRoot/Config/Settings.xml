@@ -63,6 +63,7 @@
     <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
     <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateAppsMonthlyPaymentReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value=""/>
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="" />
