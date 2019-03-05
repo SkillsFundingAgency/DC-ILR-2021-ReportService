@@ -39,6 +39,8 @@
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport" />
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" DefaultValue="TopicReports_TaskGenerateFundingClaim1619Report" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" DefaultValue="GenerateTrailblazerAppsOccupancyReport" />
+    <Parameter Name="TopicReports_TaskGenerateHNSReport" DefaultValue="TopicReports_TaskGenerateHNSReport" />
+    
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
     <!-- LARS -->
@@ -119,6 +121,7 @@
             <Parameter Name="TopicReports_TaskGenerateAppsMonthlyPaymentReport" Value="[TopicReports_TaskGenerateAppsMonthlyPaymentReport]" />
             <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="[TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport]" />
             <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="[TopicReports_TaskGenerateFundingClaim1619Report]" />
+            <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="[TopicReports_TaskGenerateHNSReport]" />
           </Section>
           <Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />

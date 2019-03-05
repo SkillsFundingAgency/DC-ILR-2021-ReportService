@@ -45,5 +45,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
         public string TopicReports_TaskGenerateFundingClaim1619Report { get; set; }
 
         public string TopicReports_TaskGenerateTrailblazerAppsOccupancyReport { get; set; }
+
+        public string TopicReports_TaskGenerateHNSReport { get; set; }
     }
 }

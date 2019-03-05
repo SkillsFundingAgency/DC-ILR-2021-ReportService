@@ -337,6 +337,7 @@
     <Compile Include="Reports\TestTrailblazerAppsOccupancyReport.cs" />
     <Compile Include="Reports\TestDataMatchReport.cs" />
     <Compile Include="Reports\TestAdultFundingClaimReport.cs" />
+    <Compile Include="Reports\TestHNSReport.cs" />
     <Compile Include="Reports\TestMainOccupancyReport.cs" />
     <Compile Include="Reports\TestAppsIndicativeEarningsReport.cs" />
     <Compile Include="Reports\TestMathsAndEnglishReport.cs" />

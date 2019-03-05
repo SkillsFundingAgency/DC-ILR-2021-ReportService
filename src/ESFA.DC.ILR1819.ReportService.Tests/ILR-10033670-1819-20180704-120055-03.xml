@@ -118,6 +118,8 @@
       <LearningDeliveryFAM>
         <LearnDelFAMType>SOF</LearnDelFAMType>
         <LearnDelFAMCode>107</LearnDelFAMCode>
+        <LearnDelFAMType>EHC</LearnDelFAMType>
+        <LearnDelFAMCode>1</LearnDelFAMCode>
       </LearningDeliveryFAM>
     </LearningDelivery>
   </Learner>

@@ -68,6 +68,7 @@
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value=""/>
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value=""/>
+    <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="" />
   </Section>
   
   <Section Name="LarsSection">
