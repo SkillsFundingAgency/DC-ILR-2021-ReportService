@@ -14,7 +14,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
         public HNSMapper()
         {
             int i = 0;
-            Map(m => m.FundLine).Index(i).Name("Funding line type");
+            Map(m => m.FundLine).Index(i++).Name("Funding line type");
             Map(m => m.LearnRefNumber).Index(i++).Name("Learner reference number");
             Map(m => m.FamilyName).Index(i++).Name("Family name");
             Map(m => m.GivenNames).Index(i++).Name("Given names");

@@ -137,7 +137,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         private bool CheckIsApplicableLearner(ILearningDelivery learningDelivery, FM25Learner fm25Learner)
         {
             return learningDelivery.FundModel == 25 && learningDelivery.LearningDeliveryFAMs.Any(fam =>
-                       string.Equals(fam.LearnDelFAMType, "SOF", StringComparison.OrdinalIgnoreCase) &&
+                       string.Equals(fam.LearnDelFAMType, Constants.LearningDeliveryFAMCodeSOF, StringComparison.OrdinalIgnoreCase) &&
                        string.Equals(fam.LearnDelFAMCode, "107", StringComparison.OrdinalIgnoreCase)) &&
                    (fm25Learner.StartFund.HasValue && fm25Learner.StartFund.Value);
         }
