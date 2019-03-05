@@ -384,7 +384,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             return learningDelivery.FundModel == 25
                    && learningDelivery.LearningDeliveryFAMs.Any(x =>
                        string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeSOF, StringComparison.OrdinalIgnoreCase) &&
-                       string.Equals(x.LearnDelFAMCode, "107", StringComparison.OrdinalIgnoreCase));
+                       string.Equals(x.LearnDelFAMCode, Constants.LearningDeliveryFAMCode107, StringComparison.OrdinalIgnoreCase));
         }
 
         private async Task<FundingClaim1619HeaderModel> GetHeaderAsync(IReportServiceContext reportServiceContext, Task<IMessage> ilrFileTask, Task<ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)

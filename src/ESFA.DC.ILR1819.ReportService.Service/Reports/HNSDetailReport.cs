@@ -10,14 +10,12 @@ using Autofac.Features.AttributeFilters;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.ILR1819.ReportService.Service.Comparer;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
@@ -138,7 +136,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
         {
             return learningDelivery.FundModel == 25 && learningDelivery.LearningDeliveryFAMs.Any(fam =>
                        string.Equals(fam.LearnDelFAMType, Constants.LearningDeliveryFAMCodeSOF, StringComparison.OrdinalIgnoreCase) &&
-                       string.Equals(fam.LearnDelFAMCode, "107", StringComparison.OrdinalIgnoreCase)) &&
+                       string.Equals(fam.LearnDelFAMCode, Constants.LearningDeliveryFAMCode107, StringComparison.OrdinalIgnoreCase)) &&
                    (fm25Learner.StartFund.HasValue && fm25Learner.StartFund.Value);
         }
 

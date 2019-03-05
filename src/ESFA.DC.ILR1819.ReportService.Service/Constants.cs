@@ -13,6 +13,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service
         public const string LearningDeliveryFAMCodeACT = "ACT";
         public const string LearningDeliveryFAMCodeSOF = "SOF";
 
+        public const string LearningDeliveryFAMCode107 = "107";
+
+        // learner FAM codes
+        public const string LearnerFAMCodeEHC = "EHC";
+        public const string LearnerFAMCodeHNS = "HNS";
+
         // FM25 FundLines
         public const string DirectFundedStudents1416FundLine = "14-16 Direct Funded Students";
         public const string Students1619FundLine = "16-19 Students (excluding High Needs Students)";

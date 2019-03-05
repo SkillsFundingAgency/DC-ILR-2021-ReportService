@@ -27,29 +27,29 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
             if (learnerFAMs != null)
             {
                 returnModel.LearnerFAM_A = learner.LearnerFAMs.Any(x =>
-                        string.Equals(x.LearnFAMType, "EHC", StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeEHC, StringComparison.OrdinalIgnoreCase) &&
                         x.LearnFAMCode == 1)
                         ? "Y"
                         : "N";
 
                 returnModel.LearnerFAM_B = learnerFAMs
-                    .Any(x => string.Equals(x.LearnFAMType, "EHC", StringComparison.OrdinalIgnoreCase))
+                    .Any(x => string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeEHC, StringComparison.OrdinalIgnoreCase))
                     ? "N"
                     : "Y";
 
-                returnModel.LearnerFAM_C = learnerFAMs.Any(x => !string.Equals(x.LearnFAMType, "EHC", StringComparison.OrdinalIgnoreCase) &&
-                                                                (string.Equals(x.LearnFAMType, "HNS", StringComparison.OrdinalIgnoreCase) && x.LearnFAMCode == 1))
+                returnModel.LearnerFAM_C = learnerFAMs.Any(x => !string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeEHC, StringComparison.OrdinalIgnoreCase) &&
+                                                                (string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeHNS, StringComparison.OrdinalIgnoreCase) && x.LearnFAMCode == 1))
                     ? "Y"
                     : "N";
 
                 returnModel.LearnerFAM_D = learnerFAMs.Any(x =>
-                                                (string.Equals(x.LearnFAMType, "HNS", StringComparison.OrdinalIgnoreCase) ||
-                                                string.Equals(x.LearnFAMType, "EHC", StringComparison.OrdinalIgnoreCase)) && x.LearnFAMCode == 1)
+                                                (string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeHNS, StringComparison.OrdinalIgnoreCase) ||
+                                                string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeEHC, StringComparison.OrdinalIgnoreCase)) && x.LearnFAMCode == 1)
                     ? "Y"
                     : "N";
 
-                returnModel.LearnerFAM_E = learnerFAMs.Any(x => !string.Equals(x.LearnFAMType, "HNS", StringComparison.OrdinalIgnoreCase) &&
-                                                                (string.Equals(x.LearnFAMType, "EHC", StringComparison.OrdinalIgnoreCase) && x.LearnFAMCode == 1))
+                returnModel.LearnerFAM_E = learnerFAMs.Any(x => !string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeHNS, StringComparison.OrdinalIgnoreCase) &&
+                                                                (string.Equals(x.LearnFAMType, Constants.LearnerFAMCodeEHC, StringComparison.OrdinalIgnoreCase) && x.LearnFAMCode == 1))
                     ? "Y"
                     : "N";
             }
