@@ -389,7 +389,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<FundingClaim1619HeaderModel> GetHeaderAsync(IReportServiceContext reportServiceContext, Task<IMessage> ilrFileTask, Task<ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
-            var ilrFileName = reportServiceContext.Filename;
+            var ilrFileName = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
 
             FundingClaim1619HeaderModel fundingClaim1619HeaderModel = new FundingClaim1619HeaderModel
             {
