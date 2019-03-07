@@ -1162,7 +1162,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
             sheet.Cells.StandardWidth = 19;
             sheet.Cells.Columns[0].Width = 63.93;
-            sheet.IsGridlinesVisible = false;
 
             WriteExcelRecords(sheet, new FundingSummaryHeaderMapper(), new List<FundingSummaryHeaderModel> { fundingSummaryHeaderModel }, cellStyles[5], cellStyles[5], true);
             foreach (FundingSummaryModel fundingSummaryModel in _fundingSummaryModels)

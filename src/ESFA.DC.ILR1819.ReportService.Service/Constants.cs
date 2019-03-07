@@ -94,6 +94,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service
         // Dates
         public const string Year = "2018/19";
 
+        public const string FundingSummaryReportDecimalFormat = "#,##0.00;";
+
         // Value Provider
         public const string Zero = "0";
         public const string NotApplicable = "n/a";
