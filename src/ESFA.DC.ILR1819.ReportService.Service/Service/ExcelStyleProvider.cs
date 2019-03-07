@@ -17,10 +17,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             style1.Font.Size = 13;
             style1.Font.IsBold = true;
             style1.Font.Name = "Arial";
+            style1.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
 
             StyleFlag styleFlag1 = new StyleFlag();
             styleFlag1.CellShading = true;
             styleFlag1.Font = true;
+            styleFlag1.NumberFormat = true;
 
             cellStyles.Add(new CellStyle(style1, styleFlag1));
 
@@ -30,8 +32,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             style2.Font.Size = 12;
             style2.Font.IsBold = true;
             style2.Font.Name = "Arial";
+            style2.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
 
             StyleFlag styleFlag2 = new StyleFlag();
+            styleFlag2.NumberFormat = true;
             styleFlag2.CellShading = true;
             styleFlag2.Font = true;
 
@@ -43,8 +47,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             style3.Font.Size = 11;
             style3.Font.IsBold = true;
             style3.Font.Name = "Arial";
+            style3.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
 
             StyleFlag styleFlag3 = new StyleFlag();
+            styleFlag3.NumberFormat = true;
             styleFlag3.CellShading = true;
             styleFlag3.Font = true;
 
@@ -54,8 +60,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             style4.Font.Size = 11;
             style4.Font.IsBold = true;
             style4.Font.Name = "Arial";
+            style4.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
 
             StyleFlag styleFlag4 = new StyleFlag();
+            styleFlag4.NumberFormat = true;
             styleFlag4.CellShading = true;
             styleFlag4.Font = true;
 
@@ -64,10 +72,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             Style style5 = workbook.CreateStyle();
             style5.Font.Size = 10;
             style5.Font.Name = "Arial";
+            style5.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
 
             StyleFlag styleFlag5 = new StyleFlag();
             styleFlag5.CellShading = true;
             styleFlag5.Font = true;
+            styleFlag5.NumberFormat = true;
 
             cellStyles.Add(new CellStyle(style5, styleFlag5));
 
