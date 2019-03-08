@@ -16,6 +16,7 @@ using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -281,6 +282,45 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return appsAdditionalPaymentIlrInfo;
+        }
+
+        public async Task<AppsMonthlyPaymentILRInfo> GetILRInfoForAppsMonthlyPaymentReportAsync(int ukPrn, CancellationToken cancellationToken)
+        {
+            var appsMonthlyPaymentIlrInfo = new AppsMonthlyPaymentILRInfo()
+            {
+                UkPrn = ukPrn,
+                Learners = new List<AppsMonthlyPaymentLearnerInfo>()
+            };
+            try
+            {
+                if (cancellationToken.IsCancellationRequested)
+                {
+                    return null;
+                }
+
+                List<Learner> learnersList;
+                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                {
+                    learnersList = await ilrContext.Learners
+                        .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                        .ToListAsync(cancellationToken);
+                }
+
+                foreach (var learner in learnersList)
+                {
+                    var learnerInfo = new AppsMonthlyPaymentLearnerInfo
+                    {
+                        LearnRefNumber = learner.LearnRefNumber
+                    };
+                    appsMonthlyPaymentIlrInfo.Learners.Add(learnerInfo);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to get ILR Details - AppsMonthlyPaymentILRInfo  ", ex);
+            }
+
+            return appsMonthlyPaymentIlrInfo;
         }
     }
 }

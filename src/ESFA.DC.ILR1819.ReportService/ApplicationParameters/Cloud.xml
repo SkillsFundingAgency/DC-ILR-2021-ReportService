@@ -40,8 +40,8 @@
     <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="__TopicReports_TaskGenerateHNSReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
-    <!-- Org -->
     <!-- DASPayments -->
+    <!-- Org -->
     <Parameter Name="OrgConnectionString" Value="__OrganisationsDbConnectionStringReadOnly__" />
     <!-- DAS Commitments -->
     <Parameter Name="DasCommitmentsConnectionString" Value="__DasCommitmentConnectionStringRO__" />
