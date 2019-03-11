@@ -42,7 +42,7 @@
     <Parameter Name="TopicReports_TaskGenerateHNSReport" DefaultValue="TopicReports_TaskGenerateHNSReport" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
-    <!-- LARS -->
+    <!-- DASPayments -->
     <Parameter Name="DASPaymentsConnectionString" DefaultValue="" />
     <!-- DAS Commitments -->
     <Parameter Name="DasCommitmentsConnectionString" DefaultValue="" />
