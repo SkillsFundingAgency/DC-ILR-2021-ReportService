@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Threading;
@@ -20,6 +19,7 @@ using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using LearningDeliveryInfo = ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment.LearningDeliveryInfo;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -65,10 +65,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return _message;
                 }
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 string filename = reportServiceContext.Filename;
                 int ukPrn = reportServiceContext.Ukprn;
@@ -86,14 +83,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     DateTime submittedDate;
                     DateTime filePreparationDate;
 
-                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
                     {
-                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.Ukprn == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
-                    using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                    using (var ilrContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
                     {
-                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.Ukprn == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
                     _message = new Message
@@ -129,46 +128,33 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
            IReportServiceContext reportServiceContext,
            CancellationToken cancellationToken)
         {
-            await _getIlrLock.WaitAsync(cancellationToken);
             var ilrFileDetail = new ILRSourceFileInfo();
-            try
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            var ukPrn = reportServiceContext.Ukprn;
+            DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+            using (var ilrContext = new ILR1819_DataStoreEntities(options))
             {
-                if (cancellationToken.IsCancellationRequested)
+                var fileDetail = await ilrContext.FileDetails.Where(x => x.Ukprn == ukPrn).OrderByDescending(x => x.Id).FirstOrDefaultAsync(cancellationToken);
+                if (fileDetail != null)
                 {
-                    return null;
-                }
+                    var filename = fileDetail.Filename.Contains('/') ? fileDetail.Filename.Split('/')[1] : fileDetail.Filename;
 
-                var ukPrn = reportServiceContext.Ukprn;
-
-                using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
-                {
-                    var fileDetail = await ilrContext.FileDetails.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.ID).FirstOrDefaultAsync(cancellationToken);
-                    if (fileDetail != null)
-                    {
-                        var filename = fileDetail.Filename.Contains('/') ? fileDetail.Filename.Split('/')[1] : fileDetail.Filename;
-
-                        ilrFileDetail.UKPRN = fileDetail.UKPRN;
-                        ilrFileDetail.Filename = filename;
-                        ilrFileDetail.SubmittedTime = fileDetail.SubmittedTime;
-                    }
-                }
-
-                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
-                {
-                    var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
-                    if (collectionDetail != null)
-                    {
-                        ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
-                    }
+                    ilrFileDetail.UKPRN = fileDetail.Ukprn;
+                    ilrFileDetail.Filename = filename;
+                    ilrFileDetail.SubmittedTime = fileDetail.SubmittedTime;
                 }
             }
-            catch (Exception ex)
+
+            DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
             {
-                _logger.LogError("Failed to get Last Submitted ILR file details ", ex);
-            }
-            finally
-            {
-                _getIlrLock.Release();
+                var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
+                if (collectionDetail != null)
+                {
+                    ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
+                }
             }
 
             return ilrFileDetail;
@@ -182,64 +168,55 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 Learners = new List<LearnerInfo>()
             };
 
-            try
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Learner> learnersList;
+            DbContextOptions<ILR1819_DataStoreEntitiesValid> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
-
-                List<Learner> learnersList;
-                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
-                {
-                    learnersList = await ilrContext.Learners
-                                                    .Include(x => x.LearningDeliveries.Select(y => y.AppFinRecords))
-                                                    .Include(x => x.LearnerEmploymentStatus)
-                                                    .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
-                                                    .ToListAsync(cancellationToken);
-                }
-
-                foreach (var learner in learnersList)
-                {
-                    var learnerInfo = new LearnerInfo
-                    {
-                        LearnRefNumber = learner.LearnRefNumber,
-                        LearningDeliveries = learner.LearningDeliveries.Select(x => new LearningDeliveryInfo()
-                        {
-                            UKPRN = ukPrn,
-                            LearnRefNumber = x.LearnRefNumber,
-                            LearnAimRef = x.LearnAimRef,
-                            AimType = x.AimType,
-                            AimSeqNumber = x.AimSeqNumber,
-                            LearnStartDate = x.LearnStartDate,
-                            ProgType = x.ProgType,
-                            StdCode = x.StdCode,
-                            FworkCode = x.FworkCode,
-                            PwayCode = x.PwayCode,
-                            SWSupAimId = x.SWSupAimId,
-                            AppFinRecords = x.AppFinRecords.Select(y => new AppFinRecordInfo()
-                            {
-                                LearnRefNumber = y.LearnRefNumber,
-                                AimSeqNumber = y.AimSeqNumber,
-                                AFinType = y.AFinType,
-                                AFinCode = y.AFinCode,
-                                AFinDate = y.AFinDate,
-                                AFinAmount = y.AFinAmount
-                            }).ToList()
-                        }).ToList(),
-                        LearnerEmploymentStatus = learner.LearnerEmploymentStatus.Select(x => new LearnerEmploymentStatusInfo()
-                        {
-                            LearnRefNumber = x.LearnRefNumber,
-                            DateEmpStatApp = x.DateEmpStatApp,
-                            EmpId = x.EmpId
-                        }).ToList()
-                    };
-                    appsCoInvestmentIlrInfo.Learners.Add(learnerInfo);
-                }
+                learnersList = await ilrContext.Learners
+                                                .Include(x => x.LearningDeliveries.Select(y => y.AppFinRecords))
+                                                .Include(x => x.LearnerEmploymentStatuses)
+                                                .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                .ToListAsync(cancellationToken);
             }
-            catch (Exception ex)
+
+            foreach (var learner in learnersList)
             {
-                _logger.LogError("Failed to get ILR Details - AppsCoInvestmentContributions  ", ex);
+                var learnerInfo = new LearnerInfo
+                {
+                    LearnRefNumber = learner.LearnRefNumber,
+                    LearningDeliveries = learner.LearningDeliveries.Select(x => new LearningDeliveryInfo()
+                    {
+                        UKPRN = ukPrn,
+                        LearnRefNumber = x.LearnRefNumber,
+                        LearnAimRef = x.LearnAimRef,
+                        AimType = x.AimType,
+                        AimSeqNumber = x.AimSeqNumber,
+                        LearnStartDate = x.LearnStartDate,
+                        ProgType = x.ProgType,
+                        StdCode = x.StdCode,
+                        FworkCode = x.FworkCode,
+                        PwayCode = x.PwayCode,
+                        SWSupAimId = x.SwsupAimId,
+                        AppFinRecords = x.AppFinRecords.Select(y => new AppFinRecordInfo()
+                        {
+                            LearnRefNumber = y.LearnRefNumber,
+                            AimSeqNumber = y.AimSeqNumber,
+                            AFinType = y.AfinType,
+                            AFinCode = y.AfinCode,
+                            AFinDate = y.AfinDate,
+                            AFinAmount = y.AfinAmount
+                        }).ToList()
+                    }).ToList(),
+                    LearnerEmploymentStatus = learner.LearnerEmploymentStatuses.Select(x => new LearnerEmploymentStatusInfo()
+                    {
+                        LearnRefNumber = x.LearnRefNumber,
+                        DateEmpStatApp = x.DateEmpStatApp,
+                        EmpId = x.EmpId
+                    }).ToList()
+                };
+                appsCoInvestmentIlrInfo.Learners.Add(learnerInfo);
             }
 
             return appsCoInvestmentIlrInfo;
@@ -252,33 +229,25 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 UkPrn = ukPrn,
                 Learners = new List<AppsAdditionalPaymentLearnerInfo>()
             };
-            try
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Learner> learnersList;
+            DbContextOptions<ILR1819_DataStoreEntitiesValid> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
-
-                List<Learner> learnersList;
-                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
-                {
-                    learnersList = await ilrContext.Learners
-                                                    .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
-                                                    .ToListAsync(cancellationToken);
-                }
-
-                foreach (var learner in learnersList)
-                {
-                    var learnerInfo = new AppsAdditionalPaymentLearnerInfo
-                    {
-                        LearnRefNumber = learner.LearnRefNumber,
-                    };
-                    appsAdditionalPaymentIlrInfo.Learners.Add(learnerInfo);
-                }
+                learnersList = await ilrContext.Learners
+                                                .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                .ToListAsync(cancellationToken);
             }
-            catch (Exception ex)
+
+            foreach (var learner in learnersList)
             {
-                _logger.LogError("Failed to get ILR Details - AppsAdditionalPaymentILRInfo  ", ex);
+                var learnerInfo = new AppsAdditionalPaymentLearnerInfo
+                {
+                    LearnRefNumber = learner.LearnRefNumber,
+                };
+                appsAdditionalPaymentIlrInfo.Learners.Add(learnerInfo);
             }
 
             return appsAdditionalPaymentIlrInfo;
@@ -291,33 +260,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 UkPrn = ukPrn,
                 Learners = new List<AppsMonthlyPaymentLearnerInfo>()
             };
-            try
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Learner> learnersList;
+            DbContextOptions<ILR1819_DataStoreEntitiesValid> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
-
-                List<Learner> learnersList;
-                using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
-                {
-                    learnersList = await ilrContext.Learners
-                        .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
-                        .ToListAsync(cancellationToken);
-                }
-
-                foreach (var learner in learnersList)
-                {
-                    var learnerInfo = new AppsMonthlyPaymentLearnerInfo
-                    {
-                        LearnRefNumber = learner.LearnRefNumber
-                    };
-                    appsMonthlyPaymentIlrInfo.Learners.Add(learnerInfo);
-                }
+                learnersList = await ilrContext.Learners.Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel)).ToListAsync(cancellationToken);
             }
-            catch (Exception ex)
+
+            foreach (var learner in learnersList)
             {
-                _logger.LogError("Failed to get ILR Details - AppsMonthlyPaymentILRInfo  ", ex);
+                var learnerInfo = new AppsMonthlyPaymentLearnerInfo
+                {
+                    LearnRefNumber = learner.LearnRefNumber
+                };
+                appsMonthlyPaymentIlrInfo.Learners.Add(learnerInfo);
             }
 
             return appsMonthlyPaymentIlrInfo;

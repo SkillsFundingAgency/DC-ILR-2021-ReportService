@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,6 +13,7 @@ using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
@@ -89,31 +89,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 {
                     FM25Global fm25Global = new FM25Global();
 
-                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
                     {
-                        var fm25GlobalDb = await ilrContext.FM25_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
-                        FM25_Learner[] learners = await ilrContext.FM25_Learner.Where(x => x.UKPRN == ukPrn).Include(x => x.FM25_FM35_Learner_PeriodisedValues).ToArrayAsync(cancellationToken);
-                        foreach (FM25_Learner fm25Learner in learners)
+                        var fm25GlobalDb = await ilrContext.Fm25Globals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
+                        Fm25Learner[] learners = await ilrContext.Fm25Learners.Where(x => x.Ukprn == ukPrn).Include(x => x.Fm25Fm35LearnerPeriodisedValues).ToArrayAsync(cancellationToken);
+                        foreach (Fm25Learner fm25Learner in learners)
                         {
                             List<LearnerPeriodisedValues> learnerPeriodisedValues = new List<LearnerPeriodisedValues>();
-                            foreach (var learnerPeriodisedValue in fm25Learner.FM25_FM35_Learner_PeriodisedValues)
+                            foreach (var learnerPeriodisedValue in fm25Learner.Fm25Fm35LearnerPeriodisedValues)
                             {
                                 learnerPeriodisedValues.Add(new LearnerPeriodisedValues
                                 {
                                     AttributeName = learnerPeriodisedValue.AttributeName,
                                     LearnRefNumber = learnerPeriodisedValue.LearnRefNumber,
-                                    Period1 = learnerPeriodisedValue.Period_1,
-                                    Period2 = learnerPeriodisedValue.Period_2,
-                                    Period3 = learnerPeriodisedValue.Period_3,
-                                    Period4 = learnerPeriodisedValue.Period_4,
-                                    Period5 = learnerPeriodisedValue.Period_5,
-                                    Period6 = learnerPeriodisedValue.Period_6,
-                                    Period7 = learnerPeriodisedValue.Period_7,
-                                    Period8 = learnerPeriodisedValue.Period_8,
-                                    Period9 = learnerPeriodisedValue.Period_9,
-                                    Period10 = learnerPeriodisedValue.Period_10,
-                                    Period11 = learnerPeriodisedValue.Period_11,
-                                    Period12 = learnerPeriodisedValue.Period_12
+                                    Period1 = learnerPeriodisedValue.Period1,
+                                    Period2 = learnerPeriodisedValue.Period2,
+                                    Period3 = learnerPeriodisedValue.Period3,
+                                    Period4 = learnerPeriodisedValue.Period4,
+                                    Period5 = learnerPeriodisedValue.Period5,
+                                    Period6 = learnerPeriodisedValue.Period6,
+                                    Period7 = learnerPeriodisedValue.Period7,
+                                    Period8 = learnerPeriodisedValue.Period8,
+                                    Period9 = learnerPeriodisedValue.Period9,
+                                    Period10 = learnerPeriodisedValue.Period10,
+                                    Period11 = learnerPeriodisedValue.Period11,
+                                    Period12 = learnerPeriodisedValue.Period12
                                 });
                             }
 
@@ -126,11 +127,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                         if (fm25GlobalDb != null)
                         {
-                            fm25Global.LARSVersion = fm25GlobalDb.LARSVersion;
+                            fm25Global.LARSVersion = fm25GlobalDb.Larsversion;
                             fm25Global.OrgVersion = fm25GlobalDb.OrgVersion;
                             fm25Global.PostcodeDisadvantageVersion = fm25GlobalDb.PostcodeDisadvantageVersion;
                             fm25Global.RulebaseVersion = fm25GlobalDb.RulebaseVersion;
-                            fm25Global.UKPRN = fm25GlobalDb.UKPRN;
+                            fm25Global.UKPRN = fm25GlobalDb.Ukprn;
                         }
                     }
 

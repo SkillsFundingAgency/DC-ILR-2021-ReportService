@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -18,6 +17,7 @@ using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery;
 
@@ -91,36 +91,37 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 else
                 {
                     FM35Global fm35Global = new FM35Global();
-                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
                     {
-                        var fm35GlobalDb = await ilrContext.FM35_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
-                        FM35_LearningDelivery[] res = await ilrContext.FM35_LearningDelivery.Where(x => x.UKPRN == ukPrn)
-                            .Include(x => x.FM35_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
+                        var fm35GlobalDb = await ilrContext.Fm35Globals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
+                        Fm35LearningDelivery[] res = await ilrContext.Fm35LearningDeliveries.Where(x => x.Ukprn == ukPrn)
+                            .Include(x => x.Fm35LearningDeliveryPeriodisedValues).ToArrayAsync(cancellationToken);
 
-                        IGrouping<string, FM35_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
+                        IGrouping<string, Fm35LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
 
                         fm35Global.Learners = new List<FM35Learner>();
 
-                        foreach (IGrouping<string, FM35_LearningDelivery> fm35LearningDeliveries in learners)
+                        foreach (IGrouping<string, Fm35LearningDelivery> fm35LearningDeliveries in learners)
                         {
                             var learningDeliveryDto = new List<LearningDelivery>();
                             foreach (var ld in fm35LearningDeliveries)
                             {
-                                var ldPeriodisedValues = ld.FM35_LearningDelivery_PeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValue()
+                                var ldPeriodisedValues = ld.Fm35LearningDeliveryPeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValue()
                                 {
                                     AttributeName = ldpv.AttributeName,
-                                    Period1 = ldpv.Period_1,
-                                    Period2 = ldpv.Period_2,
-                                    Period3 = ldpv.Period_3,
-                                    Period4 = ldpv.Period_4,
-                                    Period5 = ldpv.Period_5,
-                                    Period6 = ldpv.Period_6,
-                                    Period7 = ldpv.Period_7,
-                                    Period8 = ldpv.Period_8,
-                                    Period9 = ldpv.Period_9,
-                                    Period10 = ldpv.Period_10,
-                                    Period11 = ldpv.Period_11,
-                                    Period12 = ldpv.Period_12
+                                    Period1 = ldpv.Period1,
+                                    Period2 = ldpv.Period2,
+                                    Period3 = ldpv.Period3,
+                                    Period4 = ldpv.Period4,
+                                    Period5 = ldpv.Period5,
+                                    Period6 = ldpv.Period6,
+                                    Period7 = ldpv.Period7,
+                                    Period8 = ldpv.Period8,
+                                    Period9 = ldpv.Period9,
+                                    Period10 = ldpv.Period10,
+                                    Period11 = ldpv.Period11,
+                                    Period12 = ldpv.Period12
                                 }).ToList();
 
                                 learningDeliveryDto.Add(new LearningDelivery()
@@ -146,11 +147,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                         if (fm35GlobalDb != null)
                         {
-                            fm35Global.LARSVersion = fm35GlobalDb.LARSVersion;
+                            fm35Global.LARSVersion = fm35GlobalDb.Larsversion;
                             fm35Global.OrgVersion = fm35GlobalDb.OrgVersion;
                             fm35Global.PostcodeDisadvantageVersion = fm35GlobalDb.PostcodeDisadvantageVersion;
                             fm35Global.RulebaseVersion = fm35GlobalDb.RulebaseVersion;
-                            fm35Global.UKPRN = fm35GlobalDb.UKPRN;
+                            fm35Global.UKPRN = fm35GlobalDb.Ukprn;
                         }
                     }
 
@@ -185,31 +186,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 var UkPrn = reportServiceContext.Ukprn;
 
-                using (ILR1819_DataStoreEntities _ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                using (var ilrContext = new ILR1819_DataStoreEntities(options))
                 {
-                    fm35LearningDeliveryPeriodisedValues = (from pv in _ilrContext.FM35_LearningDelivery_PeriodisedValues
-                                                            join ld in _ilrContext.FM35_LearningDelivery
-                                                                on new { pv.LearnRefNumber, pv.AimSeqNumber, pv.UKPRN } equals new { ld.LearnRefNumber, ld.AimSeqNumber, ld.UKPRN }
-                                                            where pv.UKPRN == UkPrn
+                    fm35LearningDeliveryPeriodisedValues = (from pv in ilrContext.Fm35LearningDeliveryPeriodisedValues
+                                                            join ld in ilrContext.Fm35LearningDeliveries
+                                                                on new { pv.LearnRefNumber, pv.AimSeqNumber, pv.Ukprn } equals new { ld.LearnRefNumber, ld.AimSeqNumber, ld.Ukprn }
+                                                            where pv.Ukprn == UkPrn
                                                             select new FM35LearningDeliveryValues()
                                                             {
                                                                 AttributeName = pv.AttributeName,
                                                                 FundLine = ld.FundLine,
-                                                                UKPRN = pv.UKPRN,
+                                                                UKPRN = pv.Ukprn,
                                                                 LearnRefNumber = pv.LearnRefNumber,
                                                                 AimSeqNumber = pv.AimSeqNumber,
-                                                                Period1 = pv.Period_1,
-                                                                Period2 = pv.Period_2,
-                                                                Period3 = pv.Period_3,
-                                                                Period4 = pv.Period_4,
-                                                                Period5 = pv.Period_5,
-                                                                Period6 = pv.Period_6,
-                                                                Period7 = pv.Period_7,
-                                                                Period8 = pv.Period_8,
-                                                                Period9 = pv.Period_9,
-                                                                Period10 = pv.Period_10,
-                                                                Period11 = pv.Period_11,
-                                                                Period12 = pv.Period_12,
+                                                                Period1 = pv.Period1,
+                                                                Period2 = pv.Period2,
+                                                                Period3 = pv.Period3,
+                                                                Period4 = pv.Period4,
+                                                                Period5 = pv.Period5,
+                                                                Period6 = pv.Period6,
+                                                                Period7 = pv.Period7,
+                                                                Period8 = pv.Period8,
+                                                                Period9 = pv.Period9,
+                                                                Period10 = pv.Period10,
+                                                                Period11 = pv.Period11,
+                                                                Period12 = pv.Period12,
                                                             }).ToList();
                 }
             }
@@ -228,9 +230,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private List<string> GetValidLearners(int ukPrn)
         {
             List<string> learners;
-            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+            DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
             {
-                learners = ilrContext.Learners.Where(x => x.UKPRN == ukPrn).Select(x => x.LearnRefNumber).ToList();
+                learners = ilrContext.Learners.Where(x => x.Ukprn == ukPrn).Select(x => x.LearnRefNumber).ToList();
             }
 
             return learners;

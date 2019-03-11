@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
-using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
@@ -21,6 +17,7 @@ using ESFA.DC.Serialization.Interfaces;
 using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
 using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue;
 using LearningDeliveryValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryValue;
+using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {
@@ -83,40 +80,42 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 else
                 {
                     ALBGlobal albGlobal = new ALBGlobal();
-                    using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
                     {
-                        var albGlobalDb = await ilrContext.ALB_global.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
-                        using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(_dataStoreConfiguration.ILRDataStoreValidConnectionString))
+                        var albGlobalDb = await ilrContext.AlbGlobals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
+                        DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                        using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
                         {
-                            ALB_LearningDelivery[] res = await ilrContext.ALB_LearningDelivery
-                                .Where(x => x.UKPRN == ukPrn)
-                                .Include(x => x.ALB_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
+                            AlbLearningDelivery[] res = await ilrContext.AlbLearningDeliveries
+                                .Where(x => x.Ukprn == ukPrn)
+                                .Include(x => x.AlbLearningDeliveryPeriodisedValues).ToArrayAsync(cancellationToken);
 
-                            IGrouping<string, ALB_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
+                            IGrouping<string, AlbLearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
 
                             albGlobal.Learners = new System.Collections.Generic.List<ALBLearner>();
 
-                            foreach (IGrouping<string, ALB_LearningDelivery> albLearningDeliveries in learners)
+                            foreach (IGrouping<string, AlbLearningDelivery> albLearningDeliveries in learners)
                             {
                                 var learningDeliveryDto = new List<LearningDelivery>();
                                 foreach (var ld in albLearningDeliveries)
                                 {
-                                    var ldPeriodisedValues = ld.ALB_LearningDelivery_PeriodisedValues.Select(ldpv =>
+                                    var ldPeriodisedValues = ld.AlbLearningDeliveryPeriodisedValues.Select(ldpv =>
                                         new LearningDeliveryPeriodisedValue()
                                         {
                                             AttributeName = ldpv.AttributeName,
-                                            Period1 = ldpv.Period_1,
-                                            Period2 = ldpv.Period_2,
-                                            Period3 = ldpv.Period_3,
-                                            Period4 = ldpv.Period_4,
-                                            Period5 = ldpv.Period_5,
-                                            Period6 = ldpv.Period_6,
-                                            Period7 = ldpv.Period_7,
-                                            Period8 = ldpv.Period_8,
-                                            Period9 = ldpv.Period_9,
-                                            Period10 = ldpv.Period_10,
-                                            Period11 = ldpv.Period_11,
-                                            Period12 = ldpv.Period_12
+                                            Period1 = ldpv.Period1,
+                                            Period2 = ldpv.Period2,
+                                            Period3 = ldpv.Period3,
+                                            Period4 = ldpv.Period4,
+                                            Period5 = ldpv.Period5,
+                                            Period6 = ldpv.Period6,
+                                            Period7 = ldpv.Period7,
+                                            Period8 = ldpv.Period8,
+                                            Period9 = ldpv.Period9,
+                                            Period10 = ldpv.Period10,
+                                            Period11 = ldpv.Period11,
+                                            Period12 = ldpv.Period12
                                         }).ToList();
 
                                     learningDeliveryDto.Add(new LearningDelivery()
@@ -142,10 +141,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                         if (albGlobalDb != null)
                         {
-                            albGlobal.LARSVersion = albGlobalDb.LARSVersion;
+                            albGlobal.LARSVersion = albGlobalDb.Larsversion;
                             albGlobal.PostcodeAreaCostVersion = albGlobalDb.PostcodeAreaCostVersion;
                             albGlobal.RulebaseVersion = albGlobalDb.RulebaseVersion;
-                            albGlobal.UKPRN = albGlobalDb.UKPRN;
+                            albGlobal.UKPRN = albGlobalDb.Ukprn;
                         }
                     }
 
@@ -179,31 +178,32 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 var ukPrn = reportServiceContext.Ukprn;
-                using (var ilrContext = new ILR1819_DataStoreEntities(_dataStoreConfiguration.ILRDataStoreConnectionString))
+                DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                using (var ilrContext = new ILR1819_DataStoreEntities(options))
                 {
-                    albLearningDeliveryPeriodisedValues = (from pv in ilrContext.ALB_LearningDelivery_PeriodisedValues
-                                                           join ld in ilrContext.ALB_LearningDelivery
-                                                               on new { pv.LearnRefNumber, pv.AimSeqNumber, pv.UKPRN } equals new { ld.LearnRefNumber, ld.AimSeqNumber, ld.UKPRN }
-                                                           where pv.UKPRN == ukPrn
+                    albLearningDeliveryPeriodisedValues = (from pv in ilrContext.AlbLearningDeliveryPeriodisedValues
+                                                           join ld in ilrContext.AlbLearningDeliveries
+                                                               on new { pv.LearnRefNumber, pv.AimSeqNumber, pv.Ukprn } equals new { ld.LearnRefNumber, ld.AimSeqNumber, ld.Ukprn }
+                                                           where pv.Ukprn == ukPrn
                                                            select new ALBLearningDeliveryValues()
                                                            {
                                                                AttributeName = pv.AttributeName,
-                                                               UKPRN = pv.UKPRN,
+                                                               UKPRN = pv.Ukprn,
                                                                LearnRefNumber = pv.LearnRefNumber,
                                                                AimSeqNumber = pv.AimSeqNumber,
                                                                FundLine = ld.FundLine,
-                                                               Period1 = pv.Period_1,
-                                                               Period2 = pv.Period_2,
-                                                               Period3 = pv.Period_3,
-                                                               Period4 = pv.Period_4,
-                                                               Period5 = pv.Period_5,
-                                                               Period6 = pv.Period_6,
-                                                               Period7 = pv.Period_7,
-                                                               Period8 = pv.Period_8,
-                                                               Period9 = pv.Period_9,
-                                                               Period10 = pv.Period_10,
-                                                               Period11 = pv.Period_11,
-                                                               Period12 = pv.Period_12
+                                                               Period1 = pv.Period1,
+                                                               Period2 = pv.Period2,
+                                                               Period3 = pv.Period3,
+                                                               Period4 = pv.Period4,
+                                                               Period5 = pv.Period5,
+                                                               Period6 = pv.Period6,
+                                                               Period7 = pv.Period7,
+                                                               Period8 = pv.Period8,
+                                                               Period9 = pv.Period9,
+                                                               Period10 = pv.Period10,
+                                                               Period11 = pv.Period11,
+                                                               Period12 = pv.Period12
                                                            }).ToList();
                 }
             }
