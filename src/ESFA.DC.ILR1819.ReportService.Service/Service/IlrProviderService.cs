@@ -175,7 +175,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
             {
                 learnersList = await ilrContext.Learners
-                                                .Include(x => x.LearningDeliveries.Select(y => y.AppFinRecords))
+                                                .Include(x => x.LearningDeliveries).ThenInclude(y => y.AppFinRecords)
                                                 .Include(x => x.LearnerEmploymentStatuses)
                                                 .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
                                                 .ToListAsync(cancellationToken);
@@ -267,15 +267,53 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             DbContextOptions<ILR1819_DataStoreEntitiesValid> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
             using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
             {
-                learnersList = await ilrContext.Learners.Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel)).ToListAsync(cancellationToken);
+                learnersList = await ilrContext.Learners
+                                                    .Include(x => x.LearningDeliveries).ThenInclude(y => y.LearningDeliveryFams)
+                                                    .Include(x => x.LearningDeliveries).ThenInclude(y => y.ProviderSpecDeliveryMonitorings)
+                                                    .Include(x => x.ProviderSpecLearnerMonitorings)
+                                                    .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                    .ToListAsync(cancellationToken);
             }
 
             foreach (var learner in learnersList)
             {
                 var learnerInfo = new AppsMonthlyPaymentLearnerInfo
                 {
-                    LearnRefNumber = learner.LearnRefNumber
+                    LearnRefNumber = learner.LearnRefNumber,
+                    CampId = learner.CampId,
+                    LearningDeliveries = learner.LearningDeliveries.Select(x => new AppsMonthlyPaymentLearningDeliveryInfo()
+                    {
+                        UKPRN = ukPrn,
+                        LearnRefNumber = x.LearnRefNumber,
+                        LearnAimRef = x.LearnAimRef,
+                        AimType = x.AimType,
+                        SWSupAimId = x.SwsupAimId,
+                        ProviderSpecDeliveryMonitorings = x.ProviderSpecDeliveryMonitorings.Select(y => new AppsMonthlyPaymentProviderSpecDeliveryMonitoringInfo()
+                        {
+                            UKPRN = y.Ukprn,
+                            LearnRefNumber = y.LearnRefNumber,
+                            AimSeqNumber = y.AimSeqNumber,
+                            ProvSpecDelMon = y.ProvSpecDelMon,
+                            ProvSpecDelMonOccur = y.ProvSpecDelMonOccur
+                        }).ToList(),
+                        LearningDeliveryFams = x.LearningDeliveryFams.Select(y => new AppsMonthlyPaymentLearningDeliveryFAMInfo()
+                        {
+                            UKPRN = y.Ukprn,
+                            LearnRefNumber = y.LearnRefNumber,
+                            AimSeqNumber = y.AimSeqNumber,
+                            LearnDelFAMType = y.LearnDelFamtype,
+                            LearnDelFAMCode = y.LearnDelFamcode
+                        }).ToList()
+                    }).ToList(),
+                    ProviderSpecLearnerMonitorings = learner.ProviderSpecLearnerMonitorings.Select(x => new AppsMonthlyPaymentProviderSpecLearnerMonitoringInfo()
+                    {
+                        UKPRN = x.Ukprn,
+                        LearnRefNumber = x.LearnRefNumber,
+                        ProvSpecLearnMon = x.ProvSpecLearnMon,
+                        ProvSpecLearnMonOccur = x.ProvSpecLearnMonOccur
+                    }).ToList()
                 };
+
                 appsMonthlyPaymentIlrInfo.Learners.Add(learnerInfo);
             }
 

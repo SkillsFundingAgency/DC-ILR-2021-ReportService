@@ -408,56 +408,59 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             {
                 foreach (LearningDelivery learningDelivery in fm36DataLearner.LearningDeliveries)
                 {
-                    List<PriceEpisode> priceEpisode = fm36DataLearner.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber && x.PriceEpisodeValues.EpisodeStartDate > Constants.BeginningOfYear && x.PriceEpisodeValues.EpisodeStartDate < Constants.EndOfYear && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, Constants.Fm36PriceEpisodeContractTypeLevyContract, StringComparison.OrdinalIgnoreCase)).ToList();
-
-                    if (!priceEpisode.Any())
+                    if (fm36DataLearner.PriceEpisodes != null)
                     {
-                        _logger.LogWarning($"Can't find any price episodes for learner {fm36DataLearner.LearnRefNumber} with learning delivery aim sequence no. {learningDelivery.AimSeqNumber} skipping {nameof(DataMatchReport)} {nameof(RawEarning)} model");
-                        continue;
-                    }
+                        List<PriceEpisode> priceEpisode = fm36DataLearner.PriceEpisodes.Where(x => x.PriceEpisodeValues.PriceEpisodeAimSeqNumber == learningDelivery.AimSeqNumber && x.PriceEpisodeValues.EpisodeStartDate > Constants.BeginningOfYear && x.PriceEpisodeValues.EpisodeStartDate < Constants.EndOfYear && string.Equals(x.PriceEpisodeValues.PriceEpisodeContractType, Constants.Fm36PriceEpisodeContractTypeLevyContract, StringComparison.OrdinalIgnoreCase)).ToList();
 
-                    foreach (PriceEpisode episode in priceEpisode)
-                    {
-                        RawEarning rawEarning = new RawEarning();
-                        rawEarning.Uln = fm36DataLearner.ULN;
-                        rawEarning.LearnRefNumber = fm36DataLearner.LearnRefNumber;
-                        rawEarning.AimSeqNumber = learningDelivery.AimSeqNumber;
-                        rawEarning.Ukprn = fm36Data.UKPRN;
-                        rawEarning.EpisodeStartDate = episode.PriceEpisodeValues.EpisodeStartDate;
-                        rawEarning.EpisodeEffectiveTnpStartDate =
-                            episode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
-                        rawEarning.EndDate = episode.PriceEpisodeValues.PriceEpisodeActualEndDate ??
-                                             episode.PriceEpisodeValues.PriceEpisodePlannedEndDate;
-                        rawEarning.Period = period;
-                        rawEarning.ProgrammeType = learningDelivery.LearningDeliveryValues.ProgType;
-                        rawEarning.FrameworkCode = learningDelivery.LearningDeliveryValues.FworkCode;
-                        rawEarning.PathwayCode = learningDelivery.LearningDeliveryValues.PwayCode;
-                        rawEarning.StandardCode = learningDelivery.LearningDeliveryValues.StdCode;
-                        rawEarning.AgreedPrice = episode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice;
+                        if (!priceEpisode.Any())
+                        {
+                            _logger.LogWarning($"Can't find any price episodes for learner {fm36DataLearner.LearnRefNumber} with learning delivery aim sequence no. {learningDelivery.AimSeqNumber} skipping {nameof(DataMatchReport)} {nameof(RawEarning)} model");
+                            continue;
+                        }
 
-                        rawEarning.LearningDeliveryStartDate = learningDelivery.LearningDeliveryValues.LearnStartDate;
+                        foreach (PriceEpisode episode in priceEpisode)
+                        {
+                            RawEarning rawEarning = new RawEarning();
+                            rawEarning.Uln = fm36DataLearner.ULN;
+                            rawEarning.LearnRefNumber = fm36DataLearner.LearnRefNumber;
+                            rawEarning.AimSeqNumber = learningDelivery.AimSeqNumber;
+                            rawEarning.Ukprn = fm36Data.UKPRN;
+                            rawEarning.EpisodeStartDate = episode.PriceEpisodeValues.EpisodeStartDate;
+                            rawEarning.EpisodeEffectiveTnpStartDate =
+                                episode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
+                            rawEarning.EndDate = episode.PriceEpisodeValues.PriceEpisodeActualEndDate ??
+                                                 episode.PriceEpisodeValues.PriceEpisodePlannedEndDate;
+                            rawEarning.Period = period;
+                            rawEarning.ProgrammeType = learningDelivery.LearningDeliveryValues.ProgType;
+                            rawEarning.FrameworkCode = learningDelivery.LearningDeliveryValues.FworkCode;
+                            rawEarning.PathwayCode = learningDelivery.LearningDeliveryValues.PwayCode;
+                            rawEarning.StandardCode = learningDelivery.LearningDeliveryValues.StdCode;
+                            rawEarning.AgreedPrice = episode.PriceEpisodeValues.PriceEpisodeTotalTNPPrice;
 
-                        rawEarning.PriceEpisodeIdentifier = episode.PriceEpisodeIdentifier;
+                            rawEarning.LearningDeliveryStartDate = learningDelivery.LearningDeliveryValues.LearnStartDate;
 
-                        rawEarning.TransactionType01 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType02 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType03 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm3PriceEpisodeBalancePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType04 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType05 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType06 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType07 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType08 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType09 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType10 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType11 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType12 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType15 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLSFCashAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.TransactionType16 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
-                        rawEarning.FirstIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeFirstAdditionalPaymentThresholdDate;
-                        rawEarning.SecondIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate;
-                        rawEarning.LearnerAdditionalPaymentsDate = episode.PriceEpisodeValues.PriceEpisodeLearnerAdditionalPaymentThresholdDate;
+                            rawEarning.PriceEpisodeIdentifier = episode.PriceEpisodeIdentifier;
 
-                        rawEarnings.Add(rawEarning);
+                            rawEarning.TransactionType01 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType02 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType03 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm3PriceEpisodeBalancePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType04 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType05 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType06 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondEmp1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType07 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondProv1618PayAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType08 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType09 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType10 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType11 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType12 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType15 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLSFCashAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.TransactionType16 = _totalBuilder.TotalRecords(episode.PriceEpisodePeriodisedValues.SingleOrDefault(att => string.Equals(att.AttributeName, Constants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName, StringComparison.OrdinalIgnoreCase)));
+                            rawEarning.FirstIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeFirstAdditionalPaymentThresholdDate;
+                            rawEarning.SecondIncentiveCensusDate = episode.PriceEpisodeValues.PriceEpisodeSecondAdditionalPaymentThresholdDate;
+                            rawEarning.LearnerAdditionalPaymentsDate = episode.PriceEpisodeValues.PriceEpisodeLearnerAdditionalPaymentThresholdDate;
+
+                            rawEarnings.Add(rawEarning);
+                        }
                     }
                 }
             }

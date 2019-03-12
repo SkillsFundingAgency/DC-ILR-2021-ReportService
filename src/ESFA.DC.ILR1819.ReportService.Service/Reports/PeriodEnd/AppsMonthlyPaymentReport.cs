@@ -59,6 +59,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             var ukPrn = reportServiceContext.Ukprn.ToString();
             var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsMonthlyPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
