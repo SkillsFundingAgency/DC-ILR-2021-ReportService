@@ -62,10 +62,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return _fundingOutputs;
                 }
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 _loadedDataAlready = true;
                 int ukPrn = reportServiceContext.Ukprn;
@@ -155,11 +152,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                     _fundingOutputs = fm35Global;
                 }
-            }
-            catch (Exception ex)
-            {
-                // Todo: Check behaviour
-                _logger.LogError("Failed to get & deserialise FM35 funding data", ex);
             }
             finally
             {

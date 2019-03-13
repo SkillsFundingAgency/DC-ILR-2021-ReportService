@@ -60,10 +60,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     return _fundingOutputs;
                 }
 
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
+                cancellationToken.ThrowIfCancellationRequested();
 
                 _loadedDataAlready = true;
 
@@ -132,10 +129,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                     _fundingOutputs = fm25Global;
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to get & deserialise FM25 funding data", ex);
             }
             finally
             {

@@ -52,10 +52,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 _loadedLastEasUpdate[ukprn] = easSubmission?.UpdatedOn ?? DateTime.MinValue;
             }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to get EAS submission values", ex); // todo - error message text
-            }
             finally
             {
                 _getLastEastUpdateLock.Release();
@@ -97,10 +93,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 _loadedEasSubmissionValuesList = easSubmissionValues;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to get EAS submission values", ex);
             }
             finally
             {
