@@ -6,10 +6,10 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
@@ -27,7 +27,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
-        private readonly DataStoreConfiguration _dataStoreConfiguration;
+        private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
+        private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock;
         private bool _loadedDataAlready;
         private ALBGlobal _fundingOutputs;
@@ -37,13 +38,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
-            DataStoreConfiguration dataStoreConfiguration)
+            Func<IIlr1819ValidContext> ilrValidContextFactory,
+            Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
         {
             _logger = logger;
             _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
-            _dataStoreConfiguration = dataStoreConfiguration;
+            _ilrValidContextFactory = ilrValidContextFactory;
+            _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
@@ -80,12 +83,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 else
                 {
                     ALBGlobal albGlobal = new ALBGlobal();
-                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
+                    using (var ilrContext = _ilrRulebaseContextFactory())
                     {
                         var albGlobalDb = await ilrContext.AlbGlobals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
-                        DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                        using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
+                        using (var ilrValidContext = _ilrValidContextFactory())
                         {
                             AlbLearningDelivery[] res = await ilrContext.AlbLearningDeliveries
                                 .Where(x => x.Ukprn == ukPrn)
@@ -178,8 +179,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
 
                 var ukPrn = reportServiceContext.Ukprn;
-                DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                using (var ilrContext = new ILR1819_DataStoreEntities(options))
+                using (var ilrContext = _ilrRulebaseContextFactory())
                 {
                     albLearningDeliveryPeriodisedValues = (from pv in ilrContext.AlbLearningDeliveryPeriodisedValues
                                                            join ld in ilrContext.AlbLearningDeliveries

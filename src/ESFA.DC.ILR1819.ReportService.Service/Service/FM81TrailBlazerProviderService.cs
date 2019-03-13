@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -26,12 +26,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IKeyValuePersistenceService _blob;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
-        private readonly DataStoreConfiguration _dataStoreConfiguration;
-
+        private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
+        private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock;
-
         private bool _loadedDataAlready;
-
         private FM81Global _fundingOutputs;
 
         public FM81TrailBlazerProviderService(
@@ -40,15 +38,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
-            DataStoreConfiguration dataStoreConfiguration)
+            Func<IIlr1819ValidContext> ilrValidContextFactory,
+            Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
         {
             _logger = logger;
             _redis = redis;
             _blob = blob;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
-            _dataStoreConfiguration = dataStoreConfiguration;
-
+            _ilrValidContextFactory = ilrValidContextFactory;
+            _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
@@ -88,12 +87,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 else
                 {
                     FM81Global fm81Global = new FM81Global();
-                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
+                    using (var ilrContext = _ilrRulebaseContextFactory())
                     {
                         var fm81GlobalDb = await ilrContext.TblGlobals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
-                        DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                        using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
+                        using (var ilrValidContext = _ilrValidContextFactory())
                         {
                             TblLearningDelivery[] res = await ilrContext.TblLearningDeliveries.Where(x => x.Ukprn == ukPrn)
                                 .Include(x => x.TblLearningDeliveryPeriodisedValues).ToArrayAsync(cancellationToken);

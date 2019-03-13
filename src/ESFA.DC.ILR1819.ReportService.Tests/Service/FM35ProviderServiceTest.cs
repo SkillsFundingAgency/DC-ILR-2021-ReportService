@@ -3,6 +3,10 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+using ESFA.DC.ILR1819.DataStore.EF;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
+using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
@@ -12,6 +16,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -34,6 +39,18 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
                 ILRDataStoreValidConnectionString = string.Empty
             };
 
+            IIlr1819ValidContext IlrValidContextFactory()
+            {
+                var options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                return new ILR1819_DataStoreEntitiesValid(options);
+            }
+
+            IIlr1819RulebaseContext IlrRulebaseContextFactory()
+            {
+                var options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(dataStoreConfiguration.ILRDataStoreConnectionString).Options;
+                return new ILR1819_DataStoreEntities(options);
+            }
+
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
             reportServiceContextMock.SetupGet(x => x.SubmissionDateTimeUtc).Returns(DateTime.UtcNow);
@@ -50,7 +67,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Service
                 redis.Object,
                 jsonSerializationService,
                 intUtilitiesService,
-                dataStoreConfiguration);
+                IlrValidContextFactory,
+                IlrRulebaseContextFactory);
 
             FM35Global fm35Data = await fm35ProviderService.GetFM35Data(reportServiceContextMock.Object, CancellationToken.None);
 

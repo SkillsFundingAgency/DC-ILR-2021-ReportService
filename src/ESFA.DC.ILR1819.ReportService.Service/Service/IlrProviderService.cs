@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.DataStore.EF;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
@@ -33,6 +34,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
+        private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
+        private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getIlrLock;
         private Message _message;
 
@@ -42,14 +45,16 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             IXmlSerializationService xmlSerializationService,
             IDateTimeProvider dateTimeProvider,
             IIntUtilitiesService intUtilitiesService,
-            DataStoreConfiguration dataStoreConfiguration)
+            Func<IIlr1819ValidContext> ilrValidContextFactory,
+            Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
         {
             _logger = logger;
             _storage = storage;
             _xmlSerializationService = xmlSerializationService;
             _dateTimeProvider = dateTimeProvider;
             _intUtilitiesService = intUtilitiesService;
-            _dataStoreConfiguration = dataStoreConfiguration;
+            _ilrValidContextFactory = ilrValidContextFactory;
+            _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
             _message = null;
             _getIlrLock = new SemaphoreSlim(1, 1);
         }
@@ -83,14 +88,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     DateTime submittedDate;
                     DateTime filePreparationDate;
 
-                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
+                    using (var ilrContext = _ilrRulebaseContextFactory())
                     {
                         submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.Ukprn == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
-                    DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                    using (var ilrContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
+                    using (var ilrContext = _ilrValidContextFactory())
                     {
                         filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.Ukprn == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
@@ -133,8 +136,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             cancellationToken.ThrowIfCancellationRequested();
 
             var ukPrn = reportServiceContext.Ukprn;
-            DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-            using (var ilrContext = new ILR1819_DataStoreEntities(options))
+            using (var ilrContext = _ilrRulebaseContextFactory())
             {
                 var fileDetail = await ilrContext.FileDetails.Where(x => x.Ukprn == ukPrn).OrderByDescending(x => x.Id).FirstOrDefaultAsync(cancellationToken);
                 if (fileDetail != null)
@@ -147,8 +149,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 }
             }
 
-            DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
+            using (var ilrContext = _ilrValidContextFactory())
             {
                 var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
                 if (collectionDetail != null)
@@ -171,8 +172,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             cancellationToken.ThrowIfCancellationRequested();
 
             List<Learner> learnersList;
-            DbContextOptions<ILR1819_DataStoreEntitiesValid> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
+            using (var ilrContext = _ilrValidContextFactory())
             {
                 learnersList = await ilrContext.Learners
                                                 .Include(x => x.LearningDeliveries).ThenInclude(y => y.AppFinRecords)
@@ -233,8 +233,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             cancellationToken.ThrowIfCancellationRequested();
 
             List<Learner> learnersList;
-            DbContextOptions<ILR1819_DataStoreEntitiesValid> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
+            using (var ilrContext = _ilrValidContextFactory())
             {
                 learnersList = await ilrContext.Learners
                                                 .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
@@ -264,8 +263,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             cancellationToken.ThrowIfCancellationRequested();
 
             List<Learner> learnersList;
-            DbContextOptions<ILR1819_DataStoreEntitiesValid> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(options))
+            using (var ilrContext = _ilrValidContextFactory())
             {
                 learnersList = await ilrContext.Learners
                                                     .Include(x => x.LearningDeliveries).ThenInclude(y => y.LearningDeliveryFams)

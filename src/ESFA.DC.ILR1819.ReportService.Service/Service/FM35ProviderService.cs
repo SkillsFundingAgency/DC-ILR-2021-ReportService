@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Valid;
-using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -29,7 +25,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
-        private readonly DataStoreConfiguration _dataStoreConfiguration;
+        private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
+        private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock;
         private bool _loadedDataAlready;
         private FM35Global _fundingOutputs;
@@ -39,13 +36,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
-            DataStoreConfiguration dataStoreConfiguration)
+            Func<IIlr1819ValidContext> ilrValidContextFactory,
+            Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
         {
             _logger = logger;
             _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
-            _dataStoreConfiguration = dataStoreConfiguration;
+            _ilrValidContextFactory = ilrValidContextFactory;
+            _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
@@ -91,8 +90,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 else
                 {
                     FM35Global fm35Global = new FM35Global();
-                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
+                    using (var ilrContext = _ilrRulebaseContextFactory())
                     {
                         var fm35GlobalDb = await ilrContext.Fm35Globals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
                         Fm35LearningDelivery[] res = await ilrContext.Fm35LearningDeliveries.Where(x => x.Ukprn == ukPrn)
@@ -186,8 +184,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                 var UkPrn = reportServiceContext.Ukprn;
 
-                DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                using (var ilrContext = new ILR1819_DataStoreEntities(options))
+                using (var ilrContext = _ilrRulebaseContextFactory())
                 {
                     fm35LearningDeliveryPeriodisedValues = (from pv in ilrContext.Fm35LearningDeliveryPeriodisedValues
                                                             join ld in ilrContext.Fm35LearningDeliveries
@@ -230,8 +227,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private List<string> GetValidLearners(int ukPrn)
         {
             List<string> learners;
-            DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-            using (var ilrContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
+            using (var ilrContext = _ilrValidContextFactory())
             {
                 learners = ilrContext.Learners.Where(x => x.Ukprn == ukPrn).Select(x => x.LearnRefNumber).ToList();
             }

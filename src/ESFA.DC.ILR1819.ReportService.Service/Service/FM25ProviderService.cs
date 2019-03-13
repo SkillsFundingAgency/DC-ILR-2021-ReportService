@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR1819.DataStore.EF;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
@@ -23,16 +24,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         private readonly IKeyValuePersistenceService _redis;
         private readonly IKeyValuePersistenceService _blob;
-
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
-
-        private readonly DataStoreConfiguration _dataStoreConfiguration;
-
+        private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock;
-
         private bool _loadedDataAlready;
-
         private FM25Global _fundingOutputs;
 
         public FM25ProviderService(
@@ -41,14 +37,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
-            DataStoreConfiguration dataStoreConfiguration)
+            Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
         {
             _logger = logger;
             _redis = redis;
             _blob = blob;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
-            _dataStoreConfiguration = dataStoreConfiguration;
+            _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
@@ -89,8 +85,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 {
                     FM25Global fm25Global = new FM25Global();
 
-                    DbContextOptions<ILR1819_DataStoreEntities> options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
-                    using (var ilrContext = new ILR1819_DataStoreEntities(options))
+                    using (var ilrContext = _ilrRulebaseContextFactory())
                     {
                         var fm25GlobalDb = await ilrContext.Fm25Globals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
                         Fm25Learner[] learners = await ilrContext.Fm25Learners.Where(x => x.Ukprn == ukPrn).Include(x => x.Fm25Fm35LearnerPeriodisedValues).ToArrayAsync(cancellationToken);

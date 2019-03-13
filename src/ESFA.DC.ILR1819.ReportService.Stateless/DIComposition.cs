@@ -6,6 +6,10 @@ using ESFA.DC.Auditing.Interface;
 using ESFA.DC.CollectionsManagement.Services;
 using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.DataStore.EF;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
+using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders.PeriodEnd;
@@ -48,6 +52,7 @@ using ESFA.DC.Serialization.Json;
 using ESFA.DC.Serialization.Xml;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using VersionInfo = ESFA.DC.ILR1819.ReportService.Stateless.Configuration.VersionInfo;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless
 {
@@ -213,6 +218,32 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             })
             .As<DbContextOptions>()
             .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<ILR1819_DataStoreEntitiesValid>().As<IIlr1819ValidContext>();
+            containerBuilder.Register(context =>
+                {
+                    var optionsBuilder = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>();
+                    optionsBuilder.UseSqlServer(
+                        dataStoreConfiguration.ILRDataStoreValidConnectionString,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions<ILR1819_DataStoreEntitiesValid>>()
+                .SingleInstance();
+
+            containerBuilder.RegisterType<ILR1819_DataStoreEntities>().As<IIlr1819RulebaseContext>();
+            containerBuilder.Register(context =>
+                {
+                    var optionsBuilder = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>();
+                    optionsBuilder.UseSqlServer(
+                        dataStoreConfiguration.ILRDataStoreConnectionString,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions<ILR1819_DataStoreEntities>>()
+                .SingleInstance();
 
             containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
 
