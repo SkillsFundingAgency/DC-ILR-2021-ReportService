@@ -1199,7 +1199,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         private async Task<FundingSummaryHeaderModel> GetHeader(IReportServiceContext reportServiceContext, Task<IMessage> messageTask, Task<ILRSourceFileInfo> lastSubmittedIlrFileTask, Task<string> providerNameTask, CancellationToken cancellationToken, bool isFis)
         {
-            var fileName = Path.GetFileName(reportServiceContext.Filename);
+            var fileName = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
             var fundingSummaryHeaderModel = new FundingSummaryHeaderModel
             {
                 IlrFile = string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase) ? fileName : "N/A",
