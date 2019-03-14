@@ -69,14 +69,14 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.ALB
             reportServiceContextMock.SetupGet(x => x.FundingALBOutputKey).Returns("FundingAlbOutput");
             reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null, null);
 
             ILarsProviderService larsProviderService = new LarsProviderService(logger.Object, new LarsConfiguration
             {
                 LarsConnectionString = ConfigurationManager.AppSettings["LarsConnectionString"]
             });
 
-            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, null);
+            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, null, null);
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, null);
 

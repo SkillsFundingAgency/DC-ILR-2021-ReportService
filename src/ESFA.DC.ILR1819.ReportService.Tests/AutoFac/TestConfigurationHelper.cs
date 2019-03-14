@@ -71,7 +71,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                     return (T)(object)new DASPaymentsConfiguration
                     {
                         DASPaymentsConnectionString =
-                            "Server=.;Database=DASPayments;User Id=myUsername;Password = myPassword;"
+                            "Server=.;Database=DASPayments;integrated security=True;"
                     };
                 case "PostcodeSection":
                     return (T)(object)new PostcodeConfiguration
@@ -83,9 +83,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
                     return (T)(object)new DataStoreConfiguration()
                     {
                         ILRDataStoreConnectionString =
-                            "metadata=res://*/DataStoreModel.csdl|res://*/DataStoreModel.ssdl|res://*/DataStoreModel.msl;provider=System.Data.SqlClient;provider connection string='data source =(local); initial catalog = ilr1819_DataStore; integrated security = True; MultipleActiveResultSets = True; App = EntityFramework'",
+                            "Server=.;Database=ilr1819_DataStore;integrated security=True;",
                         ILRDataStoreValidConnectionString =
-                            "metadata=res://*/ValidModel.csdl|res://*/ValidModel.ssdl|res://*/ValidModel.msl;provider=System.Data.SqlClient;provider connection string='data source =(local); initial catalog = ilr1819_DataStore; integrated security = True; MultipleActiveResultSets = True; App = EntityFramework'"
+                            "Server=.;Database=ilr1819_DataStore;integrated security=True;"
                     };
                 case "IlrValidationErrorsSection":
                     return (T)(object)new IlrValidationErrorsConfiguration();
