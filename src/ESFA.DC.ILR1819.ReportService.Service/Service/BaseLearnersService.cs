@@ -76,7 +76,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
                     using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
                     {
-                        validLearnersList = ilrValidContext.Learners.Where(x => x.Ukprn == ukPrn).Select(x => x.LearnRefNumber).ToList();
+                        validLearnersList = ilrValidContext.Learners.Where(x => x.UKPRN == ukPrn).Select(x => x.LearnRefNumber).ToList();
                     }
 
                     _loadedData = validLearnersList;

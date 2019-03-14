@@ -10,6 +10,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
@@ -226,6 +227,29 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return _version;
+        }
+
+        public async Task<List<AppsMonthlyPaymentLarsLearningDeliveryInfo>> GetLarsLearningDeliveryInfoForAppsMonthlyPaymentReportAsync(string[] learnerAimRefs, CancellationToken cancellationToken)
+        {
+            var appsMonthlyPaymentLarsLearningDeliveryInfoList = new List<AppsMonthlyPaymentLarsLearningDeliveryInfo>();
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            using (var larsContext = new LARS(_larsConfiguration.LarsConnectionString))
+            {
+                var larsLearningDeliveries = await larsContext.LARS_LearningDelivery.Where(x => learnerAimRefs.Contains(x.LearnAimRef)).ToListAsync(cancellationToken);
+
+                foreach (var learningDelivery in larsLearningDeliveries)
+                {
+                    appsMonthlyPaymentLarsLearningDeliveryInfoList.Add(new AppsMonthlyPaymentLarsLearningDeliveryInfo()
+                    {
+                        LearnAimRef = learningDelivery.LearnAimRef,
+                        LearningAimTitle = learningDelivery.LearnAimRefTitle
+                    });
+                }
+            }
+
+            return appsMonthlyPaymentLarsLearningDeliveryInfoList;
         }
     }
 }
