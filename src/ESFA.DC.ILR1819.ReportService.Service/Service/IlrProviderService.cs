@@ -90,12 +90,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                     using (var ilrContext = _ilrRulebaseContextFactory())
                     {
-                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.Ukprn == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
                     using (var ilrContext = _ilrValidContextFactory())
                     {
-                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.Ukprn == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
                     _message = new Message
@@ -134,12 +134,12 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             var ukPrn = reportServiceContext.Ukprn;
             using (var ilrContext = _ilrRulebaseContextFactory())
             {
-                var fileDetail = await ilrContext.FileDetails.Where(x => x.Ukprn == ukPrn).OrderByDescending(x => x.Id).FirstOrDefaultAsync(cancellationToken);
+                var fileDetail = await ilrContext.FileDetails.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.ID).FirstOrDefaultAsync(cancellationToken);
                 if (fileDetail != null)
                 {
                     var filename = fileDetail.Filename.Contains('/') ? fileDetail.Filename.Split('/')[1] : fileDetail.Filename;
 
-                    ilrFileDetail.UKPRN = fileDetail.Ukprn;
+                    ilrFileDetail.UKPRN = fileDetail.UKPRN;
                     ilrFileDetail.Filename = filename;
                     ilrFileDetail.SubmittedTime = fileDetail.SubmittedTime;
                 }
@@ -147,7 +147,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             using (var ilrContext = _ilrValidContextFactory())
             {
-                var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
+                var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                 if (collectionDetail != null)
                 {
                     ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
@@ -173,7 +173,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 learnersList = await ilrContext.Learners
                                                 .Include(x => x.LearningDeliveries).ThenInclude(y => y.AppFinRecords)
                                                 .Include(x => x.LearnerEmploymentStatuses)
-                                                .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
                                                 .ToListAsync(cancellationToken);
             }
 
@@ -194,15 +194,15 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         StdCode = x.StdCode,
                         FworkCode = x.FworkCode,
                         PwayCode = x.PwayCode,
-                        SWSupAimId = x.SwsupAimId,
+                        SWSupAimId = x.SWSupAimId,
                         AppFinRecords = x.AppFinRecords.Select(y => new AppFinRecordInfo()
                         {
                             LearnRefNumber = y.LearnRefNumber,
                             AimSeqNumber = y.AimSeqNumber,
-                            AFinType = y.AfinType,
-                            AFinCode = y.AfinCode,
-                            AFinDate = y.AfinDate,
-                            AFinAmount = y.AfinAmount
+                            AFinType = y.AFinType,
+                            AFinCode = y.AFinCode,
+                            AFinDate = y.AFinDate,
+                            AFinAmount = y.AFinAmount
                         }).ToList()
                     }).ToList(),
                     LearnerEmploymentStatus = learner.LearnerEmploymentStatuses.Select(x => new LearnerEmploymentStatusInfo()
@@ -232,7 +232,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             using (var ilrContext = _ilrValidContextFactory())
             {
                 learnersList = await ilrContext.Learners
-                                                .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
                                                 .ToListAsync(cancellationToken);
             }
 
@@ -262,10 +262,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             using (var ilrContext = _ilrValidContextFactory())
             {
                 learnersList = await ilrContext.Learners
-                                                    .Include(x => x.LearningDeliveries).ThenInclude(y => y.LearningDeliveryFams)
+                                                    .Include(x => x.LearningDeliveries).ThenInclude(y => y.LearningDeliveryFAMs)
                                                     .Include(x => x.LearningDeliveries).ThenInclude(y => y.ProviderSpecDeliveryMonitorings)
                                                     .Include(x => x.ProviderSpecLearnerMonitorings)
-                                                    .Where(x => x.Ukprn == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
+                                                    .Where(x => x.UKPRN == ukPrn && x.LearningDeliveries.Any(y => y.FundModel == ApprentishipsFundModel))
                                                     .ToListAsync(cancellationToken);
             }
 
@@ -281,27 +281,27 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                         LearnRefNumber = x.LearnRefNumber,
                         LearnAimRef = x.LearnAimRef,
                         AimType = x.AimType,
-                        SWSupAimId = x.SwsupAimId,
+                        SWSupAimId = x.SWSupAimId,
                         ProviderSpecDeliveryMonitorings = x.ProviderSpecDeliveryMonitorings.Select(y => new AppsMonthlyPaymentProviderSpecDeliveryMonitoringInfo()
                         {
-                            UKPRN = y.Ukprn,
+                            UKPRN = y.UKPRN,
                             LearnRefNumber = y.LearnRefNumber,
                             AimSeqNumber = y.AimSeqNumber,
                             ProvSpecDelMon = y.ProvSpecDelMon,
                             ProvSpecDelMonOccur = y.ProvSpecDelMonOccur
                         }).ToList(),
-                        LearningDeliveryFams = x.LearningDeliveryFams.Select(y => new AppsMonthlyPaymentLearningDeliveryFAMInfo()
+                        LearningDeliveryFams = x.LearningDeliveryFAMs.Select(y => new AppsMonthlyPaymentLearningDeliveryFAMInfo()
                         {
-                            UKPRN = y.Ukprn,
+                            UKPRN = y.UKPRN,
                             LearnRefNumber = y.LearnRefNumber,
                             AimSeqNumber = y.AimSeqNumber,
-                            LearnDelFAMType = y.LearnDelFamtype,
-                            LearnDelFAMCode = y.LearnDelFamcode
+                            LearnDelFAMType = y.LearnDelFAMType,
+                            LearnDelFAMCode = y.LearnDelFAMCode
                         }).ToList()
                     }).ToList(),
                     ProviderSpecLearnerMonitorings = learner.ProviderSpecLearnerMonitorings.Select(x => new AppsMonthlyPaymentProviderSpecLearnerMonitoringInfo()
                     {
-                        UKPRN = x.Ukprn,
+                        UKPRN = x.UKPRN,
                         LearnRefNumber = x.LearnRefNumber,
                         ProvSpecLearnMon = x.ProvSpecLearnMon,
                         ProvSpecLearnMonOccur = x.ProvSpecLearnMonOccur

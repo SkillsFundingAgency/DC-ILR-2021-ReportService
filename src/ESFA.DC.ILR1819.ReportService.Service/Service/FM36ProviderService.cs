@@ -84,37 +84,37 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     FM36Global fm36Global = new FM36Global();
                     using (var ilrContext = _ilrRulebaseContextFactory())
                     {
-                        var fm36GlobalDb = await ilrContext.AecGlobals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
+                        var fm36GlobalDb = await ilrContext.AEC_globals.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                         //AEC_LearningDelivery[] res = await ilrContext.AEC_LearningDelivery_Period.Where(x => x.UKPRN == ukPrn).Select(x => x.AEC_LearningDelivery)
                         //    .Include(x => x.AEC_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
 
-                        AecLearningDelivery[] res = await ilrContext.AecLearningDeliveries.Where(x => x.Ukprn == ukPrn)
-                            .Include(x => x.AecLearningDeliveryPeriodisedValues).ToArrayAsync(cancellationToken);
+                        AEC_LearningDelivery[] res = await ilrContext.AEC_LearningDeliveries.Where(x => x.UKPRN == ukPrn)
+                            .Include(x => x.AEC_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
 
-                        IGrouping<string, AecLearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
+                        IGrouping<string, AEC_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
 
                         fm36Global.Learners = new List<FM36Learner>();
 
-                        foreach (IGrouping<string, AecLearningDelivery> albLearningDeliveries in learners)
+                        foreach (IGrouping<string, AEC_LearningDelivery> albLearningDeliveries in learners)
                         {
                             var learningDeliveryDto = new List<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery>();
                             foreach (var ld in albLearningDeliveries)
                             {
-                                var ldPeriodisedValues = ld.AecLearningDeliveryPeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValues()
+                                var ldPeriodisedValues = ld.AEC_LearningDelivery_PeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValues()
                                 {
                                     AttributeName = ldpv.AttributeName,
-                                    Period1 = ldpv.Period1,
-                                    Period2 = ldpv.Period2,
-                                    Period3 = ldpv.Period3,
-                                    Period4 = ldpv.Period4,
-                                    Period5 = ldpv.Period5,
-                                    Period6 = ldpv.Period6,
-                                    Period7 = ldpv.Period7,
-                                    Period8 = ldpv.Period8,
-                                    Period9 = ldpv.Period9,
-                                    Period10 = ldpv.Period10,
-                                    Period11 = ldpv.Period11,
-                                    Period12 = ldpv.Period12
+                                    Period1 = ldpv.Period_1,
+                                    Period2 = ldpv.Period_2,
+                                    Period3 = ldpv.Period_3,
+                                    Period4 = ldpv.Period_4,
+                                    Period5 = ldpv.Period_5,
+                                    Period6 = ldpv.Period_6,
+                                    Period7 = ldpv.Period_7,
+                                    Period8 = ldpv.Period_8,
+                                    Period9 = ldpv.Period_9,
+                                    Period10 = ldpv.Period_10,
+                                    Period11 = ldpv.Period_11,
+                                    Period12 = ldpv.Period_12
                                 }).ToList();
 
                                 learningDeliveryDto.Add(new LearningDelivery()
@@ -139,9 +139,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                         if (fm36GlobalDb != null)
                         {
-                            fm36Global.LARSVersion = fm36GlobalDb.Larsversion;
+                            fm36Global.LARSVersion = fm36GlobalDb.LARSVersion;
                             fm36Global.RulebaseVersion = fm36GlobalDb.RulebaseVersion;
-                            fm36Global.UKPRN = fm36GlobalDb.Ukprn;
+                            fm36Global.UKPRN = fm36GlobalDb.UKPRN;
                         }
                     }
 
@@ -167,13 +167,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            List<AecApprenticeshipPriceEpisodePeriodisedValue> aecApprenticeshipPriceEpisodePeriodisedValues;
-            List<AecLearningDelivery> aecLearningDeliveries;
+            List<AEC_ApprenticeshipPriceEpisode_PeriodisedValue> aecApprenticeshipPriceEpisodePeriodisedValues;
+            List<AEC_LearningDelivery> aecLearningDeliveries;
 
             using (var ilrContext = _ilrRulebaseContextFactory())
             {
-                aecApprenticeshipPriceEpisodePeriodisedValues = await ilrContext.AecApprenticeshipPriceEpisodePeriodisedValues.Where(x => x.Ukprn == ukPrn).ToListAsync(cancellationToken);
-                aecLearningDeliveries = await ilrContext.AecLearningDeliveries.Where(x => x.Ukprn == ukPrn).ToListAsync(cancellationToken);
+                aecApprenticeshipPriceEpisodePeriodisedValues = await ilrContext.AEC_ApprenticeshipPriceEpisode_PeriodisedValues.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
+                aecLearningDeliveries = await ilrContext.AEC_LearningDeliveries.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
             }
 
             foreach (var aecApprenticeshipPriceEpisodePeriodisedValue in aecApprenticeshipPriceEpisodePeriodisedValues)
@@ -183,18 +183,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     UKPRN = ukPrn,
                     LearnRefNumber = aecApprenticeshipPriceEpisodePeriodisedValue.LearnRefNumber,
                     AttributeName = aecApprenticeshipPriceEpisodePeriodisedValue.AttributeName,
-                    Period_1 = aecApprenticeshipPriceEpisodePeriodisedValue.Period1,
-                    Period_2 = aecApprenticeshipPriceEpisodePeriodisedValue.Period2,
-                    Period_3 = aecApprenticeshipPriceEpisodePeriodisedValue.Period3,
-                    Period_4 = aecApprenticeshipPriceEpisodePeriodisedValue.Period4,
-                    Period_5 = aecApprenticeshipPriceEpisodePeriodisedValue.Period5,
-                    Period_6 = aecApprenticeshipPriceEpisodePeriodisedValue.Period6,
-                    Period_7 = aecApprenticeshipPriceEpisodePeriodisedValue.Period7,
-                    Period_8 = aecApprenticeshipPriceEpisodePeriodisedValue.Period8,
-                    Period_9 = aecApprenticeshipPriceEpisodePeriodisedValue.Period9,
-                    Period_10 = aecApprenticeshipPriceEpisodePeriodisedValue.Period10,
-                    Period_11 = aecApprenticeshipPriceEpisodePeriodisedValue.Period11,
-                    Period_12 = aecApprenticeshipPriceEpisodePeriodisedValue.Period12
+                    Period_1 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_1,
+                    Period_2 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_2,
+                    Period_3 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_3,
+                    Period_4 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_4,
+                    Period_5 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_5,
+                    Period_6 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_6,
+                    Period_7 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_7,
+                    Period_8 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_8,
+                    Period_9 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_9,
+                    Period_10 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_10,
+                    Period_11 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_11,
+                    Period_12 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_12
                 };
                 appsAdditionalPaymentRulebaseInfo.AECApprenticeshipPriceEpisodePeriodisedValues.Add(periodisedValue);
             }

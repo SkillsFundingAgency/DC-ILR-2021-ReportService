@@ -86,36 +86,36 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     FM81Global fm81Global = new FM81Global();
                     using (var ilrContext = _ilrRulebaseContextFactory())
                     {
-                        var fm81GlobalDb = await ilrContext.TblGlobals.FirstOrDefaultAsync(x => x.Ukprn == ukPrn, cancellationToken);
+                        var fm81GlobalDb = await ilrContext.TBL_globals.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                         using (var ilrValidContext = _ilrValidContextFactory())
                         {
-                            TblLearningDelivery[] res = await ilrContext.TblLearningDeliveries.Where(x => x.Ukprn == ukPrn)
-                                .Include(x => x.TblLearningDeliveryPeriodisedValues).ToArrayAsync(cancellationToken);
+                            TBL_LearningDelivery[] res = await ilrContext.TBL_LearningDeliveries.Where(x => x.UKPRN == ukPrn)
+                                .Include(x => x.TBL_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
 
-                            IGrouping<string, TblLearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
+                            IGrouping<string, TBL_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
 
                             fm81Global.Learners = new List<FM81Learner>();
 
-                            foreach (IGrouping<string, TblLearningDelivery> fm81LearningDeliveries in learners)
+                            foreach (IGrouping<string, TBL_LearningDelivery> fm81LearningDeliveries in learners)
                             {
                                 var learningDeliveryDto = new List<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery>();
                                 foreach (var ld in fm81LearningDeliveries)
                                 {
-                                    var ldPeriodisedValues = ld.TblLearningDeliveryPeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValue()
+                                    var ldPeriodisedValues = ld.TBL_LearningDelivery_PeriodisedValues.Select(ldpv => new LearningDeliveryPeriodisedValue()
                                     {
                                         AttributeName = ldpv.AttributeName,
-                                        Period1 = ldpv.Period1,
-                                        Period2 = ldpv.Period2,
-                                        Period3 = ldpv.Period3,
-                                        Period4 = ldpv.Period4,
-                                        Period5 = ldpv.Period5,
-                                        Period6 = ldpv.Period6,
-                                        Period7 = ldpv.Period7,
-                                        Period8 = ldpv.Period8,
-                                        Period9 = ldpv.Period9,
-                                        Period10 = ldpv.Period10,
-                                        Period11 = ldpv.Period11,
-                                        Period12 = ldpv.Period12
+                                        Period1 = ldpv.Period_1,
+                                        Period2 = ldpv.Period_2,
+                                        Period3 = ldpv.Period_3,
+                                        Period4 = ldpv.Period_4,
+                                        Period5 = ldpv.Period_5,
+                                        Period6 = ldpv.Period_6,
+                                        Period7 = ldpv.Period_7,
+                                        Period8 = ldpv.Period_8,
+                                        Period9 = ldpv.Period_9,
+                                        Period10 = ldpv.Period_10,
+                                        Period11 = ldpv.Period_11,
+                                        Period12 = ldpv.Period_12
                                     }).ToList();
 
                                     learningDeliveryDto.Add(new LearningDelivery()
@@ -142,10 +142,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                         if (fm81GlobalDb != null)
                         {
-                            fm81Global.LARSVersion = fm81GlobalDb.Larsversion;
+                            fm81Global.LARSVersion = fm81GlobalDb.LARSVersion;
                             fm81Global.CurFundYr = fm81GlobalDb.CurFundYr;
                             fm81Global.RulebaseVersion = fm81GlobalDb.RulebaseVersion;
-                            fm81Global.UKPRN = fm81GlobalDb.Ukprn;
+                            fm81Global.UKPRN = fm81GlobalDb.UKPRN;
                         }
                     }
 

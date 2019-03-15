@@ -4,10 +4,15 @@ using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR1819.DataStore.EF;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
+using ESFA.DC.ILR1819.DataStore.EF.Valid;
+using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
@@ -21,6 +26,7 @@ using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Serialization.Xml;
 using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
@@ -60,8 +66,24 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 }));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
+            DataStoreConfiguration dataStoreConfiguration = new DataStoreConfiguration()
+            {
+                ILRDataStoreConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreConnectionString,
+                ILRDataStoreValidConnectionString = new TestConfigurationHelper().GetSectionValues<DataStoreConfiguration>("DataStoreSection").ILRDataStoreValidConnectionString
+            };
+            IIlr1819ValidContext IlrValidContextFactory()
+            {
+                var options = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                return new ILR1819_DataStoreEntitiesValid(options);
+            }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null, null);
+            IIlr1819RulebaseContext IlrRulebaseContextFactory()
+            {
+                var options = new DbContextOptionsBuilder<ILR1819_DataStoreEntities>().UseSqlServer(dataStoreConfiguration.ILRDataStoreConnectionString).Options;
+                return new ILR1819_DataStoreEntities(options);
+            }
+
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             larsProviderService.Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(new Dictionary<string, LarsLearningDelivery>()
@@ -69,7 +91,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     { "60133533", new LarsLearningDelivery { LearningAimTitle = "A", NotionalNvqLevel = "B", Tier2SectorSubjectArea = 3 } }
                 });
 
-            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, null, null);
+            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
