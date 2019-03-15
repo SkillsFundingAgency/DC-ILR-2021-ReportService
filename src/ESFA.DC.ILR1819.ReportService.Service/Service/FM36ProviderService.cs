@@ -11,6 +11,7 @@ using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -214,6 +215,37 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return appsAdditionalPaymentRulebaseInfo;
+        }
+
+        public async Task<AppsMonthlyPaymentRulebaseInfo> GetFM36DataForAppsMonthlyPaymentReportAsync(int ukPrn, CancellationToken cancellationToken)
+        {
+            var appsMonthlyPaymentRulebaseInfo = new AppsMonthlyPaymentRulebaseInfo()
+            {
+                UkPrn = ukPrn,
+                AECApprenticeshipPriceEpisodes = new List<AECApprenticeshipPriceEpisodeInfo>()
+            };
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<AEC_ApprenticeshipPriceEpisode> aecApprenticeshipPriceEpisodes;
+
+            using (var ilrContext = _ilrRulebaseContextFactory())
+            {
+                aecApprenticeshipPriceEpisodes = await ilrContext.AEC_ApprenticeshipPriceEpisodes.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
+            }
+
+            foreach (var aecApprenticeshipPriceEpisode in aecApprenticeshipPriceEpisodes)
+            {
+                var periodisedValue = new AECApprenticeshipPriceEpisodeInfo()
+                {
+                    LearnRefNumber = aecApprenticeshipPriceEpisode.LearnRefNumber,
+                    PriceEpisodeActualEndDate = aecApprenticeshipPriceEpisode.PriceEpisodeActualEndDate,
+                    PriceEpisodeAgreeId = aecApprenticeshipPriceEpisode.PriceEpisodeAgreeId
+                };
+                appsMonthlyPaymentRulebaseInfo.AECApprenticeshipPriceEpisodes.Add(periodisedValue);
+            }
+
+            return appsMonthlyPaymentRulebaseInfo;
         }
     }
 }
