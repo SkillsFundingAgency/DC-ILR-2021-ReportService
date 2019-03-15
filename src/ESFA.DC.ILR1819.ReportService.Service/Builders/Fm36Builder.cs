@@ -61,7 +61,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                 fundingSummaryModel.Period9 + fundingSummaryModel.Period10 + fundingSummaryModel.Period11 +
                 fundingSummaryModel.Period12;
 
-            fundingSummaryModel.YearToDate = GetYearToDate(fundingSummaryModel, period);
+            fundingSummaryModel.YearToDate = GetYearToDate(fundingSummaryModel, period - 1);
             fundingSummaryModel.Total = GetYearToDate(fundingSummaryModel, 12);
 
             return fundingSummaryModel;
