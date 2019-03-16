@@ -28,7 +28,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPayments
+namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
 {
     public sealed class TestAppsMonthlyPaymentReport
     {

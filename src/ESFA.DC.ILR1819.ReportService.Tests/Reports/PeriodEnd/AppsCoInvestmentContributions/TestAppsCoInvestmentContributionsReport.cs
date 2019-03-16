@@ -2,6 +2,8 @@
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DASPayments.EF;
+using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
@@ -79,6 +81,12 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestment
                 return new ILR1819_DataStoreEntities(options);
             }
 
+            IDASPaymentsContext DasPaymentsContextFactory()
+            {
+                var options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
+                return new DASPaymentsContext(options);
+            }
+
             IIlrProviderService ilrProviderService = new IlrProviderService(
                 logger.Object,
                 storage.Object,
@@ -87,7 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestment
                 intUtilitiesService,
                 IlrValidContextFactory,
                 IlrRulebaseContextFactory);
-            var dasPaymentsProviderService = new DASPaymentsProviderService(logger.Object, dasPaymentsConfiguration);
+            var dasPaymentsProviderService = new DASPaymentsProviderService(logger.Object, DasPaymentsContextFactory);
 
             var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, ilrProviderService, dasPaymentsProviderService);
 
