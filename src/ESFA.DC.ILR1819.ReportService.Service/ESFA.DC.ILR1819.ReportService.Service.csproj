@@ -330,6 +330,7 @@
     <Compile Include="Builders\MainOccupancyReportModelBuilder.cs" />
     <Compile Include="Builders\MathsAndEnglishModelBuilder.cs" />
     <Compile Include="Builders\Fm35Builder.cs" />
+    <Compile Include="Builders\PeriodEnd\AppsDataMatchMonthEndModelBuilder.cs" />
     <Compile Include="Builders\PeriodEnd\AppsMonthlyPaymentModelBuilder.cs" />
     <Compile Include="Builders\PeriodEnd\AppsAdditionalPaymentsModelBuilder.cs" />
     <Compile Include="Builders\PeriodEnd\AppsCoInvestmentContributionsModelBuilder.cs" />
@@ -372,6 +373,7 @@
     <Compile Include="Helper\ExtensionMethods.cs" />
     <Compile Include="Helper\IlrFileHelper.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
+    <Compile Include="Mapper\PeriodEnd\AppsDataMatchMonthEndMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\AppsMonthlyPaymentMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\AppsAdditionalPaymentsMapper.cs" />
     <Compile Include="Mapper\AppsIndicativeEarningsMapper.cs" />
@@ -392,6 +394,7 @@
     <Compile Include="ReferenceData\DataLockValidationMessage.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
     <Compile Include="Reports\AbstractReportBuilder.cs" />
+    <Compile Include="Reports\PeriodEnd\AppsDataMatchMonthEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsMonthlyPaymentReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\AppsIndicativeEarningsReport.cs" />

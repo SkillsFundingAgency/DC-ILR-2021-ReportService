@@ -38,6 +38,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
 
         public string TopicReports_TaskGenerateAppsMonthlyPaymentReport { get; set; }
 
+        public string TopicReports_TaskGenerateAppsDataMatchMonthEndReport { get; set; }
+
         public string TopicReports_TaskGenerateDataMatchReport { get; set; }
 
         public string TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport { get; set; }
