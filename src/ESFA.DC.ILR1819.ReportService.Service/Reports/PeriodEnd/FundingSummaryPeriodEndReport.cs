@@ -67,10 +67,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
 
         private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return null;
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             var fundingSummaryPeriodEndModels = new List<FundingSummaryPeriodEndModel>();
 
