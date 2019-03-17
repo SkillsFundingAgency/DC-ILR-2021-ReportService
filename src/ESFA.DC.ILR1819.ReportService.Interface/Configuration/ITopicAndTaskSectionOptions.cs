@@ -38,6 +38,8 @@
 
         string TopicReports_TaskGenerateAppsDataMatchMonthEndReport { get; set; }
 
+        string TopicReports_TaskGenerateFundingSummaryPeriodEndReport { get; set; }
+
         string TopicReports_TaskGenerateDataMatchReport { get; set; }
 
         string TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport { get; set; }
