@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
 
         public FundingSummaryPeriodEndReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
             IFM36ProviderService fm36ProviderService,
             IStringUtilitiesService stringUtilitiesService,

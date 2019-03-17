@@ -22,8 +22,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         private readonly ILogger _logger;
 
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IKeyValuePersistenceService _blob;
+        private readonly IKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
@@ -33,15 +32,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         public FM25ProviderService(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
+            IKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
         {
             _logger = logger;
-            _redis = redis;
-            _blob = blob;
+            _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
@@ -68,7 +65,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string fm25Filename = reportServiceContext.FundingFM25OutputKey;
-                    string fm25 = await _redis.GetAsync(fm25Filename, cancellationToken);
+                    string fm25 = await _storage.GetAsync(fm25Filename, cancellationToken);
 
                     if (string.IsNullOrEmpty(fm25))
                     {

@@ -19,7 +19,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         private readonly string _filename;
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _redis;
+        private readonly IKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
 
@@ -32,13 +32,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         protected BaseLearnersService(
             string key,
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            IKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             DataStoreConfiguration dataStoreConfiguration)
         {
             _filename = key;
             _logger = logger;
-            _redis = redis;
+            _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _dataStoreConfiguration = dataStoreConfiguration;
             _loadedData = null;
@@ -64,9 +64,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _loadedDataAlready = true;
                 int ukPrn = reportServiceContext.Ukprn;
 
-                if (await _redis.ContainsAsync(_filename, cancellationToken))
+                if (await _storage.ContainsAsync(_filename, cancellationToken))
                 {
-                    string learnersValidStr = await _redis.GetAsync(_filename, cancellationToken);
+                    string learnersValidStr = await _storage.GetAsync(_filename, cancellationToken);
                     _loadedData = _jsonSerializationService.Deserialize<List<string>>(learnersValidStr);
                 }
                 else

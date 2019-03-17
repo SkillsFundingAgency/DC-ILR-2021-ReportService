@@ -47,7 +47,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public ValidationErrorsReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            IKeyValuePersistenceService redis,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,

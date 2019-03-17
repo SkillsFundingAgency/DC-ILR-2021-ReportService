@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public AppsIndicativeEarningsReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             IFM36ProviderService fm36ProviderService,

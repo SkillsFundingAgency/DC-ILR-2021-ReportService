@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
 
         public AppsCoInvestmentContributionsReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService storage,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
