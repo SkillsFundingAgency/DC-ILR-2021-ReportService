@@ -8,6 +8,7 @@ using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -17,7 +18,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         private const int FundingSource = 3;
         private int[] TransactionTypes = { 1, 2, 3 };
-        private int[] AppsAdditionalPayemntsTransactionTypes = { 4, 5, 6, 7, 16 };
+        private int[] AppsAdditionalPaymentsTransactionTypes = { 4, 5, 6, 7, 16 };
         private readonly ILogger _logger;
         private readonly DASPaymentsConfiguration _dasPaymentsConfiguration;
 
@@ -35,47 +36,37 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 Payments = new List<PaymentInfo>()
             };
 
-            try
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Payment> paymentsList;
+            DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
+            using (var context = new DASPaymentsContext(options))
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
-
-                List<Payment> paymentsList;
-                DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
-                using (var context = new DASPaymentsContext(options))
-                {
-                    paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
-                                                                    x.FundingSource == FundingSource &&
-                                                                    TransactionTypes.Contains(x.TransactionType)).ToListAsync(cancellationToken);
-                }
-
-                foreach (var payment in paymentsList)
-                {
-                    var paymentInfo = new PaymentInfo
-                    {
-                        FundingSource = payment.FundingSource,
-                        TransactionType = payment.TransactionType,
-                        AcademicYear = payment.AcademicYear,
-                        CollectionPeriod = payment.CollectionPeriod,
-                        ContractType = payment.ContractType,
-                        DeliveryPeriod = payment.DeliveryPeriod,
-                        LearnerReferenceNumber = payment.LearnerReferenceNumber,
-                        LearnerUln = payment.LearnerUln,
-                        LearningAimFrameworkCode = payment.LearningAimFrameworkCode,
-                        LearningAimPathwayCode = payment.LearningAimPathwayCode,
-                        LearningAimProgrammeType = payment.LearningAimProgrammeType,
-                        LearningAimReference = payment.LearningAimReference,
-                        LearningAimStandardCode = payment.LearningAimStandardCode
-                    };
-
-                    appsCoInvestmentPaymentsInfo.Payments.Add(paymentInfo);
-                }
+                paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
+                                                                x.FundingSource == FundingSource &&
+                                                                TransactionTypes.Contains(x.TransactionType)).ToListAsync(cancellationToken);
             }
-            catch (Exception ex)
+
+            foreach (var payment in paymentsList)
             {
-                _logger.LogError("Failed to get DASPaymentsProviderService - AppsCoInvestmentContributions  ", ex);
+                var paymentInfo = new PaymentInfo
+                {
+                    FundingSource = payment.FundingSource,
+                    TransactionType = payment.TransactionType,
+                    AcademicYear = payment.AcademicYear,
+                    CollectionPeriod = payment.CollectionPeriod,
+                    ContractType = payment.ContractType,
+                    DeliveryPeriod = payment.DeliveryPeriod,
+                    LearnerReferenceNumber = payment.LearnerReferenceNumber,
+                    LearnerUln = payment.LearnerUln,
+                    LearningAimFrameworkCode = payment.LearningAimFrameworkCode,
+                    LearningAimPathwayCode = payment.LearningAimPathwayCode,
+                    LearningAimProgrammeType = payment.LearningAimProgrammeType,
+                    LearningAimReference = payment.LearningAimReference,
+                    LearningAimStandardCode = payment.LearningAimStandardCode
+                };
+
+                appsCoInvestmentPaymentsInfo.Payments.Add(paymentInfo);
             }
 
             return appsCoInvestmentPaymentsInfo;
@@ -89,52 +80,87 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 Payments = new List<DASPaymentInfo>()
             };
 
-            try
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Payment> paymentsList;
+            DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
+            using (var context = new DASPaymentsContext(options))
             {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
-
-                List<Payment> paymentsList;
-                DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
-                using (var context = new DASPaymentsContext(options))
-                {
-                    paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
-                                                                    x.FundingSource == FundingSource &&
-                                                                     AppsAdditionalPayemntsTransactionTypes.Contains(x.TransactionType)).ToListAsync(cancellationToken);
-                }
-
-                foreach (var payment in paymentsList)
-                {
-                    var paymentInfo = new DASPaymentInfo
-                    {
-                        FundingSource = payment.FundingSource,
-                        TransactionType = payment.TransactionType,
-                        AcademicYear = payment.AcademicYear,
-                        CollectionPeriod = payment.CollectionPeriod,
-                        ContractType = payment.ContractType,
-                        DeliveryPeriod = payment.DeliveryPeriod,
-                        LearnerReferenceNumber = payment.LearnerReferenceNumber,
-                        LearnerUln = payment.LearnerUln,
-                        LearningAimFrameworkCode = payment.LearningAimFrameworkCode,
-                        LearningAimPathwayCode = payment.LearningAimPathwayCode,
-                        LearningAimProgrammeType = payment.LearningAimProgrammeType,
-                        LearningAimReference = payment.LearningAimReference,
-                        LearningAimStandardCode = payment.LearningAimStandardCode,
-                        Amount = payment.Amount,
-                        LearningAimFundingLineType = payment.LearningAimFundingLineType
-                    };
-
-                    appsAdditionalPaymentDasPaymentsInfo.Payments.Add(paymentInfo);
-                }
+                paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
+                                                                x.FundingSource == FundingSource &&
+                                                                 AppsAdditionalPaymentsTransactionTypes.Contains(x.TransactionType)).ToListAsync(cancellationToken);
             }
-            catch (Exception ex)
+
+            foreach (var payment in paymentsList)
             {
-                _logger.LogError("Failed to get DASPaymentsProviderService - GetPaymentsInfoForAppsAdditionalPaymentsReportAsync  ", ex);
+                var paymentInfo = new DASPaymentInfo
+                {
+                    FundingSource = payment.FundingSource,
+                    TransactionType = payment.TransactionType,
+                    AcademicYear = payment.AcademicYear,
+                    CollectionPeriod = payment.CollectionPeriod,
+                    ContractType = payment.ContractType,
+                    DeliveryPeriod = payment.DeliveryPeriod,
+                    LearnerReferenceNumber = payment.LearnerReferenceNumber,
+                    LearnerUln = payment.LearnerUln,
+                    LearningAimFrameworkCode = payment.LearningAimFrameworkCode,
+                    LearningAimPathwayCode = payment.LearningAimPathwayCode,
+                    LearningAimProgrammeType = payment.LearningAimProgrammeType,
+                    LearningAimReference = payment.LearningAimReference,
+                    LearningAimStandardCode = payment.LearningAimStandardCode,
+                    Amount = payment.Amount,
+                    LearningAimFundingLineType = payment.LearningAimFundingLineType
+                };
+
+                appsAdditionalPaymentDasPaymentsInfo.Payments.Add(paymentInfo);
             }
 
             return appsAdditionalPaymentDasPaymentsInfo;
+        }
+
+        public async Task<AppsMonthlyPaymentDASInfo> GetPaymentsInfoForAppsMonthlyPaymentReportAsync(int ukPrn, CancellationToken cancellationToken)
+        {
+            var appsMonthlyPaymentDasInfo = new AppsMonthlyPaymentDASInfo
+            {
+                UkPrn = ukPrn,
+                Payments = new List<AppsMonthlyPaymentDASPaymentInfo>()
+            };
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<Payment> paymentsList;
+            DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
+            using (var context = new DASPaymentsContext(options))
+            {
+                paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn && x.FundingSource == FundingSource).ToListAsync(cancellationToken);
+            }
+
+            foreach (var payment in paymentsList)
+            {
+                var paymentInfo = new AppsMonthlyPaymentDASPaymentInfo
+                {
+                    LearnerReferenceNumber = payment.LearnerReferenceNumber,
+                    LearnerUln = payment.LearnerUln,
+                    LearningAimReference = payment.LearningAimReference,
+                    LearningAimProgrammeType = payment.LearningAimProgrammeType,
+                    LearningAimStandardCode = payment.LearningAimStandardCode,
+                    LearningAimFrameworkCode = payment.LearningAimFrameworkCode,
+                    LearningAimPathwayCode = payment.LearningAimPathwayCode,
+                    Amount = payment.Amount,
+                    LearningAimFundingLineType = payment.LearningAimFundingLineType,
+                    PriceEpisodeIdentifier = payment.PriceEpisodeIdentifier,
+                    FundingSource = payment.FundingSource,
+                    TransactionType = payment.TransactionType,
+                    AcademicYear = payment.AcademicYear,
+                    CollectionPeriod = payment.CollectionPeriod,
+                    ContractType = payment.ContractType,
+                    DeliveryPeriod = payment.DeliveryPeriod
+                };
+
+                appsMonthlyPaymentDasInfo.Payments.Add(paymentInfo);
+            }
+
+            return appsMonthlyPaymentDasInfo;
         }
     }
 }
