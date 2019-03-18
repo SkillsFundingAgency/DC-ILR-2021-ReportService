@@ -10,6 +10,7 @@
     <Parameter Name="LoggerConnectionstring" Value="__LoggerConnectionstring__" />
     <Parameter Name="AzureBlobConnectionString" Value="__AzureBlobConnectionString__" />
     <Parameter Name="AzureBlobContainerName" Value="__AzureBlobContainerName__" />
+    <Parameter Name="AsposeLicence" Value="__AsposeCellsLicence__" />
     <Parameter Name="RedisConnectionString" Value="__RedisCacheConnectionString__" />
     <Parameter Name="DataServicePlacementConstraints" Value="__DataServicePlacementConstraints__" />
     <Parameter Name="JobStatusQueueName" Value="__JobStatusQueueName__" />

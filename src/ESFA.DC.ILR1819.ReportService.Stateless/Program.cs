@@ -1,8 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Threading;
+using Autofac;
 using Autofac.Integration.ServiceFabric;
+using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers;
+using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless
 {
@@ -15,7 +20,20 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             try
             {
-                var builder = DIComposition.BuildContainer(new ConfigurationHelper());
+                IConfigurationHelper configHelper = new ConfigurationHelper();
+
+                // License Aspose.Cells
+                SoftwareLicenceSection softwareLicenceSection = configHelper.GetSectionValues<SoftwareLicenceSection>(nameof(SoftwareLicenceSection));
+                if (!string.IsNullOrEmpty(softwareLicenceSection.AsposeLicence))
+                {
+                    using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(softwareLicenceSection.AsposeLicence)))
+                    {
+                        new Aspose.Cells.License().SetLicense(ms);
+                    }
+                }
+
+                // Setup Autofac
+                ContainerBuilder builder = DIComposition.BuildContainer(configHelper);
 
                 // Register the Autofac magic for Service Fabric support.
                 builder.RegisterServiceFabricSupport();

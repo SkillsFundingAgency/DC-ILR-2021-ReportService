@@ -14,7 +14,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspose.Cells" Version="18.10.0" />
+    <PackageReference Include="Aspose.Cells" Version="19.2.0" />
     <PackageReference Include="ESFA.DC.Data.DAS.Model" Version="0.1.0" />
     <PackageReference Include="ESFA.DC.Data.LARS.Model" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />

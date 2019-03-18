@@ -42,6 +42,9 @@
     <IsServiceFabricServiceProject>true</IsServiceFabricServiceProject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Cells, Version=19.2.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Cells.19.2.0\lib\net40\Aspose.Cells.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=4.8.1.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.8.1\lib\net45\Autofac.dll</HintPath>
     </Reference>
@@ -399,6 +402,7 @@
     <Compile Include="Configuration\ServiceBusOptions.cs" />
     <Compile Include="Configuration\ServiceBusQueueConfig.cs" />
     <Compile Include="Configuration\ServiceBusTopicConfig.cs" />
+    <Compile Include="Configuration\SoftwareLicenceSection.cs" />
     <Compile Include="Configuration\TopicAndTaskSectionOptions.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContext.cs" />
