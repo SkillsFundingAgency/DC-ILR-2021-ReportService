@@ -12,6 +12,7 @@
     <Parameter Name="MaxMessageSize" DefaultValue="1073741824" />
     <Parameter Name="AzureBlobConnectionString" DefaultValue="UseDevelopmentStorage=true" />
     <Parameter Name="AzureBlobContainerName" DefaultValue="ilr-files" />
+    <Parameter Name="AsposeLicence" DefaultValue="" />
     <Parameter Name="RedisConnectionString" DefaultValue="" />
     <Parameter Name="DataServicePlacementConstraints" DefaultValue="" />
     <Parameter Name="ServiceReleaseVersion" DefaultValue="" />
@@ -91,6 +92,9 @@
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
             <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
+          </Section>
+          <Section Name="SoftwareLicenceSection">
+            <Parameter Name="AsposeLicence" Value="[AsposeLicence]" />
           </Section>
           <Section Name="RedisSection">
             <Parameter Name="RedisConnectionString" Value="[RedisConnectionString]" />
