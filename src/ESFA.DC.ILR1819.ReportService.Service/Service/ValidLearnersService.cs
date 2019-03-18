@@ -13,10 +13,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     {
         public ValidLearnersService(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
+            IKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             DataStoreConfiguration dataStoreConfiguration)
-        : base(JobContextMessageKey.ValidLearnRefNumbers, logger, redis, jsonSerializationService, dataStoreConfiguration)
+        : base(JobContextMessageKey.ValidLearnRefNumbers, logger, storage, jsonSerializationService, dataStoreConfiguration)
         {
         }
     }

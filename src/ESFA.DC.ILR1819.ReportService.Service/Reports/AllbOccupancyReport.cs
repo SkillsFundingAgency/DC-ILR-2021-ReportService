@@ -48,7 +48,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public AllbOccupancyReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
+            IKeyValuePersistenceService blob,
             IIlrProviderService ilrProviderService,
             ILarsProviderService larsProviderService,
             IAllbProviderService allbProviderService,

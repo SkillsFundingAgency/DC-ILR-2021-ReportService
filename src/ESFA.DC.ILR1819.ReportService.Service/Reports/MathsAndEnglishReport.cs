@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public MathsAndEnglishReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             IFM25ProviderService fm25ProviderService,

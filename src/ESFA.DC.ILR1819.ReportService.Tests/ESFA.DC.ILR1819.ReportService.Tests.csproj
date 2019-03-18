@@ -347,6 +347,7 @@
     <Compile Include="Reports\PeriodEnd\AppsCoInvestmentContributions\TestAppsCoInvestmentContributionsReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsDataMatchMonthEnd\TestAppsDataMatchMonthEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsMonthlyPayment\TestAppsMonthlyPaymentReport.cs" />
+    <Compile Include="Reports\PeriodEnd\FundingSummaryPeriodEnd\TestFundingSummaryPeriodEndReport.cs" />
     <Compile Include="Reports\TestTrailblazerAppsOccupancyReport.cs" />
     <Compile Include="Reports\TestDataMatchReport.cs" />
     <Compile Include="Reports\TestAdultFundingClaimReport.cs" />

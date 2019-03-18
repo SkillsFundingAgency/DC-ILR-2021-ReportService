@@ -34,7 +34,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public SummaryOfFm35FundingReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService storage,
             IFM35ProviderService fm35ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,

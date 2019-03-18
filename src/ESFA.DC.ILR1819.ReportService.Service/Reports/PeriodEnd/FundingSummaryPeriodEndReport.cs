@@ -8,6 +8,7 @@ using Autofac.Features.AttributeFilters;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface;
+using ESFA.DC.ILR1819.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -19,40 +20,46 @@ using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
 {
-    public sealed class AppsCoInvestmentContributionsReport : AbstractReportBuilder, IReport
+    public class FundingSummaryPeriodEndReport : AbstractReportBuilder, IReport
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
-        private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
+        private readonly IFM36ProviderService _fm36ProviderService;
+        private readonly IStringUtilitiesService _stringUtilitiesService;
 
-        public AppsCoInvestmentContributionsReport(
+        private readonly IFundingSummaryPeriodEndModelBuilder _modelBuilder;
+
+        public FundingSummaryPeriodEndReport(
             ILogger logger,
             IKeyValuePersistenceService storage,
+            IIlrProviderService ilrProviderService,
+            IFM36ProviderService fm36ProviderService,
+            IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            IIlrProviderService ilrProviderService,
-            IDASPaymentsProviderService dasPaymentsProviderService)
+            IFundingSummaryPeriodEndModelBuilder modelBuilder)
         : base(dateTimeProvider, valueProvider)
         {
             _logger = logger;
             _storage = storage;
             _ilrProviderService = ilrProviderService;
-            _dasPaymentsProviderService = dasPaymentsProviderService;
-            ReportFileName = "Apps Co-Investment Contributions Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsCoInvestmentContributionsReport;
+            _fm36ProviderService = fm36ProviderService;
+            _stringUtilitiesService = stringUtilitiesService;
+            _modelBuilder = modelBuilder;
+
+            ReportFileName = "Funding Summary Report";
+            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryPeriodEndReport;
         }
 
         public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            long jobId = reportServiceContext.JobId;
-            string ukPrn = reportServiceContext.Ukprn.ToString();
-            string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn.ToString();
+            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
-            var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
-            var appsCoInvestmentPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
@@ -62,16 +69,17 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            List<AppsCoInvestmentContributionsModel> appsCoInvestmentContributionsModels = new List<AppsCoInvestmentContributionsModel>();
+            var fundingSummaryPeriodEndModels = new List<FundingSummaryPeriodEndModel>();
 
-            using (var ms = new MemoryStream())
+            using (MemoryStream ms = new MemoryStream())
             {
                 UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
                 using (TextWriter textWriter = new StreamWriter(ms, utF8Encoding))
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<AppsCoInvestmentContributionsMapper, AppsCoInvestmentContributionsModel>(csvWriter, appsCoInvestmentContributionsModels);
+                        WriteCsvRecords<FundingSummaryPeriodEndMapper, FundingSummaryPeriodEndModel>(csvWriter, fundingSummaryPeriodEndModels);
+
                         csvWriter.Flush();
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());

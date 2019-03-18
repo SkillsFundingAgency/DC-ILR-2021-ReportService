@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
 
         public AppsMonthlyPaymentReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
             IFM36ProviderService fm36ProviderService,
             IStringUtilitiesService stringUtilitiesService,
@@ -68,10 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
 
         private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return null;
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             var appsMonthlyPaymentModels = new List<AppsMonthlyPaymentModel>();
 

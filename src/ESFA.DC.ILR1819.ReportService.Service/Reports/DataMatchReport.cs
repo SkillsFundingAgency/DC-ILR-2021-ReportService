@@ -50,7 +50,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             IFM36ProviderService fm36ProviderService,
             IDasCommitmentsService dasCommitmentsService,
             IPeriodProviderService periodProviderService,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
+            IKeyValuePersistenceService blob,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,

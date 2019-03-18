@@ -103,10 +103,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     azureRedisOptions.RedisConnectionString))
                 .As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
 
-            containerBuilder.RegisterType<AzureStorageKeyValuePersistenceService>()
-                .Keyed<IKeyValuePersistenceService>(PersistenceStorageKeys.Redis)
-                .InstancePerLifetimeScope();
-
             // register azure blob storage service
             var azureBlobStorageOptions = configHelper.GetSectionValues<AzureStorageOptions>("AzureStorageSection");
             containerBuilder.RegisterInstance(azureBlobStorageOptions).As<IAzureStorageOptions>();
@@ -117,7 +113,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .As<IAzureStorageKeyValuePersistenceServiceConfig>().SingleInstance();
 
             containerBuilder.RegisterType<AzureStorageKeyValuePersistenceService>()
-                .Keyed<IKeyValuePersistenceService>(PersistenceStorageKeys.Blob)
+                .As<IKeyValuePersistenceService>()
                 .As<IStreamableKeyValuePersistenceService>()
                 .InstancePerLifetimeScope();
 
@@ -323,6 +319,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<FundingSummaryPeriodEndReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
                 .As<IList<IReport>>();
         }
@@ -425,6 +425,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<AppsMonthlyPaymentModelBuilder>().As<IAppsMonthlyPaymentModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsDataMatchMonthEndModelBuilder>().As<IAppsDataMatchMonthEndModelBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<FundingSummaryPeriodEndModelBuilder>().As<IFundingSummaryPeriodEndModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
                 .InstancePerLifetimeScope();

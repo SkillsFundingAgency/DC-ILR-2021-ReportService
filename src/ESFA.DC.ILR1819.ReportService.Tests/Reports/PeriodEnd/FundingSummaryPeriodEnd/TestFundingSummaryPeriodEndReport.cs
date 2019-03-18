@@ -28,16 +28,16 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPayments
+namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.FundingSummaryPeriodEnd
 {
-    public sealed class TestAppsMonthlyPaymentReport
+    public sealed class TestFundingSummaryPeriodEndReport
     {
         [Fact]
-        public async Task TestAppsMonthlyPaymentReportGeneration()
+        public async Task TestFundingSummaryPeriodEndReportGeneration()
         {
             string csv = string.Empty;
             DateTime dateTime = DateTime.UtcNow;
-            string filename = $"10036143_1_Apps Monthly Payment Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10036143_1_Funding Summary Report {dateTime:yyyyMMdd-HHmmss}";
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
@@ -79,15 +79,15 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPa
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
-            var appsMonthlyPaymentModelBuilder = new AppsMonthlyPaymentModelBuilder();
+            var fundingSummaryPeriodEndModelBuilder = new FundingSummaryPeriodEndModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsMonthlyPaymentReport(logger.Object, storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, appsMonthlyPaymentModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.FundingSummaryPeriodEndReport(logger.Object, storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, fundingSummaryPeriodEndModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
             File.WriteAllText($"{filename}.csv", csv);
-            TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsMonthlyPaymentMapper(), 1));
+            TestCsvHelper.CheckCsv(csv, new CsvEntry(new FundingSummaryPeriodEndMapper(), 1));
         }
     }
 }

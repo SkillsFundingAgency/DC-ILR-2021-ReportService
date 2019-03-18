@@ -22,8 +22,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
     public sealed class FM81TrailBlazerProviderService : IFM81TrailBlazerProviderService
     {
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _redis;
-        private readonly IKeyValuePersistenceService _blob;
+        private readonly IKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
@@ -34,16 +33,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
         public FM81TrailBlazerProviderService(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Redis)] IKeyValuePersistenceService redis,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService blob,
+            IKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819ValidContext> ilrValidContextFactory,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
         {
             _logger = logger;
-            _redis = redis;
-            _blob = blob;
+            _storage = storage;
             _jsonSerializationService = jsonSerializationService;
             _intUtilitiesService = intUtilitiesService;
             _ilrValidContextFactory = ilrValidContextFactory;
@@ -71,7 +68,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string fm81Filename = reportServiceContext.FundingFM81OutputKey;
-                    string fm81 = await _redis.GetAsync(fm81Filename, cancellationToken);
+                    string fm81 = await _storage.GetAsync(fm81Filename, cancellationToken);
 
                     if (string.IsNullOrEmpty(fm81))
                     {

@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 
         public HNSDetailReport(
             ILogger logger,
-            [KeyFilter(PersistenceStorageKeys.Blob)] IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IValidLearnersService validLearnersService,

@@ -73,7 +73,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPa
             }
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
+            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
