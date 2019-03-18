@@ -41,15 +41,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             cancellationToken.ThrowIfCancellationRequested();
             List<Payment> paymentsList;
 
-            DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer("Server=.;Database=DASPayments;integrated security=True;").Options;
-            using (var context = new DASPaymentsContext(options))
-            {
-                paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
-                                                                 x.FundingSource == FundingSource &&
-                                                                 TransactionTypes.Contains(x.TransactionType)).ToListAsync(cancellationToken);
-            }
-
-            using (var context = _dasPaymentsContextFactory())
+            using (IDASPaymentsContext context = _dasPaymentsContextFactory())
             {
                 paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
                                                                 x.FundingSource == FundingSource &&
