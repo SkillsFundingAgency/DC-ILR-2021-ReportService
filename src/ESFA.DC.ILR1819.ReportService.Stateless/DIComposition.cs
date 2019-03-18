@@ -5,6 +5,8 @@ using Autofac.Features.AttributeFilters;
 using ESFA.DC.Auditing.Interface;
 using ESFA.DC.CollectionsManagement.Services;
 using ESFA.DC.CollectionsManagement.Services.Interface;
+using ESFA.DC.DASPayments.EF;
+using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
@@ -239,6 +241,19 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                     return optionsBuilder.Options;
                 })
                 .As<DbContextOptions<ILR1819_DataStoreEntities>>()
+                .SingleInstance();
+
+            containerBuilder.RegisterType<DASPaymentsContext>().As<IDASPaymentsContext>();
+            containerBuilder.Register(context =>
+                {
+                    var optionsBuilder = new DbContextOptionsBuilder<DASPaymentsContext>();
+                    optionsBuilder.UseSqlServer(
+                        dasPaymentsConfiguration.DASPaymentsConnectionString,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions<DASPaymentsContext>>()
                 .SingleInstance();
 
             containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();

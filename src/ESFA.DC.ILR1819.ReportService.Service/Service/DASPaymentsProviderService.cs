@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DASPayments.EF;
+using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.ILR1819.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
@@ -20,12 +21,13 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         private int[] TransactionTypes = { 1, 2, 3 };
         private int[] AppsAdditionalPaymentsTransactionTypes = { 4, 5, 6, 7, 16 };
         private readonly ILogger _logger;
+        private readonly Func<IDASPaymentsContext> _dasPaymentsContextFactory;
         private readonly DASPaymentsConfiguration _dasPaymentsConfiguration;
 
-        public DASPaymentsProviderService(ILogger logger, DASPaymentsConfiguration dasPaymentsConfiguration)
+        public DASPaymentsProviderService(ILogger logger, Func<IDASPaymentsContext> dasPaymentsContextFactory)
         {
             _logger = logger;
-            _dasPaymentsConfiguration = dasPaymentsConfiguration;
+            _dasPaymentsContextFactory = dasPaymentsContextFactory;
         }
 
         public async Task<AppsCoInvestmentPaymentsInfo> GetPaymentsInfoForAppsCoInvestmentReportAsync(int ukPrn, CancellationToken cancellationToken)
@@ -37,10 +39,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             };
 
             cancellationToken.ThrowIfCancellationRequested();
-
             List<Payment> paymentsList;
-            DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
-            using (var context = new DASPaymentsContext(options))
+
+            using (IDASPaymentsContext context = _dasPaymentsContextFactory())
             {
                 paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
                                                                 x.FundingSource == FundingSource &&
@@ -83,8 +84,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             cancellationToken.ThrowIfCancellationRequested();
 
             List<Payment> paymentsList;
-            DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
-            using (var context = new DASPaymentsContext(options))
+            using (var context = _dasPaymentsContextFactory())
             {
                 paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn &&
                                                                 x.FundingSource == FundingSource &&
@@ -129,8 +129,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             cancellationToken.ThrowIfCancellationRequested();
 
             List<Payment> paymentsList;
-            DbContextOptions<DASPaymentsContext> options = new DbContextOptionsBuilder<DASPaymentsContext>().UseSqlServer(_dasPaymentsConfiguration.DASPaymentsConnectionString).Options;
-            using (var context = new DASPaymentsContext(options))
+            using (var context = _dasPaymentsContextFactory())
             {
                 paymentsList = await context.Payments.Where(x => x.Ukprn == ukPrn && x.FundingSource == FundingSource).ToListAsync(cancellationToken);
             }
