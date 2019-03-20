@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 SoftwareLicenceSection softwareLicenceSection = configHelper.GetSectionValues<SoftwareLicenceSection>(nameof(SoftwareLicenceSection));
                 if (!string.IsNullOrEmpty(softwareLicenceSection.AsposeLicence))
                 {
-                    using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(softwareLicenceSection.AsposeLicence)))
+                    using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(softwareLicenceSection.AsposeLicence.Replace("&lt;", "<").Replace("&gt;", ">"))))
                     {
                         new Aspose.Cells.License().SetLicense(ms);
                     }
