@@ -67,6 +67,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                 _loadedDataAlready = true;
                 int ukPrn = reportServiceContext.Ukprn;
 
+                _logger.LogWarning($"ReportServiceCollectionName {reportServiceContext.CollectionName};");
+
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string albFilename = reportServiceContext.FundingALBOutputKey;
@@ -82,6 +84,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     ALBGlobal albGlobal = new ALBGlobal();
                     using (var ilrContext = _ilrRulebaseContextFactory())
                     {
+                        _logger.LogWarning($"AllbProviderService - Accessing Db;");
                         var albGlobalDb = await ilrContext.ALB_globals.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                         using (var ilrValidContext = _ilrValidContextFactory())
                         {
