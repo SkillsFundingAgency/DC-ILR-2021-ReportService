@@ -194,6 +194,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         private static List<FM35LearningDeliveryValues> GetFM35LearningDeliveryPeriodisedValues(FM35Global fm35Global, int ukPrn)
         {
             var result = new List<FM35LearningDeliveryValues>();
+            if (fm35Global?.Learners == null)
+            {
+                return result;
+            }
+
             foreach (var learner in fm35Global.Learners)
             {
                 foreach (var ld in learner.LearningDeliveries)
