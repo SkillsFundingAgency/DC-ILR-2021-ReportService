@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders.PeriodEnd;
+using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels.PeriodEnd;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders.PeriodEnd
@@ -55,6 +57,44 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders.PeriodEnd
                 TotalEarnings = 0, // todo Requires DAS data
                 TotalPaymentsYearToDate = 0 // todo Requires DAS data
             };
+        }
+
+        public List<AppsAdditionalPaymentsModel> BuildModel(
+            AppsAdditionalPaymentILRInfo appsAdditionalPaymentIlrInfo,
+            AppsAdditionalPaymentRulebaseInfo appsAdditionalPaymentRulebaseInfo,
+            AppsAdditionalPaymentDasPaymentsInfo appsAdditionalPaymentDasPaymentsInfo)
+        {
+            appsAdditionalPaymentDasPaymentsInfo.Payments
+                .GroupBy(p => new
+                {
+                    p.UkPrn,
+                    p.LearnerReferenceNumber,
+                    p.LearningAimReference,
+                    p.LearningStartDate,
+                    p.LearningAimProgrammeType,
+                    p.LearningAimStandardCode,
+                    p.LearningAimFrameworkCode,
+                    p.LearningAimPathwayCode
+                });
+
+            appsAdditionalPaymentDasPaymentsInfo.Payments
+                .GroupBy(p => new
+                {
+                    p.UkPrn,
+                    p.LearnerReferenceNumber,
+                    p.LearnerUln,
+                    p.LearningStartDate,
+                    p.LearningAimFundingLineType,
+                    p.typ
+                    p.LearningAimReference,
+                    
+                    p.LearningAimProgrammeType,
+                    p.LearningAimStandardCode,
+                    p.LearningAimFrameworkCode,
+                    p.LearningAimPathwayCode
+                });
+
+            return new List<AppsAdditionalPaymentsModel>();
         }
     }
 }

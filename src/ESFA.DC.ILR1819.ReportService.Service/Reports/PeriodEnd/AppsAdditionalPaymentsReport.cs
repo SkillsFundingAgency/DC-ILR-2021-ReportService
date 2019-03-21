@@ -27,6 +27,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
+        private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
 
         private readonly IAppsAdditionalPaymentsModelBuilder _modelBuilder;
 
@@ -39,6 +40,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            IDASPaymentsProviderService dasPaymentsProviderService,
             IAppsAdditionalPaymentsModelBuilder modelBuilder)
         : base(dateTimeProvider, valueProvider)
         {
@@ -47,6 +49,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
+            _dasPaymentsProviderService = dasPaymentsProviderService;
             _modelBuilder = modelBuilder;
 
             ReportFileName = "Apps Additional Payments Report";
@@ -56,10 +59,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
         public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var ukPrn = reportServiceContext.Ukprn;
+            var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var appsAdditionalPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsAdditionalPaymentsReportAsync(ukPrn, cancellationToken);
+            var appsAdditionalPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsAdditionalPaymentReportAsync(ukPrn, cancellationToken);
+            var appsAdditionalPaymentDasPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(ukPrn, cancellationToken);
 
+            var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsAdditionalPaymentIlrInfo, appsAdditionalPaymentRulebaseInfo, appsAdditionalPaymentDasPaymentsInfo);
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);

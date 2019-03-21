@@ -165,36 +165,41 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            List<AEC_ApprenticeshipPriceEpisode_PeriodisedValue> aecApprenticeshipPriceEpisodePeriodisedValues;
+            List<AEC_ApprenticeshipPriceEpisode> aecApprenticeshipPriceEpisodes;
             List<AEC_LearningDelivery> aecLearningDeliveries;
 
             using (var ilrContext = _ilrRulebaseContextFactory())
             {
-                aecApprenticeshipPriceEpisodePeriodisedValues = await ilrContext.AEC_ApprenticeshipPriceEpisode_PeriodisedValues.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
+                aecApprenticeshipPriceEpisodes = await ilrContext.AEC_ApprenticeshipPriceEpisodes.Include(x => x.AEC_ApprenticeshipPriceEpisode_PeriodisedValues).Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
                 aecLearningDeliveries = await ilrContext.AEC_LearningDeliveries.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
             }
 
-            foreach (var aecApprenticeshipPriceEpisodePeriodisedValue in aecApprenticeshipPriceEpisodePeriodisedValues)
+            foreach (var aecApprenticeshipPriceEpisode in aecApprenticeshipPriceEpisodes)
             {
-                var periodisedValue = new AECApprenticeshipPriceEpisodePeriodisedValuesInfo()
+                foreach (var aecApprenticeshipPriceEpisodePeriodisedValue in aecApprenticeshipPriceEpisode
+                    .AEC_ApprenticeshipPriceEpisode_PeriodisedValues)
                 {
-                    UKPRN = ukPrn,
-                    LearnRefNumber = aecApprenticeshipPriceEpisodePeriodisedValue.LearnRefNumber,
-                    AttributeName = aecApprenticeshipPriceEpisodePeriodisedValue.AttributeName,
-                    Period_1 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_1,
-                    Period_2 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_2,
-                    Period_3 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_3,
-                    Period_4 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_4,
-                    Period_5 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_5,
-                    Period_6 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_6,
-                    Period_7 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_7,
-                    Period_8 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_8,
-                    Period_9 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_9,
-                    Period_10 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_10,
-                    Period_11 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_11,
-                    Period_12 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_12
-                };
-                appsAdditionalPaymentRulebaseInfo.AECApprenticeshipPriceEpisodePeriodisedValues.Add(periodisedValue);
+                    var periodisedValue = new AECApprenticeshipPriceEpisodePeriodisedValuesInfo()
+                    {
+                        UKPRN = ukPrn,
+                        LearnRefNumber = aecApprenticeshipPriceEpisodePeriodisedValue.LearnRefNumber,
+                        AimSeqNumber = (int)aecApprenticeshipPriceEpisode.PriceEpisodeAimSeqNumber,
+                        AttributeName = aecApprenticeshipPriceEpisodePeriodisedValue.AttributeName,
+                        Period_1 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_1,
+                        Period_2 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_2,
+                        Period_3 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_3,
+                        Period_4 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_4,
+                        Period_5 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_5,
+                        Period_6 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_6,
+                        Period_7 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_7,
+                        Period_8 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_8,
+                        Period_9 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_9,
+                        Period_10 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_10,
+                        Period_11 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_11,
+                        Period_12 = aecApprenticeshipPriceEpisodePeriodisedValue.Period_12
+                    };
+                    appsAdditionalPaymentRulebaseInfo.AECApprenticeshipPriceEpisodePeriodisedValues.Add(periodisedValue);
+                }
             }
 
             foreach (var aecLearningDelivery in aecLearningDeliveries)
