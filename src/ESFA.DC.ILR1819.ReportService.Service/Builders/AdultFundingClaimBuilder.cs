@@ -235,6 +235,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
         private static List<ALBLearningDeliveryValues> GetAlbLearningDeliveryPeriodisedValues(ALBGlobal albGlobal, int ukPrn)
         {
             var result = new List<ALBLearningDeliveryValues>();
+            if (albGlobal?.Learners == null)
+            {
+                return result;
+            }
+
             foreach (var learner in albGlobal.Learners)
             {
                 foreach (var ld in learner.LearningDeliveries)
