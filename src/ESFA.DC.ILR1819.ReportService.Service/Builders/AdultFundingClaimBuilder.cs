@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
             try
             {
-                var ilrfileName = reportServiceContext.Filename;
+                var ilrfileName = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
 
                 // FM35
                 decimal otherLearningProgramFunding6MonthsFm35 = 0;
