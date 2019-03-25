@@ -211,6 +211,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             PopulateAllocationValues(cells, fundingClaim1619FundingFactorModel);
             PopulateMainData(cells, fundLineAndRateBandData);
             PopulateCofRemoval(cells, cofRemovalTask.Result);
+            workbook.CalculateFormula();
             using (MemoryStream ms = new MemoryStream())
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
@@ -252,7 +253,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports
             // populating cof removal
             if (cofRemoval.HasValue)
             {
-                cells[CofRemovalCellName].PutValue(cofRemoval);
+                cells[CofRemovalCellName].PutValue(-cofRemoval);
             }
         }
 
