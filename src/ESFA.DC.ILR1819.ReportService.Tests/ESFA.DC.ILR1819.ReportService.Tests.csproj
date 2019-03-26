@@ -345,6 +345,7 @@
     <Compile Include="Models\XlsxEntry.cs" />
     <Compile Include="Reports\ALB\TestAlbOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\Data Match\TestDasCommitmentBuilder.cs" />
+    <Compile Include="Reports\FundigClaim1619\TestFm25GlobalBuilder.cs" />
     <Compile Include="Reports\Main Occupancy\TestMainOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\PeriodEnd\AppsAdditionalPayments\TestAppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsCoInvestmentContributions\TestAppsCoInvestmentContributionsReport.cs" />
@@ -371,7 +372,7 @@
     <Compile Include="Reports\TestValidationReport.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Service\ValueProviderServiceTest.cs" />
-    <Compile Include="Reports\TestFundingClaim1619Report.cs" />
+    <Compile Include="Reports\FundigClaim1619\TestFundingClaim1619Report.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="ILR-10033670-1819-20181212-103550-36.XML">

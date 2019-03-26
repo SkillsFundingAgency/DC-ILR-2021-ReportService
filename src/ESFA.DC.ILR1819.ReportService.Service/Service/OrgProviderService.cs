@@ -110,17 +110,11 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
             try
             {
-                if (_loadedDataAlready)
-                {
-                    return _cofRemoval;
-                }
-
                 if (cancellationToken.IsCancellationRequested)
                 {
                     return null;
                 }
 
-                _loadedDataAlready = true;
                 string ukPrnStr = reportServiceContext.Ukprn.ToString();
                 long ukPrn = Convert.ToInt64(ukPrnStr);
                 DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_orgConfiguration.OrgConnectionString).Options;

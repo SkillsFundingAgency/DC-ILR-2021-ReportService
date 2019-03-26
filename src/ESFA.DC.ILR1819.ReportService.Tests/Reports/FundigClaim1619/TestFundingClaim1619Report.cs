@@ -17,28 +17,32 @@ using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
+using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
+using ESFA.DC.ILR1819.ReportService.Tests.Models;
+using ESFA.DC.ILR1819.ReportService.Tests.Reports.FundigClaim1619;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Serialization.Xml;
+//using ExcelDataReader;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 using VersionInfo = ESFA.DC.ILR1819.ReportService.Stateless.Configuration.VersionInfo;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
+namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.FundingClaim1619
 {
     public sealed class TestFundingClaim1619Report
     {
         [Fact]
         public async Task TestFundingClaim1619ReportGeneration()
         {
-            string csv = string.Empty;
             byte[] xlsx = null;
-            DateTime dateTime = DateTime.UtcNow;
-            string filename = $"10033670_1_16-19 Funding Claim Report {dateTime:yyyyMMdd-HHmmss}";
+            string filename = $"10033670_1_16-19 Funding Claim Report {DateTime.UtcNow:yyyyMMdd-HHmmss}";
+            string csv = string.Empty;
+            var dateTime = System.DateTime.UtcNow;
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
@@ -71,7 +75,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             }
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };
 
             storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
@@ -97,6 +100,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                     "0fm2503",
                     "0fm2504"
                 }));
+
             redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm25.json"));
             redis.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
 
@@ -109,19 +113,8 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
 
-            FundingClaim1619Report fundingClaim1619Report = new FundingClaim1619Report(
-                logger.Object,
-                storage.Object,
-                dateTimeProviderMock.Object,
-                valueProvider,
-                ilrProviderService,
-                orgProviderService.Object,
-                fm25ProviderService,
-                postcodeProverServiceMock.Object,
-                largeEmployerProviderService.Object,
-                larsProviderService.Object,
-                versionInfo,
-                topicsAndTasks);
+            Mock<IFM25ProviderService> fm25ProviderServiceMock = new Mock<IFM25ProviderService>();
+            var fm25DataModelMock = TestFm25GlobalBuilder.BuildTestModel();
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
@@ -132,6 +125,26 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             reportServiceContextMock.SetupGet(x => x.FundingFM25OutputKey).Returns("FundingFm25Output");
             reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
+            fm25ProviderServiceMock.Setup(x => x.GetFM25Data(reportServiceContextMock.Object, CancellationToken.None)).Returns(Task.FromResult(fm25DataModelMock));
+            decimal? cofTestValue = 100.50m;
+            orgProviderService
+                .Setup(x => x.GetCofRemoval(It.IsAny<IReportServiceContext>(), It.IsAny<CancellationToken>()))
+                .Returns(Task.FromResult(cofTestValue));
+
+            FundingClaim1619Report fundingClaim1619Report = new FundingClaim1619Report(
+                logger.Object,
+                storage.Object,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                ilrProviderService,
+                orgProviderService.Object,
+                fm25ProviderServiceMock.Object,
+                postcodeProverServiceMock.Object,
+                largeEmployerProviderService.Object,
+                larsProviderService.Object,
+                versionInfo,
+                topicsAndTasks);
+
             MemoryStream memoryStream = new MemoryStream();
 
             using (memoryStream)
@@ -139,7 +152,6 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
                 using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Update, true))
                 {
                     await fundingClaim1619Report.GenerateReport(reportServiceContextMock.Object, archive, false, CancellationToken.None);
-                    //await adultFundingClaimReport.GenerateReport(jobContextMessage, archive, false, CancellationToken.None);
                 }
 
                 using (var fileStream = new FileStream($"{filename}.zip", FileMode.Create))
@@ -152,6 +164,15 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
             xlsx.Should().NotBeNullOrEmpty();
 
             File.WriteAllBytes($"{filename}.xlsx", xlsx);
+
+            //using (var stream = File.Open($"{filename}.xlsx", FileMode.Open, FileAccess.Read))
+            //{
+            //    using (var reader = ExcelReaderFactory.CreateReader(stream))
+            //    {
+            //        var result = reader.AsDataSet();
+            //        var a = 1;
+            //    }
+            //}
         }
     }
 }
