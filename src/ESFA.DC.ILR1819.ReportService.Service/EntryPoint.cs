@@ -35,10 +35,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service
             _logger.LogInfo("Reporting callback invoked");
 
             var reportZipFileKey = $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_Reports.zip";
-            if (cancellationToken.IsCancellationRequested)
-            {
-                return false;
-            }
+            cancellationToken.ThrowIfCancellationRequested();
 
             MemoryStream memoryStream = new MemoryStream();
             var zipFileExists = await _streamableKeyValuePersistenceService.ContainsAsync(reportZipFileKey, cancellationToken);

@@ -13,6 +13,7 @@ using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using ExecutionContext = ESFA.DC.Logging.ExecutionContext;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
 {
@@ -53,30 +54,24 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                         .As<IAzureStorageKeyValuePersistenceServiceConfig>();
                 }))
                 {
-                    var executionContext = (Logging.ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
+                    var executionContext = (ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
                     executionContext.JobId = jobContextMessage.JobId.ToString();
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
-
                     var entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
-                    var result = false;
-                    try
-                    {
-                        result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        logger.LogError(ex.Message, ex);
-                    }
-
-                    logger.LogDebug("Completed Report Service");
+                    var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
+                    logger.LogDebug($"Completed Report Service with result-{result}");
                     return result;
                 }
+            }
+            catch (OutOfMemoryException oom)
+            {
+                Environment.FailFast("Report Service Out Of Memory", oom);
+                throw;
             }
             catch (Exception ex)
             {
                 ServiceEventSource.Current.ServiceMessage(_context, "Exception-{0}", ex.ToString());
-
                 throw;
             }
         }
