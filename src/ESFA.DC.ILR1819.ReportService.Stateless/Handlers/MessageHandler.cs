@@ -13,6 +13,7 @@ using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using ExecutionContext = ESFA.DC.Logging.ExecutionContext;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
 {
@@ -53,27 +54,13 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                         .As<IAzureStorageKeyValuePersistenceServiceConfig>();
                 }))
                 {
-                    var executionContext = (Logging.ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
+                    var executionContext = (ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
                     executionContext.JobId = jobContextMessage.JobId.ToString();
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
-
-                    EntryPoint entryPoint;
-                    try
-                    {
-                        entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
-                        logger.LogDebug("Resolved Entry Point");
-                    }
-                    catch (Exception exception)
-                    {
-                        logger.LogError("Entry Point Resolution Failure", exception);
-                        throw;
-                    }
-
+                    var entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
-                    logger.LogDebug($"Entry Point Callback result-{result}");
-
-                    logger.LogDebug("Completed Report Service");
+                    logger.LogDebug($"Completed Report Service with result-{result}");
                     return result;
                 }
             }
