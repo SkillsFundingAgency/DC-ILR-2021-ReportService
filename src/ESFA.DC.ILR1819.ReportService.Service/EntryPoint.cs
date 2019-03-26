@@ -37,7 +37,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service
             var reportZipFileKey = $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_Reports.zip";
             if (cancellationToken.IsCancellationRequested)
             {
-                return false;
+                _logger.LogDebug("Reporting callback cancelling before persistence");
+                cancellationToken.ThrowIfCancellationRequested();
             }
 
             MemoryStream memoryStream = new MemoryStream();

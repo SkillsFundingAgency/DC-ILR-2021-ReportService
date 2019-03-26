@@ -58,25 +58,33 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
 
-                    var entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
-                    var result = false;
+                    EntryPoint entryPoint;
                     try
                     {
-                        result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
+                        entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
+                        logger.LogDebug("Resolved Entry Point");
                     }
-                    catch (Exception ex)
+                    catch (Exception exception)
                     {
-                        logger.LogError(ex.Message, ex);
+                        logger.LogError("Entry Point Resolution Failure", exception);
+                        throw;
                     }
+
+                    var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
+                    logger.LogDebug($"Entry Point Callback result-{result}");
 
                     logger.LogDebug("Completed Report Service");
                     return result;
                 }
             }
+            catch (OutOfMemoryException oom)
+            {
+                Environment.FailFast("Report Service Out Of Memory", oom);
+                throw;
+            }
             catch (Exception ex)
             {
                 ServiceEventSource.Current.ServiceMessage(_context, "Exception-{0}", ex.ToString());
-
                 throw;
             }
         }
