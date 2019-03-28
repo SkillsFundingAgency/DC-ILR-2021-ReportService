@@ -201,8 +201,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
             foreach (var learner in fm35Global.Learners)
             {
+                if (learner.LearningDeliveries == null)
+                {
+                    continue;
+                }
+
                 foreach (var ld in learner.LearningDeliveries)
                 {
+                    if (ld.LearningDeliveryPeriodisedValues == null)
+                    {
+                        continue;
+                    }
+
                     foreach (var ldpv in ld.LearningDeliveryPeriodisedValues)
                     {
                         result.Add(new FM35LearningDeliveryValues
@@ -223,7 +233,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                             Period11 = ldpv.Period11,
                             Period12 = ldpv.Period12,
                             UKPRN = ukPrn,
-                            FundLine = ld.LearningDeliveryValue.FundLine
+                            FundLine = ld.LearningDeliveryValue?.FundLine
                         });
                     }
                 }
@@ -242,8 +252,18 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 
             foreach (var learner in albGlobal.Learners)
             {
+                if (learner.LearningDeliveries == null)
+                {
+                    continue;
+                }
+
                 foreach (var ld in learner.LearningDeliveries)
                 {
+                    if (ld.LearningDeliveryPeriodisedValues == null)
+                    {
+                        continue;
+                    }
+
                     foreach (var ldpv in ld.LearningDeliveryPeriodisedValues)
                     {
                         result.Add(new ALBLearningDeliveryValues
@@ -264,7 +284,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
                             Period11 = ldpv.Period11,
                             Period12 = ldpv.Period12,
                             UKPRN = ukPrn,
-                            FundLine = ld.LearningDeliveryValue.FundLine
+                            FundLine = ld.LearningDeliveryValue?.FundLine
                         });
                     }
                 }
