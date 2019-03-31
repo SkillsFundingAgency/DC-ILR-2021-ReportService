@@ -83,6 +83,7 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPa
 
             ilrProviderServiceMock.Setup(x => x.GetILRInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentIlrInfo);
             fm36ProviderServiceMock.Setup(x => x.GetFM36DataForAppsAdditionalPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentRulebaseInfo);
+            dasPaymentProviderMock.Setup(x => x.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentDasPaymentsInfo);
             //IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
             //IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
@@ -209,7 +210,9 @@ namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPa
                         ContractType = 2,
                         CollectionPeriod = 1,
                         DeliveryPeriod = 1,
-                        LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                        LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy",
+                        TypeOfAdditionalPayment = "Apprentice",
+                        EmployerName = "Employer1"
                     }
                 }
             };

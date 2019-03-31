@@ -64,37 +64,120 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders.PeriodEnd
             AppsAdditionalPaymentRulebaseInfo appsAdditionalPaymentRulebaseInfo,
             AppsAdditionalPaymentDasPaymentsInfo appsAdditionalPaymentDasPaymentsInfo)
         {
-            appsAdditionalPaymentDasPaymentsInfo.Payments
-                .GroupBy(p => new
-                {
-                    p.UkPrn,
-                    p.LearnerReferenceNumber,
-                    p.LearningAimReference,
-                    p.LearningStartDate,
-                    p.LearningAimProgrammeType,
-                    p.LearningAimStandardCode,
-                    p.LearningAimFrameworkCode,
-                    p.LearningAimPathwayCode
-                });
+            List<AppsAdditionalPaymentsModel> appsAdditionalPaymentsModels = new List<AppsAdditionalPaymentsModel>();
 
-            appsAdditionalPaymentDasPaymentsInfo.Payments
-                .GroupBy(p => new
+            //var paymentGroups = appsAdditionalPaymentDasPaymentsInfo.Payments
+            //    .GroupBy(p => new
+            //    {
+            //        p.UkPrn,
+            //        p.LearnerReferenceNumber,
+            //        p.LearningAimReference,
+            //        p.LearningStartDate,
+            //        p.LearningAimProgrammeType,
+            //        p.LearningAimStandardCode,
+            //        p.LearningAimFrameworkCode,
+            //        p.LearningAimPathwayCode
+            //    });
+
+            foreach (var paymentInfo in appsAdditionalPaymentDasPaymentsInfo.Payments)
+            {
+                foreach (var learner in appsAdditionalPaymentIlrInfo.Learners)
                 {
-                    p.UkPrn,
-                    p.LearnerReferenceNumber,
-                    p.LearnerUln,
-                    p.LearningStartDate,
-                    p.LearningAimFundingLineType,
-                    p.typ
-                    p.LearningAimReference,
-                    
-                    p.LearningAimProgrammeType,
-                    p.LearningAimStandardCode,
-                    p.LearningAimFrameworkCode,
-                    p.LearningAimPathwayCode
-                });
+                    var appsAdditionalPaymentLearningDeliveryInfo = learner.LearningDeliveries?.SingleOrDefault(x => x.UKPRN == paymentInfo.UkPrn &&
+                                                                                                                     x.LearnRefNumber ==
+                                                                                                                     paymentInfo.LearnerReferenceNumber &&
+                                                                                                                     x.LearnAimRef == paymentInfo.LearningAimReference &&
+                                                                                                                     x.LearnStartDate == paymentInfo.LearningStartDate &&
+                                                                                                                     x.ProgType == paymentInfo.LearningAimProgrammeType &&
+                                                                                                                     x.StdCode == paymentInfo.LearningAimStandardCode &&
+                                                                                                                     x.FworkCode == paymentInfo.LearningAimFrameworkCode &&
+                                                                                                                     x.PwayCode == paymentInfo.LearningAimPathwayCode);
+                    var aecLearningDeliveryInfo = appsAdditionalPaymentRulebaseInfo.AECLearningDeliveries.SingleOrDefault(x =>
+                        x.UKPRN == appsAdditionalPaymentLearningDeliveryInfo.UKPRN &&
+                        x.LearnRefNumber == appsAdditionalPaymentLearningDeliveryInfo.LearnRefNumber &&
+                        x.AimSeqNumber == appsAdditionalPaymentLearningDeliveryInfo.AimSeqNumber);
+
+                    var aecApprenticeshipPriceEpisodePeriodisedValuesInfo = appsAdditionalPaymentRulebaseInfo.AECApprenticeshipPriceEpisodePeriodisedValues.Where(x =>
+                        x.UKPRN == appsAdditionalPaymentLearningDeliveryInfo.UKPRN &&
+                        x.LearnRefNumber == appsAdditionalPaymentLearningDeliveryInfo.LearnRefNumber &&
+                        x.AimSeqNumber == appsAdditionalPaymentLearningDeliveryInfo.AimSeqNumber).ToList();
+
+                    appsAdditionalPaymentsModels.Add(new AppsAdditionalPaymentsModel()
+                    {
+                        LearnerReferenceNumber = paymentInfo.LearnerReferenceNumber,
+                        UniqueLearnerNumber = paymentInfo.LearnerUln,
+                        ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings?.SingleOrDefault(psm =>
+                            string.Equals(psm.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
+                        ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings?.SingleOrDefault(psm =>
+                            string.Equals(psm.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
+                        LearningStartDate = paymentInfo.LearningStartDate,
+                        FundingLineType = paymentInfo.LearningAimFundingLineType,
+                        EmployerNameFromApprenticeshipService = paymentInfo.EmployerName,
+                        EmployerIdentifierFromILR = GetEmployerIdentifier(aecLearningDeliveryInfo, paymentInfo),
+                        TypeOfAdditionalPayment = paymentInfo.TypeOfAdditionalPayment,
+                        AugustEarnings = GetAugustEarnings(paymentInfo, aecApprenticeshipPriceEpisodePeriodisedValuesInfo)
+                    });
+                }
+            }
+
+            //appsAdditionalPaymentDasPaymentsInfo.Payments
+            //    .GroupBy(p => new
+            //    {
+            //        p.UkPrn,
+            //        p.LearnerReferenceNumber,
+            //        p.LearnerUln,
+            //        p.LearningStartDate,
+            //        p.LearningAimFundingLineType,
+            //        p.TypeOfAdditionalPayment,
+            //        p.LearningAimReference,
+            //        p.LearningAimProgrammeType,
+            //        p.LearningAimStandardCode,
+            //        p.LearningAimFrameworkCode,
+            //        p.LearningAimPathwayCode
+            //    });
 
             return new List<AppsAdditionalPaymentsModel>();
+        }
+
+        private decimal GetAugustEarnings(DASPaymentInfo paymentInfo, List<AECApprenticeshipPriceEpisodePeriodisedValuesInfo> aecApprenticeshipPriceEpisodePeriodisedValuesInfo)
+        {
+            decimal? result = 0;
+            if (paymentInfo.TransactionType == 4 || paymentInfo.TransactionType == 6)
+            {
+                result = aecApprenticeshipPriceEpisodePeriodisedValuesInfo.SingleOrDefault(x => x.AttributeName.Equals("PriceEpisodeFirstEmp1618Pay"))?.Period_1.GetValueOrDefault()
+                            +
+                         aecApprenticeshipPriceEpisodePeriodisedValuesInfo.SingleOrDefault(x => x.AttributeName.Equals("PriceEpisodeSecondEmp1618Pay"))?.Period_1.GetValueOrDefault();
+            }
+
+            if (paymentInfo.TransactionType == 5 || paymentInfo.TransactionType == 7)
+            {
+                result = aecApprenticeshipPriceEpisodePeriodisedValuesInfo.SingleOrDefault(x => x.AttributeName.Equals("PriceEpisodeFirstProv1618Pay"))?.Period_1.GetValueOrDefault()
+                         +
+                         aecApprenticeshipPriceEpisodePeriodisedValuesInfo.SingleOrDefault(x => x.AttributeName.Equals("PriceEpisodeSecondProv1618Pay"))?.Period_1.GetValueOrDefault();
+            }
+
+            if (paymentInfo.TransactionType == 16)
+            {
+                result = aecApprenticeshipPriceEpisodePeriodisedValuesInfo.SingleOrDefault(x => x.AttributeName.Equals("PriceEpisodeLearnerAdditionalPayment"))?.Period_1.GetValueOrDefault();
+            }
+
+            return result.GetValueOrDefault();
+        }
+
+        private string GetEmployerIdentifier(AECLearningDeliveryInfo aecLearningDeliveryInfo, DASPaymentInfo paymentInfo)
+        {
+            var identifier = 0;
+            if (paymentInfo.TransactionType == 4)
+            {
+                identifier = aecLearningDeliveryInfo.LearnDelEmpIdFirstAdditionalPaymentThreshold.GetValueOrDefault();
+            }
+
+            if (paymentInfo.TransactionType == 6)
+            {
+                identifier = aecLearningDeliveryInfo.LearnDelEmpIdSecondAdditionalPaymentThreshold.GetValueOrDefault();
+            }
+
+            return identifier == 0 ? "Not available" : identifier.ToString();
         }
     }
 }
