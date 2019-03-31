@@ -90,7 +90,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                     using (var ilrContext = _ilrRulebaseContextFactory())
                     {
-                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        submittedDate = ilrContext.FileDetails.OrderByDescending(x => x.ID).FirstOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
                     using (var ilrContext = _ilrValidContextFactory())
