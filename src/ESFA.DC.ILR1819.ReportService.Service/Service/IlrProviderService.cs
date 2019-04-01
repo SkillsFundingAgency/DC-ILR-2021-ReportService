@@ -95,7 +95,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
 
                     using (var ilrContext = _ilrValidContextFactory())
                     {
-                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        filePreparationDate = ilrContext.CollectionDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
                     _message = new Message
