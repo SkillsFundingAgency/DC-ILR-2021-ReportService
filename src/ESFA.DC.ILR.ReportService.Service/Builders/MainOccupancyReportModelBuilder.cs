@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
@@ -7,7 +6,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
     using System.Linq;
     using ESFA.DC.ILR.FundingService.FM25.Model.Output;
     using ESFA.DC.ILR.Model.Interface;
-    using ESFA.DC.ILR1819.ReportService.Interface.Service;
+    using ESFA.DC.ILR.ReportService.Interface.Service;
     using Model.Lars;
     using Model.ReportModels;
 

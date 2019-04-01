@@ -429,9 +429,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj">
-      <Project>{4D408F22-661B-44B3-B6CA-3C6CEE60AC87}</Project>
-      <Name>ESFA.DC.ILR1819.ReportService.Interface</Name>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR.ReportService.Interface.csproj">
+      <Project>{4d408f22-661b-44b3-b6ca-3c6cee60ac87}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj">
       <Project>{39DB428D-1380-40F2-9361-18ED31CF95FC}</Project>

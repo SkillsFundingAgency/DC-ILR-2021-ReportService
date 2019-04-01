@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
     public interface IDASPaymentsProviderService
     {

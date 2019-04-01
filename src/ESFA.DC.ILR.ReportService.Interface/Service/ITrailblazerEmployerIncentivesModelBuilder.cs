@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
+﻿using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
     public interface ITrailblazerEmployerIncentivesModelBuilder
     {

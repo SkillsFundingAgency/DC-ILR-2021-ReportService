@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Context
+namespace ESFA.DC.ILR.ReportService.Interface.Context
 {
     public interface IReportServiceContext
     {

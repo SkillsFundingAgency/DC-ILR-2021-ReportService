@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Remoting.Metadata.W3cXsd2001;
-using System.Text;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery;

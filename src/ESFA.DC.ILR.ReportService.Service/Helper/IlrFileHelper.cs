@@ -1,5 +1,5 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Context;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
+﻿using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Helper

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using ESFA.DC.ILR.Model.Interface;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
     public interface IStringUtilitiesService
     {

@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Service;
+﻿using ESFA.DC.ILR.ReportService.Interface.Service;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service
 {

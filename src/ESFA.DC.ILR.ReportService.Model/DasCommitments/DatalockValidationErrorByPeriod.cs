@@ -1,6 +1,4 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.DataMatch;
-
-namespace ESFA.DC.ILR1819.ReportService.Model.DasCommitments
+﻿namespace ESFA.DC.ILR1819.ReportService.Model.DasCommitments
 {
     public sealed class DatalockValidationErrorByPeriod : IIdentifyCommitments
     {

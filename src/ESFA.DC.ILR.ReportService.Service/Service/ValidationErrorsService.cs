@@ -5,7 +5,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.ILR.ValidationErrors.Model;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Poco;
 using ESFA.DC.Logging.Interfaces;

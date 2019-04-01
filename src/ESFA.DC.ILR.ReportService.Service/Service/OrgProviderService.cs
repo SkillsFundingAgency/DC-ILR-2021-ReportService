@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR1819.ReportService.Interface.Context;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.ReferenceData.Organisations.Model;

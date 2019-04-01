@@ -1,13 +1,13 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
     public interface IIlrProviderService
     {

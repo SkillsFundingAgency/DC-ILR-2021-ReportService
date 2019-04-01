@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR1819.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Model.ILR;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
     public interface IFM35ProviderService
     {

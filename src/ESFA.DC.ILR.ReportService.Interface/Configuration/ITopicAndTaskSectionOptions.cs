@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Interface.Configuration
+﻿namespace ESFA.DC.ILR.ReportService.Interface.Configuration
 {
     public interface ITopicAndTaskSectionOptions
     {

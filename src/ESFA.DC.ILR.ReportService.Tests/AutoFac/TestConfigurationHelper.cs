@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
+﻿using ESFA.DC.ILR.ReportService.Interface.Configuration;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;

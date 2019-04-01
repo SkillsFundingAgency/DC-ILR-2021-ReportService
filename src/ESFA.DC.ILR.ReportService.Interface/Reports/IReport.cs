@@ -2,9 +2,9 @@
 using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR1819.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Context;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Reports
+namespace ESFA.DC.ILR.ReportService.Interface.Reports
 {
     public interface IReport
     {

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
     public interface IDasCommitmentsService
     {

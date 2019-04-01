@@ -5,9 +5,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface.Builders;
-using ESFA.DC.ILR1819.ReportService.Interface.Context;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 using ESFA.DC.Logging.Interfaces;
 

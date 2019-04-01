@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+﻿using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
-namespace ESFA.DC.ILR1819.ReportService.Interface.Builders
+namespace ESFA.DC.ILR.ReportService.Interface.Builders
 {
     public interface ITotalBuilder
     {

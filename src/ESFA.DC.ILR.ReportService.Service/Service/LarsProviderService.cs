@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.Data.LARS.Model.Interfaces;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Model.Lars;
 using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;

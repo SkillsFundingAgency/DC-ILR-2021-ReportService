@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CsvHelper.Configuration;
-using ESFA.DC.ILR1819.ReportService.Interface;
+﻿using CsvHelper.Configuration;
+using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
