@@ -482,7 +482,7 @@
       <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Service</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Stateless\ESFA.DC.ILR1819.ReportService.Stateless.csproj">
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Stateless\ESFA.DC.ILR1819.ReportService.Stateless.csproj">
       <Project>{125B4643-12BE-4626-9B68-DD1EC6EA9F9C}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Stateless</Name>
     </ProjectReference>
