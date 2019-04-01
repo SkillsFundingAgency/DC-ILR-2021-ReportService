@@ -470,6 +470,10 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.7.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj">
+      <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
+      <Name>ESFA.DC.ILR1819.ReportService.Service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj">
       <Project>{CCF12AA1-F533-4225-8D3D-546D63A7B139}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Interface</Name>
@@ -477,10 +481,6 @@
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj">
       <Project>{5692A430-9FEB-4262-B364-12EE83712042}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj">
-      <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
-      <Name>ESFA.DC.ILR1819.ReportService.Service</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Stateless\ESFA.DC.ILR1819.ReportService.Stateless.csproj">
       <Project>{125B4643-12BE-4626-9B68-DD1EC6EA9F9C}</Project>

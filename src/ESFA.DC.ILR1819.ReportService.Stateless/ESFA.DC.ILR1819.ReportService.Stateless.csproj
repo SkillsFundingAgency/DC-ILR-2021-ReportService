@@ -429,6 +429,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj">
+      <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
+      <Name>ESFA.DC.ILR1819.ReportService.Service</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Interface\ESFA.DC.ILR1819.ReportService.Interface.csproj">
       <Project>{ccf12aa1-f533-4225-8d3d-546d63a7b139}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Interface</Name>
@@ -436,10 +440,6 @@
     <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj">
       <Project>{5692A430-9FEB-4262-B364-12EE83712042}</Project>
       <Name>ESFA.DC.ILR1819.ReportService.Model</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj">
-      <Project>{7e327d70-d514-40a0-ac07-35176660149c}</Project>
-      <Name>ESFA.DC.ILR1819.ReportService.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
