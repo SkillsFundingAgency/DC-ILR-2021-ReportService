@@ -5,6 +5,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Tests.AutoFac;
+using ESFA.DC.ILR.ReportService.Tests.Helpers;
+using ESFA.DC.ILR.ReportService.Tests.Models;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
 using ESFA.DC.ILR1819.ReportService.Interface.Reports;
@@ -13,9 +16,6 @@ using ESFA.DC.ILR1819.ReportService.Model.Poco;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
-using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
-using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
-using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -25,7 +25,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Validation
+namespace ESFA.DC.ILR.ReportService.Tests.Reports.Validation
 {
     public sealed class TestValidationReportLotsOfErrors
     {

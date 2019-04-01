@@ -4,7 +4,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Helper;
 using FluentAssertions;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.General
+namespace ESFA.DC.ILR.ReportService.Tests.General
 {
     public sealed class ExtensionsTest
     {

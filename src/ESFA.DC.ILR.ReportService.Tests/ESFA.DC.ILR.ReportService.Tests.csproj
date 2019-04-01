@@ -10,8 +10,8 @@
     <ProjectGuid>{DAE090BB-2C20-4449-B0A1-A412D6A382EF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ESFA.DC.ILR1819.ReportService.Tests</RootNamespace>
-    <AssemblyName>ESFA.DC.ILR1819.ReportService.Tests</AssemblyName>
+    <RootNamespace>ESFA.DC.ILR.ReportService.Tests</RootNamespace>
+    <AssemblyName>ESFA.DC.ILR.ReportService.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>

@@ -6,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.DAS.Model;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Tests.AutoFac;
+using ESFA.DC.ILR.ReportService.Tests.Helpers;
+using ESFA.DC.ILR.ReportService.Tests.Models;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
@@ -24,9 +27,6 @@ using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.ILR1819.ReportService.Service.Reports;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch;
-using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
-using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
-using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -36,7 +36,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports
+namespace ESFA.DC.ILR.ReportService.Tests.Reports
 {
     public sealed class TestDataMatchReport
     {

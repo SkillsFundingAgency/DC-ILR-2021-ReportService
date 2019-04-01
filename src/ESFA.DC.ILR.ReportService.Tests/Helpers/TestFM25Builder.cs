@@ -2,7 +2,7 @@
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR1819.ReportService.Service;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
+namespace ESFA.DC.ILR.ReportService.Tests.Helpers
 {
     public static class TestFM25Builder
     {

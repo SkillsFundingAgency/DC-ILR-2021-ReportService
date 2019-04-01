@@ -6,7 +6,7 @@ using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.Data_Match
+namespace ESFA.DC.ILR.ReportService.Tests.Reports.Data_Match
 {
     public sealed class TestDasCommitmentBuilder
     {

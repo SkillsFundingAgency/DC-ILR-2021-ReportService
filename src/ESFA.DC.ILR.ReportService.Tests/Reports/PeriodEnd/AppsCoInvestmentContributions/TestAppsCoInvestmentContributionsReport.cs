@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using ESFA.DC.DASPayments.EF;
 using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Tests.AutoFac;
+using ESFA.DC.ILR.ReportService.Tests.Helpers;
+using ESFA.DC.ILR.ReportService.Tests.Models;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
@@ -16,9 +19,6 @@ using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Service.Service;
-using ESFA.DC.ILR1819.ReportService.Tests.AutoFac;
-using ESFA.DC.ILR1819.ReportService.Tests.Helpers;
-using ESFA.DC.ILR1819.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -29,7 +29,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentContributions
+namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentContributions
 {
     public sealed class TestAppsCoInvestmentContributionsReport
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
+namespace ESFA.DC.ILR.ReportService.Tests.Helpers
 {
     public static class TestFM35Builder
     {

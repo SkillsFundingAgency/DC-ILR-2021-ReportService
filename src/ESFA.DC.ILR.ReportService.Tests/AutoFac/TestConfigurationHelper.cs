@@ -3,7 +3,7 @@ using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
+namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
 {
     public sealed class TestConfigurationHelper : IConfigurationHelper
     {

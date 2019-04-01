@@ -2,11 +2,11 @@
 using System.IO;
 using System.Linq;
 using Aspose.Cells;
-using ESFA.DC.ILR1819.ReportService.Tests.Models;
+using ESFA.DC.ILR.ReportService.Tests.Models;
 using FluentAssertions;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
+namespace ESFA.DC.ILR.ReportService.Tests.Helpers
 {
     public static class TestXlsxHelper
     {

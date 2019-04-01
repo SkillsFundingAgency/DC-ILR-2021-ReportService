@@ -20,7 +20,7 @@ using Microsoft.EntityFrameworkCore;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Service
+namespace ESFA.DC.ILR.ReportService.Tests.Service
 {
     public sealed class FM35ProviderServiceTest
     {

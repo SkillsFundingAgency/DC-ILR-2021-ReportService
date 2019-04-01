@@ -9,7 +9,7 @@ using ESFA.DC.ILR1819.ReportService.Service.Service;
 using FluentAssertions;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Service
+namespace ESFA.DC.ILR.ReportService.Tests.Service
 {
     public sealed class ValueProviderServiceTest
     {

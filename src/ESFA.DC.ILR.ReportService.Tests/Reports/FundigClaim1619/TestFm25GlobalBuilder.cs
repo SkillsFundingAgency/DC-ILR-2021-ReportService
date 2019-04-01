@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Reports.FundigClaim1619
+namespace ESFA.DC.ILR.ReportService.Tests.Reports.FundigClaim1619
 {
     public static class TestFm25GlobalBuilder
     {

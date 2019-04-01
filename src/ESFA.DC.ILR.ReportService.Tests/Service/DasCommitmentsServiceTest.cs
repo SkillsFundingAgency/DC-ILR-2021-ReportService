@@ -4,13 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR1819.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Service.Builders;
-using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch;
 using ESFA.DC.Logging.Interfaces;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Service
+namespace ESFA.DC.ILR.ReportService.Tests.Service
 {
     public sealed class DasCommitmentsServiceTest
     {

@@ -1,12 +1,12 @@
 ﻿using System.IO;
 using System.Linq;
 using CsvHelper.Configuration;
-using ESFA.DC.ILR1819.ReportService.Tests.Models;
+using ESFA.DC.ILR.ReportService.Tests.Models;
 using FluentAssertions;
 using Microsoft.VisualBasic.FileIO;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Helpers
+namespace ESFA.DC.ILR.ReportService.Tests.Helpers
 {
     public static class TestCsvHelper
     {

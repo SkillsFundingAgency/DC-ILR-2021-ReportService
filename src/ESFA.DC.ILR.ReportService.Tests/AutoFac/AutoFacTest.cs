@@ -10,7 +10,7 @@ using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
 using Xunit;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.AutoFac
+namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
 {
     public sealed class AutoFacTest
     {

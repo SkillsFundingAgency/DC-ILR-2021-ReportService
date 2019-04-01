@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration;
 
-namespace ESFA.DC.ILR1819.ReportService.Tests.Models
+namespace ESFA.DC.ILR.ReportService.Tests.Models
 {
     public sealed class CsvEntry
     {
