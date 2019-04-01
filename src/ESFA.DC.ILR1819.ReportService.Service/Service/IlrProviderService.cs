@@ -88,14 +88,10 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     DateTime submittedDate;
                     DateTime filePreparationDate;
 
-                    using (var ilrContext = _ilrRulebaseContextFactory())
-                    {
-                        submittedDate = ilrContext.FileDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.SubmittedTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-                    }
-
                     using (var ilrContext = _ilrValidContextFactory())
                     {
-                        filePreparationDate = ilrContext.SourceFiles.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        submittedDate = ilrContext.Sources.SingleOrDefault(x => x.UKPRN == ukPrn)?.DateTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
+                        filePreparationDate = ilrContext.CollectionDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
                     }
 
                     _message = new Message
