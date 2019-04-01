@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR1819.ReportService.Interface.Context;
+﻿using ESFA.DC.EAS1819.EF;
+using ESFA.DC.ILR1819.ReportService.Interface.Context;
 
 namespace ESFA.DC.ILR1819.ReportService.Interface.Service
 {

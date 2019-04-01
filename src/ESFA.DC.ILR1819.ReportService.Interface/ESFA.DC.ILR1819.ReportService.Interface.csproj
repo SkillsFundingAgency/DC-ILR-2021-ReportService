@@ -33,7 +33,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ESFA.DC.ILR1819.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj" />
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj" />
   </ItemGroup>
 
   <ItemGroup>
