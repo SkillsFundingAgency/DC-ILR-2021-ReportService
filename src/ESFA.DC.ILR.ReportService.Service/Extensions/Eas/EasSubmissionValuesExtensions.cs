@@ -1,6 +1,6 @@
-﻿using ESFA.DC.ILR1819.ReportService.Model.Eas;
+﻿using ESFA.DC.ILR.ReportService.Model.Eas;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Extensions.Eas
+namespace ESFA.DC.ILR.ReportService.Service.Extensions.Eas
 {
     public static class EasSubmissionValuesExtensions
     {

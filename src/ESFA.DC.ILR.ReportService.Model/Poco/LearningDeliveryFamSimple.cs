@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR1819.ReportService.Model.Poco
+namespace ESFA.DC.ILR.ReportService.Model.Poco
 {
     public sealed class LearningDeliveryFamSimple
     {

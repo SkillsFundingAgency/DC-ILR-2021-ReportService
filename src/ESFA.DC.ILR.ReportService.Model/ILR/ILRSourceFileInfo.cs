@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR1819.ReportService.Model.ILR
+namespace ESFA.DC.ILR.ReportService.Model.ILR
 {
     public class ILRSourceFileInfo
     {

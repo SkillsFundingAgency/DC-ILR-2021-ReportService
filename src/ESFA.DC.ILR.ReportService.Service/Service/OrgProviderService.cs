@@ -4,12 +4,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.ReferenceData.Organisations.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class OrgProviderService : IOrgProviderService
     {

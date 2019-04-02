@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
+﻿namespace ESFA.DC.ILR.ReportService.Model.ReportModels
 {
     public sealed class SummaryOfFunding1619Model
     {

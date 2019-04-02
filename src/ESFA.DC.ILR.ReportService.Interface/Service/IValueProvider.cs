@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using CsvHelper.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.Generation;
+using ESFA.DC.ILR.ReportService.Model.Generation;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Service
 {

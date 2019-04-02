@@ -3,7 +3,7 @@ using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using ESFA.DC.ILR1819.ReportService.Service;
+using ESFA.DC.ILR.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Context;
 using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;

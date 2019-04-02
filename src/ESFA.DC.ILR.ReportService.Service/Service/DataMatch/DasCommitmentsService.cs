@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 using ESFA.DC.Data.DAS.Model;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
-using ESFA.DC.ILR1819.ReportService.Service.Comparer;
+using ESFA.DC.ILR.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Model.DasCommitments;
+using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch
+namespace ESFA.DC.ILR.ReportService.Service.Service.DataMatch
 {
     public sealed class DasCommitmentsService : IDasCommitmentsService
     {

@@ -8,8 +8,8 @@
     <ProjectGuid>{7E327D70-D514-40A0-AC07-35176660149C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ESFA.DC.ILR1819.ReportService.Service</RootNamespace>
-    <AssemblyName>ESFA.DC.ILR1819.ReportService.Service</AssemblyName>
+    <RootNamespace>ESFA.DC.ILR.ReportService.Service</RootNamespace>
+    <AssemblyName>ESFA.DC.ILR.ReportService.Service</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -24,7 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>ESFA.DC.ILR1819.ReportService.Service.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.ILR.ReportService.Tests\ESFA.DC.ILR.ReportService.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -33,7 +33,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeAnalysisRuleSet>ESFA.DC.ILR1819.ReportService.Service.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.ILR.ReportService.Tests\ESFA.DC.ILR.ReportService.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -42,7 +42,7 @@
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ESFA.DC.ILR1819.ReportService.Service.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.ILR.ReportService.Tests\ESFA.DC.ILR.ReportService.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -51,7 +51,7 @@
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
-    <CodeAnalysisRuleSet>ESFA.DC.ILR1819.ReportService.Service.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRuleSet>..\ESFA.DC.ILR.ReportService.Tests\ESFA.DC.ILR.ReportService.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Aspose.Cells, Version=19.2.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
@@ -447,7 +447,7 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Reports\Templates\AdultFundingClaimReportTemplate.xlsx" />
-    <None Include="ESFA.DC.ILR1819.ReportService.Service.ruleset">
+    <None Include="ESFA.DC.ILR.ReportService.Service.ruleset">
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config">
@@ -464,9 +464,9 @@
       <Project>{4D408F22-661B-44B3-B6CA-3C6CEE60AC87}</Project>
       <Name>ESFA.DC.ILR.ReportService.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj">
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR.ReportService.Model.csproj">
       <Project>{39DB428D-1380-40F2-9361-18ED31CF95FC}</Project>
-      <Name>ESFA.DC.ILR1819.ReportService.Model</Name>
+      <Name>ESFA.DC.ILR.ReportService.Model</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

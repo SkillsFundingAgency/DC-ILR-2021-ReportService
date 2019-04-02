@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Model.ReportModels;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
+namespace ESFA.DC.ILR.ReportService.Service.Comparer
 {
     public sealed class AppsIndicativeEarningsModelComparer : IComparer<AppsIndicativeEarningsModel>
     {

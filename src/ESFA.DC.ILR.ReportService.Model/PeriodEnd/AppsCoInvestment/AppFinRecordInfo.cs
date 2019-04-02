@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment
+namespace ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment
 {
     public class AppFinRecordInfo
     {

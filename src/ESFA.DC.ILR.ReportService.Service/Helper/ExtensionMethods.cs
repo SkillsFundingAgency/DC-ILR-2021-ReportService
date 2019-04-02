@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Helper
+namespace ESFA.DC.ILR.ReportService.Service.Helper
 {
     public static class ExtensionMethods
     {

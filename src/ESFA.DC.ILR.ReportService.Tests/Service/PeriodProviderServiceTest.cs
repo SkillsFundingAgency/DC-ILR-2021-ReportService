@@ -6,7 +6,7 @@ using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Service.Service;
+using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.Logging.Interfaces;
 using FluentAssertions;
 using Moq;

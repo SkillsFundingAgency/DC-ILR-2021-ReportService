@@ -9,21 +9,21 @@ using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Model.ILR;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.ILR;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using LearningDeliveryInfo = ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment.LearningDeliveryInfo;
+using LearningDeliveryInfo = ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment.LearningDeliveryInfo;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class IlrProviderService : IIlrProviderService
     {

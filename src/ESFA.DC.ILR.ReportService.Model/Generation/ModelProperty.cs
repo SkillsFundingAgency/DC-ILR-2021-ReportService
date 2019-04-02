@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 
-namespace ESFA.DC.ILR1819.ReportService.Model.Generation
+namespace ESFA.DC.ILR.ReportService.Model.Generation
 {
     public sealed class ModelProperty
     {

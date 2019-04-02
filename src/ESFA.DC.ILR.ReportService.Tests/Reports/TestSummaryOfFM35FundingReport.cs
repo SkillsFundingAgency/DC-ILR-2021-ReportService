@@ -9,6 +9,13 @@ using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Service.Builders;
+using ESFA.DC.ILR.ReportService.Service.Comparer;
+using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Reports;
+using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR.ReportService.Tests.Helpers;
 using ESFA.DC.ILR.ReportService.Tests.Models;
@@ -16,13 +23,6 @@ using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-using ESFA.DC.ILR1819.ReportService.Service.Builders;
-using ESFA.DC.ILR1819.ReportService.Service.Comparer;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
-using ESFA.DC.ILR1819.ReportService.Service.Reports;
-using ESFA.DC.ILR1819.ReportService.Service.Service;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -114,7 +114,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
         [InlineData("AEB – Other Learning (non-procured)", 5, "AEB – Other Learning (procured from Nov 2017)", 5, "AEB – Other Learning (procured from Nov 2017)", 5, "AEB – Other Learning (non-procured)", 5)]
         [InlineData("AEB – Other Learning (non-procured)", 6, "AEB – Other Learning (non-procured)", 5, "AEB – Other Learning (non-procured)", 5, "AEB – Other Learning (non-procured)", 6)]
         [InlineData("AEB – Other Learning (procured from Nov 2017)", 1, "AEB – Other Learning (non-procured)", 1, "19-24 Traineeship (procured from Nov 2017)", 1, "19-24 Traineeship (procured from Nov 2017)", 1, "AEB – Other Learning (non-procured)", 1, "AEB – Other Learning (procured from Nov 2017)", 1)]
-        public async Task TestSummaryOfFm35FundingModelComparer(params object[] inputs)
+        public void TestSummaryOfFm35FundingModelComparer(params object[] inputs)
         {
             SummaryOfFm35FundingModelComparer summaryOfFm35FundingModelComparer = new SummaryOfFm35FundingModelComparer();
 

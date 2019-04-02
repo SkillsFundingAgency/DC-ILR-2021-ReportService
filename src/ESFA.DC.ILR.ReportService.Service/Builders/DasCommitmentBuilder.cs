@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.Data.DAS.Model;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
-using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
-using ESFA.DC.ILR1819.ReportService.Service.Extensions;
+using ESFA.DC.ILR.ReportService.Model.DasCommitments;
+using ESFA.DC.ILR.ReportService.Service.Extensions;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+namespace ESFA.DC.ILR.ReportService.Service.Builders
 {
     public sealed class DasCommitmentBuilder : IDasCommitmentBuilder
     {

@@ -2,7 +2,7 @@
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Helper
+namespace ESFA.DC.ILR.ReportService.Service.Helper
 {
     public class IlrFileHelper : IIlrFileHelper
     {

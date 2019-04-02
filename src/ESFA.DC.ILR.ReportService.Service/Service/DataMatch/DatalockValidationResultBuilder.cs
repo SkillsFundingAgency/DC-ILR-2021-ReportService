@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.ReportService.Interface.DataMatch;
-using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
-using ESFA.DC.ILR1819.ReportService.Service.Extensions.DataMatch;
-using ESFA.DC.ILR1819.ReportService.Service.ReferenceData;
+using ESFA.DC.ILR.ReportService.Model.DasCommitments;
+using ESFA.DC.ILR.ReportService.Service.Extensions.DataMatch;
+using ESFA.DC.ILR.ReportService.Service.ReferenceData;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service.DataMatch
+namespace ESFA.DC.ILR.ReportService.Service.Service.DataMatch
 {
     public sealed class DatalockValidationResultBuilder : IDatalockValidationResultBuilder
     {

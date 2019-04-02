@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
+using ESFA.DC.ILR.ReportService.Model.DasCommitments;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Extensions.DataMatch
+namespace ESFA.DC.ILR.ReportService.Service.Extensions.DataMatch
 {
     public static class ValidationErrorExtensions
     {

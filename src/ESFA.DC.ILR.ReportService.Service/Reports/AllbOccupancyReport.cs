@@ -14,15 +14,15 @@ using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Lars;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-using ESFA.DC.ILR1819.ReportService.Service.Comparer;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Model.Lars;
+using ESFA.DC.ILR.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Service.Comparer;
+using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
     public sealed class AllbOccupancyReport : AbstractReportBuilder, IReport
     {

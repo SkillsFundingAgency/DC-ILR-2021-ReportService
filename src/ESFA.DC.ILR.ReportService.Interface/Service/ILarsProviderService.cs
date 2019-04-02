@@ -2,8 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR1819.ReportService.Model.Lars;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
+using ESFA.DC.ILR.ReportService.Model.Lars;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
@@ -24,8 +24,6 @@ namespace ESFA.DC.ILR.ReportService.Interface.Service
             int learningDeliveryStandardCode,
             CancellationToken cancellationToken);
 
-        Task<List<AppsMonthlyPaymentLarsLearningDeliveryInfo>>
-            GetLarsLearningDeliveryInfoForAppsMonthlyPaymentReportAsync(string[] learnerAimRefs,
-                CancellationToken cancellationToken);
+        Task<List<AppsMonthlyPaymentLarsLearningDeliveryInfo>> GetLarsLearningDeliveryInfoForAppsMonthlyPaymentReportAsync(string[] learnerAimRefs, CancellationToken cancellationToken);
     }
 }

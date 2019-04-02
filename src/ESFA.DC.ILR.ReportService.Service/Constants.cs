@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR1819.ReportService.Service
+namespace ESFA.DC.ILR.ReportService.Service
 {
     public static class Constants
     {

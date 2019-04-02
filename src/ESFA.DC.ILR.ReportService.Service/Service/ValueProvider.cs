@@ -4,9 +4,9 @@ using System.Globalization;
 using System.Linq;
 using CsvHelper.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Generation;
+using ESFA.DC.ILR.ReportService.Model.Generation;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class ValueProvider : IValueProvider
     {

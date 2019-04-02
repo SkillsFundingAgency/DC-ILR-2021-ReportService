@@ -2,7 +2,7 @@
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.BusinessRules
+namespace ESFA.DC.ILR.ReportService.Service.BusinessRules
 {
     public class MathsAndEnglishFm25Rules : IMathsAndEnglishFm25Rules
     {

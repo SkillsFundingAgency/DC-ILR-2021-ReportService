@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR1819.ReportService.Model.Poco;
+using ESFA.DC.ILR.ReportService.Model.Poco;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
