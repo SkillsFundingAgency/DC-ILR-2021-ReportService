@@ -311,7 +311,7 @@
       <Version>2.2.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.ServiceFabric">
-      <Version>6.3.187</Version>
+      <Version>6.4.644</Version>
     </PackageReference>
     <PackageReference Include="StyleCop.Analyzers">
       <Version>1.0.2</Version>

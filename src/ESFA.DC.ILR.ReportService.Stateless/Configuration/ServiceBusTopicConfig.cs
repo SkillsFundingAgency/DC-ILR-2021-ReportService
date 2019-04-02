@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Fabric.Query;
 using ESFA.DC.Queueing;
 
 namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
