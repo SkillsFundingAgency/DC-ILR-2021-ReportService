@@ -5,8 +5,11 @@ resources:
 - repo: self
   fetchDepth: 15
 
-
 variables:
+  VersionNumberMajor: '0'
+  VersionNumberMinor: '0'
+  BuildConfiguration: 'Release'
+  BuildPlatform: 'Any CPU'
   ServiceFabricProjectFolderName: 'ESFA.DC.ILR.ReportService'
 
 pool:
@@ -60,7 +63,7 @@ steps:
   inputs:
     solution: '**/$(ServiceFabricProjectFolderName)/*.sfproj'
     msbuildArchitecture: x64
-    platform: 'x64'
+    platform: '$(BuildPlatform)'
     configuration: '$(BuildConfiguration)'
     msbuildArguments: '/t:Package /p:PackageLocation="$(build.artifactstagingdirectory)\ServiceFabric\applicationpackage" /p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber)'
     clean: false
