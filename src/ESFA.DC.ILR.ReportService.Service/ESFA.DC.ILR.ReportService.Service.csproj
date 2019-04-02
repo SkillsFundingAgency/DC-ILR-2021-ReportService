@@ -49,7 +49,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>..\ESFA.DC.ILR.ReportService.Tests\ESFA.DC.ILR.ReportService.Tests.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
