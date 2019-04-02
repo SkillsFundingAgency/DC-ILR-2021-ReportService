@@ -10,7 +10,7 @@ using ESFA.DC.ILR.ReportService.Model.Poco;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+namespace ESFA.DC.ILR.ReportService.Service.Builders
 {
     public class AppsIndicativeEarningsModelBuilder : IAppsIndicativeEarningsModelBuilder
     {

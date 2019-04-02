@@ -3,7 +3,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders.PeriodEnd
+namespace ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd
 {
     public class AppsMonthlyPaymentModelBuilder : IAppsMonthlyPaymentModelBuilder
     {

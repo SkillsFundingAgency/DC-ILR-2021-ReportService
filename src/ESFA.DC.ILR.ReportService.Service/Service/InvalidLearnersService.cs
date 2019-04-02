@@ -5,7 +5,7 @@ using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class InvalidLearnersService : BaseLearnersService, IInvalidLearnersService
     {

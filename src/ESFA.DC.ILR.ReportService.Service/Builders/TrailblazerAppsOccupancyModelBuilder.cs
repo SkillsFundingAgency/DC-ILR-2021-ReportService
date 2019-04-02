@@ -7,7 +7,7 @@ using ESFA.DC.ILR.ReportService.Model.Lars;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+namespace ESFA.DC.ILR.ReportService.Service.Builders
 {
     public class TrailblazerAppsOccupancyModelBuilder : ITrailblazerAppsOccupancyModelBuilder
     {

@@ -15,7 +15,7 @@ using ESFA.DC.Serialization.Interfaces;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class FM81TrailBlazerProviderService : IFM81TrailBlazerProviderService
     {

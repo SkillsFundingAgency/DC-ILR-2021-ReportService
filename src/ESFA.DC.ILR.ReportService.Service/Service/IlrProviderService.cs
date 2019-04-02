@@ -23,7 +23,7 @@ using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using LearningDeliveryInfo = ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment.LearningDeliveryInfo;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class IlrProviderService : IIlrProviderService
     {

@@ -2,7 +2,7 @@
 using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Mapper
+namespace ESFA.DC.ILR.ReportService.Service.Mapper
 {
     public sealed class FundingSummaryFooterMapper : ClassMap<FundingSummaryFooterModel>, IClassMapper
     {

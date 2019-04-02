@@ -13,7 +13,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public class FM25ProviderService : IFM25ProviderService
     {

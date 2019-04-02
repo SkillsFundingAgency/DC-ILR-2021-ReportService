@@ -1,6 +1,6 @@
 ﻿using ESFA.DC.ILR.ReportService.Interface.Context;
 
-namespace ESFA.DC.ILR1819.ReportService.Service
+namespace ESFA.DC.ILR.ReportService.Service
 {
     using System.Collections.Generic;
     using System.Diagnostics;

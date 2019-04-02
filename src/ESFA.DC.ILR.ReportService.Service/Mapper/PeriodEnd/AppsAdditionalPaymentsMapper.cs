@@ -2,7 +2,7 @@
 using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Mapper.PeriodEnd
+namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
 {
     public class AppsAdditionalPaymentsMapper : ClassMap<AppsAdditionalPaymentsModel>, IClassMapper
     {

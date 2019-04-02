@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Service.ReferenceData
+﻿namespace ESFA.DC.ILR.ReportService.Service.ReferenceData
 {
     public sealed class DataLockValidationMessage
     {

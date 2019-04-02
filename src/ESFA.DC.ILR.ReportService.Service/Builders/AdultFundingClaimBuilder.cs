@@ -14,7 +14,7 @@ using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+namespace ESFA.DC.ILR.ReportService.Service.Builders
 {
     public class AdultFundingClaimBuilder : IAdultFundingClaimBuilder
     {

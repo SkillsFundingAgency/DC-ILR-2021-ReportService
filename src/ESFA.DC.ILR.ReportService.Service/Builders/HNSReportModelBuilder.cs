@@ -5,7 +5,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+namespace ESFA.DC.ILR.ReportService.Service.Builders
 {
     public sealed class HNSReportModelBuilder : IHNSReportModelBuilder
     {

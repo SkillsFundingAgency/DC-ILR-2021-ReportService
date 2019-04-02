@@ -19,7 +19,7 @@ using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
     public sealed class FundingClaim1619Report : AbstractReportBuilder, IReport
     {

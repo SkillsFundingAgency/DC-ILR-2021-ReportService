@@ -25,11 +25,11 @@ using ESFA.DC.ILR.ReportService.Model.Generation;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Model.Styling;
-using ESFA.DC.ILR1819.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
 using EasSubmissionValues = ESFA.DC.ILR.ReportService.Model.Eas.EasSubmissionValues;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Reports
+namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
     public sealed class FundingSummaryReport : AbstractReportBuilder, IReport
     {

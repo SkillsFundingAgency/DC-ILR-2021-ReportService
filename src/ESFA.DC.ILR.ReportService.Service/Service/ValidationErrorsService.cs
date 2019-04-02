@@ -10,7 +10,7 @@ using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.Poco;
 using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class ValidationErrorsService : IValidationErrorsService
     {
@@ -29,8 +29,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
         {
             try
             {
-                using (ValidationErrors validationErrorsContext =
-                    new ValidationErrors(_dataStoreConfiguration.IlrValidationErrorsConnectionString))
+                using (Data.ILR.ValidationErrors.Model.ValidationErrors validationErrorsContext =
+                    new Data.ILR.ValidationErrors.Model.ValidationErrors(_dataStoreConfiguration.IlrValidationErrorsConnectionString))
                 {
                     List<Rule> errors = await validationErrorsContext
                             .Rules

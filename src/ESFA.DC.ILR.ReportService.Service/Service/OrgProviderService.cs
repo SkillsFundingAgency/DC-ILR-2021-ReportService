@@ -9,7 +9,7 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.ReferenceData.Organisations.Model;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class OrgProviderService : IOrgProviderService
     {

@@ -19,7 +19,7 @@ using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.FundingService.ALB.FundingOu
 using LearningDeliveryValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryValue;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public sealed class AllbProviderService : IAllbProviderService
     {

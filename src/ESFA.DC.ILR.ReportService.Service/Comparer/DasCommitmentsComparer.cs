@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.Data.DAS.Model;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Comparer
+namespace ESFA.DC.ILR.ReportService.Service.Comparer
 {
     public sealed class DasCommitmentsComparer : IEqualityComparer<DasCommitments>
     {

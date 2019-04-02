@@ -1,7 +1,7 @@
 ﻿using System;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Builders
+namespace ESFA.DC.ILR.ReportService.Service.Builders
 {
     using System.Linq;
     using ESFA.DC.ILR.FundingService.FM25.Model.Output;

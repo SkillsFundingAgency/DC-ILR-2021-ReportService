@@ -17,7 +17,7 @@ using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public class FM35ProviderService : IFM35ProviderService
     {
