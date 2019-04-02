@@ -33,20 +33,19 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public SummaryOfFm35FundingReport(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IFM35ProviderService fm35ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFm35Builder builder)
-            : base(dateTimeProvider, valueProvider)
+            : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
             _fm35ProviderService = fm35ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
             _summaryOfFm35FundingModelBuilder = builder;
-            _storage = storage;
 
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFM35FundingReport;
             ReportFileName = "Summary of Funding Model 35 Funding Report";

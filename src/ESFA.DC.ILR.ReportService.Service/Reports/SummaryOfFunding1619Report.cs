@@ -27,7 +27,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly SummaryOfFunding1619ModelComparer SummaryOfFunding1619ModelComparer = new SummaryOfFunding1619ModelComparer();
 
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IFM25ProviderService _fm25ProviderService;
@@ -35,7 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public SummaryOfFunding1619Report(
             ILogger logger,
-            IKeyValuePersistenceService blob,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             IFM25ProviderService fm25ProviderService,
@@ -43,10 +42,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider)
+        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
-            _storage = blob;
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _fm25ProviderService = fm25ProviderService;
@@ -64,7 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

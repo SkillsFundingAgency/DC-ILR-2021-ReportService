@@ -27,7 +27,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly MathsAndEnglishModelComparer MathsAndEnglishModelComparer = new MathsAndEnglishModelComparer();
 
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM25ProviderService _fm25ProviderService;
         private readonly IValidLearnersService _validLearnersService;
@@ -37,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public MathsAndEnglishReport(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             IFM25ProviderService fm25ProviderService,
@@ -47,10 +46,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules,
             IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider)
+        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
-            _storage = storage;
             _ilrProviderService = ilrProviderService;
             _fm25ProviderService = fm25ProviderService;
             _validLearnersService = validLearnersService;
@@ -70,7 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

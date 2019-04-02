@@ -80,7 +80,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private const string ReportGeneratedAtCellNameFis = "B40";
 
         private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
@@ -96,7 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public AdultFundingClaimReport(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
@@ -111,10 +110,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IVersionInfo versionInfo,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IAdultFundingClaimBuilder adultFundingClaimBuilder)
-            : base(dateTimeProvider, valueProvider)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _logger = logger;
-            _storage = storage;
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
@@ -193,7 +191,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             using (MemoryStream ms = new MemoryStream())
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
-                await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }
         }

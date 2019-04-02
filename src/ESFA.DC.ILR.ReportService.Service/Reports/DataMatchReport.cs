@@ -37,7 +37,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IDasCommitmentsService _dasCommitmentsService;
         private readonly IPeriodProviderService _periodProviderService;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly IValidationStageOutputCache _validationStageOutputCache;
         private readonly IDatalockValidationResultBuilder _datalockValidationResultBuilder;
         private readonly ITotalBuilder _totalBuilder;
@@ -49,20 +48,19 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IFM36ProviderService fm36ProviderService,
             IDasCommitmentsService dasCommitmentsService,
             IPeriodProviderService periodProviderService,
-            IKeyValuePersistenceService blob,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationStageOutputCache validationStageOutputCache,
             IDatalockValidationResultBuilder datalockValidationResultBuilder,
             ITotalBuilder totalBuilder)
-            : base(dateTimeProvider, valueProvider)
+            : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
             _fm36ProviderService = fm36ProviderService;
             _dasCommitmentsService = dasCommitmentsService;
             _periodProviderService = periodProviderService;
-            _storage = blob;
             _validationStageOutputCache = validationStageOutputCache;
             _datalockValidationResultBuilder = datalockValidationResultBuilder;
             _totalBuilder = totalBuilder;
@@ -111,7 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var fileName = GetFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = WriteResults();
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

@@ -112,7 +112,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 logger.Object,
                 storage.Object,
                 ilrProviderService,
-                stringUtilitiesService,
                 validLearnersService,
                 fm25ProviderService,
                 dateTimeProviderMock.Object,

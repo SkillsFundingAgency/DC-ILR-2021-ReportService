@@ -40,7 +40,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private readonly List<FundingSummaryModel> _fundingSummaryModels;
 
-        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
@@ -66,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IEasBuilder _easBuilder;
 
         public FundingSummaryReport(
-            IStreamableKeyValuePersistenceService storage,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
@@ -92,9 +91,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IExcelStyleProvider excelStyleProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IEasBuilder easBuilder)
-            : base(dateTimeProvider, valueProvider)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
-            _storage = storage;
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
@@ -1092,7 +1090,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = GetReportCsv(fundingSummaryHeaderModel, fundingSummaryFooterModel);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
 
             Workbook workbook = GetWorkbookReport(fundingSummaryHeaderModel, fundingSummaryFooterModel);
 
@@ -1104,7 +1102,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 Stream manifestResourceStream = assembly.GetManifestResourceStream(euFlagBmp);
                 workbook.Worksheets[0].Pictures.Add(1, 22, manifestResourceStream);
                 workbook.Save(ms, SaveFormat.Xlsx);
-                await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }
         }

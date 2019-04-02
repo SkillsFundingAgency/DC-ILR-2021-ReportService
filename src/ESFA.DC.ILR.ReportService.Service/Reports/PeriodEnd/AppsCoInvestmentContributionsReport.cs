@@ -27,16 +27,15 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 
         public AppsCoInvestmentContributionsReport(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IIlrProviderService ilrProviderService,
             IDASPaymentsProviderService dasPaymentsProviderService)
-        : base(dateTimeProvider, valueProvider)
+        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
-            _storage = storage;
             _ilrProviderService = ilrProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
             ReportFileName = "Apps Co-Investment Contributions Report";

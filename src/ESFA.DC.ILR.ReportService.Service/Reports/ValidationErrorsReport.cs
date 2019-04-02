@@ -33,8 +33,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 
         private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _storage;
-        private readonly IKeyValuePersistenceService _redis;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidationErrorsService _validationErrorsService;
@@ -46,8 +44,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public ValidationErrorsReport(
             ILogger logger,
-            IKeyValuePersistenceService redis,
-            IStreamableKeyValuePersistenceService storage,
+            IKeyValuePersistenceService keyValuePersistenceService,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
             IDateTimeProvider dateTimeProvider,
@@ -55,11 +53,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationErrorsService validationErrorsService,
             IValidationStageOutputCache validationStageOutputCache)
-        : base(dateTimeProvider, valueProvider)
+        : base(dateTimeProvider, valueProvider, keyValuePersistenceService, streamableKeyValuePersistenceService)
         {
             _logger = logger;
-            _storage = storage;
-            _redis = redis;
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _validationErrorsService = validationErrorsService;
@@ -114,7 +110,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             try
             {
-                string validationErrorsStr = await _redis.GetAsync(reportServiceContext.ValidationErrorsKey, cancellationToken);
+                string validationErrorsStr = await _keyValuePersistenceService.GetAsync(reportServiceContext.ValidationErrorsKey, cancellationToken);
 
                 try
                 {
@@ -158,8 +154,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private async Task PersistValuesToStorage(List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(validationErrors);
-            await _storage.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
-            await _storage.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
 
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
 
@@ -170,7 +166,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             using (MemoryStream ms = new MemoryStream())
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
-                await _storage.SaveAsync($"{_externalFileName}.xlsx", ms, cancellationToken);
+                await _streamableKeyValuePersistenceService.SaveAsync($"{_externalFileName}.xlsx", ms, cancellationToken);
             }
         }
 

@@ -28,30 +28,25 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly HNSModelComparer _hnsModelComparer = new HNSModelComparer();
 
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
-        private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IFM25ProviderService _fm25ProviderService;
         private readonly IHNSReportModelBuilder _hnsReportModelBuilder;
 
         public HNSDetailReport(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IIlrProviderService ilrProviderService,
-            IStringUtilitiesService stringUtilitiesService,
             IValidLearnersService validLearnersService,
             IFM25ProviderService fm25ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IHNSReportModelBuilder hnsReportModelBuilder)
-        : base(dateTimeProvider, valueProvider)
+        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
-            _storage = storage;
             _ilrProviderService = ilrProviderService;
-            _stringUtilitiesService = stringUtilitiesService;
             _validLearnersService = validLearnersService;
             _fm25ProviderService = fm25ProviderService;
             _hnsReportModelBuilder = hnsReportModelBuilder;
@@ -127,7 +122,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

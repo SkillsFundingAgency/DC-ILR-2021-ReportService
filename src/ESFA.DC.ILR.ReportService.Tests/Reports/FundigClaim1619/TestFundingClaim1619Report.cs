@@ -127,7 +127,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.FundigClaim1619
                 .Returns(Task.FromResult(cofTestValue));
 
             FundingClaim1619Report fundingClaim1619Report = new FundingClaim1619Report(
-                logger.Object,
                 storage.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,

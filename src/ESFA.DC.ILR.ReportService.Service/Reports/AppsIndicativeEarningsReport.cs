@@ -35,12 +35,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly ILarsProviderService _larsProviderService;
-        private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IAppsIndicativeEarningsModelBuilder _modelBuilder;
 
         public AppsIndicativeEarningsReport(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             IFM36ProviderService fm36ProviderService,
@@ -50,15 +49,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider)
+        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
-            _storage = storage;
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
             _validLearnersService = validLearnersService;
             _larsProviderService = larsProviderService;
-            _stringUtilitiesService = stringUtilitiesService;
             _modelBuilder = modelBuilder;
 
             ReportFileName = "Apps Indicative Earnings Report";

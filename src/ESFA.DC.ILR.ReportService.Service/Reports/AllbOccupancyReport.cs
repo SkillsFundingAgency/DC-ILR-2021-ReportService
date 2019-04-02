@@ -38,7 +38,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly AllbOccupancyModelComparer AllbOccupancyModelComparer = new AllbOccupancyModelComparer();
 
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly ILarsProviderService _larsProviderService;
         private readonly IAllbProviderService _allbProviderService;
@@ -47,7 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public AllbOccupancyReport(
             ILogger logger,
-            IKeyValuePersistenceService blob,
+            IKeyValuePersistenceService keyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             ILarsProviderService larsProviderService,
             IAllbProviderService allbProviderService,
@@ -56,10 +55,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider)
+        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
         {
             _logger = logger;
-            _storage = blob;
             _ilrProviderService = ilrProviderService;
             _larsProviderService = larsProviderService;
             _allbProviderService = allbProviderService;
@@ -78,7 +76,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

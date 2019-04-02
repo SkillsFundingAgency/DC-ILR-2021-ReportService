@@ -78,8 +78,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             new Tuple<string, string, string, string>("19+ Continuing Students (excluding EHC plans)", "Up to 279 hours (Band 1)", "E47", "F47")
         };
 
-        private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
@@ -98,8 +96,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         };
 
         public FundingClaim1619Report(
-            ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             IIlrProviderService ilrProviderService,
@@ -110,10 +107,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILarsProviderService larsProviderService,
             IVersionInfo versionInfo,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-            : base(dateTimeProvider, valueProvider)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
-            _logger = logger;
-            _storage = storage;
             _dateTimeProvider = dateTimeProvider;
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
@@ -216,7 +211,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             using (MemoryStream ms = new MemoryStream())
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
-                await _storage.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }
         }
