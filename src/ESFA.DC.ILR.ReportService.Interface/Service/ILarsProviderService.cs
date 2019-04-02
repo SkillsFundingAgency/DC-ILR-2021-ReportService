@@ -24,8 +24,6 @@ namespace ESFA.DC.ILR.ReportService.Interface.Service
             int learningDeliveryStandardCode,
             CancellationToken cancellationToken);
 
-        Task<List<AppsMonthlyPaymentLarsLearningDeliveryInfo>>
-            GetLarsLearningDeliveryInfoForAppsMonthlyPaymentReportAsync(string[] learnerAimRefs,
-                CancellationToken cancellationToken);
+        Task<List<AppsMonthlyPaymentLarsLearningDeliveryInfo>> GetLarsLearningDeliveryInfoForAppsMonthlyPaymentReportAsync(string[] learnerAimRefs, CancellationToken cancellationToken);
     }
 }
