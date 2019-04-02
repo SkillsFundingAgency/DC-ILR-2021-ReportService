@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.ReportService.Interface.DataMatch;
-using ESFA.DC.ILR1819.ReportService.Model.DasCommitments;
+using ESFA.DC.ILR.ReportService.Model.DasCommitments;
 using ESFA.DC.ILR1819.ReportService.Service.Extensions.DataMatch;
 using ESFA.DC.ILR1819.ReportService.Service.ReferenceData;
 

@@ -7,8 +7,8 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Builders
     using ESFA.DC.ILR.FundingService.FM25.Model.Output;
     using ESFA.DC.ILR.Model.Interface;
     using ESFA.DC.ILR.ReportService.Interface.Service;
-    using Model.Lars;
-    using Model.ReportModels;
+    using ILR.ReportService.Model.Lars;
+    using ILR.ReportService.Model.ReportModels;
 
     public class MainOccupancyReportModelBuilder : IMainOccupancyReportModelBuilder
     {

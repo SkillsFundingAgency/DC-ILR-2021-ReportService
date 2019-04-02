@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.Eas
+﻿namespace ESFA.DC.ILR.ReportService.Model.Eas
 {
     public class EasPaymentType
     {

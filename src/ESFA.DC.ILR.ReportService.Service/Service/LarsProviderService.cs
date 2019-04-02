@@ -8,9 +8,9 @@ using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.Data.LARS.Model.Interfaces;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.Lars;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
+using ESFA.DC.ILR.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Model.Lars;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Service

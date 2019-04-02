@@ -1,7 +1,7 @@
 ﻿using System;
-using ESFA.DC.ILR1819.ReportService.Model.Styling;
+using ESFA.DC.ILR.ReportService.Model.Styling;
 
-namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels
+namespace ESFA.DC.ILR.ReportService.Model.ReportModels
 {
     public sealed class AdultFundingClaimModel : ICloneable
     {

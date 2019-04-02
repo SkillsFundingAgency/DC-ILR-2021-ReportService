@@ -1,6 +1,6 @@
 ﻿using Aspose.Cells;
 
-namespace ESFA.DC.ILR1819.ReportService.Model.Styling
+namespace ESFA.DC.ILR.ReportService.Model.Styling
 {
     public sealed class CellStyle
     {

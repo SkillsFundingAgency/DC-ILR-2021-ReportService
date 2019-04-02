@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 using ESFA.DC.DASPayments.EF;
 using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsCoInvestment;
-using ESFA.DC.ILR1819.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
+using ESFA.DC.ILR.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 

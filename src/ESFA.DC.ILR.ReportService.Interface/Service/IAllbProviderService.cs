@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Context;
-using ESFA.DC.ILR1819.ReportService.Model.ILR;
+using ESFA.DC.ILR.ReportService.Model.ILR;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Service
 {

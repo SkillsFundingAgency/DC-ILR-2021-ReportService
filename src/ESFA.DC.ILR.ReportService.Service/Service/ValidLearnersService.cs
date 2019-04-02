@@ -1,5 +1,5 @@
 ﻿using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.Logging.Interfaces;

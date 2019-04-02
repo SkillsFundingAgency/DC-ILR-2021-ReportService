@@ -3,7 +3,7 @@ using System.Linq;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Builders
 {

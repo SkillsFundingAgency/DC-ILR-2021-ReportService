@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ESFA.DC.ILR1819.ReportService.Model.ILR
+namespace ESFA.DC.ILR.ReportService.Model.ILR
 {
     public class FM35LearningDeliveryValues
     {

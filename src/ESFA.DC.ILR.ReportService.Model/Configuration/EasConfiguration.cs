@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.Configuration
+﻿namespace ESFA.DC.ILR.ReportService.Model.Configuration
 {
     public sealed class EasConfiguration
     {

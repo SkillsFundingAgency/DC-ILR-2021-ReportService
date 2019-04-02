@@ -1,5 +1,5 @@
 ﻿
-namespace ESFA.DC.ILR1819.ReportService.Model.ReportModels.PeriodEnd
+namespace ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd
 {
     public class AppsCoInvestmentContributionsModel
     {

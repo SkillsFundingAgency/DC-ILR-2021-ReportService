@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.Lars
+﻿namespace ESFA.DC.ILR.ReportService.Model.Lars
 {
     public sealed class LarsLearningDelivery
     {

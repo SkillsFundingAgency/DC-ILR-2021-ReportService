@@ -11,8 +11,8 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Generation;
-using ESFA.DC.ILR1819.ReportService.Model.Styling;
+using ESFA.DC.ILR.ReportService.Model.Generation;
+using ESFA.DC.ILR.ReportService.Model.Styling;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {

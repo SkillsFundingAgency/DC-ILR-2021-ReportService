@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Model.DasCommitments
+﻿namespace ESFA.DC.ILR.ReportService.Model.DasCommitments
 {
     public enum TransactionType
     {

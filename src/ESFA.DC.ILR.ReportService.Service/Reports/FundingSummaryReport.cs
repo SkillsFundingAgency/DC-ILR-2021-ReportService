@@ -21,13 +21,13 @@ using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR1819.ReportService.Model.Generation;
-using ESFA.DC.ILR1819.ReportService.Model.ILR;
-using ESFA.DC.ILR1819.ReportService.Model.ReportModels;
-using ESFA.DC.ILR1819.ReportService.Model.Styling;
+using ESFA.DC.ILR.ReportService.Model.Generation;
+using ESFA.DC.ILR.ReportService.Model.ILR;
+using ESFA.DC.ILR.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Model.Styling;
 using ESFA.DC.ILR1819.ReportService.Service.Mapper;
 using ESFA.DC.IO.Interfaces;
-using EasSubmissionValues = ESFA.DC.ILR1819.ReportService.Model.Eas.EasSubmissionValues;
+using EasSubmissionValues = ESFA.DC.ILR.ReportService.Model.Eas.EasSubmissionValues;
 
 namespace ESFA.DC.ILR1819.ReportService.Service.Reports
 {
