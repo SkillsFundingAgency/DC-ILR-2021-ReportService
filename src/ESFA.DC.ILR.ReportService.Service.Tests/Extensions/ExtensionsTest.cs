@@ -1,29 +1,27 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using ESFA.DC.ILR.ReportService.Service.Extensions;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using FluentAssertions;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Tests.General
+namespace ESFA.DC.ILR.ReportService.Service.Tests.Extensions
 {
     public sealed class ExtensionsTest
     {
         [Fact]
         public void TestDistinctByCount()
         {
-            List<ValidationErrorDto> tokens = new List<ValidationErrorDto>()
+            IEnumerable<Tuple<string>> tokens = new List<Tuple<string>>()
             {
-                new ValidationErrorDto() { LearnerReferenceNumber = "A" },
-                new ValidationErrorDto() { LearnerReferenceNumber = "B" },
-                new ValidationErrorDto() { LearnerReferenceNumber = string.Empty },
-                new ValidationErrorDto() { LearnerReferenceNumber = "C" },
-                new ValidationErrorDto() { LearnerReferenceNumber = "A" },
-                new ValidationErrorDto() { LearnerReferenceNumber = "D" }
+                new Tuple<string>("A"),
+                new Tuple<string>("B"),
+                new Tuple<string>(string.Empty),
+                new Tuple<string>("C"),
+                new Tuple<string>("A"),
+                new Tuple<string>("D"),
             };
 
-            int count = tokens.DistinctByCount(x => x.LearnerReferenceNumber);
-
-            count.Should().Be(4);
+            tokens.DistinctByCount(x => x.Item1).Should().Be(4);
         }
     }
 }
