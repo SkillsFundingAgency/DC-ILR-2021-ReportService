@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
-using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR1819.ReportService.Stateless.Context;
@@ -58,9 +57,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.General
                 })
                 .Returns(Task.CompletedTask);
             report.Setup(x => x.IsMatch(It.IsAny<string>())).Returns(true);
-
-            Mock<IIlrFileHelper> ilrFileHelper = new Mock<IIlrFileHelper>();
-            ilrFileHelper.Setup(x => x.CheckIlrFileNameIsValid(It.IsAny<IReportServiceContext>())).Returns(true);
 
             JobContextMessage jobContextMessage =
                 new JobContextMessage(

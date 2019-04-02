@@ -120,8 +120,7 @@
     <Compile Include="Extensions\DateTimeExtensions.cs" />
     <Compile Include="Extensions\Eas\EasPaymentTypesExtensions.cs" />
     <Compile Include="Extensions\Eas\EasSubmissionValuesExtensions.cs" />
-    <Compile Include="Helper\ExtensionMethods.cs" />
-    <Compile Include="Helper\IlrFileHelper.cs" />
+    <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\FundingSummaryPeriodEndMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\AppsDataMatchMonthEndMapper.cs" />
@@ -326,5 +325,6 @@
       <Version>9.3.0</Version>
     </PackageReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
