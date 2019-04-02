@@ -114,7 +114,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
         [InlineData("AEB – Other Learning (non-procured)", 5, "AEB – Other Learning (procured from Nov 2017)", 5, "AEB – Other Learning (procured from Nov 2017)", 5, "AEB – Other Learning (non-procured)", 5)]
         [InlineData("AEB – Other Learning (non-procured)", 6, "AEB – Other Learning (non-procured)", 5, "AEB – Other Learning (non-procured)", 5, "AEB – Other Learning (non-procured)", 6)]
         [InlineData("AEB – Other Learning (procured from Nov 2017)", 1, "AEB – Other Learning (non-procured)", 1, "19-24 Traineeship (procured from Nov 2017)", 1, "19-24 Traineeship (procured from Nov 2017)", 1, "AEB – Other Learning (non-procured)", 1, "AEB – Other Learning (procured from Nov 2017)", 1)]
-        public async Task TestSummaryOfFm35FundingModelComparer(params object[] inputs)
+        public void TestSummaryOfFm35FundingModelComparer(params object[] inputs)
         {
             SummaryOfFm35FundingModelComparer summaryOfFm35FundingModelComparer = new SummaryOfFm35FundingModelComparer();
 

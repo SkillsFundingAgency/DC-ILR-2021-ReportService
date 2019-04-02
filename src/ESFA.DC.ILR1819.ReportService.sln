@@ -12,7 +12,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR.ReportService.T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR1819.ReportService.Service", "ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj", "{7E327D70-D514-40A0-AC07-35176660149C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.ILR1819.ReportService.Model", "ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR1819.ReportService.Model.csproj", "{39DB428D-1380-40F2-9361-18ED31CF95FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.ILR.ReportService.Model", "ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR.ReportService.Model.csproj", "{39DB428D-1380-40F2-9361-18ED31CF95FC}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.ILR.ReportService.Interface", "ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR.ReportService.Interface.csproj", "{4D408F22-661B-44B3-B6CA-3C6CEE60AC87}"
 EndProject

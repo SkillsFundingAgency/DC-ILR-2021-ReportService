@@ -3,6 +3,8 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Platforms>AnyCPU;x64</Platforms>
+    <AssemblyName>ESFA.DC.ILR.ReportService.Model</AssemblyName>
+    <RootNamespace>ESFA.DC.ILR.ReportService.Model</RootNamespace>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
