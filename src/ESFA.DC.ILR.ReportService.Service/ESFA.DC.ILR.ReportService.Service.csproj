@@ -310,9 +310,6 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer">
       <Version>2.2.2</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.ServiceFabric">
-      <Version>6.3.162</Version>
-    </PackageReference>
     <PackageReference Include="StyleCop.Analyzers">
       <Version>1.0.2</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
