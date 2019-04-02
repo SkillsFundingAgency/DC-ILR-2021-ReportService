@@ -17,7 +17,7 @@ using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Poco;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
-using ESFA.DC.ILR.ReportService.Service.Helper;
+using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.IO.Interfaces;

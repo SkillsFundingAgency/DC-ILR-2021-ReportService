@@ -20,7 +20,6 @@ using ESFA.DC.ILR.ReportService.Service.Builders;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.BusinessRules;
 using ESFA.DC.ILR.ReportService.Service.Commands.AppsIndicativeEarnings;
-using ESFA.DC.ILR.ReportService.Service.Helper;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Service;
@@ -260,7 +259,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             RegisterServices(containerBuilder);
             RegisterBuilders(containerBuilder);
             RegisterRules(containerBuilder);
-            RegisterHelpers(containerBuilder);
             RegisterCommands(containerBuilder);
 
             return containerBuilder;
@@ -462,12 +460,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         private static void RegisterRules(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<MathsAndEnglishFm25Rules>().As<IMathsAndEnglishFm25Rules>()
-                .InstancePerLifetimeScope();
-        }
-
-        private static void RegisterHelpers(ContainerBuilder containerBuilder)
-        {
-            containerBuilder.RegisterType<IlrFileHelper>().As<IIlrFileHelper>()
                 .InstancePerLifetimeScope();
         }
 

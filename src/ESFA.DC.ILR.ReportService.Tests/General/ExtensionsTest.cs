@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.ILR.ReportService.Service.Helper;
+using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using FluentAssertions;
 using Xunit;
