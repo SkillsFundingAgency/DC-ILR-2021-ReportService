@@ -35,7 +35,6 @@ using ESFA.DC.ILR1819.ReportService.Stateless.Modules;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.IO.Redis.Config.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager;
 using ESFA.DC.JobContextManager.Interface;
@@ -95,12 +94,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 configHelper.GetSectionValues<CollectionsManagementConfiguration>("CollectionsManagementSection");
             containerBuilder.RegisterInstance(collectionsManagementConfiguration)
                 .As<CollectionsManagementConfiguration>().SingleInstance();
-
-            // register redis config
-            var azureRedisOptions = configHelper.GetSectionValues<RedisOptions>("RedisSection");
-            containerBuilder.Register(c => new RedisKeyValuePersistenceConfig(
-                    azureRedisOptions.RedisConnectionString))
-                .As<IRedisKeyValuePersistenceServiceConfig>().SingleInstance();
 
             // register azure blob storage service
             var azureBlobStorageOptions = configHelper.GetSectionValues<AzureStorageOptions>("AzureStorageSection");

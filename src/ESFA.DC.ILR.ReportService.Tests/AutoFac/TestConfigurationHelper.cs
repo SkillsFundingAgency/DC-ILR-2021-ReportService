@@ -12,8 +12,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
         {
             switch (sectionName)
             {
-                case "RedisSection":
-                    return (T)(object)new RedisOptions();
                 case "LarsSection":
                     return (T)(object)new LarsConfiguration();
                 case "TopicAndTaskSection":
