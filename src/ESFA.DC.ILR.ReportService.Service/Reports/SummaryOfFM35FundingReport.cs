@@ -15,12 +15,13 @@ using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public class SummaryOfFm35FundingReport : AbstractReportBuilder, IReport
+    public class SummaryOfFm35FundingReport : AbstractReport, IReport
     {
         private static readonly SummaryOfFm35FundingModelComparer comparer = new SummaryOfFm35FundingModelComparer();
 

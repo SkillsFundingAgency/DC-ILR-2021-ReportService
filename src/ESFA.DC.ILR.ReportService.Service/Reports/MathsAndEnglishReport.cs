@@ -16,12 +16,13 @@ using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class MathsAndEnglishReport : AbstractReportBuilder, IReport
+    public sealed class MathsAndEnglishReport : AbstractReport, IReport
     {
         private static readonly MathsAndEnglishModelComparer MathsAndEnglishModelComparer = new MathsAndEnglishModelComparer();
 

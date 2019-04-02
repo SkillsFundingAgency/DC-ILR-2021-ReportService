@@ -143,7 +143,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessage.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
-    <Compile Include="Reports\AbstractReportBuilder.cs" />
+    <Compile Include="Reports\Abstract\AbstractReport.cs" />
     <Compile Include="Reports\PeriodEnd\FundingSummaryPeriodEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsDataMatchMonthEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsMonthlyPaymentReport.cs" />

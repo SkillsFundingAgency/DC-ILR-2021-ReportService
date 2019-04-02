@@ -16,12 +16,13 @@ using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class FundingClaim1619Report : AbstractReportBuilder, IReport
+    public sealed class FundingClaim1619Report : AbstractReport, IReport
     {
         private const string ProviderCellName = "C3";
         private const string UKPrnCellName = "C4";

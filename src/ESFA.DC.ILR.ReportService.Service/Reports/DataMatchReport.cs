@@ -23,12 +23,13 @@ using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Extensions.DataMatch;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ReportService.Service.ReferenceData;
+using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class DataMatchReport : AbstractReportBuilder, IReport
+    public sealed class DataMatchReport : AbstractReport, IReport
     {
         private static readonly DataMatchModelComparer DataMatchModelComparer = new DataMatchModelComparer();
 

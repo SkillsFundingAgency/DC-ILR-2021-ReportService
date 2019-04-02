@@ -12,12 +12,13 @@ using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
+using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
-    public sealed class AppsCoInvestmentContributionsReport : AbstractReportBuilder, IReport
+    public sealed class AppsCoInvestmentContributionsReport : AbstractReport, IReport
     {
         private readonly ILogger _logger;
         private readonly IKeyValuePersistenceService _storage;

@@ -14,9 +14,9 @@ using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Generation;
 using ESFA.DC.ILR.ReportService.Model.Styling;
 
-namespace ESFA.DC.ILR.ReportService.Service.Reports
+namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 {
-    public abstract class AbstractReportBuilder
+    public abstract class AbstractReport
     {
         protected string ReportFileName;
 
@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private readonly Dictionary<Worksheet, int> _currentRow;
 
-        protected AbstractReportBuilder(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider)
+        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider)
         {
             _dateTimeProvider = dateTimeProvider;
             _valueProvider = valueProvider;

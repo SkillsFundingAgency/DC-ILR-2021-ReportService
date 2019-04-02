@@ -19,6 +19,7 @@ using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Jobs.Model;
@@ -27,7 +28,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class ValidationErrorsReport : AbstractReportBuilder, IReport
+    public sealed class ValidationErrorsReport : AbstractReport, IReport
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 

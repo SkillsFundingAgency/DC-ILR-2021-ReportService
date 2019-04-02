@@ -18,13 +18,14 @@ using ESFA.DC.ILR.ReportService.Model.Lars;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class AllbOccupancyReport : AbstractReportBuilder, IReport
+    public sealed class AllbOccupancyReport : AbstractReport, IReport
     {
         private const string AlbCode = "ALBCode";
 
