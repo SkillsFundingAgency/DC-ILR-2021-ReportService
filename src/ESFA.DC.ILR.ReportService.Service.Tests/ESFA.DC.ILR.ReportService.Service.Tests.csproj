@@ -38,6 +38,9 @@
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.3.1\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface">
+      <HintPath>..\..\..\..\..\Users\MCHILDS\.nuget\packages\esfa.dc.ilr.validationerrors.interface\0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions, Version=5.6.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.5.6.0\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>
@@ -78,6 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ExtensionsTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -85,6 +89,12 @@
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR.ReportService.Service.csproj">
+      <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Service</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

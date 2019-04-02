@@ -75,7 +75,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutoFac\AutoFacTest.cs" />
-    <Compile Include="General\ExtensionsTest.cs" />
     <Compile Include="General\TestEntryPoint.cs" />
     <Compile Include="Helpers\TestCsvHelper.cs" />
     <Compile Include="Helpers\TestFM25Builder.cs" />
