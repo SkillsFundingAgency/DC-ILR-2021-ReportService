@@ -433,9 +433,9 @@
       <Project>{4d408f22-661b-44b3-b6ca-3c6cee60ac87}</Project>
       <Name>ESFA.DC.ILR.ReportService.Interface</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR1819.ReportService.Service.csproj">
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR.ReportService.Service.csproj">
       <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
-      <Name>ESFA.DC.ILR1819.ReportService.Service</Name>
+      <Name>ESFA.DC.ILR.ReportService.Service</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

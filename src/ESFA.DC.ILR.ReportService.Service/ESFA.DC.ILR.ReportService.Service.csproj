@@ -8,8 +8,8 @@
     <ProjectGuid>{7E327D70-D514-40A0-AC07-35176660149C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ESFA.DC.ILR1819.ReportService.Service</RootNamespace>
-    <AssemblyName>ESFA.DC.ILR1819.ReportService.Service</AssemblyName>
+    <RootNamespace>ESFA.DC.ILR.ReportService.Service</RootNamespace>
+    <AssemblyName>ESFA.DC.ILR.ReportService.Service</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
