@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using Autofac;
 using Autofac.Features.AttributeFilters;
 using ESFA.DC.Auditing.Interface;
-using ESFA.DC.CollectionsManagement.Services;
-using ESFA.DC.CollectionsManagement.Services.Interface;
 using ESFA.DC.DASPayments.EF;
 using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -361,9 +359,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             containerBuilder.RegisterType<FM81TrailBlazerProviderService>().As<IFM81TrailBlazerProviderService>()
                 .WithAttributeFiltering()
-                .InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<ReturnCalendarService>().As<IReturnCalendarService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<ValidLearnersService>().As<IValidLearnersService>()

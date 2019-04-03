@@ -90,6 +90,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             reportServiceContextMock.SetupGet(x => x.FundingFM25OutputKey).Returns("FundingFm25Output");
             reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
             reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
+            reportServiceContextMock.SetupGet(x => x.ReturnPeriod).Returns(12);
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, dataStoreConfiguration);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
@@ -100,7 +101,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IFm35Builder fm35Builder = new Fm35Builder(totalBuilder, new CacheProviderService<LearningDelivery[]>());
             IFm36Builder fm36Builder = new Fm36Builder(totalBuilder, new CacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>());
             IFm81Builder fm81Builder = new Fm81Builder(totalBuilder, new CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>());
-            IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, periodProviderService.Object, totalBuilder, stringUtilitiesService, logger.Object);
+            IAllbBuilder allbBuilder = new AllbBuilder(ilrProviderService, validLearnersService, allbProviderService, stringUtilitiesService, logger.Object);
             IExcelStyleProvider excelStyleProvider = new ExcelStyleProvider();
 
             IEasBuilder easBuilder = new EasBuilder(easProviderService);
@@ -129,7 +130,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 }));
             redis.Setup(x => x.GetAsync("FundingFm35Output", It.IsAny<Stream>(), It.IsAny<CancellationToken>())).Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead("Fm35.json").CopyTo(sr)).Returns(Task.CompletedTask);
             redis.Setup(x => x.GetAsync("FundingFm25Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm25.json"));
-            periodProviderService.Setup(x => x.GetPeriod(It.IsAny<IReportServiceContext>(), It.IsAny<CancellationToken>())).ReturnsAsync(12);
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             largeEmployerProviderService.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>()))

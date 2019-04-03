@@ -398,7 +398,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IReportServiceContext reportServiceContext,
             CancellationToken cancellationToken)
         {
-            int period = await _periodProviderService.GetPeriod(reportServiceContext, cancellationToken);
             List<long> ulns = new List<long>();
 
             foreach (FM36Learner fm36DataLearner in fm36Data.Learners)
@@ -427,7 +426,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                                 episode.PriceEpisodeValues.EpisodeEffectiveTNPStartDate;
                             rawEarning.EndDate = episode.PriceEpisodeValues.PriceEpisodeActualEndDate ??
                                                  episode.PriceEpisodeValues.PriceEpisodePlannedEndDate;
-                            rawEarning.Period = period;
+                            rawEarning.Period = reportServiceContext.ReturnPeriod;
                             rawEarning.ProgrammeType = learningDelivery.LearningDeliveryValues.ProgType;
                             rawEarning.FrameworkCode = learningDelivery.LearningDeliveryValues.FworkCode;
                             rawEarning.PathwayCode = learningDelivery.LearningDeliveryValues.PwayCode;

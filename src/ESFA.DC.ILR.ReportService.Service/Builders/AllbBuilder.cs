@@ -22,8 +22,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IAllbProviderService _allbProviderService;
-        private readonly IPeriodProviderService _periodProviderService;
-        private readonly ITotalBuilder _totalBuilder;
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly ILogger _logger;
 
@@ -31,16 +29,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             IAllbProviderService allbProviderService,
-            IPeriodProviderService periodProviderService,
-            ITotalBuilder totalBuilder,
             IStringUtilitiesService stringUtilitiesService,
             ILogger logger)
         {
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _allbProviderService = allbProviderService;
-            _periodProviderService = periodProviderService;
-            _totalBuilder = totalBuilder;
             _stringUtilitiesService = stringUtilitiesService;
             _logger = logger;
         }
@@ -66,9 +60,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             Task<IMessage> ilrFile = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<List<string>> validLearners = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
             Task<ALBGlobal> albData = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
-            Task<int> period = _periodProviderService.GetPeriod(reportServiceContext, cancellationToken);
 
-            await Task.WhenAll(ilrFile, validLearners, albData, period);
+            await Task.WhenAll(ilrFile, validLearners, albData);
 
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
@@ -93,10 +86,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
                         if (learningDelivery.LearningDeliveryFAMs != null && learningDelivery.LearningDeliveryFAMs.Any(x =>
                                 !(string.Equals(x.LearnDelFAMType, Constants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase) && string.Equals(x.LearnDelFAMCode, "359", StringComparison.OrdinalIgnoreCase))))
                         {
-                            TotalAlbFunding(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, period.Result, AlbSupportPayment, fundingSummaryModelAlbFunding);
+                            TotalAlbFunding(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, reportServiceContext.ReturnPeriod, AlbSupportPayment, fundingSummaryModelAlbFunding);
                         }
 
-                        TotalAlbAreaCosts(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, period.Result, fundingSummaryModelAlbAreaCosts);
+                        TotalAlbAreaCosts(albLearningDeliveryAreaCosts?.LearningDeliveryPeriodisedValues, reportServiceContext.ReturnPeriod, fundingSummaryModelAlbAreaCosts);
                     }
                 }
 

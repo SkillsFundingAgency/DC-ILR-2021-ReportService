@@ -58,6 +58,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Context
 
         public string CollectionName => _jobContextMessage.KeyValuePairs["CollectionName"].ToString();
 
+        public int ReturnPeriod => int.Parse(_jobContextMessage.KeyValuePairs["ReturnPeriod"].ToString());
+
         public long JobId => _jobContextMessage.JobId;
     }
 }

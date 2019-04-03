@@ -48,5 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Interface.Context
         string InvalidLearnRefNumbersKey { get; }
 
         string CollectionName { get; }
+
+        int ReturnPeriod { get; }
     }
 }
