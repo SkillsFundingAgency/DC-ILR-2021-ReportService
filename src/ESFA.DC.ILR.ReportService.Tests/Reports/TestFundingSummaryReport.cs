@@ -163,7 +163,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 versionInfo,
                 excelStyleProvider,
                 topicsAndTasks,
-                easBuilder);
+                easBuilder,
+                logger.Object);
 
             await fundingSummaryReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
