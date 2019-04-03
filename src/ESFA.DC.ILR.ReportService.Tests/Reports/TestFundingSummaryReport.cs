@@ -94,7 +94,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, dataStoreConfiguration);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
-            Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };
             ITotalBuilder totalBuilder = new TotalBuilder();
             IFm25Builder fm25Builder = new Fm25Builder();
@@ -149,7 +148,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 fm36ProviderService,
                 fm81TrailBlazerProviderService,
                 validLearnersService,
-                periodProviderService.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
                 larsProviderService,

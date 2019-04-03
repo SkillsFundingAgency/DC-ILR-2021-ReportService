@@ -28,6 +28,7 @@ using ESFA.DC.ILR.ReportService.Model.Styling;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Logging.Interfaces;
 using EasSubmissionValues = ESFA.DC.ILR.ReportService.Model.Eas.EasSubmissionValues;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
@@ -48,7 +49,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IFM81TrailBlazerProviderService _fm81TrailBlazerProviderService;
         private readonly IValidLearnersService _validLearnersService;
-        private readonly IPeriodProviderService _periodProviderService;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILarsProviderService _larsProviderService;
         private readonly IEasProviderService _easProviderService;
@@ -63,6 +63,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IVersionInfo _versionInfo;
         private readonly IExcelStyleProvider _excelStyleProvider;
         private readonly IEasBuilder _easBuilder;
+        private readonly ILogger _logger;
 
         public FundingSummaryReport(
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
@@ -74,7 +75,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IFM36ProviderService fm36ProviderService,
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService,
             IValidLearnersService validLearnersService,
-            IPeriodProviderService periodProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ILarsProviderService larsProviderService,
@@ -90,7 +90,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IVersionInfo versionInfo,
             IExcelStyleProvider excelStyleProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
-            IEasBuilder easBuilder)
+            IEasBuilder easBuilder,
+            ILogger logger)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _ilrProviderService = ilrProviderService;
@@ -101,7 +102,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _fm36ProviderService = fm36ProviderService;
             _fm81TrailBlazerProviderService = fm81TrailBlazerProviderService;
             _validLearnersService = validLearnersService;
-            _periodProviderService = periodProviderService;
             _larsProviderService = larsProviderService;
             _easProviderService = easProviderService;
             _postcodeProviderService = postcodeProviderService;
@@ -116,6 +116,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _excelStyleProvider = excelStyleProvider;
             _dateTimeProvider = dateTimeProvider;
             _easBuilder = easBuilder;
+            _logger = logger;
 
             ReportFileName = "Funding Summary Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;
@@ -127,6 +128,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
+            _logger.LogInfo("Funding Summary Report Start");
+
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
             Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
@@ -145,7 +148,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 easSubmissionsValuesTask = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
             }
 
+            _logger.LogInfo("Data Provider Tasks Start");
+
             await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, easSubmissionsValuesTask ?? Task.CompletedTask, lastSubmittedIlrFileTask);
+
+            _logger.LogInfo("Data Provider Tasks End");
 
             if (cancellationToken.IsCancellationRequested)
             {
@@ -153,7 +160,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             }
 
             FundingSummaryHeaderModel fundingSummaryHeaderModel = await GetHeader(reportServiceContext, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
+
+            _logger.LogInfo("Header Model Created");
+
             FundingSummaryFooterModel fundingSummaryFooterModel = await GetFooterAsync(ilrFileTask, lastSubmittedIlrFileTask, cancellationToken);
+
+            _logger.LogInfo("Footer Model Created");
 
             // Todo: Check keys & titles
             _fundingSummaryModels.Add(new FundingSummaryModel());
@@ -1090,8 +1102,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
+            _logger.LogInfo("CSV Report Start");
+
             string csv = GetReportCsv(fundingSummaryHeaderModel, fundingSummaryFooterModel);
             await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+
+            _logger.LogInfo("CSV Report End");
+
+            _logger.LogInfo("Excel Report Start");
 
             Workbook workbook = GetWorkbookReport(fundingSummaryHeaderModel, fundingSummaryFooterModel);
 
@@ -1106,10 +1124,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                 await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
             }
+
+            _logger.LogInfo("Excel Report End");
         }
 
         private string GetReportCsv(FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)
         {
+            _logger.LogInfo("Csv Report Content Creating");
+
             using (MemoryStream ms = new MemoryStream())
             {
                 UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
@@ -1146,7 +1168,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
                         csvWriter.Flush();
                         textWriter.Flush();
-                        return Encoding.UTF8.GetString(ms.ToArray());
+
+                        var csvOutput = Encoding.UTF8.GetString(ms.ToArray());
+
+                        _logger.LogInfo("CSV Report Content Created");
+
+                        return csvOutput;
                     }
                 }
             }
