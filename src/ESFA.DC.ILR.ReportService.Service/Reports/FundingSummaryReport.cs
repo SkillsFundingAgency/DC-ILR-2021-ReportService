@@ -1118,10 +1118,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 using (MemoryStream ms = new MemoryStream())
                 {
                     workbook.Worksheets[0].Name = "Funding Summary Report";
-                    var assembly = Assembly.GetExecutingAssembly();
-                    string euFlagBmp = assembly.GetManifestResourceNames().Single(str => str.EndsWith("EuFlag.bmp"));
-                    Stream manifestResourceStream = assembly.GetManifestResourceStream(euFlagBmp);
-                    workbook.Worksheets[0].Pictures.Add(1, 22, manifestResourceStream);
+
+                    ApplyEuBranding(workbook);
+
                     workbook.Save(ms, SaveFormat.Xlsx);
                     await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
                     await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
@@ -1136,9 +1135,23 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             }
         }
 
+        private Workbook ApplyEuBranding(Workbook workbook)
+        {
+            _logger.LogInfo("Apply EU Branding Start");
+
+            var assembly = Assembly.GetExecutingAssembly();
+            string euFlagBmp = assembly.GetManifestResourceNames().Single(str => str.EndsWith("EuFlag.bmp"));
+            Stream manifestResourceStream = assembly.GetManifestResourceStream(euFlagBmp);
+            workbook.Worksheets[0].Pictures.Add(1, 22, manifestResourceStream);
+
+            _logger.LogInfo("Apply EU Branding End");
+
+            return workbook;
+        }
+
         private string GetReportCsv(FundingSummaryHeaderModel fundingSummaryHeaderModel, FundingSummaryFooterModel fundingSummaryFooterModel)
         {
-            _logger.LogInfo("Csv Report Content Creating");
+            _logger.LogInfo("CSV Report Content Creating");
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -1191,6 +1204,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             FundingSummaryHeaderModel fundingSummaryHeaderModel,
             FundingSummaryFooterModel fundingSummaryFooterModel)
         {
+            _logger.LogInfo("Excel Work Book Content Start");
+
             Workbook workbook = new Workbook();
             CellStyle[] cellStyles = _excelStyleProvider.GetFundingSummaryStyles(workbook);
             Worksheet sheet = workbook.Worksheets[0];
@@ -1228,6 +1243,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             }
 
             WriteExcelRecords(sheet, new FundingSummaryFooterMapper(), new List<FundingSummaryFooterModel> { fundingSummaryFooterModel }, cellStyles[5], cellStyles[5], true);
+
+            _logger.LogInfo("Excell Workbook Content Finished");
 
             return workbook;
         }
