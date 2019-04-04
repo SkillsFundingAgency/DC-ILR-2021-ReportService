@@ -4,6 +4,8 @@ namespace ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment
 {
     public class DASPaymentInfo
     {
+        public int UkPrn { get; set; }
+
         public string LearnerReferenceNumber { get; set; }
 
         public string LearningAimReference { get; set; }
@@ -35,5 +37,11 @@ namespace ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment
         public Decimal Amount { get; set; }
 
         public byte FundingSource { get; set; }
+
+        public DateTime LearningStartDate { get; set; }
+
+        public string TypeOfAdditionalPayment { get; set; }
+
+        public string EmployerName { get; set; }
     }
 }
