@@ -19,7 +19,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 {
     public abstract class AbstractReport
     {
-        protected readonly IKeyValuePersistenceService _keyValuePersistenceService;
         protected readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
 
         protected string ReportFileName;
@@ -27,33 +26,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IValueProvider _valueProvider;
 
-        private readonly Dictionary<Worksheet, int> _currentRow;
-
-        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IKeyValuePersistenceService keyValuePersistenceService, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService)
-            : this(dateTimeProvider, valueProvider)
-        {
-            _keyValuePersistenceService = keyValuePersistenceService;
-            _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
-        }
-
-        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IKeyValuePersistenceService keyValuePersistenceService)
-            : this(dateTimeProvider, valueProvider)
-        {
-            _keyValuePersistenceService = keyValuePersistenceService;
-        }
+        private readonly Dictionary<Worksheet, int> _currentRow = new Dictionary<Worksheet, int>();
 
         protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService)
-            : this(dateTimeProvider, valueProvider)
         {
             _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
-        }
-
-        private AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider)
-        {
             _dateTimeProvider = dateTimeProvider;
             _valueProvider = valueProvider;
-
-            _currentRow = new Dictionary<Worksheet, int>();
         }
 
         public string ReportTaskName { get; set; }

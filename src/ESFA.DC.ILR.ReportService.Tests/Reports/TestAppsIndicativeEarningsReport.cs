@@ -162,7 +162,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 validLearnersService,
                 fm36ProviderService,
                 larsProviderService.Object,
-                stringUtilitiesService,
                 builder,
                 dateTimeProviderMock.Object,
                 valueProvider,

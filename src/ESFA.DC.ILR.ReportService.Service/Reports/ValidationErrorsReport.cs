@@ -44,7 +44,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public ValidationErrorsReport(
             ILogger logger,
-            IKeyValuePersistenceService keyValuePersistenceService,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IJsonSerializationService jsonSerializationService,
             IIlrProviderService ilrProviderService,
@@ -53,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationErrorsService validationErrorsService,
             IValidationStageOutputCache validationStageOutputCache)
-        : base(dateTimeProvider, valueProvider, keyValuePersistenceService, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _logger = logger;
             _jsonSerializationService = jsonSerializationService;
@@ -110,7 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             try
             {
-                string validationErrorsStr = await _keyValuePersistenceService.GetAsync(reportServiceContext.ValidationErrorsKey, cancellationToken);
+                string validationErrorsStr = await _streamableKeyValuePersistenceService.GetAsync(reportServiceContext.ValidationErrorsKey, cancellationToken);
 
                 try
                 {
@@ -154,8 +153,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private async Task PersistValuesToStorage(List<ValidationErrorModel> validationErrors, ZipArchive archive, CancellationToken cancellationToken)
         {
             string csv = GetCsv(validationErrors);
-            await _keyValuePersistenceService.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
-            await _keyValuePersistenceService.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{_externalFileName}.json", _jsonSerializationService.Serialize(_ilrValidationResult), cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{_externalFileName}.csv", csv, cancellationToken);
 
             await WriteZipEntry(archive, $"{_fileName}.csv", csv);
 

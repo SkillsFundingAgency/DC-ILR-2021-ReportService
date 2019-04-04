@@ -1107,7 +1107,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 _logger.LogInfo("CSV Report Start");
 
                 string csv = GetReportCsv(fundingSummaryHeaderModel, fundingSummaryFooterModel);
-                await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+                await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
 
                 _logger.LogInfo("CSV Report End");
 

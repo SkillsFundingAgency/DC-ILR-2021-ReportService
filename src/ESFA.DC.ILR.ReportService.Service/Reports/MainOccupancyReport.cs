@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public MainOccupancyReport(
             ILogger logger,
-            IKeyValuePersistenceService keyValuePersistenceService,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IValidLearnersService validLearnersService,
@@ -52,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IMainOccupancyReportModelBuilder mainOccupancyReportModelBuilder)
-        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _logger = logger;
             _ilrProviderService = ilrProviderService;
@@ -186,7 +186,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
-            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

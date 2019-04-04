@@ -33,14 +33,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public SummaryOfFm35FundingReport(
             ILogger logger,
-            IKeyValuePersistenceService keyValuePersistenceService,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IFM35ProviderService fm35ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFm35Builder builder)
-            : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _logger = logger;
             _fm35ProviderService = fm35ProviderService;

@@ -27,13 +27,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 
         public AppsCoInvestmentContributionsReport(
             ILogger logger,
-            IKeyValuePersistenceService keyValuePersistenceService,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IIlrProviderService ilrProviderService,
             IDASPaymentsProviderService dasPaymentsProviderService)
-        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _logger = logger;
             _ilrProviderService = ilrProviderService;

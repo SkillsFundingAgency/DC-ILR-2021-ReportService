@@ -112,7 +112,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
-            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

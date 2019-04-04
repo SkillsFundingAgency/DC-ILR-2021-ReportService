@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 
         public AppsDataMatchMonthEndReport(
             ILogger logger,
-            IKeyValuePersistenceService keyValuePersistenceService,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IFM36ProviderService fm36ProviderService,
             IStringUtilitiesService stringUtilitiesService,
@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IAppsDataMatchMonthEndModelBuilder modelBuilder)
-        : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _logger = logger;
             _ilrProviderService = ilrProviderService;
@@ -58,7 +58,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
-            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

@@ -48,14 +48,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IFM36ProviderService fm36ProviderService,
             IDasCommitmentsService dasCommitmentsService,
             IPeriodProviderService periodProviderService,
-            IKeyValuePersistenceService keyValuePersistenceService,
+            IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationStageOutputCache validationStageOutputCache,
             IDatalockValidationResultBuilder datalockValidationResultBuilder,
             ITotalBuilder totalBuilder)
-            : base(dateTimeProvider, valueProvider, keyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
         {
             _logger = logger;
             _fm36ProviderService = fm36ProviderService;
@@ -109,7 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var fileName = GetFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
 
             string csv = WriteResults();
-            await _keyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

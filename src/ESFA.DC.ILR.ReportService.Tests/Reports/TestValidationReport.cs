@@ -56,7 +56,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
-            Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
@@ -81,7 +80,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                     }
                 })
                 .Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("ValidationErrors", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ValidationErrors.json"));
+            storage.Setup(x => x.GetAsync("ValidationErrors", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("ValidationErrors.json"));
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             validationErrorsServiceMock.Setup(x => x.PopulateValidationErrors(It.IsAny<string[]>(), It.IsAny<List<ValidationErrorDetails>>(), It.IsAny<CancellationToken>())).Callback<string[], List<ValidationErrorDetails>, CancellationToken>(
@@ -118,7 +117,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             IReport validationErrorsReport = new ValidationErrorsReport(
                 logger.Object,
-                redis.Object,
                 storage.Object,
                 jsonSerializationService,
                 ilrProviderService,
