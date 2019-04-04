@@ -364,6 +364,7 @@
     <Compile Include="Comparer\ValidationErrorsModelComparer.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="EntryPoint.cs" />
+    <Compile Include="Extensions\AcademicPeriodYearExtensions.cs" />
     <Compile Include="Extensions\DataMatch\EarningExtensions.cs" />
     <Compile Include="Extensions\DataMatch\PriceEpisodeMatchExtensions.cs" />
     <Compile Include="Extensions\DataMatch\PriceEpisodePeriodMatchExtensions.cs" />

@@ -4,10 +4,8 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Autofac.Features.AttributeFilters;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR1819.ReportService.Interface;
 using ESFA.DC.ILR1819.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR1819.ReportService.Interface.Configuration;
 using ESFA.DC.ILR1819.ReportService.Interface.Context;
@@ -26,9 +24,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
         private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
-        private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
-
         private readonly IAppsAdditionalPaymentsModelBuilder _modelBuilder;
 
         public AppsAdditionalPaymentsReport(
@@ -36,7 +32,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             IKeyValuePersistenceService storage,
             IIlrProviderService ilrProviderService,
             IFM36ProviderService fm36ProviderService,
-            IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
@@ -48,7 +43,6 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             _storage = storage;
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
-            _stringUtilitiesService = stringUtilitiesService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
             _modelBuilder = modelBuilder;
 
@@ -67,16 +61,14 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
             var appsAdditionalPaymentDasPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(ukPrn, cancellationToken);
 
             var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsAdditionalPaymentIlrInfo, appsAdditionalPaymentRulebaseInfo, appsAdditionalPaymentDasPaymentsInfo);
-            string csv = await GetCsv(reportServiceContext, cancellationToken);
+            string csv = await GetCsv(appsAdditionalPaymentsModel, cancellationToken);
             await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(List<AppsAdditionalPaymentsModel> appsAdditionalPaymentsModel, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            var additionalPaymentsModels = new List<AppsAdditionalPaymentsModel>();
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -85,7 +77,7 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Reports.PeriodEnd
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<AppsAdditionalPaymentsMapper, AppsAdditionalPaymentsModel>(csvWriter, additionalPaymentsModels);
+                        WriteCsvRecords<AppsAdditionalPaymentsMapper, AppsAdditionalPaymentsModel>(csvWriter, appsAdditionalPaymentsModel);
 
                         csvWriter.Flush();
                         textWriter.Flush();
