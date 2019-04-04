@@ -61,8 +61,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 
             var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsAdditionalPaymentIlrInfo, appsAdditionalPaymentRulebaseInfo, appsAdditionalPaymentDasPaymentsInfo);
             string csv = await GetCsv(appsAdditionalPaymentsModel, cancellationToken);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
-            string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }

@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace ESFA.DC.ILR1819.ReportService.Service.Extensions
+namespace ESFA.DC.ILR.ReportService.Service.Extensions
 {
     public static class AcademicPeriodYearExtensions
     {
