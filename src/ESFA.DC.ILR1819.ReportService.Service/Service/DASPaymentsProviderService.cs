@@ -109,7 +109,9 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
                     LearningAimReference = payment.LearningAimReference,
                     LearningAimStandardCode = payment.LearningAimStandardCode,
                     Amount = payment.Amount,
-                    LearningAimFundingLineType = payment.LearningAimFundingLineType
+                    LearningAimFundingLineType = payment.LearningAimFundingLineType,
+                    TypeOfAdditionalPayment = GetTypeOfAdditionalPayment(payment.TransactionType),
+                    EmployerName = string.Empty
                 };
 
                 appsAdditionalPaymentDasPaymentsInfo.Payments.Add(paymentInfo);
@@ -160,6 +162,23 @@ namespace ESFA.DC.ILR1819.ReportService.Service.Service
             }
 
             return appsMonthlyPaymentDasInfo;
+        }
+
+        private string GetTypeOfAdditionalPayment(byte transactionType)
+        {
+            switch (transactionType)
+            {
+                case 4:
+                case 6:
+                    return "Employer";
+                case 5:
+                case 7:
+                    return "Provider";
+                case 16:
+                    return "Apprentice";
+                default:
+                    return string.Empty;
+            }
         }
     }
 }
