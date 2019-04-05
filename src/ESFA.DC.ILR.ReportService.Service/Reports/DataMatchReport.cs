@@ -34,7 +34,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly DataMatchModelComparer DataMatchModelComparer = new DataMatchModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IDasCommitmentsService _dasCommitmentsService;
         private readonly IPeriodProviderService _periodProviderService;
@@ -56,9 +55,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IValidationStageOutputCache validationStageOutputCache,
             IDatalockValidationResultBuilder datalockValidationResultBuilder,
             ITotalBuilder totalBuilder)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _fm36ProviderService = fm36ProviderService;
             _dasCommitmentsService = dasCommitmentsService;
             _periodProviderService = periodProviderService;

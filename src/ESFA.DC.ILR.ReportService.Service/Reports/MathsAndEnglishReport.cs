@@ -47,7 +47,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IMathsAndEnglishFm25Rules mathsAndEnglishFm25Rules,
             IMathsAndEnglishModelBuilder mathsAndEnglishModelBuilder,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _logger = logger;
             _ilrProviderService = ilrProviderService;

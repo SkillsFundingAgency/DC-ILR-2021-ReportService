@@ -14,12 +14,14 @@ using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Generation;
 using ESFA.DC.ILR.ReportService.Model.Styling;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 {
     public abstract class AbstractReport
     {
         protected readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
+        protected readonly ILogger _logger;
 
         protected string ReportFileName;
 
@@ -28,9 +30,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 
         private readonly Dictionary<Worksheet, int> _currentRow = new Dictionary<Worksheet, int>();
 
-        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService)
+        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService, ILogger logger)
         {
             _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
+            _logger = logger;
             _dateTimeProvider = dateTimeProvider;
             _valueProvider = valueProvider;
         }

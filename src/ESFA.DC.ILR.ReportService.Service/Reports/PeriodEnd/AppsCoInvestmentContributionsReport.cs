@@ -21,7 +21,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
     public sealed class AppsCoInvestmentContributionsReport : AbstractReport, IReport
     {
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
 
@@ -33,9 +32,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IIlrProviderService ilrProviderService,
             IDASPaymentsProviderService dasPaymentsProviderService)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
             ReportFileName = "Apps Co-Investment Contributions Report";

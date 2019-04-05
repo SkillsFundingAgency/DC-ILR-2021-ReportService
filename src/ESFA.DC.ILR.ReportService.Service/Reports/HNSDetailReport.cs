@@ -28,7 +28,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly HNSModelComparer _hnsModelComparer = new HNSModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IFM25ProviderService _fm25ProviderService;
@@ -44,9 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IHNSReportModelBuilder hnsReportModelBuilder)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _fm25ProviderService = fm25ProviderService;

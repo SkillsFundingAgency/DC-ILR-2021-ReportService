@@ -80,7 +80,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private const string LargeEmployerDataCellNameFis = "F39";
         private const string ReportGeneratedAtCellNameFis = "B40";
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
@@ -111,9 +110,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IVersionInfo versionInfo,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IAdultFundingClaimBuilder adultFundingClaimBuilder)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;

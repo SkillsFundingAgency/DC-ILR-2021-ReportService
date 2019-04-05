@@ -31,7 +31,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly MainOccupancyModelComparer MainOccupancyModelComparer = new MainOccupancyModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly IValidLearnersService _validLearnersService;
@@ -53,9 +52,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IMainOccupancyReportModelBuilder mainOccupancyReportModelBuilder)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _stringUtilitiesService = stringUtilitiesService;
             _validLearnersService = validLearnersService;

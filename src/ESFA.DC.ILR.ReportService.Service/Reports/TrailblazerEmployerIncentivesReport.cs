@@ -26,7 +26,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
     public sealed class TrailblazerEmployerIncentivesReport : AbstractReport, IReport
     {
-        private readonly ILogger _logger;
         private readonly IFM81TrailBlazerProviderService _fm81TrailBlazerProviderService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
@@ -43,10 +42,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValueProvider valueProvider,
             IDateTimeProvider dateTimeProvider)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
-
             _fm81TrailBlazerProviderService = fm81TrailBlazerProviderService;
             _validLearnersService = validLearnersService;
             _ilrProviderService = ilrProviderService;

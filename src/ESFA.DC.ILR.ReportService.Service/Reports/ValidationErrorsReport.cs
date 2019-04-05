@@ -33,7 +33,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidationErrorsService _validationErrorsService;
@@ -53,9 +52,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationErrorsService validationErrorsService,
             IValidationStageOutputCache validationStageOutputCache)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _validationErrorsService = validationErrorsService;

@@ -27,21 +27,18 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly SummaryOfFm35FundingModelComparer comparer = new SummaryOfFm35FundingModelComparer();
 
         private readonly IFM35ProviderService _fm35ProviderService;
-        private readonly ILogger _logger;
         private readonly IFm35Builder _summaryOfFm35FundingModelBuilder;
 
         public SummaryOfFm35FundingReport(
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IFM35ProviderService fm35ProviderService,
-            IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFm35Builder builder)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _fm35ProviderService = fm35ProviderService;
             _summaryOfFm35FundingModelBuilder = builder;
 
