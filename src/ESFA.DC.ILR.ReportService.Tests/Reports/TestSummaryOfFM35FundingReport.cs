@@ -99,7 +99,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 logger.Object,
                 storage.Object,
                 fm35ProviderService,
-                stringUtilitiesService,
                 dateTimeProviderMock.Object,
                 valueProvider,
                 topicsAndTasks,

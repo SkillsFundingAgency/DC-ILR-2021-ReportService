@@ -82,7 +82,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsDataMatchMonthEn
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var appsDataMatchMonthEndModelBuilder = new AppsDataMatchMonthEndModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsDataMatchMonthEndReport(logger.Object, storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, appsDataMatchMonthEndModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.AppsDataMatchMonthEndReport(storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, appsDataMatchMonthEndModelBuilder, logger.Object);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

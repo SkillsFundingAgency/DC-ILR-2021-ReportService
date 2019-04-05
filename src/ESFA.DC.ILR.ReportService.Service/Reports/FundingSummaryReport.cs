@@ -64,7 +64,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IVersionInfo _versionInfo;
         private readonly IExcelStyleProvider _excelStyleProvider;
         private readonly IEasBuilder _easBuilder;
-        private readonly ILogger _logger;
 
         public FundingSummaryReport(
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
@@ -93,7 +92,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IEasBuilder easBuilder,
             ILogger logger)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _ilrProviderService = ilrProviderService;
             _orgProviderService = orgProviderService;
@@ -117,7 +116,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _excelStyleProvider = excelStyleProvider;
             _dateTimeProvider = dateTimeProvider;
             _easBuilder = easBuilder;
-            _logger = logger;
 
             ReportFileName = "Funding Summary Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;

@@ -38,7 +38,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private static readonly AllbOccupancyModelComparer AllbOccupancyModelComparer = new AllbOccupancyModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly ILarsProviderService _larsProviderService;
         private readonly IAllbProviderService _allbProviderService;
@@ -56,9 +55,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _larsProviderService = larsProviderService;
             _allbProviderService = allbProviderService;

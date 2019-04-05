@@ -107,8 +107,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILargeEmployerProviderService largeEmployerProviderService,
             ILarsProviderService larsProviderService,
             IVersionInfo versionInfo,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
+            ILogger logger)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _dateTimeProvider = dateTimeProvider;
             _ilrProviderService = ilrProviderService;
