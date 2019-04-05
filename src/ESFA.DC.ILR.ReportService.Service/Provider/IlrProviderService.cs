@@ -15,6 +15,7 @@ using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
+using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
@@ -26,18 +27,14 @@ using LearningDeliveryInfo = ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInv
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class IlrProviderService : IIlrProviderService
+    public sealed class IlrProviderService : AbstractFundModelProviderService, IIlrProviderService
     {
         private const int ApprentishipsFundModel = 36;
-        private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _storage;
-        private readonly IXmlSerializationService _xmlSerializationService;
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
-        private readonly SemaphoreSlim _getIlrLock;
+        private readonly SemaphoreSlim _getIlrLock = new SemaphoreSlim(1, 1);
         private Message _message;
 
         public IlrProviderService(
@@ -45,19 +42,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
             IStreamableKeyValuePersistenceService storage,
             IXmlSerializationService xmlSerializationService,
             IDateTimeProvider dateTimeProvider,
-            IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819ValidContext> ilrValidContextFactory,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
+        : base(storage, xmlSerializationService, logger)
         {
-            _logger = logger;
-            _storage = storage;
-            _xmlSerializationService = xmlSerializationService;
             _dateTimeProvider = dateTimeProvider;
-            _intUtilitiesService = intUtilitiesService;
             _ilrValidContextFactory = ilrValidContextFactory;
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
-            _message = null;
-            _getIlrLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<IMessage> GetIlrFile(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
@@ -79,9 +70,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                 {
                     using (MemoryStream ms = new MemoryStream())
                     {
-                        await _storage.GetAsync(filename, ms, cancellationToken);
+                        await _streamableKeyValuePersistenceService.GetAsync(filename, ms, cancellationToken);
                         ms.Seek(0, SeekOrigin.Begin);
-                        _message = _xmlSerializationService.Deserialize<Message>(ms);
+                        _message = _serializationService.Deserialize<Message>(ms);
                     }
                 }
                 else

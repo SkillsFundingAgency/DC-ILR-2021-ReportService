@@ -81,10 +81,10 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, storage.Object, jsonSerializationService, dataStoreConfiguration);
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
+            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             ITotalBuilder totalBuilder = new TotalBuilder();
 

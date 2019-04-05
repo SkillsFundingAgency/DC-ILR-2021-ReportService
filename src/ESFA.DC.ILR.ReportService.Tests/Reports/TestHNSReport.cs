@@ -77,8 +77,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
 
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, dataStoreConfiguration);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             IValueProvider valueProvider = new ValueProvider();

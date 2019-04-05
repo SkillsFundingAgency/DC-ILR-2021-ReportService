@@ -142,6 +142,7 @@
     <Compile Include="Mapper\TrailblazerEmployerIncentiveMapper.cs" />
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Provider\Abstract\AbstractFundModelProviderService.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessage.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
     <Compile Include="Reports\Abstract\AbstractReport.cs" />

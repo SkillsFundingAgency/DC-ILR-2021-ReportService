@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
@@ -79,7 +79,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             reportServiceContextMock.SetupGet(x => x.ValidLearnRefNumbersKey).Returns("ValidLearnRefNumbers");
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, storage.Object, jsonSerializationService, null);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             IMathsAndEnglishFm25Rules reportFm25Rules = new MathsAndEnglishFm25Rules();
             IMathsAndEnglishModelBuilder builder = new MathsAndEnglishModelBuilder();

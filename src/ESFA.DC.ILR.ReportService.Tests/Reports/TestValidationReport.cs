@@ -112,7 +112,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
 
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();

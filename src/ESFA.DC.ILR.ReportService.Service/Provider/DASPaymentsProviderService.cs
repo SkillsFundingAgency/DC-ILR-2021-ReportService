@@ -10,6 +10,7 @@ using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
+using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,13 +21,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
         private const int FundingSource = 3;
         private int[] TransactionTypes = { 1, 2, 3 };
         private int[] AppsAdditionalPaymentsTransactionTypes = { 4, 5, 6, 7, 16 };
-        private readonly ILogger _logger;
         private readonly Func<IDASPaymentsContext> _dasPaymentsContextFactory;
         private readonly DASPaymentsConfiguration _dasPaymentsConfiguration;
 
-        public DASPaymentsProviderService(ILogger logger, Func<IDASPaymentsContext> dasPaymentsContextFactory)
+        public DASPaymentsProviderService(Func<IDASPaymentsContext> dasPaymentsContextFactory)
         {
-            _logger = logger;
             _dasPaymentsContextFactory = dasPaymentsContextFactory;
         }
 

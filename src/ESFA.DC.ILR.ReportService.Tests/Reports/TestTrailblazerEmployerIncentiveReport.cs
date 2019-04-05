@@ -43,8 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, null, null);
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null, intUtilitiesService, null, null);
+            IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, storage.Object, jsonSerializationService, null, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null, null, null);
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);

@@ -67,7 +67,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Service
                 logger.Object,
                 redis.Object,
                 jsonSerializationService,
-                intUtilitiesService,
                 IlrValidContextFactory,
                 IlrRulebaseContextFactory);
 

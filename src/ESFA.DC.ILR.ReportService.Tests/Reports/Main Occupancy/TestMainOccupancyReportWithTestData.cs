@@ -48,9 +48,9 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.Main_Occupancy
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, null, null);
-            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, null);
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null, null);
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, storage.Object, jsonSerializationService, null, null);
+            IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, null);
+            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null, null);
             LarsConfiguration larsConfiguration = new LarsConfiguration
             {
                 LarsConnectionString = ConfigurationManager.AppSettings["LarsConnectionString"]

@@ -94,10 +94,9 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentCont
                 storage.Object,
                 xmlSerializationService,
                 dateTimeProviderMock.Object,
-                intUtilitiesService,
                 IlrValidContextFactory,
                 IlrRulebaseContextFactory);
-            var dasPaymentsProviderService = new DASPaymentsProviderService(logger.Object, DasPaymentsContextFactory);
+            var dasPaymentsProviderService = new DASPaymentsProviderService(DasPaymentsContextFactory);
 
             var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, ilrProviderService, dasPaymentsProviderService);
 

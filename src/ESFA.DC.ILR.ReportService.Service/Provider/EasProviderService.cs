@@ -16,21 +16,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
     public sealed class EasProviderService : IEasProviderService
     {
-        private readonly ILogger _logger;
-
         private readonly EasConfiguration _easConfiguration;
-        private readonly Dictionary<int, DateTime> _loadedLastEasUpdate;
-        private List<EasSubmissionValues> _loadedEasSubmissionValuesList;
-        private readonly SemaphoreSlim _getLastEastUpdateLock;
+        private readonly Dictionary<int, DateTime> _loadedLastEasUpdate = new Dictionary<int, DateTime>();
+        private List<EasSubmissionValues> _loadedEasSubmissionValuesList = new List<EasSubmissionValues>();
+        private readonly SemaphoreSlim _getLastEastUpdateLock = new SemaphoreSlim(1, 1);
 
-        public EasProviderService(ILogger logger, EasConfiguration easConfiguration)
+        public EasProviderService(EasConfiguration easConfiguration)
         {
-            _logger = logger;
             _easConfiguration = easConfiguration;
-            _loadedLastEasUpdate = new Dictionary<int, DateTime>();
-            _loadedEasSubmissionValuesList = new List<EasSubmissionValues>();
-
-            _getLastEastUpdateLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<DateTime> GetLastEasUpdate(int ukprn, CancellationToken cancellationToken)

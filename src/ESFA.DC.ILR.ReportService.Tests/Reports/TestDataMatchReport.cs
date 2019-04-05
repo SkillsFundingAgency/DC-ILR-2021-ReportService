@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
+            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
             Mock<IDasCommitmentsService> dasCommitmentsService = new Mock<IDasCommitmentsService>();
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();

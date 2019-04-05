@@ -9,6 +9,7 @@ using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
+using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.IO.Interfaces;
@@ -18,15 +19,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public class FM36ProviderService : IFM36ProviderService
+    public class FM36ProviderService : AbstractFundModelProviderService, IFM36ProviderService
     {
-        private readonly ILogger _logger;
-
-        private readonly IStreamableKeyValuePersistenceService _storage;
-        private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
-        private readonly SemaphoreSlim _getDataLock;
+        private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
         private bool _loadedDataAlready;
         private FM36Global _fundingOutputs;
 
@@ -34,16 +30,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
-            IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
+        : base(storage, jsonSerializationService, logger)
         {
-            _logger = logger;
-            _storage = storage;
-            _jsonSerializationService = jsonSerializationService;
-            _intUtilitiesService = intUtilitiesService;
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
-            _fundingOutputs = null;
-            _getDataLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<FM36Global> GetFM36Data(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
@@ -65,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string fm36Filename = reportServiceContext.FundingFM36OutputKey;
-                    string fm36 = await _storage.GetAsync(fm36Filename, cancellationToken);
+                    string fm36 = await _streamableKeyValuePersistenceService.GetAsync(fm36Filename, cancellationToken);
 
                     if (string.IsNullOrEmpty(fm36))
                     {
@@ -74,7 +64,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                     }
 
                     // await _blob.SaveAsync($"{jobContextMessage.KeyValuePairs[JobContextMessageKey.UkPrn]}_{jobContextMessage.JobId.ToString()}_Fm36.json", fm36, cancellationToken);
-                    _fundingOutputs = _jsonSerializationService.Deserialize<FM36Global>(fm36);
+                    _fundingOutputs = _serializationService.Deserialize<FM36Global>(fm36);
                 }
                 else
                 {

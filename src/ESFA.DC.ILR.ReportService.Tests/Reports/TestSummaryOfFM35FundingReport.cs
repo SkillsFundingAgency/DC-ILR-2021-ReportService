@@ -92,7 +92,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
             ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
             var summaryOfFm35FundingReport = new SummaryOfFm35FundingReport(

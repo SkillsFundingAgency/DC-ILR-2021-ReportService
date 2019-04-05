@@ -9,6 +9,7 @@ using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ILR;
+using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
@@ -20,15 +21,11 @@ using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Out
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public class FM35ProviderService : IFM35ProviderService
+    public class FM35ProviderService : AbstractFundModelProviderService, IFM35ProviderService
     {
-        private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _storage;
-        private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
-        private readonly SemaphoreSlim _getDataLock;
+        private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
         private bool _loadedDataAlready;
         private FM35Global _fundingOutputs;
 
@@ -36,18 +33,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
-            IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819ValidContext> ilrValidContextFactory,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
+            : base(storage, jsonSerializationService, logger)
         {
-            _logger = logger;
-            _storage = storage;
-            _jsonSerializationService = jsonSerializationService;
-            _intUtilitiesService = intUtilitiesService;
             _ilrValidContextFactory = ilrValidContextFactory;
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
-            _fundingOutputs = null;
-            _getDataLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<FM35Global> GetFM35Data(
@@ -71,15 +62,15 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string fm35Filename = reportServiceContext.FundingFM35OutputKey;
-                    _logger.LogWarning($"Reading {fm35Filename}; Storage is {_storage}; CancellationToken is {cancellationToken}");
-                    if (await _storage.ContainsAsync(fm35Filename, cancellationToken))
+                    _logger.LogWarning($"Reading {fm35Filename}; Storage is {_streamableKeyValuePersistenceService}; CancellationToken is {cancellationToken}");
+                    if (await _streamableKeyValuePersistenceService.ContainsAsync(fm35Filename, cancellationToken))
                     {
                         _logger.LogWarning($"Available {fm35Filename}");
                         using (MemoryStream ms = new MemoryStream())
                         {
-                            await _storage.GetAsync(fm35Filename, ms, cancellationToken);
+                            await _streamableKeyValuePersistenceService.GetAsync(fm35Filename, ms, cancellationToken);
                             _logger.LogWarning($"Deserialising {fm35Filename} with {ms.Length}");
-                            _fundingOutputs = _jsonSerializationService.Deserialize<FM35Global>(ms);
+                            _fundingOutputs = _serializationService.Deserialize<FM35Global>(ms);
                         }
                     }
 
