@@ -164,25 +164,25 @@
     <Compile Include="Reports\TrailblazerAppsOccupancyReport.cs" />
     <Compile Include="Reports\TrailblazerEmployerIncentivesReport.cs" />
     <Compile Include="Reports\ValidationErrorsReport.cs" />
-    <Compile Include="Service\AllbProviderService.cs" />
+    <Compile Include="Provider\AllbProviderService.cs" />
     <Compile Include="Service\BaseLearnersService.cs" />
     <Compile Include="Service\CacheProviderService.cs" />
-    <Compile Include="Service\DASPaymentsProviderService.cs" />
+    <Compile Include="Provider\DASPaymentsProviderService.cs" />
     <Compile Include="Service\DataMatch\DasCommitmentsService.cs" />
     <Compile Include="Service\DataMatch\DatalockValidationResultBuilder.cs" />
-    <Compile Include="Service\EasProviderService.cs" />
+    <Compile Include="Provider\EasProviderService.cs" />
     <Compile Include="Service\ExcelStyleProvider.cs" />
-    <Compile Include="Service\FM25ProviderService.cs" />
-    <Compile Include="Service\FM35ProviderService.cs" />
-    <Compile Include="Service\FM36ProviderService.cs" />
-    <Compile Include="Service\FM81TrailBlazerProviderService.cs" />
-    <Compile Include="Service\IlrProviderService.cs" />
+    <Compile Include="Provider\FM25ProviderService.cs" />
+    <Compile Include="Provider\FM35ProviderService.cs" />
+    <Compile Include="Provider\FM36ProviderService.cs" />
+    <Compile Include="Provider\FM81TrailBlazerProviderService.cs" />
+    <Compile Include="Provider\IlrProviderService.cs" />
     <Compile Include="Service\IntUtilitiesService.cs" />
     <Compile Include="Service\InvalidLearnersService.cs" />
-    <Compile Include="Service\LargeEmployerProviderService.cs" />
-    <Compile Include="Service\PostcodeProviderService.cs" />
-    <Compile Include="Service\LarsProviderService.cs" />
-    <Compile Include="Service\OrgProviderService.cs" />
+    <Compile Include="Provider\LargeEmployerProviderService.cs" />
+    <Compile Include="Provider\PostcodeProviderService.cs" />
+    <Compile Include="Provider\LarsProviderService.cs" />
+    <Compile Include="Provider\OrgProviderService.cs" />
     <Compile Include="Service\PeriodProviderService.cs" />
     <Compile Include="Service\StringUtilitiesService.cs" />
     <Compile Include="Service\ValidationErrorsService.cs" />
@@ -317,8 +317,6 @@
       <Version>9.3.0</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Provider\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

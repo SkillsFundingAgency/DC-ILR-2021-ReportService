@@ -13,7 +13,7 @@ using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
     public class DASPaymentsProviderService : IDASPaymentsProviderService
     {

@@ -4,11 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.Postcodes.Model;
 using ESFA.DC.Data.Postcodes.Model.Interfaces;
-using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
     public sealed class PostcodeProviderService : IPostcodeProviderService
     {

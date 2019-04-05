@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR1819.DataStore.EF;
@@ -14,12 +15,12 @@ using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
 using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue;
 using LearningDeliveryValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryValue;
-using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
     public sealed class AllbProviderService : IAllbProviderService
     {

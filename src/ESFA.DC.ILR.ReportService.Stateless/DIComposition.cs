@@ -18,6 +18,7 @@ using ESFA.DC.ILR.ReportService.Service.Builders;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.BusinessRules;
 using ESFA.DC.ILR.ReportService.Service.Commands.AppsIndicativeEarnings;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Service;
