@@ -19,7 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
     {
         private readonly ILogger _logger;
 
-        private readonly IKeyValuePersistenceService _storage;
+        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
 
         public FM25ProviderService(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)

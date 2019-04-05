@@ -26,8 +26,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly SummaryOfFm35FundingModelComparer comparer = new SummaryOfFm35FundingModelComparer();
 
         private readonly IFM35ProviderService _fm35ProviderService;
-        private readonly IStringUtilitiesService _stringUtilitiesService;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly ILogger _logger;
         private readonly IFm35Builder _summaryOfFm35FundingModelBuilder;
 
@@ -44,7 +42,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         {
             _logger = logger;
             _fm35ProviderService = fm35ProviderService;
-            _stringUtilitiesService = stringUtilitiesService;
             _summaryOfFm35FundingModelBuilder = builder;
 
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFM35FundingReport;
@@ -65,7 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             }
 
             string csv = GetCsv(summaryOfFm35FundingModels);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

@@ -21,7 +21,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
     public sealed class AppsCoInvestmentContributionsReport : AbstractReport, IReport
     {
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
 
@@ -52,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             var appsCoInvestmentPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             string csv = await GetCsv(reportServiceContext, cancellationToken);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
