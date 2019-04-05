@@ -138,7 +138,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.FundigClaim1619
                 largeEmployerProviderService.Object,
                 larsProviderService.Object,
                 versionInfo,
-                topicsAndTasks);
+                topicsAndTasks,
+                logger.Object);
 
             MemoryStream memoryStream = new MemoryStream();
 

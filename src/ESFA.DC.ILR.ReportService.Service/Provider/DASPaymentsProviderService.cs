@@ -10,8 +10,6 @@ using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
-using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
-using ESFA.DC.Logging.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider

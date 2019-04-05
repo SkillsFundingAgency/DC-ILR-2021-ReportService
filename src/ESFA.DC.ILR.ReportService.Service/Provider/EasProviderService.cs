@@ -9,7 +9,6 @@ using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.Eas;
 using ESFA.DC.ILR.ReportService.Service.Extensions.Eas;
-using ESFA.DC.Logging.Interfaces;
 using EasSubmissionValues = ESFA.DC.ILR.ReportService.Model.Eas.EasSubmissionValues;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
