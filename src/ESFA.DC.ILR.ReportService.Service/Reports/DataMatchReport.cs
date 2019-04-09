@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IDatalockValidationResultBuilder _datalockValidationResultBuilder;
         private readonly ITotalBuilder _totalBuilder;
 
-        private readonly List<DataMatchModel> dataMatchModels;
+        private readonly List<DataMatchModel> dataMatchModels = new List<DataMatchModel>();
 
         public DataMatchReport(
             ILogger logger,
@@ -63,13 +63,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _validationStageOutputCache = validationStageOutputCache;
             _datalockValidationResultBuilder = datalockValidationResultBuilder;
             _totalBuilder = totalBuilder;
-
-            dataMatchModels = new List<DataMatchModel>();
-            ReportFileName = "Apprenticeship Data Match Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateDataMatchReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apprenticeship Data Match Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.DataMatchReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             FM36Global fm36Data = await _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken).ConfigureAwait(false);
 
@@ -103,9 +103,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 _validationStageOutputCache.DataMatchProblemLearnersCount = dataMatchModels.DistinctBy(x => x.LearnRefNumber).Count();
             }
 
-            var jobId = reportServiceContext.JobId;
-            var externalFileName = GetExternalFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             string csv = WriteResults();
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

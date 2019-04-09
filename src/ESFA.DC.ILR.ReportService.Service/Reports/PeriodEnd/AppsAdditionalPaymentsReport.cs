@@ -43,20 +43,20 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             _fm36ProviderService = fm36ProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Apps Additional Payments Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsAdditionalPaymentsReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apps Additional Payments Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsAdditionalPaymentsReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn;
-            var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var appsAdditionalPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsAdditionalPaymentsReportAsync(ukPrn, cancellationToken);
-            var appsAdditionalPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsAdditionalPaymentReportAsync(ukPrn, cancellationToken);
-            var appsAdditionalPaymentDasPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(ukPrn, cancellationToken);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
+
+            var appsAdditionalPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsAdditionalPaymentsReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsAdditionalPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsAdditionalPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsAdditionalPaymentDasPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(reportServiceContext.Ukprn, cancellationToken);
 
             var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsAdditionalPaymentIlrInfo, appsAdditionalPaymentRulebaseInfo, appsAdditionalPaymentDasPaymentsInfo);
             string csv = await GetCsv(appsAdditionalPaymentsModel, cancellationToken);

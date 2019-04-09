@@ -48,17 +48,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _fm25ProviderService = fm25ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
-
-            ReportFileName = "16-19 Summary of Funding by Student Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "16-19 Summary of Funding by Student Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.SummaryOfFunding1619Report;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            string externalFileName = GetFilename(reportServiceContext);
+            string fileName = GetZipFilename(reportServiceContext);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

@@ -50,11 +50,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _fm25ProviderService = fm25ProviderService;
             _hnsReportModelBuilder = hnsReportModelBuilder;
 
-            ReportFileName = "High Needs Students Detail Report";
             ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateHNSReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "High Needs Students Detail Report";
+
+        public override string ReportTaskName { get; }
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
@@ -116,10 +119,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             string csv = GetReportCsv(hnsModels);
 
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);

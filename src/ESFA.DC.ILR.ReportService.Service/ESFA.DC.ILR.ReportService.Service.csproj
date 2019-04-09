@@ -191,6 +191,7 @@
     <Compile Include="Service\ValidLearnersService.cs" />
     <Compile Include="Commands\AppsIndicativeEarnings\AppsIndicativeAugustCommand.cs" />
     <Compile Include="Service\ValueProvider.cs" />
+    <Compile Include="Service\ZipService.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="App.config">

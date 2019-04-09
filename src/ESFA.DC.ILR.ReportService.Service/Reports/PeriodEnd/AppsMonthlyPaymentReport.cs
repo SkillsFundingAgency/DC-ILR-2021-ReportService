@@ -44,17 +44,17 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             _fm36ProviderService = fm36ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Apps Monthly Payment Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsMonthlyPaymentReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apps Monthly Payment Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsMonthlyPaymentReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
+
             var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsMonthlyPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);

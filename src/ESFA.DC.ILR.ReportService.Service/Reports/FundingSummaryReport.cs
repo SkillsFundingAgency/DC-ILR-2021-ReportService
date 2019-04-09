@@ -36,11 +36,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
     public sealed class FundingSummaryReport : AbstractReport, IReport
     {
-        private readonly FundingSummaryMapper _fundingSummaryMapper;
+        private readonly FundingSummaryMapper _fundingSummaryMapper = new FundingSummaryMapper();
 
         private readonly ModelProperty[] _cachedModelProperties;
 
-        private readonly List<FundingSummaryModel> _fundingSummaryModels;
+        private readonly List<FundingSummaryModel> _fundingSummaryModels = new List<FundingSummaryModel>();
 
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IOrgProviderService _orgProviderService;
@@ -117,15 +117,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _dateTimeProvider = dateTimeProvider;
             _easBuilder = easBuilder;
 
-            ReportFileName = "Funding Summary Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;
-
-            _fundingSummaryModels = new List<FundingSummaryModel>();
-            _fundingSummaryMapper = new FundingSummaryMapper();
             _cachedModelProperties = _fundingSummaryMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Funding Summary Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.FundingSummaryReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             try
             {
@@ -1098,10 +1097,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 _fundingSummaryModels.Add(new FundingSummaryModel(Constants.ALBInfoText, HeaderType.TitleOnly));
                 _fundingSummaryModels.Add(new FundingSummaryModel());
 
-                var jobId = reportServiceContext.JobId;
-                var ukPrn = reportServiceContext.Ukprn.ToString();
-                var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-                var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+                var externalFileName = GetFilename(reportServiceContext);
+                var fileName = GetZipFilename(reportServiceContext);
 
                 _logger.LogInfo("CSV Report Start");
 

@@ -54,17 +54,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _larsProviderService = larsProviderService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Apps Indicative Earnings Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsIndicativeEarningsReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apps Indicative Earnings Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsIndicativeEarningsReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            long jobId = reportServiceContext.JobId;
-            string ukPrn = reportServiceContext.Ukprn.ToString();
-            string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

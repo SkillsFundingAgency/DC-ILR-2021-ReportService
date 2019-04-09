@@ -41,17 +41,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         {
             _fm35ProviderService = fm35ProviderService;
             _summaryOfFm35FundingModelBuilder = builder;
-
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFM35FundingReport;
-            ReportFileName = "Summary of Funding Model 35 Funding Report";
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Summary of Funding Model 35 Funding Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.SummaryOfFM35FundingReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             IList<SummaryOfFm35FundingModel> summaryOfFm35FundingModels = await GetSummaryOfFm35FundingModels(reportServiceContext, cancellationToken);
             if (summaryOfFm35FundingModels == null)

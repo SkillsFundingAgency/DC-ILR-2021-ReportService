@@ -119,12 +119,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _largeEmployerProviderService = largeEmployerProviderService;
             _larsProviderService = larsProviderService;
             _versionInfo = versionInfo;
-
-            ReportFileName = "16-19 Funding Claim Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingClaim1619Report;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "16-19 Funding Claim Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.FundingClaim1619Report;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM25Global> fm25DataTask = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
@@ -194,10 +195,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 return;
             }
 
-            long jobId = reportServiceContext.JobId;
-            string ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("1619FundingClaimReportTemplate.xlsx"));

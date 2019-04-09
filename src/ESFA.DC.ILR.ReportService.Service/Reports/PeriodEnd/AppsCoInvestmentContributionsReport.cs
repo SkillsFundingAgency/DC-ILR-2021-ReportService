@@ -36,16 +36,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
         {
             _ilrProviderService = ilrProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
-            ReportFileName = "Apps Co-Investment Contributions Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsCoInvestmentContributionsReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apps Co-Investment Contributions Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsCoInvestmentContributionsReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            long jobId = reportServiceContext.JobId;
-            string ukPrn = reportServiceContext.Ukprn.ToString();
-            string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             var appsCoInvestmentPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);

@@ -58,12 +58,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
             _validationErrorsService = validationErrorsService;
             _validationStageOutputCache = validationStageOutputCache;
-
-            ReportFileName = "Rule Violation Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Rule Violation Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.ValidationReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(reportServiceContext, cancellationToken);
@@ -71,8 +72,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             long jobId = reportServiceContext.JobId;
             string ukPrn = reportServiceContext.Ukprn.ToString();
-            _externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            _fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            _externalFileName = GetFilename(reportServiceContext);
+            _fileName = GetZipFilename(reportServiceContext);
 
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
 

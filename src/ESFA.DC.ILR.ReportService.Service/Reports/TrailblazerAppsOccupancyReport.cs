@@ -55,12 +55,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _larsProviderService = larsProviderService;
 
             _trailblazerAppsOccupancyModelBuilder = trailblazerAppsOccupancyModelBuilder;
-
-            ReportFileName = "Trailblazer Apprenticeships Occupancy Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateTrailblazerAppsOccupancyReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Trailblazer Apprenticeships Occupancy Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.TrailblazerAppsOccupancyReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM81Global> fm81Task =
@@ -116,10 +117,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             var csv = GetReportCsv(trailblazerAppsOccupancyModels);
 
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);

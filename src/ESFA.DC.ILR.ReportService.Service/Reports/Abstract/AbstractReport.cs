@@ -10,6 +10,8 @@ using Aspose.Cells;
 using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Generation;
 using ESFA.DC.ILR.ReportService.Model.Styling;
@@ -18,12 +20,10 @@ using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 {
-    public abstract class AbstractReport
+    public abstract class AbstractReport : IReport
     {
         protected readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
         protected readonly ILogger _logger;
-
-        protected string ReportFileName;
 
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IValueProvider _valueProvider;
@@ -38,23 +38,27 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
             _valueProvider = valueProvider;
         }
 
-        public string ReportTaskName { get; set; }
+        public abstract string ReportFileName { get; }
+
+        public abstract string ReportTaskName { get; }
+
+        public string GetFilename(IReportServiceContext reportServiceContext)
+        {
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
+            return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public string GetZipFilename(IReportServiceContext reportServiceContext)
+        {
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
+            return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public abstract Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken);
 
         public bool IsMatch(string reportTaskName)
         {
             return string.Equals(reportTaskName, ReportTaskName, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public string GetExternalFilename(string ukPrn, long jobId, DateTime submissionDateTime)
-        {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(submissionDateTime);
-            return $"{ukPrn}_{jobId.ToString()}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
-        }
-
-        public string GetFilename(string ukPrn, long jobId, DateTime submissionDateTime)
-        {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(submissionDateTime);
-            return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
 
         protected Stream WriteModelsToCsv<TMapper, TModel>(Stream stream, IEnumerable<TModel> models)

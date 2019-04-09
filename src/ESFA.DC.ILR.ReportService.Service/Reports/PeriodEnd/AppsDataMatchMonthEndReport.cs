@@ -44,17 +44,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             _fm36ProviderService = fm36ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Apprenticeship Data Match Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsDataMatchMonthEndReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apprenticeship Data Match Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsDataMatchMonthEndReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

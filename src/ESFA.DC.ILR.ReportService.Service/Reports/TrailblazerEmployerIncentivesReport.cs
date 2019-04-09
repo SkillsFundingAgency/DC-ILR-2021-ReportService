@@ -49,12 +49,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _ilrProviderService = ilrProviderService;
 
             _trailblazerEmployerIncentivesModelBuilder = trailblazerEmployerIncentivesModelBuilder;
-
-            ReportFileName = "Trailblazer Apprenticeships Employer Incentives Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Trailblazer Apprenticeships Employer Incentives Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.TrailblazerEmployerIncentivesReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM81Global> fm81Task =
@@ -107,16 +108,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             var jobId = reportServiceContext.JobId;
             var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
-        }
-
-        private bool CheckIsApplicableLearner(ILearningDelivery learningDelivery)
-        {
-            return learningDelivery.FundModel == 81;
         }
 
         private string GetReportCsv(List<TrailblazerEmployerIncentivesModel> listModels)
