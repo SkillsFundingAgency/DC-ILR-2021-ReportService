@@ -206,7 +206,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<MainOccupancyMapper, MainOccupancyModel>(csvWriter, mainOccupancyModels, new MainOccupancyMapper());
+                        WriteCsvRecords<MainOccupancyMapper, MainOccupancyModel>(csvWriter, mainOccupancyModels);
                         csvWriter.Flush();
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());

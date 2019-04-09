@@ -65,34 +65,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
         /// <param name="csvWriter">The memory stream to write to.</param>
         /// <param name="records">The records to persist.</param>
         /// <param name="mapperOverride">Optional override of the TMapper, for example, when needing to specify constructor parameters.</param>
-        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records, TMapper mapperOverride = null)
+        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records)
             where TMapper : ClassMap
             where TModel : class
         {
-            if (mapperOverride == null)
-            {
-                csvWriter.Configuration.RegisterClassMap<TMapper>();
-            }
-            else
-            {
-                csvWriter.Configuration.RegisterClassMap(mapperOverride);
-            }
+            csvWriter.Configuration.RegisterClassMap<TMapper>();
 
             csvWriter.WriteHeader<TModel>();
             csvWriter.NextRecord();
 
-            if (mapperOverride == null)
-            {
-                csvWriter.WriteRecords(records);
-            }
-            else
-            {
-                ModelProperty[] names = mapperOverride.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
-                foreach (TModel record in records)
-                {
-                    WriteCsvRecords(csvWriter, mapperOverride, names, record);
-                }
-            }
+            csvWriter.WriteRecords(records);
 
             csvWriter.Configuration.UnregisterClassMap();
         }
@@ -102,14 +84,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
         {
             object[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).SelectMany(x => x.Data.Names.Names).Select(x => (object)x).ToArray();
             WriteCsvRecords(csvWriter, names);
-        }
-
-        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, TModel record)
-            where TMapper : ClassMap
-            where TModel : class
-        {
-            ModelProperty[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
-            WriteCsvRecords(csvWriter, mapper, names, record);
         }
 
         protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, ModelProperty[] modelProperties, TModel record)
@@ -409,7 +383,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
             ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
             using (Stream sw = archivedFile.Open())
             {
-                data.Seek(0, SeekOrigin.Begin);
+                data.Position = 0;
                 await data.CopyToAsync(sw, 81920, cancellationToken);
             }
         }

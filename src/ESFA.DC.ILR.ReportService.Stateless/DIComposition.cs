@@ -6,6 +6,10 @@ using ESFA.DC.Auditing.Interface;
 using ESFA.DC.DASPayments.EF;
 using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.FileService;
+using ESFA.DC.FileService.Config;
+using ESFA.DC.FileService.Config.Interface;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
@@ -107,6 +111,14 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<AzureStorageKeyValuePersistenceService>()
                 .As<IStreamableKeyValuePersistenceService>()
                 .InstancePerLifetimeScope();
+
+            var azureStorageFileServiceConfiguration = new AzureStorageFileServiceConfiguration()
+            {
+                ConnectionString = azureBlobStorageOptions.AzureBlobConnectionString,
+            };
+
+            containerBuilder.RegisterInstance(azureStorageFileServiceConfiguration).As<IAzureStorageFileServiceConfiguration>();
+            containerBuilder.RegisterType<AzureStorageFileService>().As<IFileService>();
 
             // register serialization
             containerBuilder.RegisterType<JsonSerializationService>()

@@ -142,7 +142,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<HNSMapper, HNSModel>(csvWriter, hnsModels, new HNSMapper());
+                        WriteCsvRecords<HNSMapper, HNSModel>(csvWriter, hnsModels);
                         csvWriter.Flush();
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());
