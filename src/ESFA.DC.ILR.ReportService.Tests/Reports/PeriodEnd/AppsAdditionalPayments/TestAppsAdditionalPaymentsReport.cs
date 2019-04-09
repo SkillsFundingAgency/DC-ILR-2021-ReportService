@@ -44,7 +44,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             Mock<IDASPaymentsProviderService> dasPaymentProviderMock = new Mock<IDASPaymentsProviderService>();
             Mock<IFM36ProviderService> fm36ProviderServiceMock = new Mock<IFM36ProviderService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
             var appsAdditionalPaymentIlrInfo = BuildILRModel(ukPrn);
@@ -59,7 +58,15 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var appsAdditionalPaymentsModelBuilder = new AppsAdditionalPaymentsModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsAdditionalPaymentsReport(logger.Object, storage.Object, ilrProviderServiceMock.Object, fm36ProviderServiceMock.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, dasPaymentProviderMock.Object, appsAdditionalPaymentsModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.AppsAdditionalPaymentsReport(
+                logger.Object,
+                storage.Object,
+                ilrProviderServiceMock.Object,
+                fm36ProviderServiceMock.Object,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                dasPaymentProviderMock.Object,
+                appsAdditionalPaymentsModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

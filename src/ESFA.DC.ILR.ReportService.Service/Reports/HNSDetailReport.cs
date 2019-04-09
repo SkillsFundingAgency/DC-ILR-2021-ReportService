@@ -41,7 +41,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IFM25ProviderService fm25ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IHNSReportModelBuilder hnsReportModelBuilder)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
@@ -49,13 +48,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _validLearnersService = validLearnersService;
             _fm25ProviderService = fm25ProviderService;
             _hnsReportModelBuilder = hnsReportModelBuilder;
-
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateHNSReport;
         }
 
         public override string ReportFileName => "High Needs Students Detail Report";
 
-        public override string ReportTaskName { get; }
+        public override string ReportTaskName => ReportTaskNameConstants.HNSReport;
 
         public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {

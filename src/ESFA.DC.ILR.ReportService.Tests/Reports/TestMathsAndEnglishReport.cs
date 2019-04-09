@@ -100,8 +100,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
-
             var mathsAndEnglishReport = new MathsAndEnglishReport(
                 logger.Object,
                 storage.Object,
@@ -112,8 +110,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 dateTimeProviderMock.Object,
                 valueProvider,
                 reportFm25Rules,
-                builder,
-                topicsAndTasks);
+                builder);
 
             await mathsAndEnglishReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

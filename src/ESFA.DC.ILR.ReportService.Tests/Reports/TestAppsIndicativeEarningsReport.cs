@@ -153,7 +153,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             larsProviderService.Setup(x => x.GetLearningDeliveriesAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(learningDeliveriesDict);
             larsProviderService.Setup(x => x.GetStandardAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync("NotionalEndLevel");
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
 
             var report = new AppsIndicativeEarningsReport(
@@ -165,8 +164,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 larsProviderService.Object,
                 builder,
                 dateTimeProviderMock.Object,
-                valueProvider,
-                topicsAndTasks);
+                valueProvider);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

@@ -44,7 +44,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             ILarsProviderService larsProviderService,
             ITrailblazerAppsOccupancyModelBuilder trailblazerAppsOccupancyModelBuilder,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValueProvider valueProvider,
             IDateTimeProvider dateTimeProvider)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)

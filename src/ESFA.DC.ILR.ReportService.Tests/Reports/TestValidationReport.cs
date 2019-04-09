@@ -114,7 +114,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
 
             IReport validationErrorsReport = new ValidationErrorsReport(
@@ -124,7 +123,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 ilrProviderService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 validationErrorsServiceMock.Object,
                 validationStageOutputCache);
 

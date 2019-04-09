@@ -57,7 +57,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, storage.Object, jsonSerializationService, null);
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             ITrailblazerEmployerIncentivesModelBuilder reportModelBuilder = new TrailblazerEmployerIncentivesModelBuilder();
             IValueProvider valueProvider = new ValueProvider();
 
@@ -82,7 +81,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 ilrProviderService,
                 validLearnersService,
                 reportModelBuilder,
-                topicsAndTasks,
                 valueProvider,
                 dateTimeProviderMock.Object);
 

@@ -50,7 +50,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILarsProviderService larsProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IMainOccupancyReportModelBuilder mainOccupancyReportModelBuilder)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {

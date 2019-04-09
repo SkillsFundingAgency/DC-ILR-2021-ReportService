@@ -49,10 +49,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
-            IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
 
@@ -82,7 +80,15 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var appsMonthlyPaymentModelBuilder = new AppsMonthlyPaymentModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsMonthlyPaymentReport(logger.Object, storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, appsMonthlyPaymentModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.AppsMonthlyPaymentReport(
+                logger.Object,
+                storage.Object,
+                ilrProviderService,
+                fm36ProviderService,
+                stringUtilitiesService,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                appsMonthlyPaymentModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

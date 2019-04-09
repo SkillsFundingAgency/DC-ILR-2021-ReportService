@@ -29,7 +29,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IIlrProviderService ilrProviderService,
             IDASPaymentsProviderService dasPaymentsProviderService)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)

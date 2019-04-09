@@ -57,7 +57,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.Main_Occupancy
             };
             ILarsProviderService larsProviderService = new LarsProviderService(logger.Object, larsConfiguration);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IMainOccupancyReportModelBuilder reportModelBuilder = new MainOccupancyReportModelBuilder();
             IValueProvider valueProvider = new ValueProvider();
 
@@ -92,7 +91,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.Main_Occupancy
                 larsProviderService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 reportModelBuilder);
 
             await mainOccupancyReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);

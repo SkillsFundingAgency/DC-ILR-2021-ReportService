@@ -45,8 +45,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILarsProviderService larsProviderService,
             IAppsIndicativeEarningsModelBuilder modelBuilder,
             IDateTimeProvider dateTimeProvider,
-            IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
+            IValueProvider valueProvider)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _ilrProviderService = ilrProviderService;

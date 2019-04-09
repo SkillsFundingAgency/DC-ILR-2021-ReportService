@@ -49,7 +49,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationErrorsService validationErrorsService,
             IValidationStageOutputCache validationStageOutputCache)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)

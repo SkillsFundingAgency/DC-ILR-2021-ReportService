@@ -39,7 +39,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             ITrailblazerEmployerIncentivesModelBuilder trailblazerEmployerIncentivesModelBuilder,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValueProvider valueProvider,
             IDateTimeProvider dateTimeProvider)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)

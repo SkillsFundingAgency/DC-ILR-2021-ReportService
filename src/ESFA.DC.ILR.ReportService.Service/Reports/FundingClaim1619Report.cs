@@ -107,7 +107,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILargeEmployerProviderService largeEmployerProviderService,
             ILarsProviderService larsProviderService,
             IVersionInfo versionInfo,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             ILogger logger)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {

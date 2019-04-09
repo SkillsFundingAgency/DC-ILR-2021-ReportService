@@ -101,7 +101,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
             orgProviderService.Setup(x => x.GetProviderName(It.IsAny<IReportServiceContext>(), It.IsAny<CancellationToken>())).ReturnsAsync("Test Provider");
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
 
             AdultFundingClaimReport adultFundingClaimReport = new AdultFundingClaimReport(
@@ -119,7 +118,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 postcodeProverServiceMock.Object,
                 largeEmployerProviderService.Object,
                 versionInfo,
-                topicsAndTasks,
                 new AdultFundingClaimBuilder());
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();

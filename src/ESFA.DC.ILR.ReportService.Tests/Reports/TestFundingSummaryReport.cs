@@ -136,7 +136,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 .ReturnsAsync("NA");
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
 
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
@@ -163,7 +162,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 totalBuilder,
                 versionInfo,
                 excelStyleProvider,
-                topicsAndTasks,
                 easBuilder,
                 logger.Object);
 

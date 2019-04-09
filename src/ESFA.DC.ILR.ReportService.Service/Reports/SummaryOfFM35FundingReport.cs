@@ -35,7 +35,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IFM35ProviderService fm35ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFm35Builder builder)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {

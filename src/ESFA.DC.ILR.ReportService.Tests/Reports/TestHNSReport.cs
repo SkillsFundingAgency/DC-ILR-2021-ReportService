@@ -80,9 +80,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
             IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, dataStoreConfiguration);
-            IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions = TestConfigurationHelper.GetTopicsAndTasks();
             IHNSReportModelBuilder reportModelBuilder = new HNSReportModelBuilder();
 
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
@@ -118,7 +116,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 fm25ProviderService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicAndTaskSectionOptions,
                 reportModelBuilder);
 
             await hnsReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);

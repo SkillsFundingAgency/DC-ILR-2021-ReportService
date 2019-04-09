@@ -93,7 +93,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             }
 
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
 
             var summaryOfFm35FundingReport = new SummaryOfFm35FundingReport(
                 logger.Object,
@@ -101,7 +100,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 fm35ProviderService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 fm35Builder);
 
             await summaryOfFm35FundingReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);

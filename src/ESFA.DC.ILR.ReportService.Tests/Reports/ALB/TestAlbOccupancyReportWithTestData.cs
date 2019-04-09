@@ -84,8 +84,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.ALB
 
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
-
             IValueProvider valueProvider = new ValueProvider();
 
             IReport allbOccupancyReport = new AllbOccupancyReport(
@@ -97,8 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.ALB
                 validLearnersService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
-                valueProvider,
-                topicsAndTasks);
+                valueProvider);
 
             await allbOccupancyReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

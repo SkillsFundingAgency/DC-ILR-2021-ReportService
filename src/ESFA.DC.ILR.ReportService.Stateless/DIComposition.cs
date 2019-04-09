@@ -64,9 +64,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         {
             var containerBuilder = new ContainerBuilder();
 
-            var topicAndTaskOptions = configHelper.GetSectionValues<TopicAndTaskSectionOptions>("TopicAndTaskSection");
-            containerBuilder.RegisterInstance(topicAndTaskOptions).As<ITopicAndTaskSectionOptions>().SingleInstance();
-
             var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
             containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
 

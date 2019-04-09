@@ -408,7 +408,6 @@
     <Compile Include="Configuration\ServiceBusQueueConfig.cs" />
     <Compile Include="Configuration\ServiceBusTopicConfig.cs" />
     <Compile Include="Configuration\SoftwareLicenceSection.cs" />
-    <Compile Include="Configuration\TopicAndTaskSectionOptions.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContext.cs" />
     <Compile Include="DIComposition.cs" />

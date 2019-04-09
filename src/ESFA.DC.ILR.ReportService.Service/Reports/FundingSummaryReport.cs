@@ -89,7 +89,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ITotalBuilder totalBuilder,
             IVersionInfo versionInfo,
             IExcelStyleProvider excelStyleProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IEasBuilder easBuilder,
             ILogger logger)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)

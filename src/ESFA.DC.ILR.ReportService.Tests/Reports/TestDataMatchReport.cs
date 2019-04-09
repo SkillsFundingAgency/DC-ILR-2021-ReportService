@@ -111,7 +111,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             periodProviderService.Setup(x => x.MonthFromPeriod(It.IsAny<int>())).Returns(1);
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
             IDatalockValidationResultBuilder datalockValidationResultBuilder = new DatalockValidationResultBuilder();
@@ -125,7 +124,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 storage.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 validationStageOutputCache,
                 datalockValidationResultBuilder,
                 totalBuilder);

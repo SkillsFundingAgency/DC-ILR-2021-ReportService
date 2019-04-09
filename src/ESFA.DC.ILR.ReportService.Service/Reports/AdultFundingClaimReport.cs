@@ -108,7 +108,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IPostcodeProviderService postcodeProviderService,
             ILargeEmployerProviderService largeEmployerProviderService,
             IVersionInfo versionInfo,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IAdultFundingClaimBuilder adultFundingClaimBuilder)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {

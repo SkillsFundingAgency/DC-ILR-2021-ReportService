@@ -51,7 +51,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationStageOutputCache validationStageOutputCache,
             IDatalockValidationResultBuilder datalockValidationResultBuilder,
             ITotalBuilder totalBuilder)

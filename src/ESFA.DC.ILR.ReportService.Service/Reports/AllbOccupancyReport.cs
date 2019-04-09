@@ -53,8 +53,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
-            IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
+            IValueProvider valueProvider)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _ilrProviderService = ilrProviderService;

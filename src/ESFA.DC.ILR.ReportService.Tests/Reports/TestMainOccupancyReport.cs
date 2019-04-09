@@ -90,7 +90,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, dataStoreConfiguration);
             Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IMainOccupancyReportModelBuilder reportModelBuilder = new MainOccupancyReportModelBuilder();
             IValueProvider valueProvider = new ValueProvider();
 
@@ -166,7 +165,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 larsProviderService.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 reportModelBuilder);
 
             await mainOccupancyReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);

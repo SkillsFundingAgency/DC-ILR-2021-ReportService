@@ -106,7 +106,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.FundigClaim1619
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
             orgProviderService.Setup(x => x.GetProviderName(It.IsAny<IReportServiceContext>(), It.IsAny<CancellationToken>())).ReturnsAsync("Test Provider");
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
 
             Mock<IFM25ProviderService> fm25ProviderServiceMock = new Mock<IFM25ProviderService>();
@@ -138,7 +137,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.FundigClaim1619
                 largeEmployerProviderService.Object,
                 larsProviderService.Object,
                 versionInfo,
-                topicsAndTasks,
                 logger.Object);
 
             MemoryStream memoryStream = new MemoryStream();

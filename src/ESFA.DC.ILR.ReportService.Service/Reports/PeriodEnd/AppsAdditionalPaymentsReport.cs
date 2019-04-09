@@ -34,7 +34,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IFM36ProviderService fm36ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IDASPaymentsProviderService dasPaymentsProviderService,
             IAppsAdditionalPaymentsModelBuilder modelBuilder)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)

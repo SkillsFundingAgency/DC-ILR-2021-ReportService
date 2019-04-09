@@ -96,8 +96,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<System.DateTime>())).Returns(dateTime);
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
-
             SummaryOfFunding1619Report summaryOfFunding1619Report = new SummaryOfFunding1619Report(
                 logger.Object,
                 storage.Object,
@@ -106,8 +104,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 fm25ProviderService,
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
-                valueProvider,
-                topicsAndTasks);
+                valueProvider);
 
             await summaryOfFunding1619Report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

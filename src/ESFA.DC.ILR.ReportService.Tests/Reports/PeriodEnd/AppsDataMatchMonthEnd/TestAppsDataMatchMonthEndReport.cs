@@ -49,10 +49,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsDataMatchMonthEn
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
-            IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
 
@@ -82,7 +80,15 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsDataMatchMonthEn
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var appsDataMatchMonthEndModelBuilder = new AppsDataMatchMonthEndModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsDataMatchMonthEndReport(storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, appsDataMatchMonthEndModelBuilder, logger.Object);
+            var report = new ReportService.Service.Reports.PeriodEnd.AppsDataMatchMonthEndReport(
+                storage.Object,
+                ilrProviderService,
+                fm36ProviderService,
+                stringUtilitiesService,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                appsDataMatchMonthEndModelBuilder,
+                logger.Object);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

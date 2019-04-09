@@ -49,7 +49,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.FundingSummaryPeriod
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
@@ -82,7 +81,15 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.FundingSummaryPeriod
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var fundingSummaryPeriodEndModelBuilder = new FundingSummaryPeriodEndModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.FundingSummaryPeriodEndReport(logger.Object, storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, fundingSummaryPeriodEndModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.FundingSummaryPeriodEndReport(
+                logger.Object,
+                storage.Object,
+                ilrProviderService,
+                fm36ProviderService,
+                stringUtilitiesService,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                fundingSummaryPeriodEndModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

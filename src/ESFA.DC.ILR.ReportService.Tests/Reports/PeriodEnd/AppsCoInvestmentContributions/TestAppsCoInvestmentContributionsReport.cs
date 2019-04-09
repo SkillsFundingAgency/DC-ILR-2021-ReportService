@@ -51,7 +51,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentCont
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
@@ -98,7 +97,13 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentCont
                 IlrRulebaseContextFactory);
             var dasPaymentsProviderService = new DASPaymentsProviderService(DasPaymentsContextFactory);
 
-            var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, ilrProviderService, dasPaymentsProviderService);
+            var report = new AppsCoInvestmentContributionsReport(
+                logger.Object,
+                storage.Object,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                ilrProviderService,
+                dasPaymentsProviderService);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

@@ -35,7 +35,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IAppsDataMatchMonthEndModelBuilder modelBuilder,
             ILogger logger)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
