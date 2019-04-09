@@ -57,14 +57,21 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
             return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
 
-        /// <summary>
-        /// Builds a CSV report using the specified mapper as the list of column names.
-        /// </summary>
-        /// <typeparam name="TMapper">The mapper.</typeparam>
-        /// <typeparam name="TModel">The model.</typeparam>
-        /// <param name="csvWriter">The memory stream to write to.</param>
-        /// <param name="records">The records to persist.</param>
-        /// <param name="mapperOverride">Optional override of the TMapper, for example, when needing to specify constructor parameters.</param>
+        protected Stream WriteModelsToCsv<TMapper, TModel>(Stream stream, IEnumerable<TModel> models)
+            where TMapper : ClassMap
+            where TModel : class
+        {
+            using (TextWriter textWriter = new StreamWriter(stream))
+            {
+                using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                {
+                    WriteCsvRecords<TMapper, TModel>(csvWriter, models);
+                }
+            }
+
+            return stream;
+        }
+
         protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records)
             where TMapper : ClassMap
             where TModel : class
@@ -339,30 +346,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
         }
 
         /// <summary>
-        /// Writes the data to the zip file with the specified filename.
-        /// </summary>
-        /// <param name="archive">Archive to write to.</param>
-        /// <param name="filename">Filename to use in zip file.</param>
-        /// <param name="data">Data to write.</param>
-        /// <returns>Awaitable task.</returns>
-        protected async Task WriteZipEntry(ZipArchive archive, string filename, string data)
-        {
-            if (archive == null)
-            {
-                return;
-            }
-
-            ZipArchiveEntry entry = archive.GetEntry(filename);
-            entry?.Delete();
-
-            ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
-            using (StreamWriter sw = new StreamWriter(archivedFile.Open()))
-            {
-                await sw.WriteAsync(data);
-            }
-        }
-
-        /// <summary>
         /// Writes the stream to the zip file with the specified filename.
         /// </summary>
         /// <param name="archive">Archive to write to.</param>
@@ -385,6 +368,30 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
             {
                 data.Position = 0;
                 await data.CopyToAsync(sw, 81920, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Writes the data to the zip file with the specified filename.
+        /// </summary>
+        /// <param name="archive">Archive to write to.</param>
+        /// <param name="filename">Filename to use in zip file.</param>
+        /// <param name="data">Data to write.</param>
+        /// <returns>Awaitable task.</returns>
+        protected async Task WriteZipEntry(ZipArchive archive, string filename, string data)
+        {
+            if (archive == null)
+            {
+                return;
+            }
+
+            ZipArchiveEntry entry = archive.GetEntry(filename);
+            entry?.Delete();
+
+            ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
+            using (StreamWriter sw = new StreamWriter(archivedFile.Open()))
+            {
+                await sw.WriteAsync(data);
             }
         }
 
