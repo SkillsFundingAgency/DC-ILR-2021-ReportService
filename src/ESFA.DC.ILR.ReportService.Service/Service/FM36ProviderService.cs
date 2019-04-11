@@ -241,6 +241,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
             {
                 var periodisedValue = new AECApprenticeshipPriceEpisodeInfo()
                 {
+                    UkPrn = aecApprenticeshipPriceEpisode.UKPRN,
+                    AimSequenceNumber = (int)aecApprenticeshipPriceEpisode.PriceEpisodeAimSeqNumber,
                     LearnRefNumber = aecApprenticeshipPriceEpisode.LearnRefNumber,
                     PriceEpisodeActualEndDate = aecApprenticeshipPriceEpisode.PriceEpisodeActualEndDate,
                     PriceEpisodeAgreeId = aecApprenticeshipPriceEpisode.PriceEpisodeAgreeId

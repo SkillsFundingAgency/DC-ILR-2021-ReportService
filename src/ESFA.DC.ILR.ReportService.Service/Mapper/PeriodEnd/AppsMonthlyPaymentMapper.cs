@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.AgreementIdentifier).Index(i++).Name("Agreement identifier");
             Map(m => m.AugustLevyPayments).Index(i++).Name("August (R01) levy payments");
             Map(m => m.AugustCoInvestmentPayments).Index(i++).Name("August (R01) co-investment payments");
-            Map(m => m.AugustCoInvestmentDueFromEmployer).Index(i++).Name("August (R01) co-investment (below band upper limit) due from employer");
+            Map(m => m.AugustCoInvestmentDueFromEmployerPayments).Index(i++).Name("August (R01) co-investment (below band upper limit) due from employer");
             Map(m => m.AugustEmployerAdditionalPayments).Index(i++).Name("August (R01) employer additional payments");
             Map(m => m.AugustProviderAdditionalPayments).Index(i++).Name("August (R01) provider additional payments");
             Map(m => m.AugustApprenticeAdditionalPayments).Index(i++).Name("August (R01) apprentice additional payments");
@@ -50,7 +50,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.AugustTotalPayments).Index(i++).Name("August (R01) total payments");
             Map(m => m.SeptemberLevyPayments).Index(i++).Name("September (R02) levy payments");
             Map(m => m.SeptemberCoInvestmentPayments).Index(i++).Name("September (R02) co-investment payments");
-            Map(m => m.SeptemberCoInvestmentDueFromEmployer).Index(i++).Name("September (R02) co-investment (below band upper limit) due from employer");
+            Map(m => m.SeptemberCoInvestmentDueFromEmployerPayments).Index(i++).Name("September (R02) co-investment (below band upper limit) due from employer");
             Map(m => m.SeptemberEmployerAdditionalPayments).Index(i++).Name("September (R02) employer additional payments");
             Map(m => m.SeptemberProviderAdditionalPayments).Index(i++).Name("September (R02) provider additional payments");
             Map(m => m.SeptemberApprenticeAdditionalPayments).Index(i++).Name("September (R02) apprentice additional payments");
@@ -59,7 +59,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.SeptemberTotalPayments).Index(i++).Name("September (R02) total payments");
             Map(m => m.OctoberLevyPayments).Index(i++).Name("October (R03) levy payments");
             Map(m => m.OctoberCoInvestmentPayments).Index(i++).Name("October (R03) co-investment payments");
-            Map(m => m.OctoberCoInvestmentDueFromEmployer).Index(i++).Name("October (R03) co-investment (below band upper limit) due from employer");
+            Map(m => m.OctoberCoInvestmentDueFromEmployerPayments).Index(i++).Name("October (R03) co-investment (below band upper limit) due from employer");
             Map(m => m.OctoberEmployerAdditionalPayments).Index(i++).Name("October (R03) employer additional payments");
             Map(m => m.OctoberProviderAdditionalPayments).Index(i++).Name("October (R03) provider additional payments");
             Map(m => m.OctoberApprenticeAdditionalPayments).Index(i++).Name("October (R03) apprentice additional payments");
@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.OctoberTotalPayments).Index(i++).Name("October (R03) total payments");
             Map(m => m.NovemberLevyPayments).Index(i++).Name("November (R04) levy payments");
             Map(m => m.NovemberCoInvestmentPayments).Index(i++).Name("November (R04) co-investment payments");
-            Map(m => m.NovemberCoInvestmentDueFromEmployer).Index(i++).Name("November (R04) co-investment (below band upper limit) due from employer");
+            Map(m => m.NovemberCoInvestmentDueFromEmployerPayments).Index(i++).Name("November (R04) co-investment (below band upper limit) due from employer");
             Map(m => m.NovemberEmployerAdditionalPayments).Index(i++).Name("November (R04) employer additional payments");
             Map(m => m.NovemberProviderAdditionalPayments).Index(i++).Name("November (R04) provider additional payments");
             Map(m => m.NovemberApprenticeAdditionalPayments).Index(i++).Name("November (R04) apprentice additional payments");
@@ -77,7 +77,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.NovemberTotalPayments).Index(i++).Name("November (R04) total payments");
             Map(m => m.DecemberLevyPayments).Index(i++).Name("December (R05) levy payments");
             Map(m => m.DecemberCoInvestmentPayments).Index(i++).Name("December (R05) co-investment payments");
-            Map(m => m.DecemberCoInvestmentDueFromEmployer).Index(i++).Name("December (R05) co-investment (below band upper limit) due from employer");
+            Map(m => m.DecemberCoInvestmentDueFromEmployerPayments).Index(i++).Name("December (R05) co-investment (below band upper limit) due from employer");
             Map(m => m.DecemberEmployerAdditionalPayments).Index(i++).Name("December (R05) employer additional payments");
             Map(m => m.DecemberProviderAdditionalPayments).Index(i++).Name("December (R05) provider additional payments");
             Map(m => m.DecemberApprenticeAdditionalPayments).Index(i++).Name("December (R05) apprentice additional payments");
@@ -86,7 +86,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.DecemberTotalPayments).Index(i++).Name("December (R05) total payments");
             Map(m => m.JanuaryLevyPayments).Index(i++).Name("January (R06) levy payments");
             Map(m => m.JanuaryCoInvestmentPayments).Index(i++).Name("January (R06) co-investment payments");
-            Map(m => m.JanuaryCoInvestmentDueFromEmployer).Index(i++).Name("January (R06) co-investment (below band upper limit) due from employer");
+            Map(m => m.JanuaryCoInvestmentDueFromEmployerPayments).Index(i++).Name("January (R06) co-investment (below band upper limit) due from employer");
             Map(m => m.JanuaryEmployerAdditionalPayments).Index(i++).Name("January (R06) employer additional payments");
             Map(m => m.JanuaryProviderAdditionalPayments).Index(i++).Name("January (R06) provider additional payments");
             Map(m => m.JanuaryApprenticeAdditionalPayments).Index(i++).Name("January (R06) apprentice additional payments");
@@ -95,7 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.JanuaryTotalPayments).Index(i++).Name("January (R06) total payments");
             Map(m => m.FebruaryLevyPayments).Index(i++).Name("February (R07) levy payments");
             Map(m => m.FebruaryCoInvestmentPayments).Index(i++).Name("February (R07) co-investment payments");
-            Map(m => m.FebruaryCoInvestmentDueFromEmployer).Index(i++).Name("February (R07) co-investment (below band upper limit) due from employer");
+            Map(m => m.FebruaryCoInvestmentDueFromEmployerPayments).Index(i++).Name("February (R07) co-investment (below band upper limit) due from employer");
             Map(m => m.FebruaryEmployerAdditionalPayments).Index(i++).Name("February (R07) employer additional payments");
             Map(m => m.FebruaryProviderAdditionalPayments).Index(i++).Name("February (R07) provider additional payments");
             Map(m => m.FebruaryApprenticeAdditionalPayments).Index(i++).Name("February (R07) apprentice additional payments");
@@ -104,7 +104,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.FebruaryTotalPayments).Index(i++).Name("February (R07) total payments");
             Map(m => m.MarchLevyPayments).Index(i++).Name("March (R08) levy payments");
             Map(m => m.MarchCoInvestmentPayments).Index(i++).Name("March (R08) co-investment payments");
-            Map(m => m.MarchCoInvestmentDueFromEmployer).Index(i++).Name("March (R08) co-investment (below band upper limit) due from employer");
+            Map(m => m.MarchCoInvestmentDueFromEmployerPayments).Index(i++).Name("March (R08) co-investment (below band upper limit) due from employer");
             Map(m => m.MarchEmployerAdditionalPayments).Index(i++).Name("March (R08) employer additional payments");
             Map(m => m.MarchProviderAdditionalPayments).Index(i++).Name("March (R08) provider additional payments");
             Map(m => m.MarchApprenticeAdditionalPayments).Index(i++).Name("March (R08) apprentice additional payments");
@@ -113,7 +113,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.MarchTotalPayments).Index(i++).Name("March (R08) total payments");
             Map(m => m.AprilLevyPayments).Index(i++).Name("April (R09) levy payments");
             Map(m => m.AprilCoInvestmentPayments).Index(i++).Name("April (R09) co-investment payments");
-            Map(m => m.AprilCoInvestmentDueFromEmployer).Index(i++).Name("April (R09) co-investment (below band upper limit) due from employer");
+            Map(m => m.AprilCoInvestmentDueFromEmployerPayments).Index(i++).Name("April (R09) co-investment (below band upper limit) due from employer");
             Map(m => m.AprilEmployerAdditionalPayments).Index(i++).Name("April (R09) employer additional payments");
             Map(m => m.AprilProviderAdditionalPayments).Index(i++).Name("April (R09) provider additional payments");
             Map(m => m.AprilApprenticeAdditionalPayments).Index(i++).Name("April (R09) apprentice additional payments");
@@ -122,7 +122,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.AprilTotalPayments).Index(i++).Name("April (R09) total payments");
             Map(m => m.MayLevyPayments).Index(i++).Name("May (R10) levy payments");
             Map(m => m.MayCoInvestmentPayments).Index(i++).Name("May (R10) co-investment payments");
-            Map(m => m.MayCoInvestmentDueFromEmployer).Index(i++).Name("May (R10) co-investment (below band upper limit) due from employer");
+            Map(m => m.MayCoInvestmentDueFromEmployerPayments).Index(i++).Name("May (R10) co-investment (below band upper limit) due from employer");
             Map(m => m.MayEmployerAdditionalPayments).Index(i++).Name("May (R10) employer additional payments");
             Map(m => m.MayProviderAdditionalPayments).Index(i++).Name("May (R10) provider additional payments");
             Map(m => m.MayApprenticeAdditionalPayments).Index(i++).Name("May (R10) apprentice additional payments");
@@ -131,7 +131,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.MayTotalPayments).Index(i++).Name("May (R10) total payments");
             Map(m => m.JuneLevyPayments).Index(i++).Name("June (R11) levy payments");
             Map(m => m.JuneCoInvestmentPayments).Index(i++).Name("June (R11) co-investment payments");
-            Map(m => m.JuneCoInvestmentDueFromEmployer).Index(i++).Name("June (R11) co-investment (below band upper limit) due from employer");
+            Map(m => m.JuneCoInvestmentDueFromEmployerPayments).Index(i++).Name("June (R11) co-investment (below band upper limit) due from employer");
             Map(m => m.JuneEmployerAdditionalPayments).Index(i++).Name("June (R11) employer additional payments");
             Map(m => m.JuneProviderAdditionalPayments).Index(i++).Name("June (R11) provider additional payments");
             Map(m => m.JuneApprenticeAdditionalPayments).Index(i++).Name("June (R11) apprentice additional payments");
@@ -140,7 +140,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.JuneTotalPayments).Index(i++).Name("June (R11) total payments");
             Map(m => m.JulyLevyPayments).Index(i++).Name("July (R12) levy payments");
             Map(m => m.JulyCoInvestmentPayments).Index(i++).Name("July (R12) co-investment payments");
-            Map(m => m.JulyCoInvestmentDueFromEmployer).Index(i++).Name("July (R12) co-investment (below band upper limit) due from employer");
+            Map(m => m.JulyCoInvestmentDueFromEmployerPayments).Index(i++).Name("July (R12) co-investment (below band upper limit) due from employer");
             Map(m => m.JulyEmployerAdditionalPayments).Index(i++).Name("July (R12) employer additional payments");
             Map(m => m.JulyProviderAdditionalPayments).Index(i++).Name("July (R12) provider additional payments");
             Map(m => m.JulyApprenticeAdditionalPayments).Index(i++).Name("July (R12) apprentice additional payments");
@@ -149,7 +149,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.JulyTotalPayments).Index(i++).Name("July (R12) total payments");
             Map(m => m.R13LevyPayments).Index(i++).Name("R13 levy payments");
             Map(m => m.R13CoInvestmentPayments).Index(i++).Name("R13 co-investment payments");
-            Map(m => m.R13CoInvestmentDueFromEmployer).Index(i++).Name("R13 co-investment (below band upper limit) due from employer");
+            Map(m => m.R13CoInvestmentDueFromEmployerPayments).Index(i++).Name("R13 co-investment (below band upper limit) due from employer");
             Map(m => m.R13EmployerAdditionalPayments).Index(i++).Name("R13 employer additional payments");
             Map(m => m.R13ProviderAdditionalPayments).Index(i++).Name("R13 provider additional payments");
             Map(m => m.R13ApprenticeAdditionalPayments).Index(i++).Name("R13 apprentice additional payments");
@@ -158,7 +158,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.R13TotalPayments).Index(i++).Name("R13 total payments");
             Map(m => m.R14LevyPayments).Index(i++).Name("R14 levy payments");
             Map(m => m.R14CoInvestmentPayments).Index(i++).Name("R14 co-investment payments");
-            Map(m => m.R14CoInvestmentDueFromEmployer).Index(i++).Name("R14 co-investment (below band upper limit) due from employer");
+            Map(m => m.R14CoInvestmentDueFromEmployerPayments).Index(i++).Name("R14 co-investment (below band upper limit) due from employer");
             Map(m => m.R14EmployerAdditionalPayments).Index(i++).Name("R14 employer additional payments");
             Map(m => m.R14ProviderAdditionalPayments).Index(i++).Name("R14 provider additional payments");
             Map(m => m.R14ApprenticeAdditionalPayments).Index(i++).Name("R14 apprentice additional payments");
@@ -167,7 +167,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
             Map(m => m.R14TotalPayments).Index(i++).Name("R14 total payments");
             Map(m => m.TotalLevyPayments).Index(i++).Name("Total levy payments");
             Map(m => m.TotalCoInvestmentPayments).Index(i++).Name("Total co-investment payments");
-            Map(m => m.TotalCoInvestmentDueFromEmployer).Index(i++).Name("Total co-investment (below band upper limit) due from employer");
+            Map(m => m.TotalCoInvestmentDueFromEmployerPayments).Index(i++).Name("Total co-investment (below band upper limit) due from employer");
             Map(m => m.TotalEmployerAdditionalPayments).Index(i++).Name("Total employer additional payments");
             Map(m => m.TotalProviderAdditionalPayments).Index(i++).Name("Total provider additional payments");
             Map(m => m.TotalApprenticeAdditionalPayments).Index(i++).Name("Total apprentice additional payments");
