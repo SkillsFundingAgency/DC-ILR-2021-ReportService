@@ -416,7 +416,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerDependency();
 
             containerBuilder.RegisterType<ValueProvider>().As<IValueProvider>()
-                .SingleInstance();
+                .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<ValidationStageOutputCache>().As<IValidationStageOutputCache>()
                 .InstancePerLifetimeScope();
@@ -441,18 +441,26 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsIndicativeEarningsModelBuilder>().As<IAppsIndicativeEarningsModelBuilder>()
                 .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>().SingleInstance();
-            containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>().SingleInstance();
+            containerBuilder.RegisterType<DasCommitmentBuilder>().As<IDasCommitmentBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<Fm25Builder>().As<IFm25Builder>()
+                .InstancePerLifetimeScope();
             containerBuilder.RegisterType<Fm35Builder>().As<IFm35Builder>()
-                .SingleInstance();
-            containerBuilder.RegisterType<Fm36Builder>().As<IFm36Builder>().SingleInstance();
-            containerBuilder.RegisterType<Fm81Builder>().As<IFm81Builder>().SingleInstance();
-            containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>().InstancePerLifetimeScope();
-            containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>().SingleInstance();
-            containerBuilder.RegisterType<EasBuilder>().As<IEasBuilder>().SingleInstance();
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<Fm36Builder>().As<IFm36Builder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<Fm81Builder>().As<IFm81Builder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AllbBuilder>().As<IAllbBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<TotalBuilder>().As<ITotalBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<EasBuilder>().As<IEasBuilder>()
+                .InstancePerLifetimeScope();
             containerBuilder.RegisterType<DatalockValidationResultBuilder>().As<IDatalockValidationResultBuilder>()
                 .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<AdultFundingClaimBuilder>().As<IAdultFundingClaimBuilder>().SingleInstance();
+            containerBuilder.RegisterType<AdultFundingClaimBuilder>().As<IAdultFundingClaimBuilder>()
+                .InstancePerLifetimeScope();
             containerBuilder.RegisterType<TrailblazerEmployerIncentivesModelBuilder>().As<ITrailblazerEmployerIncentivesModelBuilder>()
                 .InstancePerLifetimeScope();
         }
