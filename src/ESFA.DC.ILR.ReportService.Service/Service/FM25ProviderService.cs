@@ -80,6 +80,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
                     {
                         var fm25GlobalDb = await ilrContext.FM25_globals.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
                         FM25_Learner[] learners = await ilrContext.FM25_Learners.Where(x => x.UKPRN == ukPrn).Include(x => x.FM25_FM35_Learner_PeriodisedValues).ToArrayAsync(cancellationToken);
+                        fm25Global.Learners = new List<FM25Learner>();
+
                         foreach (FM25_Learner fm25Learner in learners)
                         {
                             List<LearnerPeriodisedValues> learnerPeriodisedValues = new List<LearnerPeriodisedValues>();
