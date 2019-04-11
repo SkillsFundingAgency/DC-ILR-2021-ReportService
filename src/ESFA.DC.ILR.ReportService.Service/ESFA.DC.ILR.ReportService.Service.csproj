@@ -184,6 +184,7 @@
     <Compile Include="Provider\PostcodeProviderService.cs" />
     <Compile Include="Provider\LarsProviderService.cs" />
     <Compile Include="Provider\OrgProviderService.cs" />
+    <Compile Include="Service\ReportsProvider.cs" />
     <Compile Include="Service\PeriodProviderService.cs" />
     <Compile Include="Service\StringUtilitiesService.cs" />
     <Compile Include="Service\ValidationErrorsService.cs" />
