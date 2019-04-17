@@ -149,53 +149,192 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
 
         private AppsMonthlyPaymentDASInfo BuildDasPaymentsModel(int ukPrn)
         {
-            return new AppsMonthlyPaymentDASInfo()
+            var appsMonthlyPaymentDasInfo = new AppsMonthlyPaymentDASInfo()
             {
-                UkPrn = ukPrn,
-                Payments = new List<AppsMonthlyPaymentDASPaymentInfo>()
-                {
-                    new AppsMonthlyPaymentDASPaymentInfo()
-                    {
-                        UkPrn = ukPrn,
-                        LearnerReferenceNumber = "A12345",
-                        LearningAimReference = "50117889",
-                        LearnerUln = 12345,
-                        LearningStartDate = new DateTime(2017, 06, 28),
-                        LearningAimProgrammeType = 1,
-                        LearningAimStandardCode = 1,
-                        LearningAimFrameworkCode = 1,
-                        LearningAimPathwayCode = 1,
-                        FundingSource = 1,
-                        TransactionType = 4,
-                        AcademicYear = 1819,
-                        Amount = 10,
-                        ContractType = 2,
-                        CollectionPeriod = 1,
-                        DeliveryPeriod = 1,
-                        LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
-                    },
-                    new AppsMonthlyPaymentDASPaymentInfo()
-                    {
-                        UkPrn = ukPrn,
-                        LearnerReferenceNumber = "A12345",
-                        LearningAimReference = "50117889",
-                        LearnerUln = 12345,
-                        LearningStartDate = new DateTime(2017, 06, 28),
-                        LearningAimProgrammeType = 1,
-                        LearningAimStandardCode = 1,
-                        LearningAimFrameworkCode = 1,
-                        LearningAimPathwayCode = 1,
-                        FundingSource = 1,
-                        TransactionType = 6,
-                        AcademicYear = 1819,
-                        Amount = 10,
-                        ContractType = 2,
-                        CollectionPeriod = 1,
-                        DeliveryPeriod = 1,
-                        LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
-                    }
-                }
+                UkPrn = ukPrn
             };
+            appsMonthlyPaymentDasInfo.Payments = new List<AppsMonthlyPaymentDASPaymentInfo>();
+            for (byte i = 1; i < 14; i++)
+            {
+                var levyPayments = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 1,
+                    TransactionType = 2,
+                    AcademicYear = 1819,
+                    Amount = 11,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                var coInvestmentPayments = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 2,
+                    TransactionType = 2,
+                    AcademicYear = 1819,
+                    Amount = 12,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                var coInvestmentDueFromEmployerPayments = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 3,
+                    TransactionType = 2,
+                    AcademicYear = 1819,
+                    Amount = 13,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                var employerAdditionalPayments = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 3,
+                    TransactionType = 4,
+                    AcademicYear = 1819,
+                    Amount = 14,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                var providerAdditionalPayments = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 3,
+                    TransactionType = 5,
+                    AcademicYear = 1819,
+                    Amount = 15,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                var apprenticeAdditionalPayments = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 3,
+                    TransactionType = 16,
+                    AcademicYear = 1819,
+                    Amount = 16,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                var englishAndMathsPayments = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 3,
+                    TransactionType = 13,
+                    AcademicYear = 1819,
+                    Amount = 17,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                var paymentsForLearningSupport = new AppsMonthlyPaymentDASPaymentInfo()
+                {
+                    UkPrn = ukPrn,
+                    LearnerReferenceNumber = "A12345",
+                    LearningAimReference = "50117889",
+                    LearnerUln = 12345,
+                    LearningStartDate = new DateTime(2017, 06, 28),
+                    LearningAimProgrammeType = 1,
+                    LearningAimStandardCode = 1,
+                    LearningAimFrameworkCode = 1,
+                    LearningAimPathwayCode = 1,
+                    FundingSource = 3,
+                    TransactionType = 8,
+                    AcademicYear = 1819,
+                    Amount = 18,
+                    ContractType = 2,
+                    CollectionPeriod = i,
+                    DeliveryPeriod = 1,
+                    LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
+                };
+
+                appsMonthlyPaymentDasInfo.Payments.Add(levyPayments);
+                appsMonthlyPaymentDasInfo.Payments.Add(coInvestmentPayments);
+                appsMonthlyPaymentDasInfo.Payments.Add(coInvestmentDueFromEmployerPayments);
+                appsMonthlyPaymentDasInfo.Payments.Add(employerAdditionalPayments);
+                appsMonthlyPaymentDasInfo.Payments.Add(providerAdditionalPayments);
+                appsMonthlyPaymentDasInfo.Payments.Add(apprenticeAdditionalPayments);
+                appsMonthlyPaymentDasInfo.Payments.Add(englishAndMathsPayments);
+                appsMonthlyPaymentDasInfo.Payments.Add(paymentsForLearningSupport);
+            }
+
+            return appsMonthlyPaymentDasInfo;
         }
     }
 }

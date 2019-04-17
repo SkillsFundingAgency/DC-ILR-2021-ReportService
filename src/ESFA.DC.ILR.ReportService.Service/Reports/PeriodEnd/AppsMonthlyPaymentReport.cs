@@ -65,16 +65,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 
             var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsMonthlyPaymentIlrInfo, appsMonthlyPaymentRulebaseInfo, appsMonthlyPaymentDasInfo);
 
-            string csv = await GetCsv(reportServiceContext, cancellationToken);
+            string csv = await GetCsv(reportServiceContext, appsAdditionalPaymentsModel, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, List<AppsMonthlyPaymentModel> appsAdditionalPaymentsModel, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            var appsMonthlyPaymentModels = new List<AppsMonthlyPaymentModel>();
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -83,7 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<AppsMonthlyPaymentMapper, AppsMonthlyPaymentModel>(csvWriter, appsMonthlyPaymentModels);
+                        WriteCsvRecords<AppsMonthlyPaymentMapper, AppsMonthlyPaymentModel>(csvWriter, appsAdditionalPaymentsModel);
 
                         csvWriter.Flush();
                         textWriter.Flush();

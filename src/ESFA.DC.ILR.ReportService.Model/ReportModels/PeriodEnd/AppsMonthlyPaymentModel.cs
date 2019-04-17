@@ -65,6 +65,21 @@ namespace ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd
         public byte LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
 
         public string AgreementIdentifier { get; set; }
+        public decimal[] LevyPayments { get; set; }
+
+        public decimal[] CoInvestmentPayments { get; set; }
+
+        public decimal[] CoInvestmentDueFromEmployerPayments { get; set; }
+
+        public decimal[] EmployerAdditionalPayments { get; set; }
+
+        public decimal[] ProviderAdditionalPayments { get; set; }
+
+        public decimal[] ApprenticeAdditionalPayments { get; set; }
+
+        public decimal[] EnglishAndMathsPayments { get; set; }
+
+        public decimal[] PaymentsForLearningSupport { get; set; }
 
         public decimal AugustLevyPayments { get; set; }
 
@@ -337,5 +352,7 @@ namespace ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd
         public decimal TotalPayments { get; set; }
 
         public string OfficialSensitive { get; }
+
+        public decimal[] TotalMonthlyPayments { get; set; }
     }
 }
