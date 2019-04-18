@@ -8,17 +8,22 @@ using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR.ReportService.Tests.Helpers;
 using ESFA.DC.ILR.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Serialization.Json;
+using ESFA.DC.Serialization.Xml;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -47,13 +52,14 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
             Mock<IDASPaymentsProviderService> dasPaymentProviderMock = new Mock<IDASPaymentsProviderService>();
             Mock<IFM36ProviderService> fm36ProviderServiceMock = new Mock<IFM36ProviderService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
             var appsMonthlyPaymentIlrInfo = BuildILRModel(ukPrn);
             var appsMonthlyPaymentRulebaseInfo = BuildFm36Model(ukPrn);
             var appsMonthlyPaymentDasInfo = BuildDasPaymentsModel(ukPrn);
+            IJsonSerializationService jsonSerializationService = new JsonSerializationService();
+            IXmlSerializationService xmlSerializationService = new XmlSerializationService();
 
             ilrProviderServiceMock.Setup(x => x.GetILRInfoForAppsMonthlyPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsMonthlyPaymentIlrInfo);
             fm36ProviderServiceMock.Setup(x => x.GetFM36DataForAppsMonthlyPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsMonthlyPaymentRulebaseInfo);
@@ -72,7 +78,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 appsMonthlyPaymentModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);

@@ -7,7 +7,7 @@ using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 
 namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
 {
-    public class AppsMonthlyPaymentMapper : ClassMap<AppsMonthlyPaymentModel>, IClassMapper
+    public class AppsMonthlyPaymentMapper : ClassMap<AppsMonthlyPaymentModel>
     {
         public AppsMonthlyPaymentMapper()
         {

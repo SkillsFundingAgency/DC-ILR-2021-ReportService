@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 
-namespace ESFA.DC.ILR.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Provider
 {
     public interface IOrgProviderService
     {

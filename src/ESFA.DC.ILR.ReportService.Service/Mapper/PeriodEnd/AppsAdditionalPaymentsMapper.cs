@@ -1,10 +1,9 @@
 ﻿using CsvHelper.Configuration;
-using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 
 namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
 {
-    public class AppsAdditionalPaymentsMapper : ClassMap<AppsAdditionalPaymentsModel>, IClassMapper
+    public class AppsAdditionalPaymentsMapper : ClassMap<AppsAdditionalPaymentsModel>
     {
         public AppsAdditionalPaymentsMapper()
         {

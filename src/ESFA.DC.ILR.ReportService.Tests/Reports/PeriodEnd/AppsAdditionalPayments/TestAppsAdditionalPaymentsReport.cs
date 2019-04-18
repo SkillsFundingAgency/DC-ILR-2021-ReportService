@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
@@ -15,10 +15,6 @@ using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR.ReportService.Tests.Helpers;
 using ESFA.DC.ILR.ReportService.Tests.Models;
-using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Interface;
-using ESFA.DC.ILR1819.DataStore.EF.Valid;
-using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using FluentAssertions;
@@ -48,7 +44,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             Mock<IDASPaymentsProviderService> dasPaymentProviderMock = new Mock<IDASPaymentsProviderService>();
             Mock<IFM36ProviderService> fm36ProviderServiceMock = new Mock<IFM36ProviderService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
             var appsAdditionalPaymentIlrInfo = BuildILRModel(ukPrn);
@@ -63,7 +58,15 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var appsAdditionalPaymentsModelBuilder = new AppsAdditionalPaymentsModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsAdditionalPaymentsReport(logger.Object, storage.Object, ilrProviderServiceMock.Object, fm36ProviderServiceMock.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, dasPaymentProviderMock.Object, appsAdditionalPaymentsModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.AppsAdditionalPaymentsReport(
+                logger.Object,
+                storage.Object,
+                ilrProviderServiceMock.Object,
+                fm36ProviderServiceMock.Object,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                dasPaymentProviderMock.Object,
+                appsAdditionalPaymentsModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

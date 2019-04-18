@@ -5,7 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Context;
-using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
+using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.IO.Interfaces;
@@ -13,34 +14,23 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public class FM25ProviderService : IFM25ProviderService
+    public class FM25ProviderService : AbstractFundModelProviderService, IFM25ProviderService
     {
-        private readonly ILogger _logger;
-
-        private readonly IKeyValuePersistenceService _storage;
-        private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
-        private readonly SemaphoreSlim _getDataLock;
+        private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
         private bool _loadedDataAlready;
         private FM25Global _fundingOutputs;
 
         public FM25ProviderService(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
-            IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
+            : base(storage, jsonSerializationService, logger)
         {
-            _logger = logger;
-            _storage = storage;
-            _jsonSerializationService = jsonSerializationService;
-            _intUtilitiesService = intUtilitiesService;
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
-            _fundingOutputs = null;
-            _getDataLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<FM25Global> GetFM25Data(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
@@ -62,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string fm25Filename = reportServiceContext.FundingFM25OutputKey;
-                    string fm25 = await _storage.GetAsync(fm25Filename, cancellationToken);
+                    string fm25 = await _streamableKeyValuePersistenceService.GetAsync(fm25Filename, cancellationToken);
 
                     if (string.IsNullOrEmpty(fm25))
                     {
@@ -70,7 +60,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
                         return _fundingOutputs;
                     }
 
-                    _fundingOutputs = _jsonSerializationService.Deserialize<FM25Global>(fm25);
+                    _fundingOutputs = _serializationService.Deserialize<FM25Global>(fm25);
                 }
                 else
                 {

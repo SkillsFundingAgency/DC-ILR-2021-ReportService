@@ -6,7 +6,7 @@ using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Model.Eas;
 using EasSubmissionValues = ESFA.DC.ILR.ReportService.Model.Eas.EasSubmissionValues;
 
-namespace ESFA.DC.ILR.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Provider
 {
     public interface IEasProviderService
     {

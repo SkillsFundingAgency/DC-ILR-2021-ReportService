@@ -10,6 +10,7 @@ using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
@@ -26,37 +27,29 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private static readonly SummaryOfFm35FundingModelComparer comparer = new SummaryOfFm35FundingModelComparer();
 
         private readonly IFM35ProviderService _fm35ProviderService;
-        private readonly IStringUtilitiesService _stringUtilitiesService;
-        private readonly IKeyValuePersistenceService _storage;
-        private readonly ILogger _logger;
         private readonly IFm35Builder _summaryOfFm35FundingModelBuilder;
 
         public SummaryOfFm35FundingReport(
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IFM35ProviderService fm35ProviderService,
-            IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFm35Builder builder)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _fm35ProviderService = fm35ProviderService;
-            _stringUtilitiesService = stringUtilitiesService;
             _summaryOfFm35FundingModelBuilder = builder;
-
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFM35FundingReport;
-            ReportFileName = "Summary of Funding Model 35 Funding Report";
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Summary of Funding Model 35 Funding Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.SummaryOfFM35FundingReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             IList<SummaryOfFm35FundingModel> summaryOfFm35FundingModels = await GetSummaryOfFm35FundingModels(reportServiceContext, cancellationToken);
             if (summaryOfFm35FundingModels == null)
@@ -65,7 +58,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             }
 
             string csv = GetCsv(summaryOfFm35FundingModels);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 

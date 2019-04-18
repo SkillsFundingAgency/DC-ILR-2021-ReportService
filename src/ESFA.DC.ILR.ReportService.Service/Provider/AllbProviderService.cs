@@ -6,27 +6,24 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Context;
-using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.ILR;
+using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using LearningDelivery = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDelivery;
 using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue;
 using LearningDeliveryValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryValue;
-using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class AllbProviderService : IAllbProviderService
+    public sealed class AllbProviderService : AbstractFundModelProviderService, IAllbProviderService
     {
-        private readonly ILogger _logger;
-        private readonly IStreamableKeyValuePersistenceService _storage;
-        private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IIntUtilitiesService _intUtilitiesService;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock;
@@ -37,14 +34,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
-            IIntUtilitiesService intUtilitiesService,
             Func<IIlr1819ValidContext> ilrValidContextFactory,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
+            : base(storage, jsonSerializationService, logger)
         {
-            _logger = logger;
-            _storage = storage;
-            _jsonSerializationService = jsonSerializationService;
-            _intUtilitiesService = intUtilitiesService;
             _ilrValidContextFactory = ilrValidContextFactory;
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
             _fundingOutputs = null;
@@ -72,11 +65,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
                 if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
                 {
                     string albFilename = reportServiceContext.FundingALBOutputKey;
-                    _logger.LogWarning($"Reading {albFilename}; Storage is {_storage}; CancellationToken is {cancellationToken}");
+                    _logger.LogWarning($"Reading {albFilename}; Storage is {_streamableKeyValuePersistenceService}; CancellationToken is {cancellationToken}");
                     using (MemoryStream ms = new MemoryStream())
                     {
-                        await _storage.GetAsync(albFilename, ms, cancellationToken);
-                        _fundingOutputs = _jsonSerializationService.Deserialize<ALBGlobal>(ms);
+                        await _streamableKeyValuePersistenceService.GetAsync(albFilename, ms, cancellationToken);
+                        _fundingOutputs = _serializationService.Deserialize<ALBGlobal>(ms);
                     }
                 }
                 else

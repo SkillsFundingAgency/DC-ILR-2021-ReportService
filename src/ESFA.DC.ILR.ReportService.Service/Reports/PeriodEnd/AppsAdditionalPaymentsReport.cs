@@ -9,6 +9,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
@@ -21,7 +22,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
     public class AppsAdditionalPaymentsReport : AbstractReport, IReport
     {
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
@@ -34,30 +34,28 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IFM36ProviderService fm36ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IDASPaymentsProviderService dasPaymentsProviderService,
             IAppsAdditionalPaymentsModelBuilder modelBuilder)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Apps Additional Payments Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsAdditionalPaymentsReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apps Additional Payments Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsAdditionalPaymentsReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn;
-            var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var appsAdditionalPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsAdditionalPaymentsReportAsync(ukPrn, cancellationToken);
-            var appsAdditionalPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsAdditionalPaymentReportAsync(ukPrn, cancellationToken);
-            var appsAdditionalPaymentDasPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(ukPrn, cancellationToken);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
+
+            var appsAdditionalPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsAdditionalPaymentsReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsAdditionalPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsAdditionalPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsAdditionalPaymentDasPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(reportServiceContext.Ukprn, cancellationToken);
 
             var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsAdditionalPaymentIlrInfo, appsAdditionalPaymentRulebaseInfo, appsAdditionalPaymentDasPaymentsInfo);
             string csv = await GetCsv(appsAdditionalPaymentsModel, cancellationToken);

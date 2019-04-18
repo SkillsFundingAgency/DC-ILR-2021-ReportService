@@ -1,5 +1,4 @@
 ﻿using System;
-using ESFA.DC.ILR.ReportService.Model.Styling;
 
 namespace ESFA.DC.ILR.ReportService.Model.ReportModels
 {

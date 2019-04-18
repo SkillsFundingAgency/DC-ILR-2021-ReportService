@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment
+﻿namespace ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment
 {
     public class AECApprenticeshipPriceEpisodePeriodisedValuesInfo
     {

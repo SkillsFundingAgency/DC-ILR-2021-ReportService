@@ -10,86 +10,82 @@ using Aspose.Cells;
 using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Generation;
 using ESFA.DC.ILR.ReportService.Model.Styling;
 using ESFA.DC.IO.Interfaces;
+using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 {
-    public abstract class AbstractReport
+    public abstract class AbstractReport : IReport
     {
         protected readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
-
-        protected string ReportFileName;
+        protected readonly ILogger _logger;
 
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IValueProvider _valueProvider;
 
         private readonly Dictionary<Worksheet, int> _currentRow = new Dictionary<Worksheet, int>();
 
-        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService)
+        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService, ILogger logger)
         {
             _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
+            _logger = logger;
             _dateTimeProvider = dateTimeProvider;
             _valueProvider = valueProvider;
         }
 
-        public string ReportTaskName { get; set; }
+        public abstract string ReportFileName { get; }
+
+        public abstract string ReportTaskName { get; }
+
+        public string GetFilename(IReportServiceContext reportServiceContext)
+        {
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
+            return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public string GetZipFilename(IReportServiceContext reportServiceContext)
+        {
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
+            return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        public abstract Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken);
 
         public bool IsMatch(string reportTaskName)
         {
             return string.Equals(reportTaskName, ReportTaskName, StringComparison.OrdinalIgnoreCase);
         }
 
-        public string GetExternalFilename(string ukPrn, long jobId, DateTime submissionDateTime)
-        {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(submissionDateTime);
-            return $"{ukPrn}_{jobId.ToString()}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
-        }
-
-        public string GetFilename(string ukPrn, long jobId, DateTime submissionDateTime)
-        {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(submissionDateTime);
-            return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
-        }
-
-        /// <summary>
-        /// Builds a CSV report using the specified mapper as the list of column names.
-        /// </summary>
-        /// <typeparam name="TMapper">The mapper.</typeparam>
-        /// <typeparam name="TModel">The model.</typeparam>
-        /// <param name="csvWriter">The memory stream to write to.</param>
-        /// <param name="records">The records to persist.</param>
-        /// <param name="mapperOverride">Optional override of the TMapper, for example, when needing to specify constructor parameters.</param>
-        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records, TMapper mapperOverride = null)
+        protected Stream WriteModelsToCsv<TMapper, TModel>(Stream stream, IEnumerable<TModel> models)
             where TMapper : ClassMap
             where TModel : class
         {
-            if (mapperOverride == null)
+            using (TextWriter textWriter = new StreamWriter(stream))
             {
-                csvWriter.Configuration.RegisterClassMap<TMapper>();
+                using (CsvWriter csvWriter = new CsvWriter(textWriter))
+                {
+                    WriteCsvRecords<TMapper, TModel>(csvWriter, models);
+                }
             }
-            else
-            {
-                csvWriter.Configuration.RegisterClassMap(mapperOverride);
-            }
+
+            return stream;
+        }
+
+        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records)
+            where TMapper : ClassMap
+            where TModel : class
+        {
+            csvWriter.Configuration.RegisterClassMap<TMapper>();
 
             csvWriter.WriteHeader<TModel>();
             csvWriter.NextRecord();
 
-            if (mapperOverride == null)
-            {
-                csvWriter.WriteRecords(records);
-            }
-            else
-            {
-                ModelProperty[] names = mapperOverride.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
-                foreach (TModel record in records)
-                {
-                    WriteCsvRecords(csvWriter, mapperOverride, names, record);
-                }
-            }
+            csvWriter.WriteRecords(records);
 
             csvWriter.Configuration.UnregisterClassMap();
         }
@@ -99,14 +95,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
         {
             object[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).SelectMany(x => x.Data.Names.Names).Select(x => (object)x).ToArray();
             WriteCsvRecords(csvWriter, names);
-        }
-
-        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, TModel record)
-            where TMapper : ClassMap
-            where TModel : class
-        {
-            ModelProperty[] names = mapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
-            WriteCsvRecords(csvWriter, mapper, names, record);
         }
 
         protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, TMapper mapper, ModelProperty[] modelProperties, TModel record)
@@ -362,30 +350,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
         }
 
         /// <summary>
-        /// Writes the data to the zip file with the specified filename.
-        /// </summary>
-        /// <param name="archive">Archive to write to.</param>
-        /// <param name="filename">Filename to use in zip file.</param>
-        /// <param name="data">Data to write.</param>
-        /// <returns>Awaitable task.</returns>
-        protected async Task WriteZipEntry(ZipArchive archive, string filename, string data)
-        {
-            if (archive == null)
-            {
-                return;
-            }
-
-            ZipArchiveEntry entry = archive.GetEntry(filename);
-            entry?.Delete();
-
-            ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
-            using (StreamWriter sw = new StreamWriter(archivedFile.Open()))
-            {
-                await sw.WriteAsync(data);
-            }
-        }
-
-        /// <summary>
         /// Writes the stream to the zip file with the specified filename.
         /// </summary>
         /// <param name="archive">Archive to write to.</param>
@@ -406,8 +370,32 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
             ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
             using (Stream sw = archivedFile.Open())
             {
-                data.Seek(0, SeekOrigin.Begin);
+                data.Position = 0;
                 await data.CopyToAsync(sw, 81920, cancellationToken);
+            }
+        }
+
+        /// <summary>
+        /// Writes the data to the zip file with the specified filename.
+        /// </summary>
+        /// <param name="archive">Archive to write to.</param>
+        /// <param name="filename">Filename to use in zip file.</param>
+        /// <param name="data">Data to write.</param>
+        /// <returns>Awaitable task.</returns>
+        protected async Task WriteZipEntry(ZipArchive archive, string filename, string data)
+        {
+            if (archive == null)
+            {
+                return;
+            }
+
+            ZipArchiveEntry entry = archive.GetEntry(filename);
+            entry?.Delete();
+
+            ZipArchiveEntry archivedFile = archive.CreateEntry(filename, CompressionLevel.Optimal);
+            using (StreamWriter sw = new StreamWriter(archivedFile.Open()))
+            {
+                await sw.WriteAsync(data);
             }
         }
 

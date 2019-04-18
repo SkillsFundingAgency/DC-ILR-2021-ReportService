@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
-using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.Eas;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 

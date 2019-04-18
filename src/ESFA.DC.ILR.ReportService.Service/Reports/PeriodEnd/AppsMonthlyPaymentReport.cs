@@ -9,6 +9,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
@@ -21,7 +22,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
     public class AppsMonthlyPaymentReport : AbstractReport, IReport
     {
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
@@ -38,30 +38,28 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IAppsMonthlyPaymentModelBuilder modelBuilder)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
             _stringUtilitiesService = stringUtilitiesService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Apps Monthly Payment Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsMonthlyPaymentReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apps Monthly Payment Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsMonthlyPaymentReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn;
-            var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var appsMonthlyPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsMonthlyPaymentReportAsync(ukPrn, cancellationToken);
-            var appsMonthlyPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsMonthlyPaymentReportAsync(ukPrn, cancellationToken);
-            var appsMonthlyPaymentDasInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsMonthlyPaymentReportAsync(ukPrn, cancellationToken);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
+
+            var appsMonthlyPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsMonthlyPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsMonthlyPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsMonthlyPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsMonthlyPaymentDasInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsMonthlyPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
 
             var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsMonthlyPaymentIlrInfo, appsMonthlyPaymentRulebaseInfo, appsMonthlyPaymentDasInfo);
 

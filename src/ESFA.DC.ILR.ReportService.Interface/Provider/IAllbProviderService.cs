@@ -5,7 +5,7 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 
-namespace ESFA.DC.ILR.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Provider
 {
     public interface IAllbProviderService
     {

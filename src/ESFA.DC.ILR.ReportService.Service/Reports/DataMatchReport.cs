@@ -14,6 +14,7 @@ using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.DataMatch;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.DasCommitments;
@@ -33,7 +34,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly DataMatchModelComparer DataMatchModelComparer = new DataMatchModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IDasCommitmentsService _dasCommitmentsService;
         private readonly IPeriodProviderService _periodProviderService;
@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IDatalockValidationResultBuilder _datalockValidationResultBuilder;
         private readonly ITotalBuilder _totalBuilder;
 
-        private readonly List<DataMatchModel> dataMatchModels;
+        private readonly List<DataMatchModel> dataMatchModels = new List<DataMatchModel>();
 
         public DataMatchReport(
             ILogger logger,
@@ -51,26 +51,24 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationStageOutputCache validationStageOutputCache,
             IDatalockValidationResultBuilder datalockValidationResultBuilder,
             ITotalBuilder totalBuilder)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _fm36ProviderService = fm36ProviderService;
             _dasCommitmentsService = dasCommitmentsService;
             _periodProviderService = periodProviderService;
             _validationStageOutputCache = validationStageOutputCache;
             _datalockValidationResultBuilder = datalockValidationResultBuilder;
             _totalBuilder = totalBuilder;
-
-            dataMatchModels = new List<DataMatchModel>();
-            ReportFileName = "Apprenticeship Data Match Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateDataMatchReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apprenticeship Data Match Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.DataMatchReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             FM36Global fm36Data = await _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken).ConfigureAwait(false);
 
@@ -104,9 +102,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 _validationStageOutputCache.DataMatchProblemLearnersCount = dataMatchModels.DistinctBy(x => x.LearnRefNumber).Count();
             }
 
-            var jobId = reportServiceContext.JobId;
-            var externalFileName = GetExternalFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(reportServiceContext.Ukprn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             string csv = WriteResults();
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

@@ -9,6 +9,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
@@ -21,7 +22,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
     public class FundingSummaryPeriodEndReport : AbstractReport, IReport
     {
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
@@ -36,26 +36,23 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFundingSummaryPeriodEndModelBuilder modelBuilder)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Funding Summary Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryPeriodEndReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Funding Summary Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.FundingSummaryPeriodEndReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

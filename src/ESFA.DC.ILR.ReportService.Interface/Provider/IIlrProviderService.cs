@@ -7,7 +7,7 @@ using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 
-namespace ESFA.DC.ILR.ReportService.Interface.Service
+namespace ESFA.DC.ILR.ReportService.Interface.Provider
 {
     public interface IIlrProviderService
     {

@@ -6,10 +6,15 @@ using ESFA.DC.Auditing.Interface;
 using ESFA.DC.DASPayments.EF;
 using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.FileService;
+using ESFA.DC.FileService.Config;
+using ESFA.DC.FileService.Config.Interface;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.DataMatch;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
@@ -18,6 +23,7 @@ using ESFA.DC.ILR.ReportService.Service.Builders;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.BusinessRules;
 using ESFA.DC.ILR.ReportService.Service.Commands.AppsIndicativeEarnings;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Service;
@@ -57,9 +63,6 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
         public static ContainerBuilder BuildContainer(IConfigurationHelper configHelper)
         {
             var containerBuilder = new ContainerBuilder();
-
-            var topicAndTaskOptions = configHelper.GetSectionValues<TopicAndTaskSectionOptions>("TopicAndTaskSection");
-            containerBuilder.RegisterInstance(topicAndTaskOptions).As<ITopicAndTaskSectionOptions>().SingleInstance();
 
             var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
             containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
@@ -103,9 +106,16 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .As<IAzureStorageKeyValuePersistenceServiceConfig>().SingleInstance();
 
             containerBuilder.RegisterType<AzureStorageKeyValuePersistenceService>()
-                .As<IKeyValuePersistenceService>()
                 .As<IStreamableKeyValuePersistenceService>()
                 .InstancePerLifetimeScope();
+
+            var azureStorageFileServiceConfiguration = new AzureStorageFileServiceConfiguration()
+            {
+                ConnectionString = azureBlobStorageOptions.AzureBlobConnectionString,
+            };
+
+            containerBuilder.RegisterInstance(azureStorageFileServiceConfiguration).As<IAzureStorageFileServiceConfiguration>();
+            containerBuilder.RegisterType<AzureStorageFileService>().As<IFileService>();
 
             // register serialization
             containerBuilder.RegisterType<JsonSerializationService>()
@@ -186,6 +196,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<MessageHandler>().As<IMessageHandler<JobContextMessage>>().InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<EntryPoint>().WithAttributeFiltering().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<ZipService>().As<IZipService>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<ReportsProvider>().As<IReportsProvider>().InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<JobContextManager<JobContextMessage>>().As<IJobContextManager<JobContextMessage>>()
                 .InstancePerLifetimeScope();
