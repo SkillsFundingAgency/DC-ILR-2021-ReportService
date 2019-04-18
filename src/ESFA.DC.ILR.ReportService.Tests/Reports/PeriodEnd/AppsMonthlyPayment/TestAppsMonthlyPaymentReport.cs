@@ -21,6 +21,9 @@ using ESFA.DC.ILR.ReportService.Tests.Helpers;
 using ESFA.DC.ILR.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.Serialization.Json;
+using ESFA.DC.Serialization.Xml;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -75,7 +78,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
                 stringUtilitiesService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 appsMonthlyPaymentModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
@@ -317,9 +319,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
                     DeliveryPeriod = 1,
                     LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
                 };
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseValidContextFactory);
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseValidContextFactory);
-            IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
                 var englishAndMathsPayments = new AppsMonthlyPaymentDASPaymentInfo()
                 {
@@ -362,15 +361,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
                     DeliveryPeriod = 1,
                     LearningAimFundingLineType = "16-18 Apprenticeship Non-Levy"
                 };
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsMonthlyPaymentReport(
-                logger.Object,
-                storage.Object,
-                ilrProviderService,
-                fm36ProviderService,
-                stringUtilitiesService,
-                dateTimeProviderMock.Object,
-                valueProvider,
-                appsMonthlyPaymentModelBuilder);
 
                 appsMonthlyPaymentDasInfo.Payments.Add(levyPayments);
                 appsMonthlyPaymentDasInfo.Payments.Add(coInvestmentPayments);
