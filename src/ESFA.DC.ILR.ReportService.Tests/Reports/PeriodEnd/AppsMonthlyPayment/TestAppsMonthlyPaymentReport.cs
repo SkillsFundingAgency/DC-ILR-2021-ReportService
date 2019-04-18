@@ -1,13 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
+using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Service;
@@ -76,7 +79,37 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
 
             csv.Should().NotBeNullOrEmpty();
             File.WriteAllText($"{filename}.csv", csv);
+            IEnumerable<AppsMonthlyPaymentModel> result;
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsMonthlyPaymentMapper(), 1));
+            using (var reader = new StreamReader($"{filename}.csv"))
+            {
+                using (var csvReader = new CsvReader(reader))
+                {
+                    csvReader.Configuration.RegisterClassMap<AppsMonthlyPaymentMapper>();
+                    result = csvReader.GetRecords<AppsMonthlyPaymentModel>().ToList();
+                }
+            }
+
+            result.Should().NotBeNullOrEmpty();
+            result.Count().Should().Be(104);
+            result.First().LearnerReferenceNumber.Should().Be("A12345");
+            result.First().UniqueLearnerNumber.Should().Be(12345);
+            result.First().CampusIdentifier.Should().Be("camp101");
+            result.First().AimSeqNumber.Should().Be(1);
+            result.First().LearningAimReference.Should().Be("50117889");
+            result.First().LearningStartDate.Should().Be("28/06/2017");
+            result.First().LearningAimProgrammeType.Should().Be(1);
+            result.First().LearningAimStandardCode.Should().Be(1);
+            result.First().LearningAimFrameworkCode.Should().Be(1);
+            result.First().LearningAimPathwayCode.Should().Be(1);
+            result.First().AimType.Should().Be(3);
+            result.First().FundingLineType.Should().Be("16-18 Apprenticeship Non-Levy");
+            result.First().LearningDeliveryFAMTypeApprenticeshipContractType.Should().Be(2);
+            result.First().AugustLevyPayments.Should().Be(11);
+            result.First().AugustCoInvestmentPayments.Should().Be(0);
+            result.First().AugustTotalPayments.Should().Be(11);
+            result.First().TotalLevyPayments.Should().Be(11);
+            result.First().TotalPayments.Should().Be(11);
         }
 
         private AppsMonthlyPaymentILRInfo BuildILRModel(int ukPrn)

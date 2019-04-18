@@ -56,6 +56,8 @@ namespace ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd
 
         public int? SubContractedOrPartnershipUKPRN { get; set; }
 
+        public string PriceEpisodeIdentifier { get; set; }
+
         public string PriceEpisodeStartDate { get; set; }
 
         public string PriceEpisodeActualEndDate { get; set; }
@@ -65,6 +67,7 @@ namespace ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd
         public byte LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
 
         public string AgreementIdentifier { get; set; }
+
         public decimal[] LevyPayments { get; set; }
 
         public decimal[] CoInvestmentPayments { get; set; }
