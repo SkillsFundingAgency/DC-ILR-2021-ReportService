@@ -291,6 +291,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                         LearnAimRef = x.LearnAimRef,
                         AimType = x.AimType,
                         SWSupAimId = x.SWSupAimId,
+                        LearnStartDate = x.LearnStartDate,
+                        ProgType = x.ProgType,
+                        StdCode = x.StdCode,
+                        FworkCode = x.FworkCode,
+                        PwayCode = x.PwayCode,
+                        AimSeqNumber = x.AimSeqNumber,
+                        EPAOrganisation = x.EPAOrgID,
+                        PartnerUkPrn = x.PartnerUKPRN,
                         ProviderSpecDeliveryMonitorings = x.ProviderSpecDeliveryMonitorings.Select(y => new AppsMonthlyPaymentProviderSpecDeliveryMonitoringInfo()
                         {
                             UKPRN = y.UKPRN,

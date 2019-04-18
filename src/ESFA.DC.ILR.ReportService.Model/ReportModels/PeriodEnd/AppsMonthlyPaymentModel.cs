@@ -54,21 +54,39 @@
 
         public int? SubContractedOrPartnershipUKPRN { get; set; }
 
+        public string PriceEpisodeIdentifier { get; set; }
+
         public string PriceEpisodeStartDate { get; set; }
 
         public string PriceEpisodeActualEndDate { get; set; }
 
         public string FundingLineType { get; set; }
 
-        public string LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
+        public byte LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
 
         public string AgreementIdentifier { get; set; }
+
+        public decimal[] LevyPayments { get; set; }
+
+        public decimal[] CoInvestmentPayments { get; set; }
+
+        public decimal[] CoInvestmentDueFromEmployerPayments { get; set; }
+
+        public decimal[] EmployerAdditionalPayments { get; set; }
+
+        public decimal[] ProviderAdditionalPayments { get; set; }
+
+        public decimal[] ApprenticeAdditionalPayments { get; set; }
+
+        public decimal[] EnglishAndMathsPayments { get; set; }
+
+        public decimal[] PaymentsForLearningSupport { get; set; }
 
         public decimal AugustLevyPayments { get; set; }
 
         public decimal AugustCoInvestmentPayments { get; set; }
 
-        public decimal AugustCoInvestmentDueFromEmployer { get; set; }
+        public decimal AugustCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal AugustEmployerAdditionalPayments { get; set; }
 
@@ -86,7 +104,7 @@
 
         public decimal SeptemberCoInvestmentPayments { get; set; }
 
-        public decimal SeptemberCoInvestmentDueFromEmployer { get; set; }
+        public decimal SeptemberCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal SeptemberEmployerAdditionalPayments { get; set; }
 
@@ -104,7 +122,7 @@
 
         public decimal OctoberCoInvestmentPayments { get; set; }
 
-        public decimal OctoberCoInvestmentDueFromEmployer { get; set; }
+        public decimal OctoberCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal OctoberEmployerAdditionalPayments { get; set; }
 
@@ -122,7 +140,7 @@
 
         public decimal NovemberCoInvestmentPayments { get; set; }
 
-        public decimal NovemberCoInvestmentDueFromEmployer { get; set; }
+        public decimal NovemberCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal NovemberEmployerAdditionalPayments { get; set; }
 
@@ -140,7 +158,7 @@
 
         public decimal DecemberCoInvestmentPayments { get; set; }
 
-        public decimal DecemberCoInvestmentDueFromEmployer { get; set; }
+        public decimal DecemberCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal DecemberEmployerAdditionalPayments { get; set; }
 
@@ -158,7 +176,7 @@
 
         public decimal JanuaryCoInvestmentPayments { get; set; }
 
-        public decimal JanuaryCoInvestmentDueFromEmployer { get; set; }
+        public decimal JanuaryCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal JanuaryEmployerAdditionalPayments { get; set; }
 
@@ -176,7 +194,7 @@
 
         public decimal FebruaryCoInvestmentPayments { get; set; }
 
-        public decimal FebruaryCoInvestmentDueFromEmployer { get; set; }
+        public decimal FebruaryCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal FebruaryEmployerAdditionalPayments { get; set; }
 
@@ -194,7 +212,7 @@
 
         public decimal MarchCoInvestmentPayments { get; set; }
 
-        public decimal MarchCoInvestmentDueFromEmployer { get; set; }
+        public decimal MarchCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal MarchEmployerAdditionalPayments { get; set; }
 
@@ -212,7 +230,7 @@
 
         public decimal AprilCoInvestmentPayments { get; set; }
 
-        public decimal AprilCoInvestmentDueFromEmployer { get; set; }
+        public decimal AprilCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal AprilEmployerAdditionalPayments { get; set; }
 
@@ -230,7 +248,7 @@
 
         public decimal MayCoInvestmentPayments { get; set; }
 
-        public decimal MayCoInvestmentDueFromEmployer { get; set; }
+        public decimal MayCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal MayEmployerAdditionalPayments { get; set; }
 
@@ -248,7 +266,7 @@
 
         public decimal JuneCoInvestmentPayments { get; set; }
 
-        public decimal JuneCoInvestmentDueFromEmployer { get; set; }
+        public decimal JuneCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal JuneEmployerAdditionalPayments { get; set; }
 
@@ -266,7 +284,7 @@
 
         public decimal JulyCoInvestmentPayments { get; set; }
 
-        public decimal JulyCoInvestmentDueFromEmployer { get; set; }
+        public decimal JulyCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal JulyEmployerAdditionalPayments { get; set; }
 
@@ -284,7 +302,7 @@
 
         public decimal R13CoInvestmentPayments { get; set; }
 
-        public decimal R13CoInvestmentDueFromEmployer { get; set; }
+        public decimal R13CoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal R13EmployerAdditionalPayments { get; set; }
 
@@ -302,7 +320,7 @@
 
         public decimal R14CoInvestmentPayments { get; set; }
 
-        public decimal R14CoInvestmentDueFromEmployer { get; set; }
+        public decimal R14CoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal R14EmployerAdditionalPayments { get; set; }
 
@@ -320,7 +338,7 @@
 
         public decimal TotalCoInvestmentPayments { get; set; }
 
-        public decimal TotalCoInvestmentDueFromEmployer { get; set; }
+        public decimal TotalCoInvestmentDueFromEmployerPayments { get; set; }
 
         public decimal TotalEmployerAdditionalPayments { get; set; }
 
@@ -335,5 +353,7 @@
         public decimal TotalPayments { get; set; }
 
         public string OfficialSensitive { get; }
+
+        public decimal[] TotalMonthlyPayments { get; set; }
     }
 }

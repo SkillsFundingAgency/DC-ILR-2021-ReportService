@@ -24,6 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
     {
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
+        private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
 
         private readonly IAppsMonthlyPaymentModelBuilder _modelBuilder;
@@ -33,6 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
             IFM36ProviderService fm36ProviderService,
+            IDASPaymentsProviderService dasPaymentsProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
@@ -41,6 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
         {
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
+            _dasPaymentsProviderService = dasPaymentsProviderService;
             _stringUtilitiesService = stringUtilitiesService;
             _modelBuilder = modelBuilder;
         }
@@ -55,17 +58,24 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             var fileName = GetZipFilename(reportServiceContext);
 
             var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsMonthlyPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var jobId = reportServiceContext.JobId;
+            var ukPrn = reportServiceContext.Ukprn;
+            var externalFileName = GetExternalFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var fileName = GetFilename(ukPrn.ToString(), jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var appsMonthlyPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsMonthlyPaymentReportAsync(ukPrn, cancellationToken);
+            var appsMonthlyPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsMonthlyPaymentReportAsync(ukPrn, cancellationToken);
+            var appsMonthlyPaymentDasInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsMonthlyPaymentReportAsync(ukPrn, cancellationToken);
 
-            string csv = await GetCsv(reportServiceContext, cancellationToken);
+            var appsAdditionalPaymentsModel = _modelBuilder.BuildModel(appsMonthlyPaymentIlrInfo, appsMonthlyPaymentRulebaseInfo, appsMonthlyPaymentDasInfo);
+
+            string csv = await GetCsv(reportServiceContext, appsAdditionalPaymentsModel, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(IReportServiceContext reportServiceContext, List<AppsMonthlyPaymentModel> appsAdditionalPaymentsModel, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-
-            var appsMonthlyPaymentModels = new List<AppsMonthlyPaymentModel>();
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -74,7 +84,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<AppsMonthlyPaymentMapper, AppsMonthlyPaymentModel>(csvWriter, appsMonthlyPaymentModels);
+                        WriteCsvRecords<AppsMonthlyPaymentMapper, AppsMonthlyPaymentModel>(csvWriter, appsAdditionalPaymentsModel);
 
                         csvWriter.Flush();
                         textWriter.Flush();

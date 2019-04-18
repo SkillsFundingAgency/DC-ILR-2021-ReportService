@@ -220,22 +220,20 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            List<AEC_ApprenticeshipPriceEpisode> aecApprenticeshipPriceEpisodes;
-
             using (var ilrContext = _ilrRulebaseContextFactory())
             {
-                aecApprenticeshipPriceEpisodes = await ilrContext.AEC_ApprenticeshipPriceEpisodes.Where(x => x.UKPRN == ukPrn).ToListAsync(cancellationToken);
-            }
+                var aecApprenticeshipPriceEpisodeInfos = await ilrContext.AEC_ApprenticeshipPriceEpisodes
+                    .Where(x => x.UKPRN == ukPrn)
+                    .Select(pe => new AECApprenticeshipPriceEpisodeInfo
+                    {
+                        UkPrn = pe.UKPRN,
+                        AimSequenceNumber = (int)pe.PriceEpisodeAimSeqNumber,
+                        LearnRefNumber = pe.LearnRefNumber,
+                        PriceEpisodeActualEndDate = pe.PriceEpisodeActualEndDate,
+                        PriceEpisodeAgreeId = pe.PriceEpisodeAgreeId
+                    }).ToListAsync(cancellationToken);
 
-            foreach (var aecApprenticeshipPriceEpisode in aecApprenticeshipPriceEpisodes)
-            {
-                var periodisedValue = new AECApprenticeshipPriceEpisodeInfo()
-                {
-                    LearnRefNumber = aecApprenticeshipPriceEpisode.LearnRefNumber,
-                    PriceEpisodeActualEndDate = aecApprenticeshipPriceEpisode.PriceEpisodeActualEndDate,
-                    PriceEpisodeAgreeId = aecApprenticeshipPriceEpisode.PriceEpisodeAgreeId
-                };
-                appsMonthlyPaymentRulebaseInfo.AECApprenticeshipPriceEpisodes.Add(periodisedValue);
+                appsMonthlyPaymentRulebaseInfo.AECApprenticeshipPriceEpisodes.AddRange(aecApprenticeshipPriceEpisodeInfos);
             }
 
             return appsMonthlyPaymentRulebaseInfo;
