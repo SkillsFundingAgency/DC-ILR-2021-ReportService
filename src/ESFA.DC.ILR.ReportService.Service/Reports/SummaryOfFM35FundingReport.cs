@@ -4,6 +4,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspose.Cells;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
@@ -13,6 +14,7 @@ using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Model.Styling;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
@@ -27,7 +29,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private readonly IFM35ProviderService _fm35ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
-        private readonly IKeyValuePersistenceService _storage;
         private readonly ILogger _logger;
         private readonly IFm35Builder _summaryOfFm35FundingModelBuilder;
 
@@ -64,9 +65,29 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 return;
             }
 
+            _logger.LogInfo("CSV Report Start");
+
             string csv = GetCsv(summaryOfFm35FundingModels);
-            await _storage.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
+            await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
+
+            _logger.LogInfo("CSV Report End");
+
+            _logger.LogInfo("Excel Report Start");
+
+            Workbook workbook = new Workbook();
+            Worksheet sheet = workbook.Worksheets[0];
+            WriteExcelRecords(sheet, new SummaryOfFM35FundingMapper(), summaryOfFm35FundingModels, null, null);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                workbook.Worksheets[0].Name = "Summary of FM35 Funding Report";
+                workbook.Save(ms, SaveFormat.Xlsx);
+                await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.xlsx", ms, cancellationToken);
+                await WriteZipEntry(archive, $"{fileName}.xlsx", ms, cancellationToken);
+            }
+
+            _logger.LogInfo("Excel Report End");
         }
 
         private string GetCsv(IList<SummaryOfFm35FundingModel> summaryOfFm35FundingModels)
