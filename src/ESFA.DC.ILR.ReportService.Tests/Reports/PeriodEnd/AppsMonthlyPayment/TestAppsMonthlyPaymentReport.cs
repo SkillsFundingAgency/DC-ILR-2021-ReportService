@@ -51,19 +51,19 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
             Mock<IIlrProviderService> ilrProviderServiceMock = new Mock<IIlrProviderService>();
             Mock<IDASPaymentsProviderService> dasPaymentProviderMock = new Mock<IDASPaymentsProviderService>();
             Mock<IFM36ProviderService> fm36ProviderServiceMock = new Mock<IFM36ProviderService>();
+            Mock<ILarsProviderService> larsProviderServiceMock = new Mock<ILarsProviderService>();
             IValueProvider valueProvider = new ValueProvider();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
             var appsMonthlyPaymentIlrInfo = BuildILRModel(ukPrn);
             var appsMonthlyPaymentRulebaseInfo = BuildFm36Model(ukPrn);
             var appsMonthlyPaymentDasInfo = BuildDasPaymentsModel(ukPrn);
-            IJsonSerializationService jsonSerializationService = new JsonSerializationService();
-            IXmlSerializationService xmlSerializationService = new XmlSerializationService();
+            var larsDeliveryInfoModel = BuildLarsDeliveryInfoModel();
 
             ilrProviderServiceMock.Setup(x => x.GetILRInfoForAppsMonthlyPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsMonthlyPaymentIlrInfo);
             fm36ProviderServiceMock.Setup(x => x.GetFM36DataForAppsMonthlyPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsMonthlyPaymentRulebaseInfo);
             dasPaymentProviderMock.Setup(x => x.GetPaymentsInfoForAppsMonthlyPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsMonthlyPaymentDasInfo);
+            larsProviderServiceMock.Setup(x => x.GetLarsLearningDeliveryInfoForAppsMonthlyPaymentReportAsync(It.IsAny<string[]>(), It.IsAny<CancellationToken>())).ReturnsAsync(larsDeliveryInfoModel);
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
@@ -75,7 +75,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
                 ilrProviderServiceMock.Object,
                 fm36ProviderServiceMock.Object,
                 dasPaymentProviderMock.Object,
-                stringUtilitiesService,
+                larsProviderServiceMock.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
                 appsMonthlyPaymentModelBuilder);
@@ -96,7 +96,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
             }
 
             result.Should().NotBeNullOrEmpty();
-            result.Count().Should().Be(104);
+            result.Count().Should().Be(1);
             result.First().LearnerReferenceNumber.Should().Be("A12345");
             result.First().UniqueLearnerNumber.Should().Be(12345);
             result.First().CampusIdentifier.Should().Be("camp101");
@@ -111,10 +111,35 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsMonthlyPayment
             result.First().FundingLineType.Should().Be("16-18 Apprenticeship Non-Levy");
             result.First().LearningDeliveryFAMTypeApprenticeshipContractType.Should().Be(2);
             result.First().AugustLevyPayments.Should().Be(11);
-            result.First().AugustCoInvestmentPayments.Should().Be(0);
-            result.First().AugustTotalPayments.Should().Be(11);
-            result.First().TotalLevyPayments.Should().Be(11);
-            result.First().TotalPayments.Should().Be(11);
+            result.First().AugustCoInvestmentPayments.Should().Be(12);
+            result.First().AugustTotalPayments.Should().Be(116);
+            result.First().TotalLevyPayments.Should().Be(143);
+            result.First().TotalCoInvestmentPayments.Should().Be(156);
+            result.First().TotalCoInvestmentDueFromEmployerPayments.Should().Be(169);
+            result.First().TotalEmployerAdditionalPayments.Should().Be(182);
+            result.First().TotalProviderAdditionalPayments.Should().Be(195);
+            result.First().TotalApprenticeAdditionalPayments.Should().Be(208);
+            result.First().TotalEnglishAndMathsPayments.Should().Be(221);
+            result.First().TotalPaymentsForLearningSupport.Should().Be(234);
+            result.First().TotalPayments.Should().Be(1508);
+            result.First().LearningAimTitle.Should().Be("Maths & English");
+        }
+
+        private List<AppsMonthlyPaymentLarsLearningDeliveryInfo> BuildLarsDeliveryInfoModel()
+        {
+            return new List<AppsMonthlyPaymentLarsLearningDeliveryInfo>()
+            {
+                new AppsMonthlyPaymentLarsLearningDeliveryInfo()
+                {
+                    LearnAimRef = "123456789",
+                    LearningAimTitle = "Diploma in Sports Therapy"
+                },
+                new AppsMonthlyPaymentLarsLearningDeliveryInfo()
+                {
+                    LearnAimRef = "50117889",
+                    LearningAimTitle = "Maths & English"
+                },
+            };
         }
 
         private AppsMonthlyPaymentILRInfo BuildILRModel(int ukPrn)

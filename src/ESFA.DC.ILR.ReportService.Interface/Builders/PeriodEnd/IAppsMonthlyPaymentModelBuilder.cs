@@ -6,6 +6,10 @@ namespace ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd
 {
     public interface IAppsMonthlyPaymentModelBuilder
     {
-        List<AppsMonthlyPaymentModel> BuildModel(AppsMonthlyPaymentILRInfo appsMonthlyPaymentIlrInfo, AppsMonthlyPaymentRulebaseInfo appsMonthlyPaymentRulebaseInfo, AppsMonthlyPaymentDASInfo appsMonthlyPaymentDasInfo);
+        List<AppsMonthlyPaymentModel> BuildModel(
+            AppsMonthlyPaymentILRInfo appsMonthlyPaymentIlrInfo,
+            AppsMonthlyPaymentRulebaseInfo appsMonthlyPaymentRulebaseInfo,
+            AppsMonthlyPaymentDASInfo appsMonthlyPaymentDasInfo,
+            List<AppsMonthlyPaymentLarsLearningDeliveryInfo> appsMonthlyPaymentLarsLearningDeliveryInfoList);
     }
 }

@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
+using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Service;
-using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR.ReportService.Tests.Helpers;
 using ESFA.DC.ILR.ReportService.Tests.Models;
 using ESFA.DC.IO.Interfaces;
@@ -73,6 +74,25 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             csv.Should().NotBeNullOrEmpty();
             File.WriteAllText($"{filename}.csv", csv);
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsAdditionalPaymentsMapper(), 1));
+            IEnumerable<AppsAdditionalPaymentsModel> result;
+
+            using (var reader = new StreamReader($"{filename}.csv"))
+            {
+                using (var csvReader = new CsvReader(reader))
+                {
+                    csvReader.Configuration.RegisterClassMap<AppsAdditionalPaymentsMapper>();
+                    result = csvReader.GetRecords<AppsAdditionalPaymentsModel>().ToList();
+                }
+            }
+
+            result.Should().NotBeNullOrEmpty();
+            result.Count().Should().Be(1);
+            result.First().AprilEarnings.Should().Be(180);
+            result.First().JulyEarnings.Should().Be(240);
+            result.First().DecemberEarnings.Should().Be(100);
+            result.First().TotalEarnings.Should().Be(1560);
+            result.First().TotalPaymentsYearToDate.Should().Be(20);
+            result.First().UniqueLearnerNumber.Should().Be(12345);
         }
 
         private AppsAdditionalPaymentILRInfo BuildILRModel(int ukPrn)
