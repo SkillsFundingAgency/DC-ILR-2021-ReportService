@@ -41,16 +41,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd
 
         private int[] _fundingSourceEmpty => new int[] { };
 
-        public List<AppsMonthlyPaymentModel> BuildModel(
+        public IReadOnlyList<AppsMonthlyPaymentModel> BuildModel(
             AppsMonthlyPaymentILRInfo appsMonthlyPaymentIlrInfo,
             AppsMonthlyPaymentRulebaseInfo appsMonthlyPaymentRulebaseInfo,
             AppsMonthlyPaymentDASInfo appsMonthlyPaymentDasInfo,
-            List<AppsMonthlyPaymentLarsLearningDeliveryInfo> appsMonthlyPaymentLarsLearningDeliveryInfoList)
+            IReadOnlyList<AppsMonthlyPaymentLarsLearningDeliveryInfo> appsMonthlyPaymentLarsLearningDeliveryInfoList)
         {
             List<AppsMonthlyPaymentModel> appsMonthlyPaymentModels = new List<AppsMonthlyPaymentModel>();
             foreach (var learner in appsMonthlyPaymentIlrInfo.Learners)
             {
-                var paymentGroups = appsMonthlyPaymentDasInfo.Payments.Where(x => x.LearnerReferenceNumber.Equals(learner.LearnRefNumber))
+                var paymentGroups = appsMonthlyPaymentDasInfo.Payments.Where(x => x.LearnerReferenceNumber.CaseInsensitiveEquals(learner.LearnRefNumber))
                     .GroupBy(x => new
                     {
                         x.LearnerReferenceNumber,
@@ -97,7 +97,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd
                             ?.ProvSpecLearnMon,
                         AimSeqNumber = learningDeliveryInfo.AimSeqNumber,
                         LearningAimReference = paymentGroup.Key.LearningAimReference,
-                        LearningAimTitle = appsMonthlyPaymentLarsLearningDeliveryInfoList.FirstOrDefault(x => x.LearnAimRef.Equals(learningDeliveryInfo.LearnAimRef)).LearningAimTitle,
+                        LearningAimTitle = appsMonthlyPaymentLarsLearningDeliveryInfoList?.FirstOrDefault(x => x.LearnAimRef.CaseInsensitiveEquals(learningDeliveryInfo.LearnAimRef)).LearningAimTitle,
                         LearningStartDate = paymentGroup.Key.LearningStartDate.ToString("dd/MM/yyyy"),
                         LearningAimProgrammeType = paymentGroup.Key.LearningAimProgrammeType,
                         LearningAimStandardCode = paymentGroup.Key.LearningAimStandardCode,
@@ -123,9 +123,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd
                             ?.ProvSpecDelMon,
                         EndPointAssessmentOrganisation = learningDeliveryInfo.EPAOrganisation,
                         SubContractedOrPartnershipUKPRN = learningDeliveryInfo.PartnerUkPrn,
-                        PriceEpisodeStartDate = paymentGroup.Key.LearningAimReference.Equals("ZPROG001")
-                            ? paymentGroup.Key.PriceEpisodeIdentifier.Substring(
-                                paymentGroup.Key.PriceEpisodeIdentifier.Length - 10)
+                        PriceEpisodeStartDate = paymentGroup.Key.LearningAimReference.CaseInsensitiveEquals("ZPROG001") && paymentGroup.Key.PriceEpisodeIdentifier.Length > 10
+                            ? paymentGroup.Key.PriceEpisodeIdentifier.Substring(paymentGroup.Key.PriceEpisodeIdentifier.Length - 10)
                             : string.Empty,
                         PriceEpisodeActualEndDate = aecApprenticeshipPriceEpisode?.PriceEpisodeActualEndDate
                             .GetValueOrDefault().ToString("dd/MM/yyyy"),
@@ -207,14 +206,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd
             {
                 if (fundingSource.Length > 0)
                 {
-                    if (paymentInfo.CollectionPeriod.ToCollectionPeriodName(paymentInfo.AcademicYear.ToString()).Equals(collectionPeriodName) &&
+                    if (paymentInfo.CollectionPeriod.ToCollectionPeriodName(paymentInfo.AcademicYear.ToString()).CaseInsensitiveEquals(collectionPeriodName) &&
                         transactionTypes.Contains(paymentInfo.TransactionType) &&
                         fundingSource.Contains(paymentInfo.FundingSource))
                     {
                         payment += paymentInfo.Amount;
                     }
                 }
-                else if (paymentInfo.CollectionPeriod.ToCollectionPeriodName(paymentInfo.AcademicYear.ToString()).Equals(collectionPeriodName) &&
+                else if (paymentInfo.CollectionPeriod.ToCollectionPeriodName(paymentInfo.AcademicYear.ToString()).CaseInsensitiveEquals(collectionPeriodName) &&
                          transactionTypes.Contains(paymentInfo.TransactionType))
                 {
                     payment += paymentInfo.Amount;

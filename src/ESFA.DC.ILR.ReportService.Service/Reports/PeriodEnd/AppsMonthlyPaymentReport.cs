@@ -71,7 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
         }
 
-        private async Task<string> GetCsv(List<AppsMonthlyPaymentModel> appsAdditionalPaymentsModel, CancellationToken cancellationToken)
+        private async Task<string> GetCsv(IReadOnlyList<AppsMonthlyPaymentModel> appsAdditionalPaymentsModel, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
