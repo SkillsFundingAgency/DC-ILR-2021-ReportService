@@ -122,6 +122,7 @@
     <Compile Include="Extensions\Eas\EasPaymentTypesExtensions.cs" />
     <Compile Include="Extensions\Eas\EasSubmissionValuesExtensions.cs" />
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
+    <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\FundingSummaryPeriodEndMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\AppsDataMatchMonthEndMapper.cs" />
