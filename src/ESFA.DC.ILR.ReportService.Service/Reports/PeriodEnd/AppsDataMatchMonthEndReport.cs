@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
     public class AppsDataMatchMonthEndReport : AbstractReport, IReport
     {
         private readonly IIlrProviderService _ilrProviderService;
-        private readonly IFM36ProviderService _fm36ProviderService;
+        private readonly IFM36PeriodEndProviderService _fm36ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
 
         private readonly IAppsDataMatchMonthEndModelBuilder _modelBuilder;
@@ -31,7 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
         public AppsDataMatchMonthEndReport(
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
-            IFM36ProviderService fm36ProviderService,
+            IFM36PeriodEndProviderService fm36ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,

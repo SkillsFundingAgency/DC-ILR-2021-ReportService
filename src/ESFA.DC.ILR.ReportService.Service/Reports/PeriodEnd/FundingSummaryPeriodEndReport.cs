@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
     public class FundingSummaryPeriodEndReport : AbstractReport, IReport
     {
         private readonly IIlrProviderService _ilrProviderService;
-        private readonly IFM36ProviderService _fm36ProviderService;
+        private readonly IFM36PeriodEndProviderService _fm36ProviderService;
         private readonly IStringUtilitiesService _stringUtilitiesService;
 
         private readonly IFundingSummaryPeriodEndModelBuilder _modelBuilder;
@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
-            IFM36ProviderService fm36ProviderService,
+            IFM36PeriodEndProviderService fm36ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,

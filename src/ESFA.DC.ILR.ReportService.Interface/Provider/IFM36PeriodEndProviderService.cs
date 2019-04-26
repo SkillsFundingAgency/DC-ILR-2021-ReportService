@@ -7,8 +7,10 @@ using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Provider
 {
-    public interface IFM36ProviderService
+    public interface IFM36PeriodEndProviderService
     {
-        Task<FM36Global> GetFM36Data(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
+        Task<AppsAdditionalPaymentRulebaseInfo> GetFM36DataForAppsAdditionalPaymentReportAsync(int ukPrn, CancellationToken cancellationToken);
+
+        Task<AppsMonthlyPaymentRulebaseInfo> GetFM36DataForAppsMonthlyPaymentReportAsync(int ukPrn, CancellationToken cancellationToken);
     }
 }

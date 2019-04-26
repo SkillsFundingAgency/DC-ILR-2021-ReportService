@@ -267,6 +267,32 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             return containerBuilder;
         }
 
+        public static void RegisterServicesByCollectionName(string collectionName, ContainerBuilder containerBuilder)
+        {
+            if (collectionName.Equals("ILR1819", StringComparison.OrdinalIgnoreCase))
+            {
+                RegisterILRServices(containerBuilder);
+            }
+            else
+            {
+                RegisterNonILRServices(containerBuilder);
+            }
+        }
+
+        private static void RegisterILRServices(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<FM36ILRProviderService>().As<IFM36ProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+        }
+
+        private static void RegisterNonILRServices(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<FM36NonILRProviderService>().As<IFM36ProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+        }
+
         private static void RegisterReports(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<AllbOccupancyReport>().As<IReport>()
@@ -365,7 +391,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FM36ProviderService>().As<IFM36ProviderService>()
+            containerBuilder.RegisterType<FM36PeriodEndProviderService>().As<IFM36PeriodEndProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
