@@ -78,7 +78,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, storage.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
             IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
+            IFM36ProviderService fm36ProviderService = new FM36ILRProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, storage.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();

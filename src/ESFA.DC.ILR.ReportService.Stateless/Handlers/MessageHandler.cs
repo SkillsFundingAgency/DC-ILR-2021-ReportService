@@ -43,16 +43,7 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
         {
             try
             {
-                using (var childLifeTimeScope = _parentLifeTimeScope.BeginLifetimeScope(c =>
-                {
-                    c.RegisterInstance(jobContextMessage).As<IJobContextMessage>();
-
-                    var azureBlobStorageOptions = _parentLifeTimeScope.Resolve<IAzureStorageOptions>();
-                    c.RegisterInstance(new AzureStorageKeyValuePersistenceConfig(
-                            azureBlobStorageOptions.AzureBlobConnectionString,
-                            jobContextMessage.KeyValuePairs[JobContextMessageKey.Container].ToString()))
-                        .As<IAzureStorageKeyValuePersistenceServiceConfig>();
-                }))
+                using (var childLifeTimeScope = GetChildLifeTimeScope(jobContextMessage))
                 {
                     var executionContext = (ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
                     executionContext.JobId = jobContextMessage.JobId.ToString();
@@ -74,6 +65,21 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
                 ServiceEventSource.Current.ServiceMessage(_context, "Exception-{0}", ex.ToString());
                 throw;
             }
+        }
+
+        public ILifetimeScope GetChildLifeTimeScope(JobContextMessage jobContextMessage)
+        {
+            return _parentLifeTimeScope.BeginLifetimeScope(c =>
+            {
+                c.RegisterInstance(jobContextMessage).As<IJobContextMessage>();
+
+                var azureBlobStorageOptions = _parentLifeTimeScope.Resolve<IAzureStorageOptions>();
+                c.RegisterInstance(new AzureStorageKeyValuePersistenceConfig(
+                        azureBlobStorageOptions.AzureBlobConnectionString,
+                        jobContextMessage.KeyValuePairs[JobContextMessageKey.Container].ToString()))
+                    .As<IAzureStorageKeyValuePersistenceServiceConfig>();
+                DIComposition.RegisterServicesByCollectionName(jobContextMessage.KeyValuePairs["CollectionName"].ToString(), c);
+            });
         }
     }
 }
