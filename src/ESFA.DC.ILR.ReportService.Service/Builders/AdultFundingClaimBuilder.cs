@@ -12,6 +12,7 @@ using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Eas;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Builders
@@ -120,52 +121,52 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
 
                 // EAS
 
-                otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Contains(x.PaymentTypeName) &&
+                otherLearningProgramFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName)) &&
                                                           First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                otherLearningProgramFunding10MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Contains(x.PaymentTypeName) &&
+                otherLearningProgramFunding10MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName)) &&
                                                                                        First10MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Contains(x.PaymentTypeName) &&
+                otherLearningProgramFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: AEB-Other Learning", "Princes Trust: AEB-Other Learning" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName)) &&
                                                                                        First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
-                otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Contains(x.PaymentTypeName)
+                otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                 && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Contains(x.PaymentTypeName)
+                otherLearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                 && First10MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                otherLearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Contains(x.PaymentTypeName)
+                otherLearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: AEB-Other Learning" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                  && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
-                traineeShips1924ProgrammeFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924ProgrammeFunding6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                 && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                traineeShips1924ProgrammeFunding10MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924ProgrammeFunding10MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                             && First10MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                traineeShips1924ProgrammeFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924ProgrammeFunding12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                             && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
-                traineeShips1924LearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924LearningSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                             && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                traineeShips1924LearningSupport10MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924LearningSupport10MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                            && First10MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                traineeShips1924LearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924LearningSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Learning Support: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                            && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
-                traineeShips1924LearnerSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924LearnerSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                            && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                traineeShips1924LearnerSupport10MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924LearnerSupport10MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                           && First10MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                traineeShips1924LearnerSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Contains(x.PaymentTypeName)
+                traineeShips1924LearnerSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Learner Support: 19-24 Traineeships" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                                            && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
-                loansAreasCosts6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                loansAreasCosts6MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                            && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                loansAreasCosts10MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                loansAreasCosts10MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                            && First10MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                loansAreasCosts12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                loansAreasCosts12MonthsEas = easSubmissionValues.Where(x => new[] { "Authorised Claims: Advanced Learner Loans Bursary" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                            && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                loansExcessSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                loansExcessSupport6MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                            && First6MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                loansExcessSupport10MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                loansExcessSupport10MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                               && First10MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
-                loansExcessSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Contains(x.PaymentTypeName)
+                loansExcessSupport12MonthsEas = easSubmissionValues.Where(x => new[] { "Excess Support: Advanced Learner Loans Bursary" }.Any(a => a.CaseInsensitiveEquals(x.PaymentTypeName))
                                                                             && First12MonthsArray.Contains(x.CollectionPeriod)).Sum(y => y.PaymentValue);
 
                 adultFundingClaimModel.OtherLearningProgrammeFunding6Months = otherLearningProgramFunding6MonthsFm35 + otherLearningProgramFunding6MonthsEas;
@@ -350,7 +351,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
         {
             decimal value = 0;
             var otherLearningProgramFunding = albLearningDeliveryValues.Where(x =>
-                attributes.Contains(x.AttributeName) && fundLines.Contains(x.FundLine)).ToList();
+                attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
+                && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
             foreach (var deliveryValues in otherLearningProgramFunding)
             {
@@ -369,7 +371,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
         {
             decimal value = 0;
             var otherLearningProgramFunding = albLearningDeliveryValues.Where(x =>
-                attributes.Contains(x.AttributeName) && fundLines.Contains(x.FundLine)).ToList();
+                attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
+                && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
             foreach (var deliveryValues in otherLearningProgramFunding)
             {
@@ -390,7 +393,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
         {
             decimal value = 0;
             var otherLearningProgramFunding = albLearningDeliveryValues.Where(x =>
-                attributes.Contains(x.AttributeName) && fundLines.Contains(x.FundLine)).ToList();
+                attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
+                && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
             foreach (var deliveryValues in otherLearningProgramFunding)
             {
@@ -411,7 +415,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
         {
             decimal value = 0;
             var otherLearningProgramFunding = fm35LearningDeliveryPeriodisedValues.Where(x =>
-                attributes.Contains(x.AttributeName) && fundLines.Contains(x.FundLine)).ToList();
+                attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
+                && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
             foreach (var deliveryValues in otherLearningProgramFunding)
             {
@@ -430,7 +435,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
         {
             decimal value = 0;
             var otherLearningProgramFunding = fm35LearningDeliveryPeriodisedValues.Where(x =>
-                attributes.Contains(x.AttributeName) && fundLines.Contains(x.FundLine)).ToList();
+                attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
+                && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
             foreach (var deliveryValues in otherLearningProgramFunding)
             {
@@ -451,7 +457,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
         {
             decimal value = 0;
             var otherLearningProgramFunding = fm35LearningDeliveryPeriodisedValues.Where(x =>
-                attributes.Contains(x.AttributeName) && fundLines.Contains(x.FundLine)).ToList();
+                attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
+                && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
             foreach (var deliveryValues in otherLearningProgramFunding)
             {
