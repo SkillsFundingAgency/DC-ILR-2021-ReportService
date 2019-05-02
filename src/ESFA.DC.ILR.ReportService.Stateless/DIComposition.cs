@@ -281,14 +281,14 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
         private static void RegisterILRServices(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<FM36ILRProviderService>().As<IFM36ProviderService>()
+            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
         }
 
         private static void RegisterNonILRServices(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<FM36NonILRProviderService>().As<IFM36ProviderService>()
+           containerBuilder.RegisterType<FM36SqlProviderService>().As<IFM36ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
         }
@@ -369,7 +369,15 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
         private static void RegisterServices(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<IlrProviderService>().As<IIlrProviderService>()
+            containerBuilder.RegisterType<IlrFileServiceProvider>().As<IIlrProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<IlrMetadataProviderService>().As<IIlrMetadataProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<IlrPeriodEndProviderService>().As<IIlrPeriodEndProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 

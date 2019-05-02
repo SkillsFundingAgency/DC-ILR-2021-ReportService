@@ -43,6 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly List<FundingSummaryModel> _fundingSummaryModels = new List<FundingSummaryModel>();
 
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly IFM25ProviderService _fm25ProviderService;
@@ -68,6 +69,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         public FundingSummaryReport(
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
+            IIlrMetadataProviderService ilrMetadataProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
             IFM25ProviderService fm25ProviderService,
@@ -94,6 +96,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _ilrProviderService = ilrProviderService;
+            _ilrMetadataProviderService = ilrMetadataProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
             _fm25ProviderService = fm25ProviderService;
@@ -137,7 +140,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 Task<FM81Global> fm81Task = _fm81TrailBlazerProviderService.GetFM81Data(reportServiceContext, cancellationToken);
                 Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
                 Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
-                Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
+                Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
                 var returnPeriod = reportServiceContext.ReturnPeriod;
 

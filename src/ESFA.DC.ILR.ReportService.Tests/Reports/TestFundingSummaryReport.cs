@@ -66,7 +66,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
+            IIlrMetadataProviderService ilrMetadataProviderService = new IlrMetadataProviderService(dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
 
             IOrgProviderService orgProviderService = new OrgProviderService(logger.Object, new OrgConfiguration() { OrgConnectionString = ConfigurationManager.AppSettings["OrgConnectionString"] });
 
@@ -78,7 +79,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, storage.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
             IFM25ProviderService fm25ProviderService = new FM25ProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
-            IFM36ProviderService fm36ProviderService = new FM36ILRProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
+            IFM36ProviderService fm36ProviderService = new FM36FileServiceProvider(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
             IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, storage.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
@@ -141,6 +142,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             FundingSummaryReport fundingSummaryReport = new FundingSummaryReport(
                 storage.Object,
                 ilrProviderService,
+                ilrMetadataProviderService,
                 orgProviderService,
                 allbProviderService,
                 fm25ProviderService,

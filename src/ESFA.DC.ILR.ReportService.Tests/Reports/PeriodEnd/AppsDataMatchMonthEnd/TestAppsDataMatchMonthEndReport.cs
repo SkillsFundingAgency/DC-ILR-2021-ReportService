@@ -72,7 +72,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsDataMatchMonthEn
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseValidContextFactory);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
             IFM36PeriodEndProviderService fm36ProviderService = new FM36PeriodEndProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseValidContextFactory);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
