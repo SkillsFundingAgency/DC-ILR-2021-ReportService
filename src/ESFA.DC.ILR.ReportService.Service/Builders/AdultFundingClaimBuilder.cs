@@ -224,7 +224,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             }
             catch (Exception ex)
             {
-                logger.LogError($"Failed building Adult funding claim report, ex: {0}", ex);
+                logger.LogError($"Failed building Adult funding claim report", ex);
                 throw;
             }
 
