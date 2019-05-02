@@ -85,7 +85,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.Validation
                     }
                 }).Returns(Task.CompletedTask);
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, null, null);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
 
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
 

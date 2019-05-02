@@ -81,6 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IFM25ProviderService _fm25ProviderService;
         private readonly IPostcodeProviderService _postcodeProviderService;
@@ -101,6 +102,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             IIlrProviderService ilrProviderService,
+            IIlrMetadataProviderService ilrMetadataProviderService,
             IOrgProviderService orgProviderService,
             IFM25ProviderService fm25ProviderService,
             IPostcodeProviderService postcodeProviderService,
@@ -112,6 +114,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         {
             _dateTimeProvider = dateTimeProvider;
             _ilrProviderService = ilrProviderService;
+            _ilrMetadataProviderService = ilrMetadataProviderService;
             _orgProviderService = orgProviderService;
             _fm25ProviderService = fm25ProviderService;
             _postcodeProviderService = postcodeProviderService;
@@ -130,7 +133,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             Task<FM25Global> fm25DataTask = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
             Task<decimal?> cofRemovalTask = _orgProviderService.GetCofRemoval(reportServiceContext, cancellationToken);
-            Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
+            Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             await Task.WhenAll(ilrFileTask, fm25DataTask, providerNameTask, cofRemovalTask, lastSubmittedIlrFileTask);
 

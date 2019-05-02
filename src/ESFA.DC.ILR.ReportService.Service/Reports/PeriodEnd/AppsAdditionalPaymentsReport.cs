@@ -22,7 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
     public class AppsAdditionalPaymentsReport : AbstractReport, IReport
     {
-        private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrPeriodEndProviderService _ilrPeriodEndProviderService;
         private readonly IFM36PeriodEndProviderService _fm36ProviderService;
         private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
         private readonly IAppsAdditionalPaymentsModelBuilder _modelBuilder;
@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
         public AppsAdditionalPaymentsReport(
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
-            IIlrProviderService ilrProviderService,
+            IIlrPeriodEndProviderService ilrPeriodEndProviderService,
             IFM36PeriodEndProviderService fm36ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IAppsAdditionalPaymentsModelBuilder modelBuilder)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _ilrProviderService = ilrProviderService;
+            _ilrPeriodEndProviderService = ilrPeriodEndProviderService;
             _fm36ProviderService = fm36ProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
             _modelBuilder = modelBuilder;
@@ -53,7 +53,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             var externalFileName = GetFilename(reportServiceContext);
             var fileName = GetZipFilename(reportServiceContext);
 
-            var appsAdditionalPaymentIlrInfo = await _ilrProviderService.GetILRInfoForAppsAdditionalPaymentsReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsAdditionalPaymentIlrInfo = await _ilrPeriodEndProviderService.GetILRInfoForAppsAdditionalPaymentsReportAsync(reportServiceContext.Ukprn, cancellationToken);
             var appsAdditionalPaymentRulebaseInfo = await _fm36ProviderService.GetFM36DataForAppsAdditionalPaymentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             var appsAdditionalPaymentDasPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(reportServiceContext.Ukprn, cancellationToken);
 

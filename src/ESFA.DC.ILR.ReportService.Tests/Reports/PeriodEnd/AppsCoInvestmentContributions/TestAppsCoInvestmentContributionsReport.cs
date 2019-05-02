@@ -88,13 +88,11 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentCont
                 return new DASPaymentsContext(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(
+            IIlrPeriodEndProviderService ilrProviderService = new IlrPeriodEndProviderService(
                 logger.Object,
                 storage.Object,
                 xmlSerializationService,
-                dateTimeProviderMock.Object,
-                IlrValidContextFactory,
-                IlrRulebaseContextFactory);
+                IlrValidContextFactory);
             var dasPaymentsProviderService = new DASPaymentsProviderService(DasPaymentsContextFactory);
 
             var report = new AppsCoInvestmentContributionsReport(

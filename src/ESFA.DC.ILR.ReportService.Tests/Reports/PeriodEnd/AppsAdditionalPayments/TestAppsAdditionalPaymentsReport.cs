@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
-            Mock<IIlrProviderService> ilrProviderServiceMock = new Mock<IIlrProviderService>();
+            Mock<IIlrPeriodEndProviderService> IlrPeriodEndProviderServiceMock = new Mock<IIlrPeriodEndProviderService>();
             Mock<IDASPaymentsProviderService> dasPaymentProviderMock = new Mock<IDASPaymentsProviderService>();
             Mock<IFM36PeriodEndProviderService> fm36ProviderServiceMock = new Mock<IFM36PeriodEndProviderService>();
             IValueProvider valueProvider = new ValueProvider();
@@ -51,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             var appsAdditionalPaymentRulebaseInfo = BuildFm36Model(ukPrn);
             var appsAdditionalPaymentDasPaymentsInfo = BuildDasPaymentsModel(ukPrn);
 
-            ilrProviderServiceMock.Setup(x => x.GetILRInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentIlrInfo);
+            IlrPeriodEndProviderServiceMock.Setup(x => x.GetILRInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentIlrInfo);
             fm36ProviderServiceMock.Setup(x => x.GetFM36DataForAppsAdditionalPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentRulebaseInfo);
             dasPaymentProviderMock.Setup(x => x.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentDasPaymentsInfo);
 
@@ -62,7 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             var report = new ReportService.Service.Reports.PeriodEnd.AppsAdditionalPaymentsReport(
                 logger.Object,
                 storage.Object,
-                ilrProviderServiceMock.Object,
+                IlrPeriodEndProviderServiceMock.Object,
                 fm36ProviderServiceMock.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,

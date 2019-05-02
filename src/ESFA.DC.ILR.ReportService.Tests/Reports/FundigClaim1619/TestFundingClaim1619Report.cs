@@ -70,7 +70,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.FundigClaim1619
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
+            IIlrMetadataProviderService ilrMetadataProviderService = new IlrMetadataProviderService(dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };
 
             storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
@@ -131,6 +132,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.FundigClaim1619
                 dateTimeProviderMock.Object,
                 valueProvider,
                 ilrProviderService,
+                ilrMetadataProviderService,
                 orgProviderService.Object,
                 fm25ProviderServiceMock.Object,
                 postcodeProverServiceMock.Object,

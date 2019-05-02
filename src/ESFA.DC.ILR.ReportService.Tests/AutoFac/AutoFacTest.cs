@@ -49,10 +49,10 @@ namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
         }
 
         [Theory]
-        [InlineData("ILR1819", typeof(FM36ILRProviderService), true)]
-        [InlineData("ILR1819", typeof(FM36NonILRProviderService), false)]
-        [InlineData("EAS", typeof(FM36NonILRProviderService), true)]
-        [InlineData("EAS", typeof(FM36ILRProviderService), false)]
+        [InlineData("ILR1819", typeof(FM36FileServiceProvider), true)]
+        [InlineData("ILR1819", typeof(FM36SqlProviderService), false)]
+        [InlineData("EAS", typeof(FM36SqlProviderService), true)]
+        [InlineData("EAS", typeof(FM36FileServiceProvider), false)]
         public void TestServicesRegisteredByCollectionName(string collectionName, Type serviceType, bool expectation)
         {
             ContainerBuilder cb = DIComposition.BuildContainer(new TestConfigurationHelper());

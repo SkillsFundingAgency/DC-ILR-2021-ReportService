@@ -73,8 +73,9 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             }
 
             IEasProviderService easProviderService = new EasProviderService(easConfiguration);
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
-            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService); IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrMetadataProviderService ilrMetadataProviderService = new IlrMetadataProviderService(dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
+
             IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };
 
@@ -107,6 +108,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 logger.Object,
                 storage.Object,
                 ilrProviderService,
+                ilrMetadataProviderService,
                 orgProviderService.Object,
                 allbProviderService,
                 fm35ProviderService,

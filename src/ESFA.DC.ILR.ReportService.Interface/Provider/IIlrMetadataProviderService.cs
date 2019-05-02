@@ -9,8 +9,8 @@ using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Provider
 {
-    public interface IIlrProviderService
+    public interface IIlrMetadataProviderService
     {
-        Task<IMessage> GetIlrFile(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
+        Task<ILRSourceFileInfo> GetLastSubmittedIlrFile(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
     }
 }

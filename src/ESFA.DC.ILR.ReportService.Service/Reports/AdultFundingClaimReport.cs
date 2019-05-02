@@ -81,6 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private const string ReportGeneratedAtCellNameFis = "B40";
 
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly IFM35ProviderService _fm35ProviderService;
@@ -97,6 +98,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
+            IIlrMetadataProviderService ilrMetadataProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
             IFM35ProviderService fm35ProviderService,
@@ -112,6 +114,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _ilrProviderService = ilrProviderService;
+            _ilrMetadataProviderService = ilrMetadataProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
             _fm35ProviderService = fm35ProviderService;
@@ -136,7 +139,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             Task<List<EasSubmissionValues>> easSubmissionValuesAsync = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
             Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
             Task<ALBGlobal> albGlobalTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
-            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
+            var lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             var organisationDataTask = _orgProviderService.GetVersionAsync(cancellationToken);
             var largeEmployerDataTask = _largeEmployerProviderService.GetVersionAsync(cancellationToken);

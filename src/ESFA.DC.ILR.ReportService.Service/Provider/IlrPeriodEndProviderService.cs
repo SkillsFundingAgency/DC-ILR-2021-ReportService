@@ -1,21 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.Model;
-using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
-using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
-using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.IO.Interfaces;
@@ -26,122 +19,20 @@ using LearningDeliveryInfo = ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInv
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class IlrProviderService : AbstractFundModelProviderService, IIlrProviderService
+    public sealed class IlrPeriodEndProviderService : AbstractFundModelProviderService, IIlrPeriodEndProviderService
     {
         private const int ApprentishipsFundModel = 36;
-        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
-        private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
-        private readonly SemaphoreSlim _getIlrLock = new SemaphoreSlim(1, 1);
-        private Message _message;
 
-        public IlrProviderService(
+        public IlrPeriodEndProviderService(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IXmlSerializationService xmlSerializationService,
-            IDateTimeProvider dateTimeProvider,
-            Func<IIlr1819ValidContext> ilrValidContextFactory,
-            Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
+            Func<IIlr1819ValidContext> ilrValidContextFactory)
         : base(storage, xmlSerializationService, logger)
         {
-            _dateTimeProvider = dateTimeProvider;
-            _ilrValidContextFactory = ilrValidContextFactory;
-            _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
-        }
-
-        public async Task<IMessage> GetIlrFile(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
-        {
-            await _getIlrLock.WaitAsync(cancellationToken);
-
-            try
-            {
-                if (_message != null)
-                {
-                    return _message;
-                }
-
-                cancellationToken.ThrowIfCancellationRequested();
-
-                string filename = reportServiceContext.Filename;
-                int ukPrn = reportServiceContext.Ukprn;
-                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
-                {
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        await _streamableKeyValuePersistenceService.GetAsync(filename, ms, cancellationToken);
-                        ms.Seek(0, SeekOrigin.Begin);
-                        _message = _serializationService.Deserialize<Message>(ms);
-                    }
-                }
-                else
-                {
-                    DateTime submittedDate;
-                    DateTime filePreparationDate;
-
-                    using (var ilrContext = _ilrValidContextFactory())
-                    {
-                        submittedDate = ilrContext.Sources.SingleOrDefault(x => x.UKPRN == ukPrn)?.DateTime ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-                        filePreparationDate = ilrContext.CollectionDetails.SingleOrDefault(x => x.UKPRN == ukPrn)?.FilePreparationDate ?? _dateTimeProvider.ConvertUtcToUk(_dateTimeProvider.GetNowUtc());
-                    }
-
-                    _message = new Message
-                    {
-                        Header = new MessageHeader
-                        {
-                            Source = new MessageHeaderSource
-                            {
-                                UKPRN = ukPrn,
-                                DateTime = submittedDate
-                            },
-                            CollectionDetails = new MessageHeaderCollectionDetails
-                            {
-                                FilePreparationDate = filePreparationDate
-                            }
-                        }
-                    };
-                }
-            }
-            finally
-            {
-                _getIlrLock.Release();
-            }
-
-            return _message;
-        }
-
-        public async Task<ILRSourceFileInfo> GetLastSubmittedIlrFile(
-           IReportServiceContext reportServiceContext,
-           CancellationToken cancellationToken)
-        {
-            var ilrFileDetail = new ILRSourceFileInfo();
-
-            cancellationToken.ThrowIfCancellationRequested();
-
-            var ukPrn = reportServiceContext.Ukprn;
-            using (var ilrContext = _ilrRulebaseContextFactory())
-            {
-                var fileDetail = await ilrContext.FileDetails.Where(x => x.UKPRN == ukPrn).OrderByDescending(x => x.ID).FirstOrDefaultAsync(cancellationToken);
-                if (fileDetail != null)
-                {
-                    var filename = fileDetail.Filename.Contains('/') ? fileDetail.Filename.Split('/')[1] : fileDetail.Filename;
-
-                    ilrFileDetail.UKPRN = fileDetail.UKPRN;
-                    ilrFileDetail.Filename = filename;
-                    ilrFileDetail.SubmittedTime = fileDetail.SubmittedTime;
-                }
-            }
-
-            using (var ilrContext = _ilrValidContextFactory())
-            {
-                var collectionDetail = await ilrContext.CollectionDetails.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
-                if (collectionDetail != null)
-                {
-                    ilrFileDetail.FilePreparationDate = collectionDetail.FilePreparationDate;
-                }
-            }
-
-            return ilrFileDetail;
+          _ilrValidContextFactory = ilrValidContextFactory;
         }
 
         public async Task<AppsCoInvestmentILRInfo> GetILRInfoForAppsCoInvestmentReportAsync(int ukPrn, CancellationToken cancellationToken)

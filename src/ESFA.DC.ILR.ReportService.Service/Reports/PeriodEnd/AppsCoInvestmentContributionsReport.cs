@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
     public sealed class AppsCoInvestmentContributionsReport : AbstractReport, IReport
     {
-        private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrPeriodEndProviderService _ilrPeriodEndProviderService;
         private readonly IDASPaymentsProviderService _dasPaymentsProviderService;
 
         public AppsCoInvestmentContributionsReport(
@@ -29,11 +29,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            IIlrProviderService ilrProviderService,
+            IIlrPeriodEndProviderService ilrPeriodEndProviderService,
             IDASPaymentsProviderService dasPaymentsProviderService)
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _ilrProviderService = ilrProviderService;
+            _ilrPeriodEndProviderService = ilrPeriodEndProviderService;
             _dasPaymentsProviderService = dasPaymentsProviderService;
         }
 
@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
             var externalFileName = GetFilename(reportServiceContext);
             var fileName = GetZipFilename(reportServiceContext);
 
-            var appsCoInvestmentIlrInfo = await _ilrProviderService.GetILRInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
+            var appsCoInvestmentIlrInfo = await _ilrPeriodEndProviderService.GetILRInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             var appsCoInvestmentPaymentsInfo = await _dasPaymentsProviderService.GetPaymentsInfoForAppsCoInvestmentReportAsync(reportServiceContext.Ukprn, cancellationToken);
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
