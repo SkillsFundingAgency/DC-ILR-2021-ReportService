@@ -35,6 +35,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private readonly IFM35ProviderService _fm35ProviderService;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
+
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly ILogger _logger;
         private readonly IFm35Builder _summaryOfFm35FundingModelBuilder;
@@ -50,6 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
+            IIlrMetadataProviderService ilrMetadataProviderService,
             IFM35ProviderService fm35ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
@@ -58,13 +61,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IPostcodeProviderService postcodeProviderService,
             ILargeEmployerProviderService largeEmployerProviderService,
             IOrgProviderService orgProviderService,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IFm35Builder builder)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _fm35ProviderService = fm35ProviderService;
             _ilrProviderService = ilrProviderService;
-            _stringUtilitiesService = stringUtilitiesService;
+            _ilrMetadataProviderService = ilrMetadataProviderService;
             _summaryOfFm35FundingModelBuilder = builder;
             _versionInfo = versionInfo;
             _larsProviderService = larsProviderService;
@@ -73,10 +75,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _orgProviderService = orgProviderService;
 
             _dateTimeProvider = dateTimeProvider;
-
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFM35FundingReport;
-            ReportFileName = "Summary of Funding Model 35 Funding Report";
         }
+
+        public override string ReportFileName => "Summary of Funding Model 35 Funding Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.SummaryOfFM35FundingReport;
 
         public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
@@ -85,7 +88,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
-            Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
+            Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             SummaryOfFM35FundingHeaderModel summaryOfFm35FundingHeaderModel = await GetHeader(reportServiceContext, ilrFileTask, lastSubmittedIlrFileTask, providerNameTask, cancellationToken, isFis);
             SummaryOfFM35FundingFooterModel summaryOfFm35FundingFooterModel = await GetFooterAsync(ilrFileTask, lastSubmittedIlrFileTask, cancellationToken);
