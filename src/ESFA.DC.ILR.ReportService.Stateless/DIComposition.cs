@@ -501,6 +501,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<TrailblazerEmployerIncentivesModelBuilder>().As<ITrailblazerEmployerIncentivesModelBuilder>()
                 .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<TrailblazerAppsOccupancyModelBuilder>().As<ITrailblazerAppsOccupancyModelBuilder>()
+                .InstancePerLifetimeScope();
         }
 
         private static void RegisterRules(ContainerBuilder containerBuilder)
