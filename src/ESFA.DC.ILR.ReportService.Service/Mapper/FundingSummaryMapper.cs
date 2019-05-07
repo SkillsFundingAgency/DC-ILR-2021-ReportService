@@ -1,10 +1,9 @@
 ﻿using CsvHelper.Configuration;
-using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR.ReportService.Service.Mapper
 {
-    public sealed class FundingSummaryMapper : ClassMap<FundingSummaryModel>, IClassMapper
+    public sealed class FundingSummaryMapper : ClassMap<FundingSummaryModel>
     {
         private const string DecimalFormat = "0.00000";
 

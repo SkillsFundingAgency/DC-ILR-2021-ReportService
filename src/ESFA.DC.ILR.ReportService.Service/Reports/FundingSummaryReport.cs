@@ -19,6 +19,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Generation;
@@ -35,13 +36,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
     public sealed class FundingSummaryReport : AbstractReport, IReport
     {
-        private readonly FundingSummaryMapper _fundingSummaryMapper;
+        private readonly FundingSummaryMapper _fundingSummaryMapper = new FundingSummaryMapper();
 
         private readonly ModelProperty[] _cachedModelProperties;
 
-        private readonly List<FundingSummaryModel> _fundingSummaryModels;
+        private readonly List<FundingSummaryModel> _fundingSummaryModels = new List<FundingSummaryModel>();
 
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly IFM25ProviderService _fm25ProviderService;
@@ -63,11 +65,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IVersionInfo _versionInfo;
         private readonly IExcelStyleProvider _excelStyleProvider;
         private readonly IEasBuilder _easBuilder;
-        private readonly ILogger _logger;
 
         public FundingSummaryReport(
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
+            IIlrMetadataProviderService ilrMetadataProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
             IFM25ProviderService fm25ProviderService,
@@ -89,12 +91,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ITotalBuilder totalBuilder,
             IVersionInfo versionInfo,
             IExcelStyleProvider excelStyleProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IEasBuilder easBuilder,
             ILogger logger)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _ilrProviderService = ilrProviderService;
+            _ilrMetadataProviderService = ilrMetadataProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
             _fm25ProviderService = fm25ProviderService;
@@ -116,17 +118,15 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _excelStyleProvider = excelStyleProvider;
             _dateTimeProvider = dateTimeProvider;
             _easBuilder = easBuilder;
-            _logger = logger;
 
-            ReportFileName = "Funding Summary Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateFundingSummaryReport;
-
-            _fundingSummaryModels = new List<FundingSummaryModel>();
-            _fundingSummaryMapper = new FundingSummaryMapper();
             _cachedModelProperties = _fundingSummaryMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Funding Summary Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.FundingSummaryReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             try
             {
@@ -140,7 +140,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 Task<FM81Global> fm81Task = _fm81TrailBlazerProviderService.GetFM81Data(reportServiceContext, cancellationToken);
                 Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
                 Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
-                Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
+                Task<ILRSourceFileInfo> lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
                 var returnPeriod = reportServiceContext.ReturnPeriod;
 
@@ -1140,10 +1140,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 _fundingSummaryModels.Add(new FundingSummaryModel(Constants.ALBInfoText, HeaderType.TitleOnly));
                 _fundingSummaryModels.Add(new FundingSummaryModel());
 
-                var jobId = reportServiceContext.JobId;
-                var ukPrn = reportServiceContext.Ukprn.ToString();
-                var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-                var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+                var externalFileName = GetFilename(reportServiceContext);
+                var fileName = GetZipFilename(reportServiceContext);
 
                 _logger.LogInfo("CSV Report Start");
 

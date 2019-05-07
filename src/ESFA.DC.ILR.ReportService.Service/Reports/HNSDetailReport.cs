@@ -12,6 +12,7 @@ using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
@@ -27,7 +28,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly HNSModelComparer _hnsModelComparer = new HNSModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IFM25ProviderService _fm25ProviderService;
@@ -41,21 +41,20 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IFM25ProviderService fm25ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IHNSReportModelBuilder hnsReportModelBuilder)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _fm25ProviderService = fm25ProviderService;
             _hnsReportModelBuilder = hnsReportModelBuilder;
-
-            ReportFileName = "High Needs Students Detail Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateHNSReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "High Needs Students Detail Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.HNSReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
@@ -117,10 +116,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             string csv = GetReportCsv(hnsModels);
 
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
@@ -143,7 +140,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 {
                     using (CsvWriter csvWriter = new CsvWriter(textWriter))
                     {
-                        WriteCsvRecords<HNSMapper, HNSModel>(csvWriter, hnsModels, new HNSMapper());
+                        WriteCsvRecords<HNSMapper, HNSModel>(csvWriter, hnsModels);
                         csvWriter.Flush();
                         textWriter.Flush();
                         return Encoding.UTF8.GetString(ms.ToArray());

@@ -10,7 +10,11 @@ namespace ESFA.DC.ILR.ReportService.Interface.Reports
     {
         string ReportTaskName { get; }
 
-        string GetFilename(string ukPrn, long jobId, DateTime submissionDateTime);
+        string ReportFileName { get; }
+
+        string GetFilename(IReportServiceContext reportServiceContext);
+
+        string GetZipFilename(IReportServiceContext reportServiceContext);
 
         Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken);
 

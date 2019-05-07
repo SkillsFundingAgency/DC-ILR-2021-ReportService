@@ -12,6 +12,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Poco;
@@ -32,7 +33,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidationErrorsService _validationErrorsService;
@@ -49,22 +49,21 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValidationErrorsService validationErrorsService,
             IValidationStageOutputCache validationStageOutputCache)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _validationErrorsService = validationErrorsService;
             _validationStageOutputCache = validationStageOutputCache;
-
-            ReportFileName = "Rule Violation Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateValidationReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Rule Violation Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.ValidationReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(reportServiceContext, cancellationToken);
@@ -72,8 +71,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             long jobId = reportServiceContext.JobId;
             string ukPrn = reportServiceContext.Ukprn.ToString();
-            _externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            _fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            _externalFileName = GetFilename(reportServiceContext);
+            _fileName = GetZipFilename(reportServiceContext);
 
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
 

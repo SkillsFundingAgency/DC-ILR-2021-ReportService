@@ -8,6 +8,6 @@ namespace ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment
 
         public string LearnRefNumber { get; set; }
 
-        public ICollection<AECApprenticeshipPriceEpisodeInfo> AECApprenticeshipPriceEpisodes { get; set; }
+        public List<AECApprenticeshipPriceEpisodeInfo> AECApprenticeshipPriceEpisodes { get; set; }
     }
 }

@@ -47,8 +47,14 @@
     <Compile Include="Extensions\ExtensionsTest.cs" />
     <Compile Include="PeriodProviderServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ReportsProviderTests.cs" />
+    <Compile Include="ZipServiceTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR.ReportService.Interface.csproj">
+      <Project>{4D408F22-661B-44B3-B6CA-3C6CEE60AC87}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR.ReportService.Service.csproj">
       <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
       <Name>ESFA.DC.ILR.ReportService.Service</Name>

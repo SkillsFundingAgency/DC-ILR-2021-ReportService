@@ -81,7 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd
                         R14Payments = GetMonthlyPayments(paymentInfo, "1819-R14")
                     };
                     model.TotalEarnings = BuildTotalEarnings(model);
-                    model.TotalPaymentsYearToDate = BuildTotalTotalPayments(model);
+                    model.TotalPaymentsYearToDate = BuildTotalPayments(model);
                     appsAdditionalPaymentsModels.Add(model);
                 }
             }
@@ -153,7 +153,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd
                    model.JuneEarnings + model.JulyEarnings;
         }
 
-        private decimal BuildTotalTotalPayments(AppsAdditionalPaymentsModel model)
+        private decimal BuildTotalPayments(AppsAdditionalPaymentsModel model)
         {
             return model.AugustR01Payments + model.SeptemberR02Payments + model.OctoberR03Payments + model.NovemberR04Payments +
                    model.DecemberR05Payments + model.JanuaryR06Payments + model.FebruaryR07Payments + model.MarchR08Payments +

@@ -11,7 +11,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
     {
         public InvalidLearnersService(
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             DataStoreConfiguration dataStoreConfiguration)
         : base(JobContextMessageKey.InvalidLearnRefNumbers, logger, storage, jsonSerializationService, dataStoreConfiguration)

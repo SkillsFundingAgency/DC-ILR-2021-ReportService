@@ -24,6 +24,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless.Context
             ? _jobContextMessage.KeyValuePairs["OriginalFilename"].ToString()
             : _jobContextMessage.KeyValuePairs[JobContextMessageKey.Filename].ToString();
 
+        public string Container => _jobContextMessage.KeyValuePairs[JobContextMessageKey.Container].ToString();
+
         public DateTime SubmissionDateTimeUtc => _jobContextMessage.SubmissionDateTimeUtc;
 
         public long FileSizeInBytes => long.Parse(_jobContextMessage.KeyValuePairs[JobContextMessageKey.FileSizeInBytes].ToString());

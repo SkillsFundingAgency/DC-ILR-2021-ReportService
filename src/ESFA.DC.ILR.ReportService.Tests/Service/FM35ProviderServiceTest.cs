@@ -6,6 +6,7 @@ using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
@@ -66,7 +67,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Service
                 logger.Object,
                 redis.Object,
                 jsonSerializationService,
-                intUtilitiesService,
                 IlrValidContextFactory,
                 IlrRulebaseContextFactory);
 
