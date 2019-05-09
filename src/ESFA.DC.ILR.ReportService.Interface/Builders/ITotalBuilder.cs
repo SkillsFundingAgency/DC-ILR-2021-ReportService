@@ -8,6 +8,8 @@ namespace ESFA.DC.ILR.ReportService.Interface.Builders
 
         decimal TotalRecords(ILR.FundingService.FM36.FundingOutput.Model.Output.PriceEpisodePeriodisedValues priceEpisodePeriodisedValues);
 
+        SummaryOfFm35FundingModel TotalRecords(string title, params SummaryOfFm35FundingModel[] fundingSummaryModels);
+
         decimal TotalRecords(params decimal?[] values);
 
         decimal? Total(decimal? original, decimal? value);

@@ -124,7 +124,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
             IIlrMetadataProviderService ilrMetadataProviderService = new IlrMetadataProviderService(dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
 
-            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, storage.Object, jsonSerializationService, null, null);
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, null, null);
 
             var summaryOfFm35FundingReport = new SummaryOfFm35FundingReport(
                 logger.Object,
@@ -139,6 +139,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 postcodeProverServiceMock.Object,
                 largeEmployerProviderService.Object,
                 orgProviderService.Object,
+                totalBuilder,
                 fm35Builder);
 
             await summaryOfFm35FundingReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);

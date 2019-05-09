@@ -36,6 +36,25 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             return fundingSummaryModel;
         }
 
+        public SummaryOfFm35FundingModel TotalRecords(string title, params SummaryOfFm35FundingModel[] summaryOfFm35FundingModels)
+        {
+            var summaryOfFm35FundingModel = new SummaryOfFm35FundingModel();
+
+            foreach (SummaryOfFm35FundingModel summaryModel in summaryOfFm35FundingModels)
+            {
+                summaryOfFm35FundingModel.AimAchievement = Total(summaryOfFm35FundingModel.AimAchievement, summaryModel.AimAchievement);
+                summaryOfFm35FundingModel.Balancing = Total(summaryOfFm35FundingModel.Balancing, summaryModel.Balancing);
+                summaryOfFm35FundingModel.JobOutcomeAchievement = Total(summaryOfFm35FundingModel.JobOutcomeAchievement, summaryModel.JobOutcomeAchievement);
+                summaryOfFm35FundingModel.LearningSupport = Total(summaryOfFm35FundingModel.LearningSupport, summaryModel.LearningSupport);
+                summaryOfFm35FundingModel.OnProgramme = Total(summaryOfFm35FundingModel.OnProgramme, summaryModel.OnProgramme);
+                summaryOfFm35FundingModel.TotalAchievement = Total(summaryOfFm35FundingModel.TotalAchievement, summaryModel.TotalAchievement);
+                summaryOfFm35FundingModel.Total = Total(summaryOfFm35FundingModel.Total, summaryModel.Total);
+                summaryOfFm35FundingModel.FundingLineType = "Totals";
+            }
+
+            return summaryOfFm35FundingModel;
+        }
+
         public decimal TotalRecords(PriceEpisodePeriodisedValues priceEpisodePeriodisedValues)
         {
             if (priceEpisodePeriodisedValues == null)

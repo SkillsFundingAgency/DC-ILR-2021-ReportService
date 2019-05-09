@@ -22,6 +22,7 @@ using ESFA.DC.ILR.ReportService.Model.Generation;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
+using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
@@ -40,6 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IStringUtilitiesService _stringUtilitiesService;
         private readonly ILogger _logger;
         private readonly IFm35Builder _summaryOfFm35FundingModelBuilder;
+        private readonly ITotalBuilder _totalBuilder;
 
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly IVersionInfo _versionInfo;
@@ -61,6 +63,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IPostcodeProviderService postcodeProviderService,
             ILargeEmployerProviderService largeEmployerProviderService,
             IOrgProviderService orgProviderService,
+            ITotalBuilder totalBuilder,
             IFm35Builder builder)
             : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
@@ -73,7 +76,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _postcodeProviderService = postcodeProviderService;
             _largeEmployerProviderService = largeEmployerProviderService;
             _orgProviderService = orgProviderService;
-
+            _totalBuilder = totalBuilder;
+            _logger = logger;
             _dateTimeProvider = dateTimeProvider;
         }
 
@@ -167,7 +171,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             {
                 foreach (LearningDelivery fundLineData in learnerAttribute.LearningDeliveries)
                 {
-                    summaryOfFm35FundingModels.AddRange(_summaryOfFm35FundingModelBuilder.BuildModel(fundLineData));
+                    var summaryOfFm35FundingModelsList = _summaryOfFm35FundingModelBuilder.BuildModel(fundLineData).ToArray();
+                    SummaryOfFm35FundingModel totalBuilder = _totalBuilder.TotalRecords("Totals", summaryOfFm35FundingModelsList);
+                    summaryOfFm35FundingModels.AddRange(summaryOfFm35FundingModelsList);
+                    summaryOfFm35FundingModels.Add(totalBuilder);
                 }
             }
 
@@ -231,7 +238,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         {
             var sheet = workbook.Worksheets[0];
             var summaryOfFm35FundingMapper = new SummaryOfFM35FundingMapper();
-            var modelProperties = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
+            var modelPropertiesAll = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
+            var modelPropertiesSelected = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
@@ -239,19 +247,35 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             WriteExcelRecords(sheet);
 
             var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
-            IGrouping<string, SummaryOfFm35FundingModel>[] groupedModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
-
-            var writeHeader = true;
-            foreach (var summaryOfFm35FundingModel in summaryOfFm35FundingModelsArray)
+            IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
+            WriteExcelRecords(sheet, summaryOfFm35FundingMapper, new List<SummaryOfFm35FundingModel> { }, null, null);
+            foreach (IGrouping<string, SummaryOfFm35FundingModel> groupedSummaryOfFm35FundingModel in groupedSummaryOfFm35FundingModels)
             {
-                if (writeHeader)
+                var title = groupedSummaryOfFm35FundingModel.Key;
+                foreach (var model in groupedSummaryOfFm35FundingModel)
                 {
-                    WriteExcelRecords(sheet, summaryOfFm35FundingMapper, new List<SummaryOfFm35FundingModel> { }, null, null);
-                    writeHeader = false;
+                    //if (model.FundingLineType.CaseInsensitiveEquals("totals"))
+                    //{
+
+                    //}
+
+                    WriteExcelRecords(sheet, summaryOfFm35FundingMapper, model.Period == 1 ? modelPropertiesAll : modelPropertiesSelected, model, null);
                 }
 
-                WriteExcelRecords(sheet, summaryOfFm35FundingMapper, modelProperties, summaryOfFm35FundingModel, null); //, new SummaryOfFM35FundingMapper(), new List<SummaryOfFm35FundingModel> { summaryOfFm35FundingModel }, null, null, true);
+                WriteExcelRecords(sheet);
             }
+
+            //var writeHeader = true;
+            //foreach (var summaryOfFm35FundingModel in summaryOfFm35FundingModelsArray)
+            //{
+            //    if (writeHeader)
+            //    {
+            //        WriteExcelRecords(sheet, summaryOfFm35FundingMapper, new List<SummaryOfFm35FundingModel> { }, null, null);
+            //        writeHeader = false;
+            //    }
+
+            //    WriteExcelRecords(sheet, summaryOfFm35FundingMapper, modelProperties, summaryOfFm35FundingModel, null); //, new SummaryOfFM35FundingMapper(), new List<SummaryOfFm35FundingModel> { summaryOfFm35FundingModel }, null, null, true);
+            //}
         }
     }
 }
