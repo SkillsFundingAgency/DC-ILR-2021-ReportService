@@ -331,6 +331,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<NonContractedAppsActivityReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
@@ -469,8 +473,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IMainOccupancyReportModelBuilder>()
                 .InstancePerLifetimeScope();
-            containerBuilder.RegisterType<AppsAdditionalPaymentsModelBuilder>().As<IAppsAdditionalPaymentsModelBuilder>()
-                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<AppsAdditionalPaymentsModelBuilder>().As<IAppsAdditionalPaymentsModelBuilder>().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<NonContractedAppsActivityModelBuilder>().As<INonContractedAppsActivityModelBuilder>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsMonthlyPaymentModelBuilder>().As<IAppsMonthlyPaymentModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<AppsDataMatchMonthEndModelBuilder>().As<IAppsDataMatchMonthEndModelBuilder>()

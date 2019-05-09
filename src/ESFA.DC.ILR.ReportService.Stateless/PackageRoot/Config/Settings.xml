@@ -71,6 +71,7 @@
     <Parameter Name="TopicReports_TaskGenerateAppsDataMatchMonthEndReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateFundingSummaryPeriodEndReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value=""/>
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value=""/>

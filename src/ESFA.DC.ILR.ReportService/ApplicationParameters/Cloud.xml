@@ -41,6 +41,7 @@
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="__TopicReports_TaskGenerateFundingClaim1619Report__" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="__TopicReports_TaskGenerateTrailblazerAppsOccupancyReport__" />
     <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="__TopicReports_TaskGenerateHNSReport__" />
+    <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" Value="__TopicReports_TaskGenerateNonContractedAppsActivityReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- DASPayments -->
