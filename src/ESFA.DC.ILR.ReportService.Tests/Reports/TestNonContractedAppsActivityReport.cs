@@ -38,6 +38,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             Mock<IIlrProviderService> ilrProviderServiceMock = new Mock<IIlrProviderService>();
+            Mock<IFCSProviderService> fcsProviderMock = new Mock<IFCSProviderService>();
+            Mock<IValidLearnersService> validLearnerServiceMock = new Mock<IValidLearnersService>();
             Mock<IFM36ProviderService> fm36ProviderServiceMock = new Mock<IFM36ProviderService>();
             IValueProvider valueProvider = new ValueProvider();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -51,6 +53,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 logger.Object,
                 storage.Object,
                 ilrProviderServiceMock.Object,
+                fcsProviderMock.Object,
+                validLearnerServiceMock.Object,
                 fm36ProviderServiceMock.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,

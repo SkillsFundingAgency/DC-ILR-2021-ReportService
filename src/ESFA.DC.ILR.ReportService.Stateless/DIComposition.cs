@@ -49,6 +49,8 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Mapping.Interface;
 using ESFA.DC.Queueing;
 using ESFA.DC.Queueing.Interface;
+using ESFA.DC.ReferenceData.FCS.Model;
+using ESFA.DC.ReferenceData.FCS.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Serialization.Xml;
@@ -66,6 +68,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
             var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
             containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
+
+            var fcsConfiguration = configHelper.GetSectionValues<FCSConfiguration>("FCSSection");
+            containerBuilder.RegisterInstance(fcsConfiguration).As<FCSConfiguration>().SingleInstance();
 
             var dasCommitmentsConfiguration = configHelper.GetSectionValues<DasCommitmentsConfiguration>("DasCommitmentsSection");
             containerBuilder.RegisterInstance(dasCommitmentsConfiguration).As<DasCommitmentsConfiguration>().SingleInstance();
@@ -256,6 +261,19 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .As<DbContextOptions<DASPaymentsContext>>()
                 .SingleInstance();
 
+            containerBuilder.RegisterType<FcsContext>().As<IFcsContext>();
+            containerBuilder.Register(context =>
+                {
+                    var optionsBuilder = new DbContextOptionsBuilder<FcsContext>();
+                    optionsBuilder.UseSqlServer(
+                        fcsConfiguration.FCSConnectionString,
+                        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
+
+                    return optionsBuilder.Options;
+                })
+                .As<DbContextOptions<FcsContext>>()
+                .SingleInstance();
+
             containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
 
             RegisterReports(containerBuilder);
@@ -393,6 +411,9 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FCSProviderService>().As<IFCSProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<AllbProviderService>().As<IAllbProviderService>()
