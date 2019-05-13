@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR1819.ReportService.Stateless;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
+using FluentAssertions;
 using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
@@ -43,6 +46,19 @@ namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
                 Console.WriteLine(ex);
                 Assert.Null(ex);
             }
+        }
+
+        [Theory]
+        [InlineData("ILR1819", typeof(FM36FileServiceProvider), true)]
+        [InlineData("ILR1819", typeof(FM36SqlProviderService), false)]
+        [InlineData("EAS", typeof(FM36SqlProviderService), true)]
+        [InlineData("EAS", typeof(FM36FileServiceProvider), false)]
+        public void TestServicesRegisteredByCollectionName(string collectionName, Type serviceType, bool expectation)
+        {
+            ContainerBuilder cb = DIComposition.BuildContainer(new TestConfigurationHelper());
+            DIComposition.RegisterServicesByCollectionName(collectionName, cb);
+            var container = cb.Build();
+            container.Resolve<IFM36ProviderService>().GetType()?.Equals(serviceType).Should().Be(expectation);
         }
     }
 }

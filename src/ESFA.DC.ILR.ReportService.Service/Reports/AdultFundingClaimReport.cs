@@ -13,6 +13,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Eas;
@@ -29,47 +30,80 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private const string UkprnCellName = "D6";
         private const string IlrFileCellName = "D7";
         private const string YearCellName = "G7";
-        private const string OtherLearningProgrammeFunding6MonthsCellName = "F11";
-        private const string OtherLearningProgrammeFunding12MonthsCellName = "G11";
-        private const string OtherLearningLearningSupport6MonthsCellName = "F12";
-        private const string OtherLearningLearningSupport12MonthsCellName = "G12";
-        private const string Traineeships1924ProgrammeFunding6MonthsCellName = "F13";
-        private const string Traineeships1924ProgrammeFunding12MonthsCellName = "G13";
-        private const string Traineeships1924LearningSupport6MonthsCellName = "F14";
-        private const string Traineeships1924LearningSupport12MonthsCellName = "G14";
-        private const string Traineeships1924LearnerSupport6MonthsCellName = "F15";
-        private const string Traineeships1924LearnerSupport12MonthsCellName = "G15";
-        private const string LoansBursaryFunding6MonthsCellName = "F20";
-        private const string LoansBursaryFunding12MonthsCellName = "G20";
-        private const string LoansAreaCosts6MonthsCellName = "F21";
-        private const string LoansAreaCosts12MonthsCellName = "G21";
-        private const string LoansExcessSupport6MonthsCellName = "F22";
-        private const string LoansExcessSupport12MonthsCellName = "G22";
-        private const string ComponentSetVersionCellName = "D35";
-        private const string ApplicationVersionCellName = "D36";
-        private const string FilePreparationDateCellName = "D37";
-        private const string LarsDataCellName = "F35";
-        private const string OrganisationDataCellName = "F36";
-        private const string PostcodeDataCellName = "F37";
-        private const string LargeEmployerDataCellName = "F38";
-        private const string ReportGeneratedAtCellName = "B39";
 
-        private const string OtherLearningProgrammeFunding6MonthsCellNameFis = "F12";
-        private const string OtherLearningProgrammeFunding12MonthsCellNameFis = "G12";
+        private const string OtherLearningProgrammeFunding6MonthsCellName = "F11";
+        private const string OtherLearningProgrammeFunding10MonthsCellName = "G11";
+        private const string OtherLearningProgrammeFunding12MonthsCellName = "H11";
+
+        private const string OtherLearningLearningSupport6MonthsCellName = "F12";
+        private const string OtherLearningLearningSupport10MonthsCellName = "G12";
+        private const string OtherLearningLearningSupport12MonthsCellName = "H12";
+
+        private const string Traineeships1924ProgrammeFunding6MonthsCellName = "F13";
+        private const string Traineeships1924ProgrammeFunding10MonthsCellName = "G13";
+        private const string Traineeships1924ProgrammeFunding12MonthsCellName = "H13";
+
+        private const string Traineeships1924LearningSupport6MonthsCellName = "F14";
+        private const string Traineeships1924LearningSupport10MonthsCellName = "G14";
+        private const string Traineeships1924LearningSupport12MonthsCellName = "H14";
+
+        private const string Traineeships1924LearnerSupport6MonthsCellName = "F15";
+        private const string Traineeships1924LearnerSupport10MonthsCellName = "G15";
+        private const string Traineeships1924LearnerSupport12MonthsCellName = "H15";
+
+        private const string LoansBursaryFunding6MonthsCellName = "F20";
+        private const string LoansBursaryFunding10MonthsCellName = "G20";
+        private const string LoansBursaryFunding12MonthsCellName = "H20";
+
+        private const string LoansAreaCosts6MonthsCellName = "F21";
+        private const string LoansAreaCosts10MonthsCellName = "G21";
+        private const string LoansAreaCosts12MonthsCellName = "H21";
+
+        private const string LoansExcessSupport6MonthsCellName = "F22";
+        private const string LoansExcessSupport10MonthsCellName = "G22";
+        private const string LoansExcessSupport12MonthsCellName = "H22";
+
+        private const string ComponentSetVersionCellName = "D36";
+        private const string ApplicationVersionCellName = "D37";
+        private const string FilePreparationDateCellName = "D38";
+        private const string LarsDataCellName = "G35";
+        private const string OrganisationDataCellName = "G36";
+        private const string PostcodeDataCellName = "G37";
+        private const string LargeEmployerDataCellName = "G38";
+        private const string ReportGeneratedAtCellName = "B40";
+
+        private const string OtherLearningProgrammeFunding6MonthsCellNameFis = "F11";
+        private const string OtherLearningProgrammeFunding10MonthsCellNameFis = "G11";
+        private const string OtherLearningProgrammeFunding12MonthsCellNameFis = "H11";
+
         private const string OtherLearningLearningSupport6MonthsCellNameFis = "F13";
-        private const string OtherLearningLearningSupport12MonthsCellNameFis = "G13";
+        private const string OtherLearningLearningSupport10MonthsCellNameFis = "G13";
+        private const string OtherLearningLearningSupport12MonthsCellNameFis = "H13";
+
         private const string Traineeships1924ProgrammeFunding6MonthsCellNameFis = "F14";
-        private const string Traineeships1924ProgrammeFunding12MonthsCellNameFis = "G14";
+        private const string Traineeships1924ProgrammeFunding10MonthsCellNameFis = "G14";
+        private const string Traineeships1924ProgrammeFunding12MonthsCellNameFis = "H14";
+
         private const string Traineeships1924LearningSupport6MonthsCellNameFis = "F15";
-        private const string Traineeships1924LearningSupport12MonthsCellNameFis = "G15";
+        private const string Traineeships1924LearningSupport10MonthsCellNameFis = "G15";
+        private const string Traineeships1924LearningSupport12MonthsCellNameFis = "H15";
+
         private const string Traineeships1924LearnerSupport6MonthsCellNameFis = "F16";
-        private const string Traineeships1924LearnerSupport12MonthsCellNameFis = "G16";
+        private const string Traineeships1924LearnerSupport10MonthsCellNameFis = "G16";
+        private const string Traineeships1924LearnerSupport12MonthsCellNameFis = "H16";
+
         private const string LoansBursaryFunding6MonthsCellNameFis = "F21";
-        private const string LoansBursaryFunding12MonthsCellNameFis = "G21";
+        private const string LoansBursaryFunding10MonthsCellNameFis = "G21";
+        private const string LoansBursaryFunding12MonthsCellNameFis = "H21";
+
         private const string LoansAreaCosts6MonthsCellNameFis = "F22";
-        private const string LoansAreaCosts12MonthsCellNameFis = "G22";
+        private const string LoansAreaCosts10MonthsCellNameFis = "G22";
+        private const string LoansAreaCosts12MonthsCellNameFis = "H22";
+
         private const string LoansExcessSupport6MonthsCellNameFis = "F23";
-        private const string LoansExcessSupport12MonthsCellNameFis = "G23";
+        private const string LoansExcessSupport10MonthsCellNameFis = "G23";
+        private const string LoansExcessSupport12MonthsCellNameFis = "H23";
+
         private const string ComponentSetVersionCellNameFis = "D36";
         private const string ApplicationVersionCellNameFis = "D37";
         private const string FilePreparationDateCellNameFis = "D38";
@@ -79,8 +113,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private const string LargeEmployerDataCellNameFis = "F39";
         private const string ReportGeneratedAtCellNameFis = "B40";
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
         private readonly IOrgProviderService _orgProviderService;
         private readonly IAllbProviderService _allbProviderService;
         private readonly IFM35ProviderService _fm35ProviderService;
@@ -97,6 +131,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
+            IIlrMetadataProviderService ilrMetadataProviderService,
             IOrgProviderService orgProviderService,
             IAllbProviderService allbProviderService,
             IFM35ProviderService fm35ProviderService,
@@ -108,12 +143,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IPostcodeProviderService postcodeProviderService,
             ILargeEmployerProviderService largeEmployerProviderService,
             IVersionInfo versionInfo,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IAdultFundingClaimBuilder adultFundingClaimBuilder)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
+            _ilrMetadataProviderService = ilrMetadataProviderService;
             _orgProviderService = orgProviderService;
             _allbProviderService = allbProviderService;
             _fm35ProviderService = fm35ProviderService;
@@ -125,19 +159,20 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _dateTimeProvider = dateTimeProvider;
             _intUtilitiesService = intUtilitiesService;
             _adultFundingClaimBuilder = adultFundingClaimBuilder;
-
-            ReportFileName = "Adult Funding Claim Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAdultFundingClaimReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Adult Funding Claim Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AdultFundingClaimReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
             Task<List<EasSubmissionValues>> easSubmissionValuesAsync = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
             Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
             Task<ALBGlobal> albGlobalTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
-            var lastSubmittedIlrFileTask = _ilrProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
+            var lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
             var organisationDataTask = _orgProviderService.GetVersionAsync(cancellationToken);
             var largeEmployerDataTask = _largeEmployerProviderService.GetVersionAsync(cancellationToken);
@@ -178,10 +213,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 return;
             }
 
-            long jobId = reportServiceContext.JobId;
-            string ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("AdultFundingClaimReportTemplate.xlsx"));
@@ -207,20 +240,28 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             {
                 cells.DeleteRow(8);
                 cells[OtherLearningProgrammeFunding6MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding6Months);
+                cells[OtherLearningProgrammeFunding10MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding10Months);
                 cells[OtherLearningProgrammeFunding12MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding12Months);
                 cells[OtherLearningLearningSupport6MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningLearningSupport6Months);
+                cells[OtherLearningLearningSupport10MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningLearningSupport10Months);
                 cells[OtherLearningLearningSupport12MonthsCellName].PutValue(adultFundingClaimModel.OtherLearningLearningSupport12Months);
                 cells[Traineeships1924ProgrammeFunding6MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding6Months);
+                cells[Traineeships1924ProgrammeFunding10MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding10Months);
                 cells[Traineeships1924ProgrammeFunding12MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding12Months);
                 cells[Traineeships1924LearningSupport6MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport6Months);
+                cells[Traineeships1924LearningSupport10MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport10Months);
                 cells[Traineeships1924LearningSupport12MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport12Months);
                 cells[Traineeships1924LearnerSupport6MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport6Months);
+                cells[Traineeships1924LearnerSupport10MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport10Months);
                 cells[Traineeships1924LearnerSupport12MonthsCellName].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport12Months);
                 cells[LoansBursaryFunding6MonthsCellName].PutValue(adultFundingClaimModel.LoansBursaryFunding6Months);
+                cells[LoansBursaryFunding10MonthsCellName].PutValue(adultFundingClaimModel.LoansBursaryFunding10Months);
                 cells[LoansBursaryFunding12MonthsCellName].PutValue(adultFundingClaimModel.LoansBursaryFunding12Months);
                 cells[LoansAreaCosts6MonthsCellName].PutValue(adultFundingClaimModel.LoansAreaCosts6Months);
+                cells[LoansAreaCosts10MonthsCellName].PutValue(adultFundingClaimModel.LoansAreaCosts10Months);
                 cells[LoansAreaCosts12MonthsCellName].PutValue(adultFundingClaimModel.LoansAreaCosts12Months);
                 cells[LoansExcessSupport6MonthsCellName].PutValue(adultFundingClaimModel.LoansExcessSupport6Months);
+                cells[LoansExcessSupport10MonthsCellName].PutValue(adultFundingClaimModel.LoansExcessSupport10Months);
                 cells[LoansExcessSupport12MonthsCellName].PutValue(adultFundingClaimModel.LoansExcessSupport12Months);
                 cells[ComponentSetVersionCellName].PutValue(adultFundingClaimModel.ComponentSetVersion);
                 cells[ApplicationVersionCellName].PutValue(adultFundingClaimModel.ApplicationVersion);
@@ -234,20 +275,28 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             else
             {
                 cells[OtherLearningProgrammeFunding6MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding6Months);
+                cells[OtherLearningProgrammeFunding10MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding10Months);
                 cells[OtherLearningProgrammeFunding12MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningProgrammeFunding12Months);
                 cells[OtherLearningLearningSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningLearningSupport6Months);
+                cells[OtherLearningLearningSupport10MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningLearningSupport10Months);
                 cells[OtherLearningLearningSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.OtherLearningLearningSupport12Months);
                 cells[Traineeships1924ProgrammeFunding6MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding6Months);
+                cells[Traineeships1924ProgrammeFunding10MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding10Months);
                 cells[Traineeships1924ProgrammeFunding12MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924ProgrammeFunding12Months);
                 cells[Traineeships1924LearningSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport6Months);
+                cells[Traineeships1924LearningSupport10MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport10Months);
                 cells[Traineeships1924LearningSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearningSupport12Months);
                 cells[Traineeships1924LearnerSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport6Months);
+                cells[Traineeships1924LearnerSupport10MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport10Months);
                 cells[Traineeships1924LearnerSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.Traineeships1924LearnerSupport12Months);
                 cells[LoansBursaryFunding6MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansBursaryFunding6Months);
+                cells[LoansBursaryFunding10MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansBursaryFunding10Months);
                 cells[LoansBursaryFunding12MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansBursaryFunding12Months);
                 cells[LoansAreaCosts6MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansAreaCosts6Months);
+                cells[LoansAreaCosts10MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansAreaCosts10Months);
                 cells[LoansAreaCosts12MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansAreaCosts12Months);
                 cells[LoansExcessSupport6MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansExcessSupport6Months);
+                cells[LoansExcessSupport10MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansExcessSupport10Months);
                 cells[LoansExcessSupport12MonthsCellNameFis].PutValue(adultFundingClaimModel.LoansExcessSupport12Months);
                 cells[ComponentSetVersionCellNameFis].PutValue(adultFundingClaimModel.ComponentSetVersion);
                 cells[ApplicationVersionCellNameFis].PutValue(adultFundingClaimModel.ApplicationVersion);
@@ -258,6 +307,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 cells[LargeEmployerDataCellNameFis].PutValue(adultFundingClaimModel.LargeEmployerData);
                 cells[ReportGeneratedAtCellNameFis].PutValue(adultFundingClaimModel.ReportGeneratedAt);
             }
+
+            workbook.CalculateFormula();
         }
     }
 }

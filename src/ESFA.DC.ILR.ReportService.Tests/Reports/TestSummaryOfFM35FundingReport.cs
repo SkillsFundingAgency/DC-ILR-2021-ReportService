@@ -8,12 +8,14 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Builders;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
@@ -90,17 +92,14 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
 
             var summaryOfFm35FundingReport = new SummaryOfFm35FundingReport(
                 logger.Object,
                 storage.Object,
                 fm35ProviderService,
-                stringUtilitiesService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 fm35Builder);
 
             await summaryOfFm35FundingReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);

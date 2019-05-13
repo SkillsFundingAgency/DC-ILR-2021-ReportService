@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Model.ILR
+﻿namespace ESFA.DC.ILR.ReportService.Model.ILR
 {
     public class FM35LearningDeliveryValues
     {

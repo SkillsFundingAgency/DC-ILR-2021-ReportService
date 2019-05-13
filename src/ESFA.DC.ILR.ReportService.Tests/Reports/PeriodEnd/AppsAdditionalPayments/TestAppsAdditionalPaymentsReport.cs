@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
+using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Service;
-using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR.ReportService.Tests.Helpers;
 using ESFA.DC.ILR.ReportService.Tests.Models;
-using ESFA.DC.ILR1819.DataStore.EF;
-using ESFA.DC.ILR1819.DataStore.EF.Interface;
-using ESFA.DC.ILR1819.DataStore.EF.Valid;
-using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using FluentAssertions;
@@ -44,18 +41,17 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
-            Mock<IIlrProviderService> ilrProviderServiceMock = new Mock<IIlrProviderService>();
+            Mock<IIlrPeriodEndProviderService> IlrPeriodEndProviderServiceMock = new Mock<IIlrPeriodEndProviderService>();
             Mock<IDASPaymentsProviderService> dasPaymentProviderMock = new Mock<IDASPaymentsProviderService>();
-            Mock<IFM36ProviderService> fm36ProviderServiceMock = new Mock<IFM36ProviderService>();
+            Mock<IFM36PeriodEndProviderService> fm36ProviderServiceMock = new Mock<IFM36PeriodEndProviderService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
             var appsAdditionalPaymentIlrInfo = BuildILRModel(ukPrn);
             var appsAdditionalPaymentRulebaseInfo = BuildFm36Model(ukPrn);
             var appsAdditionalPaymentDasPaymentsInfo = BuildDasPaymentsModel(ukPrn);
 
-            ilrProviderServiceMock.Setup(x => x.GetILRInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentIlrInfo);
+            IlrPeriodEndProviderServiceMock.Setup(x => x.GetILRInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentIlrInfo);
             fm36ProviderServiceMock.Setup(x => x.GetFM36DataForAppsAdditionalPaymentReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentRulebaseInfo);
             dasPaymentProviderMock.Setup(x => x.GetPaymentsInfoForAppsAdditionalPaymentsReportAsync(It.IsAny<int>(), It.IsAny<CancellationToken>())).ReturnsAsync(appsAdditionalPaymentDasPaymentsInfo);
 
@@ -63,13 +59,40 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsAdditionalPaymen
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var appsAdditionalPaymentsModelBuilder = new AppsAdditionalPaymentsModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.AppsAdditionalPaymentsReport(logger.Object, storage.Object, ilrProviderServiceMock.Object, fm36ProviderServiceMock.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, dasPaymentProviderMock.Object, appsAdditionalPaymentsModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.AppsAdditionalPaymentsReport(
+                logger.Object,
+                storage.Object,
+                IlrPeriodEndProviderServiceMock.Object,
+                fm36ProviderServiceMock.Object,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                dasPaymentProviderMock.Object,
+                appsAdditionalPaymentsModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 
             csv.Should().NotBeNullOrEmpty();
             File.WriteAllText($"{filename}.csv", csv);
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new AppsAdditionalPaymentsMapper(), 1));
+            IEnumerable<AppsAdditionalPaymentsModel> result;
+
+            using (var reader = new StreamReader($"{filename}.csv"))
+            {
+                using (var csvReader = new CsvReader(reader))
+                {
+                    csvReader.Configuration.RegisterClassMap<AppsAdditionalPaymentsMapper>();
+                    result = csvReader.GetRecords<AppsAdditionalPaymentsModel>().ToList();
+                }
+            }
+
+            result.Should().NotBeNullOrEmpty();
+            result.Count().Should().Be(1);
+            result.First().AprilEarnings.Should().Be(180);
+            result.First().JulyEarnings.Should().Be(240);
+            result.First().DecemberEarnings.Should().Be(100);
+            result.First().TotalEarnings.Should().Be(1560);
+            result.First().TotalPaymentsYearToDate.Should().Be(20);
+            result.First().UniqueLearnerNumber.Should().Be(12345);
         }
 
         private AppsAdditionalPaymentILRInfo BuildILRModel(int ukPrn)

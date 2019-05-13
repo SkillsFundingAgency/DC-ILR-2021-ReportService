@@ -12,6 +12,7 @@ using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Lars;
@@ -29,7 +30,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly AppsIndicativeEarningsModelComparer AppsIndicativeEarningsModelComparer = new AppsIndicativeEarningsModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly IValidLearnersService _validLearnersService;
@@ -45,27 +45,24 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILarsProviderService larsProviderService,
             IAppsIndicativeEarningsModelBuilder modelBuilder,
             IDateTimeProvider dateTimeProvider,
-            IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            IValueProvider valueProvider)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _fm36ProviderService = fm36ProviderService;
             _validLearnersService = validLearnersService;
             _larsProviderService = larsProviderService;
             _modelBuilder = modelBuilder;
-
-            ReportFileName = "Apps Indicative Earnings Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAppsIndicativeEarningsReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Apps Indicative Earnings Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AppsIndicativeEarningsReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            long jobId = reportServiceContext.JobId;
-            string ukPrn = reportServiceContext.Ukprn.ToString();
-            string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

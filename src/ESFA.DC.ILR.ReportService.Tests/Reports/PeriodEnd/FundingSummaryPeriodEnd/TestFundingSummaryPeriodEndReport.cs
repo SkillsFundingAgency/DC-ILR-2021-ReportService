@@ -5,10 +5,12 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Service.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.ILR.ReportService.Tests.Helpers;
@@ -47,7 +49,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.FundingSummaryPeriod
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
@@ -72,15 +73,23 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.FundingSummaryPeriod
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseValidContextFactory);
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseValidContextFactory);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
+            IFM36PeriodEndProviderService fm36ProviderService = new FM36PeriodEndProviderService(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseValidContextFactory);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             var fundingSummaryPeriodEndModelBuilder = new FundingSummaryPeriodEndModelBuilder();
 
-            var report = new ReportService.Service.Reports.PeriodEnd.FundingSummaryPeriodEndReport(logger.Object, storage.Object, ilrProviderService, fm36ProviderService, stringUtilitiesService, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, fundingSummaryPeriodEndModelBuilder);
+            var report = new ReportService.Service.Reports.PeriodEnd.FundingSummaryPeriodEndReport(
+                logger.Object,
+                storage.Object,
+                ilrProviderService,
+                fm36ProviderService,
+                stringUtilitiesService,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                fundingSummaryPeriodEndModelBuilder);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

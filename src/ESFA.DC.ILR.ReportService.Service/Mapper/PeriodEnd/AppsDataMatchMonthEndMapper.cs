@@ -1,10 +1,9 @@
 ﻿using CsvHelper.Configuration;
-using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
 
 namespace ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd
 {
-    public class AppsDataMatchMonthEndMapper : ClassMap<AppsDataMatchMonthEndModel>, IClassMapper
+    public class AppsDataMatchMonthEndMapper : ClassMap<AppsDataMatchMonthEndModel>
     {
         public AppsDataMatchMonthEndMapper()
         {

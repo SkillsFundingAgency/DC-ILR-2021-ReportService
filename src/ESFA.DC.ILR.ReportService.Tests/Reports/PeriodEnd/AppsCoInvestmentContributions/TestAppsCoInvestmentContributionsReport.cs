@@ -7,9 +7,11 @@ using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
@@ -49,7 +51,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentCont
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IValueProvider valueProvider = new ValueProvider();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
@@ -87,17 +88,20 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd.AppsCoInvestmentCont
                 return new DASPaymentsContext(options);
             }
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(
+            IIlrPeriodEndProviderService ilrProviderService = new IlrPeriodEndProviderService(
                 logger.Object,
                 storage.Object,
                 xmlSerializationService,
-                dateTimeProviderMock.Object,
-                intUtilitiesService,
-                IlrValidContextFactory,
-                IlrRulebaseContextFactory);
-            var dasPaymentsProviderService = new DASPaymentsProviderService(logger.Object, DasPaymentsContextFactory);
+                IlrValidContextFactory);
+            var dasPaymentsProviderService = new DASPaymentsProviderService(DasPaymentsContextFactory);
 
-            var report = new AppsCoInvestmentContributionsReport(logger.Object, storage.Object, dateTimeProviderMock.Object, valueProvider, topicsAndTasks, ilrProviderService, dasPaymentsProviderService);
+            var report = new AppsCoInvestmentContributionsReport(
+                logger.Object,
+                storage.Object,
+                dateTimeProviderMock.Object,
+                valueProvider,
+                ilrProviderService,
+                dasPaymentsProviderService);
 
             await report.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
 

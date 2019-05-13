@@ -7,10 +7,12 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Poco;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
@@ -83,9 +85,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.Validation
                     }
                 }).Returns(Task.CompletedTask);
 
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, null, null);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
 
             IReport validationErrorsReport = new ValidationErrorsReport(
@@ -95,7 +96,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.Validation
                 ilrProviderService,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 validationErrorsServiceMock.Object,
                 validationStageOutputCache);
 

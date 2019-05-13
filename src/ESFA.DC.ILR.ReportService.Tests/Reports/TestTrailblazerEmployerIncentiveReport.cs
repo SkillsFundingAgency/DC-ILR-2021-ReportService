@@ -7,8 +7,10 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Service.Builders;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
@@ -39,11 +41,10 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
-            Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IXmlSerializationService xmlSerializationService = new XmlSerializationService();
-            IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, null, null);
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, null, intUtilitiesService, null, null);
+            IFM81TrailBlazerProviderService fm81TrailBlazerProviderService = new FM81TrailBlazerProviderService(logger.Object, storage.Object, jsonSerializationService, null, null);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService);
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.SetupGet(x => x.JobId).Returns(1);
@@ -54,9 +55,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             reportServiceContextMock.SetupGet(x => x.FundingFM81OutputKey).Returns("FundingFm81Output");
             reportServiceContextMock.SetupGet(x => x.CollectionName).Returns("ILR1819");
 
-            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, redis.Object, jsonSerializationService, null);
+            IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, storage.Object, jsonSerializationService, null);
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             ITrailblazerEmployerIncentivesModelBuilder reportModelBuilder = new TrailblazerEmployerIncentivesModelBuilder();
             IValueProvider valueProvider = new ValueProvider();
 
@@ -67,9 +67,9 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             storage.Setup(x => x.GetAsync(It.IsAny<string>(), It.IsAny<Stream>(), It.IsAny<CancellationToken>()))
                 .Callback<string, Stream, CancellationToken>((st, sr, ct) => File.OpenRead(ilrFilename).CopyTo(sr)).Returns(Task.CompletedTask);
 
-            redis.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
-            redis.Setup(x => x.GetAsync("FundingFm81Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm81FileName));
-            redis.Setup(x => x.GetAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(validLearnersStr);
+            storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
+            storage.Setup(x => x.GetAsync("FundingFm81Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText(fm81FileName));
+            storage.Setup(x => x.GetAsync("ValidLearnRefNumbers", It.IsAny<CancellationToken>())).ReturnsAsync(validLearnersStr);
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
@@ -81,7 +81,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 ilrProviderService,
                 validLearnersService,
                 reportModelBuilder,
-                topicsAndTasks,
                 valueProvider,
                 dateTimeProviderMock.Object);
 

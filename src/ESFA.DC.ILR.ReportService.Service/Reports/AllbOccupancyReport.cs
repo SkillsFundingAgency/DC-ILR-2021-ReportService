@@ -12,6 +12,7 @@ using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Lars;
@@ -37,7 +38,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private static readonly AllbOccupancyModelComparer AllbOccupancyModelComparer = new AllbOccupancyModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly ILarsProviderService _larsProviderService;
         private readonly IAllbProviderService _allbProviderService;
@@ -53,27 +53,24 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IValidLearnersService validLearnersService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
-            IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            IValueProvider valueProvider)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _larsProviderService = larsProviderService;
             _allbProviderService = allbProviderService;
             _validLearnersService = validLearnersService;
             _stringUtilitiesService = stringUtilitiesService;
-
-            ReportFileName = "ALLB Occupancy Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateAllbOccupancyReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "ALLB Occupancy Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.AllbOccupancyReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

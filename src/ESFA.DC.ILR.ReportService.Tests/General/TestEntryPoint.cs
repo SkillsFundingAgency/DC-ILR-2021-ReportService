@@ -29,8 +29,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.General
             string csv = $"A,B,C,D{Environment.NewLine}1,2,3,4";
             byte[] zipBytes = null;
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
-
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> streamableKeyValuePersistenceService =
                 new Mock<IStreamableKeyValuePersistenceService>();
@@ -44,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.General
                 })
                 .Returns(Task.CompletedTask);
             Mock<IReport> report = new Mock<IReport>();
-            report.SetupGet(x => x.ReportTaskName).Returns(topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport);
+            report.SetupGet(x => x.ReportTaskName).Returns(ReportTaskNameConstants.AllbOccupancyReport);
             report.Setup(x =>
                     x.GenerateReport(It.IsAny<IReportServiceContext>(), It.IsAny<ZipArchive>(), It.IsAny<bool>(), It.IsAny<CancellationToken>()))
                 .Callback<IReportServiceContext, ZipArchive, bool, CancellationToken>((j, z, b, c) =>
@@ -61,7 +59,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.General
             JobContextMessage jobContextMessage =
                 new JobContextMessage(
                     1,
-                    new ITopicItem[] { new TopicItem("SubscriptionName", new List<ITaskItem> { new TaskItem(new List<string> { topicsAndTasks.TopicReports_TaskGenerateAllbOccupancyReport }, false) }) },
+                    new ITopicItem[] { new TopicItem("SubscriptionName", new List<ITaskItem> { new TaskItem(new List<string> { ReportTaskNameConstants.AllbOccupancyReport }, false) }) },
                     0,
                     DateTime.UtcNow);
 

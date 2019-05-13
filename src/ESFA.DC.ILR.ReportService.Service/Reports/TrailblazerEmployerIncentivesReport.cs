@@ -12,6 +12,7 @@ using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
@@ -25,7 +26,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
     public sealed class TrailblazerEmployerIncentivesReport : AbstractReport, IReport
     {
-        private readonly ILogger _logger;
         private readonly IFM81TrailBlazerProviderService _fm81TrailBlazerProviderService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
@@ -39,24 +39,22 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IValidLearnersService validLearnersService,
             ITrailblazerEmployerIncentivesModelBuilder trailblazerEmployerIncentivesModelBuilder,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions,
             IValueProvider valueProvider,
             IDateTimeProvider dateTimeProvider)
-            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
-
             _fm81TrailBlazerProviderService = fm81TrailBlazerProviderService;
             _validLearnersService = validLearnersService;
             _ilrProviderService = ilrProviderService;
 
             _trailblazerEmployerIncentivesModelBuilder = trailblazerEmployerIncentivesModelBuilder;
-
-            ReportFileName = "Trailblazer Apprenticeships Employer Incentives Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "Trailblazer Apprenticeships Employer Incentives Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.TrailblazerEmployerIncentivesReport;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM81Global> fm81Task =
@@ -109,16 +107,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             var jobId = reportServiceContext.JobId;
             var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            var fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
 
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
-        }
-
-        private bool CheckIsApplicableLearner(ILearningDelivery learningDelivery)
-        {
-            return learningDelivery.FundModel == 81;
         }
 
         private string GetReportCsv(List<TrailblazerEmployerIncentivesModel> listModels)

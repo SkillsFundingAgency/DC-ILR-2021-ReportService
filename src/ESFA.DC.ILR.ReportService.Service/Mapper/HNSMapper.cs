@@ -1,10 +1,9 @@
 ﻿using CsvHelper.Configuration;
-using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR.ReportService.Service.Mapper
 {
-    public class HNSMapper : ClassMap<HNSModel>, IClassMapper
+    public class HNSMapper : ClassMap<HNSModel>
     {
         public HNSMapper()
         {

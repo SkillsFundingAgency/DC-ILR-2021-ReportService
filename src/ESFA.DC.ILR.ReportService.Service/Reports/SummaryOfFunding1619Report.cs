@@ -11,6 +11,7 @@ using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
@@ -26,7 +27,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     {
         private static readonly SummaryOfFunding1619ModelComparer SummaryOfFunding1619ModelComparer = new SummaryOfFunding1619ModelComparer();
 
-        private readonly ILogger _logger;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IValidLearnersService _validLearnersService;
         private readonly IFM25ProviderService _fm25ProviderService;
@@ -40,26 +40,23 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IFM25ProviderService fm25ProviderService,
             IStringUtilitiesService stringUtilitiesService,
             IDateTimeProvider dateTimeProvider,
-            IValueProvider valueProvider,
-            ITopicAndTaskSectionOptions topicAndTaskSectionOptions)
-        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService)
+            IValueProvider valueProvider)
+        : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
-            _logger = logger;
             _ilrProviderService = ilrProviderService;
             _validLearnersService = validLearnersService;
             _fm25ProviderService = fm25ProviderService;
             _stringUtilitiesService = stringUtilitiesService;
-
-            ReportFileName = "16-19 Summary of Funding by Student Report";
-            ReportTaskName = topicAndTaskSectionOptions.TopicReports_TaskGenerateSummaryOfFunding1619Report;
         }
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
+        public override string ReportFileName => "16-19 Summary of Funding by Student Report";
+
+        public override string ReportTaskName => ReportTaskNameConstants.SummaryOfFunding1619Report;
+
+        public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            string externalFileName = GetExternalFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
-            string fileName = GetFilename(ukPrn, jobId, reportServiceContext.SubmissionDateTimeUtc);
+            string externalFileName = GetFilename(reportServiceContext);
+            string fileName = GetZipFilename(reportServiceContext);
 
             string csv = await GetCsv(reportServiceContext, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);

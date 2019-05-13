@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
     {
         private readonly string _filename;
         private readonly ILogger _logger;
-        private readonly IKeyValuePersistenceService _storage;
+        private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly DataStoreConfiguration _dataStoreConfiguration;
 
@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
         protected BaseLearnersService(
             string key,
             ILogger logger,
-            IKeyValuePersistenceService storage,
+            IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
             DataStoreConfiguration dataStoreConfiguration)
         {

@@ -10,6 +10,7 @@ using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.DataMatch;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.DasCommitments;
@@ -17,6 +18,7 @@ using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Builders;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Service.Service.DataMatch;
@@ -76,10 +78,9 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             Mock<ILogger> logger = new Mock<ILogger>();
             Mock<IStreamableKeyValuePersistenceService> storage = new Mock<IStreamableKeyValuePersistenceService>();
-            Mock<IKeyValuePersistenceService> redis = new Mock<IKeyValuePersistenceService>();
             IJsonSerializationService jsonSerializationService = new JsonSerializationService();
             IIntUtilitiesService intUtilitiesService = new IntUtilitiesService();
-            IFM36ProviderService fm36ProviderService = new FM36ProviderService(logger.Object, storage.Object, jsonSerializationService, intUtilitiesService, IlrRulebaseContextFactory);
+            IFM36ProviderService fm36ProviderService = new FM36FileServiceProvider(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
             Mock<IDasCommitmentsService> dasCommitmentsService = new Mock<IDasCommitmentsService>();
             Mock<IPeriodProviderService> periodProviderService = new Mock<IPeriodProviderService>();
             Mock<IDateTimeProvider> dateTimeProviderMock = new Mock<IDateTimeProvider>();
@@ -102,7 +103,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             storage.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
-            redis.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
+            storage.Setup(x => x.GetAsync("FundingFm36Output", It.IsAny<CancellationToken>())).ReturnsAsync(File.ReadAllText("Fm36.json"));
             dasCommitmentsService
                 .Setup(x => x.GetCommitments(It.IsAny<long>(), It.IsAny<List<long>>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(dasCommitments);
@@ -110,7 +111,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
             periodProviderService.Setup(x => x.MonthFromPeriod(It.IsAny<int>())).Returns(1);
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
             IValidationStageOutputCache validationStageOutputCache = new ValidationStageOutputCache();
             IDatalockValidationResultBuilder datalockValidationResultBuilder = new DatalockValidationResultBuilder();
@@ -124,7 +124,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 storage.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
-                topicsAndTasks,
                 validationStageOutputCache,
                 datalockValidationResultBuilder,
                 totalBuilder);

@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Service.Builders;
+using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.ILR.ReportService.Tests.AutoFac;
@@ -70,10 +72,11 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 return new ILR1819_DataStoreEntities(options);
             }
 
-            IEasProviderService easProviderService = new EasProviderService(logger.Object, easConfiguration);
-            IIlrProviderService ilrProviderService = new IlrProviderService(logger.Object, storage.Object, xmlSerializationService, dateTimeProviderMock.Object, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
-            IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
-            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, intUtilitiesService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IEasProviderService easProviderService = new EasProviderService(easConfiguration);
+            IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService); IAllbProviderService allbProviderService = new AllbProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
+            IIlrMetadataProviderService ilrMetadataProviderService = new IlrMetadataProviderService(dateTimeProviderMock.Object, IlrValidContextFactory, IlrRulebaseContextFactory);
+
+            IFM35ProviderService fm35ProviderService = new FM35ProviderService(logger.Object, redis.Object, jsonSerializationService, IlrValidContextFactory, IlrRulebaseContextFactory);
             IVersionInfo versionInfo = new VersionInfo { ServiceReleaseVersion = "1.2.3.4.5" };
 
             redis.Setup(x => x.ContainsAsync(It.IsAny<string>(), It.IsAny<CancellationToken>())).ReturnsAsync(true);
@@ -99,13 +102,13 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             postcodeProverServiceMock.Setup(x => x.GetVersionAsync(It.IsAny<CancellationToken>())).ReturnsAsync("NA");
             orgProviderService.Setup(x => x.GetProviderName(It.IsAny<IReportServiceContext>(), It.IsAny<CancellationToken>())).ReturnsAsync("Test Provider");
 
-            ITopicAndTaskSectionOptions topicsAndTasks = TestConfigurationHelper.GetTopicsAndTasks();
             IValueProvider valueProvider = new ValueProvider();
 
             AdultFundingClaimReport adultFundingClaimReport = new AdultFundingClaimReport(
                 logger.Object,
                 storage.Object,
                 ilrProviderService,
+                ilrMetadataProviderService,
                 orgProviderService.Object,
                 allbProviderService,
                 fm35ProviderService,
@@ -117,7 +120,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 postcodeProverServiceMock.Object,
                 largeEmployerProviderService.Object,
                 versionInfo,
-                topicsAndTasks,
                 new AdultFundingClaimBuilder());
 
             Mock<IReportServiceContext> reportServiceContextMock = new Mock<IReportServiceContext>();

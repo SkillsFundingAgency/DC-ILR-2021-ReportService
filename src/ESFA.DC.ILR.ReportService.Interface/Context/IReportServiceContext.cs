@@ -13,6 +13,8 @@ namespace ESFA.DC.ILR.ReportService.Interface.Context
 
         string OriginalFilename { get; }
 
+        string Container { get; }
+
         DateTime SubmissionDateTimeUtc { get; }
 
         long FileSizeInBytes { get; }

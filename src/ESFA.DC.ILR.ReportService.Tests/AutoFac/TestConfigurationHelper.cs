@@ -1,5 +1,4 @@
 ﻿using ESFA.DC.ILR.ReportService.Interface.Configuration;
-using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
@@ -14,8 +13,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
             {
                 case "LarsSection":
                     return (T)(object)new LarsConfiguration();
-                case "TopicAndTaskSection":
-                    return (T)GetTopicsAndTasks();
                 case "AzureStorageSection":
                     return (T)(object)new AzureStorageOptions
                     {
@@ -91,34 +88,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.AutoFac
             }
 
             return default(T);
-        }
-
-        public static ITopicAndTaskSectionOptions GetTopicsAndTasks()
-        {
-            return new TopicAndTaskSectionOptions()
-            {
-                TopicReports_TaskGenerateAllbOccupancyReport = "TopicReports_TaskGenerateAllbOccupancyReport",
-                TopicReports_TaskGenerateValidationReport = "TopicReports_TaskGenerateValidationReport",
-                TopicReports_TaskGenerateFundingSummaryReport = "TopicReports_TaskGenerateFundingSummaryReport",
-                TopicReports_TaskGenerateAdultFundingClaimReport = "TopicReports_TaskGenerateAdultFundingClaimReport",
-                TopicDeds = "TopicDeds",
-                TopicDeds_TaskPersistDataToDeds = "TopicDeds_TaskPersistDataToDeds",
-                TopicFunding = "TopicFunding",
-                TopicReports = "TopicReports",
-                TopicReports_TaskGenerateMainOccupancyReport = "TopicReports_TaskGenerateMainOccupancyReport",
-                TopicReports_TaskGenerateSummaryOfFunding1619Report = "TopicReports_TaskGenerateSummaryOfFunding1619Report",
-                TopicValidation = "TopicValidation",
-                TopicReports_TaskGenerateMathsAndEnglishReport = "TopicReports_TaskGenerateMathsAndEnglishReport",
-                TopicReports_TaskGenerateAppsAdditionalPaymentsReport = "TopicReports_TaskGenerateAppsAdditionalPaymentsReport",
-                TopicReports_TaskGenerateAppsIndicativeEarningsReport = "TopicReports_TaskGenerateAppsIndicativeEarningsReport",
-                TopicReports_TaskGenerateAppsCoInvestmentContributionsReport = "TopicReports_TaskGenerateAppsCoInvestmentContributionsReport",
-                TopicReports_TaskGenerateAppsMonthlyPaymentReport = "TopicReports_TaskGenerateAppsMonthlyPaymentReport",
-                TopicReports_TaskGenerateDataMatchReport = "TopicReports_TaskGenerateDataMatchReport",
-                TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport = "TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport",
-                TopicReports_TaskGenerateTrailblazerAppsOccupancyReport = "TopicReports_TaskGenerateTrailblazerAppsOccupancyReport",
-                TopicReports_TaskGenerateFundingClaim1619Report = "TopicReports_TaskGenerateFundingClaim1619Report",
-                TopicReports_TaskGenerateHNSReport = "TopicReports_TaskGenerateHNSReport"
-            };
         }
     }
 }

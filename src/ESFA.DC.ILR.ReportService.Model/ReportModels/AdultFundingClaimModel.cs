@@ -1,5 +1,4 @@
 ﻿using System;
-using ESFA.DC.ILR.ReportService.Model.Styling;
 
 namespace ESFA.DC.ILR.ReportService.Model.ReportModels
 {
@@ -17,33 +16,49 @@ namespace ESFA.DC.ILR.ReportService.Model.ReportModels
         // Body
         public decimal OtherLearningProgrammeFunding6Months { get; set; }
 
+        public decimal OtherLearningProgrammeFunding10Months { get; set; }
+
         public decimal OtherLearningProgrammeFunding12Months { get; set; }
 
         public decimal OtherLearningLearningSupport6Months { get; set; }
+
+        public decimal OtherLearningLearningSupport10Months { get; set; }
 
         public decimal OtherLearningLearningSupport12Months { get; set; }
 
         public decimal Traineeships1924ProgrammeFunding6Months {get;set;}
 
+        public decimal Traineeships1924ProgrammeFunding10Months { get; set; }
+
         public decimal Traineeships1924ProgrammeFunding12Months {get;set;}
 
         public decimal Traineeships1924LearningSupport6Months { get; set; }
+
+        public decimal Traineeships1924LearningSupport10Months { get; set; }
 
         public decimal Traineeships1924LearningSupport12Months { get; set; }
 
         public decimal Traineeships1924LearnerSupport6Months { get; set; }
 
+        public decimal Traineeships1924LearnerSupport10Months { get; set; }
+
         public decimal Traineeships1924LearnerSupport12Months { get; set; }
 
         public decimal LoansBursaryFunding6Months { get; set; }
+
+        public decimal LoansBursaryFunding10Months { get; set; }
 
         public decimal LoansBursaryFunding12Months { get; set; }
 
         public decimal LoansAreaCosts6Months { get; set; }
 
+        public decimal LoansAreaCosts10Months { get; set; }
+
         public decimal LoansAreaCosts12Months { get; set; }
 
         public decimal LoansExcessSupport6Months { get; set; }
+
+        public decimal LoansExcessSupport10Months { get; set; }
 
         public decimal LoansExcessSupport12Months { get; set; }
 

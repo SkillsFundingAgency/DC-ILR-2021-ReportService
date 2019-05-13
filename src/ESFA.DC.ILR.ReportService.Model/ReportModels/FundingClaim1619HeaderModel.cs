@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Model.ReportModels
+﻿namespace ESFA.DC.ILR.ReportService.Model.ReportModels
 {
     public sealed class FundingClaim1619HeaderModel
     {
