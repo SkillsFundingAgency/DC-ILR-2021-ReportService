@@ -59,7 +59,7 @@ steps:
 
 - task: MSBuild@1
   displayName: 'Build SF Project'
-  enabled: true
+  enabled: false
   inputs:
     solution: '**/$(ServiceFabricProjectFolderName)/*.sfproj'
     msbuildArchitecture: x64
@@ -70,6 +70,17 @@ steps:
     maximumCpuCount: true
     logProjectEvents: true
     createLogFile: true
+
+- task: VSBuild@1
+  displayName: 'Build sfproj'
+  inputs:
+    solution: '$(build.sourcesdirectory)\src\$(ServiceFabricProjectFolderName)\*.sfproj'
+    msbuildArguments: '/t:Package /p:PackageLocation=$(build.artifactstagingdirectory)\applicationpackage /p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber)'
+    platform: '$(BuildPlatform)'
+    configuration: '$(BuildConfiguration)'
+    maximumCpuCount: true
+    msbuildArchitecture: x64
+
    
 - task: CopyFiles@2
   displayName: 'Copy Files to: Publish Profiles '
