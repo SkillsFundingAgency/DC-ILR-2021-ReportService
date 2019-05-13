@@ -80,6 +80,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                                 Tier2SectorSubjectArea = v.SectorSubjectAreaTier2,
                                 FrameworkCommonComponent = v.FrameworkCommonComponent
                             },
+                            StringComparer.InvariantCultureIgnoreCase,
                             cancellationToken);
                 }
             }
