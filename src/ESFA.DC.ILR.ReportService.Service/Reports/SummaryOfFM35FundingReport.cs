@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
 using CsvHelper;
+using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
@@ -239,43 +240,33 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var sheet = workbook.Worksheets[0];
             var summaryOfFm35FundingMapper = new SummaryOfFM35FundingMapper();
             var modelPropertiesAll = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
-            var modelPropertiesSelected = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
+            var modelPropertiesSelected = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Skip(1).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
 
-            var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
-            IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
             WriteExcelRecords(sheet, summaryOfFm35FundingMapper, new List<SummaryOfFm35FundingModel> { }, null, null);
-            foreach (IGrouping<string, SummaryOfFm35FundingModel> groupedSummaryOfFm35FundingModel in groupedSummaryOfFm35FundingModels)
+            foreach (var model in summaryOfFm35FundingModels)
             {
-                var title = groupedSummaryOfFm35FundingModel.Key;
-                foreach (var model in groupedSummaryOfFm35FundingModel)
+                if (model.Period != 1)
                 {
-                    //if (model.FundingLineType.CaseInsensitiveEquals("totals"))
-                    //{
-
-                    //}
-
-                    WriteExcelRecords(sheet, summaryOfFm35FundingMapper, model.Period == 1 ? modelPropertiesAll : modelPropertiesSelected, model, null);
+                    model.FundingLineType = string.Empty;
                 }
 
-                WriteExcelRecords(sheet);
+                if (model.Period == 0)
+                {
+                    model.FundingLineType = "Totals";
+                    model.Period = null;
+                }
+
+                WriteExcelRecords(sheet, summaryOfFm35FundingMapper, modelPropertiesAll, model, null);
+                if (model.FundingLineType == "totals")
+                {
+                    WriteExcelRecords(sheet);
+                }
             }
-
-            //var writeHeader = true;
-            //foreach (var summaryOfFm35FundingModel in summaryOfFm35FundingModelsArray)
-            //{
-            //    if (writeHeader)
-            //    {
-            //        WriteExcelRecords(sheet, summaryOfFm35FundingMapper, new List<SummaryOfFm35FundingModel> { }, null, null);
-            //        writeHeader = false;
-            //    }
-
-            //    WriteExcelRecords(sheet, summaryOfFm35FundingMapper, modelProperties, summaryOfFm35FundingModel, null); //, new SummaryOfFM35FundingMapper(), new List<SummaryOfFm35FundingModel> { summaryOfFm35FundingModel }, null, null, true);
-            //}
         }
     }
 }
