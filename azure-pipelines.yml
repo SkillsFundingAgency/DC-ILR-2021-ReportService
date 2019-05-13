@@ -11,6 +11,7 @@ variables:
   BuildConfiguration: 'Release'
   BuildPlatform: 'Any CPU'
   ServiceFabricProjectFolderName: 'ESFA.DC.ILR.ReportService'
+  BuildPlatformX64: 'x64'  
 
 pool:
   name: DCT
@@ -59,11 +60,11 @@ steps:
 
 - task: MSBuild@1
   displayName: 'Build SF Project'
-  enabled: false
+  enabled: true
   inputs:
     solution: '**/$(ServiceFabricProjectFolderName)/*.sfproj'
     msbuildArchitecture: x64
-    platform: '$(BuildPlatform)'
+    platform: '$(BuildPlatformX64)'
     configuration: '$(BuildConfiguration)'
     msbuildArguments: '/t:Package /p:PackageLocation="$(build.artifactstagingdirectory)\ServiceFabric\applicationpackage" /p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber)'
     clean: false
@@ -73,6 +74,7 @@ steps:
 
 - task: VSBuild@1
   displayName: 'Build sfproj'
+  enabled: false
   inputs:
     solution: '$(build.sourcesdirectory)\src\$(ServiceFabricProjectFolderName)\*.sfproj'
     msbuildArguments: '/t:Package /p:PackageLocation=$(build.artifactstagingdirectory)\applicationpackage /p:version=$(Build.BuildNumber) /p:FileVersion=$(Build.BuildNumber)'
