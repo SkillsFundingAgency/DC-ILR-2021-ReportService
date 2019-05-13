@@ -46,6 +46,8 @@
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- DASPayments -->
     <Parameter Name="DASPaymentsConnectionString" Value="__DASPaymentsConnectionStringRO__" />
+    <!-- FCS -->
+    <Parameter Name="FCSConnectionString" Value="__FCSConnectionString__" />
     <!-- Org -->
     <Parameter Name="OrgConnectionString" Value="__OrganisationsDbConnectionStringReadOnly__" />
     <!-- DAS Commitments -->

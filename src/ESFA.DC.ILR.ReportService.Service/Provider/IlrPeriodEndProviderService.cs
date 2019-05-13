@@ -19,18 +19,14 @@ using LearningDeliveryInfo = ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInv
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class IlrPeriodEndProviderService : AbstractFundModelProviderService, IIlrPeriodEndProviderService
+    public sealed class IlrPeriodEndProviderService : IIlrPeriodEndProviderService
     {
         private const int ApprentishipsFundModel = 36;
-        private readonly DataStoreConfiguration _dataStoreConfiguration;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
 
         public IlrPeriodEndProviderService(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
-            IXmlSerializationService xmlSerializationService,
             Func<IIlr1819ValidContext> ilrValidContextFactory)
-        : base(storage, xmlSerializationService, logger)
         {
           _ilrValidContextFactory = ilrValidContextFactory;
         }

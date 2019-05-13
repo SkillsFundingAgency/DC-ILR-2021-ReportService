@@ -82,6 +82,10 @@
     <Parameter Name="LarsConnectionString" Value=""/>
   </Section>
 
+  <Section Name="FCSSection">
+    <Parameter Name="FCSConnectionString" Value=""/>
+  </Section>
+
   <Section Name="DASPaymentsSection">
     <Parameter Name="DASPaymentsConnectionString" Value=""/>
   </Section>

@@ -46,6 +46,8 @@
     <Parameter Name="TopicReports_TaskGenerateHNSReport" DefaultValue="TopicReports_TaskGenerateHNSReport" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
+    <!-- FCS -->
+    <Parameter Name="FCSConnectionString" DefaultValue="" />
     <!-- DASPayments -->
     <Parameter Name="DASPaymentsConnectionString" DefaultValue="" />
     <!-- DAS Commitments -->
@@ -135,6 +137,9 @@
           </Section>
           <Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
+          </Section>
+          <Section Name="FCSSection">
+            <Parameter Name="FCSConnectionString" Value="[FCSConnectionString]" />
           </Section>
           <Section Name="OrgSection">
             <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />

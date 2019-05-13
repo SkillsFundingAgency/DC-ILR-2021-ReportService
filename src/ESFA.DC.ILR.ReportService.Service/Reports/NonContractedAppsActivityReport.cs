@@ -13,6 +13,7 @@ using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Model.FCS;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
@@ -24,6 +25,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
     public class NonContractedAppsActivityReport : AbstractReport, IReport
     {
         private readonly IIlrProviderService _ilrProviderService;
+        private readonly IFCSProviderService _fcsProviderService;
+        private readonly IValidLearnersService _validLearnersService;
         private readonly IFM36ProviderService _fm36ProviderService;
         private readonly INonContractedAppsActivityModelBuilder _modelBuilder;
 
@@ -31,6 +34,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IIlrProviderService ilrProviderService,
+            IFCSProviderService fcsProviderService,
+            IValidLearnersService validLearnersService,
             IFM36ProviderService fm36ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
@@ -38,6 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         : base(dateTimeProvider, valueProvider, streamableKeyValuePersistenceService, logger)
         {
             _ilrProviderService = ilrProviderService;
+            _fcsProviderService = fcsProviderService;
+            _validLearnersService = validLearnersService;
             _fm36ProviderService = fm36ProviderService;
             _modelBuilder = modelBuilder;
         }
@@ -52,11 +59,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var fileName = GetZipFilename(reportServiceContext);
 
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
             Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken);
+            Task<List<ContractAllocationInfo>> fcsProviderTask = _fcsProviderService.GetContractAllocationsForProviderAsync(reportServiceContext.Ukprn, cancellationToken);
+            await Task.WhenAll(ilrFileTask, validLearnersTask, fm36Task, fcsProviderTask);
 
-            await Task.WhenAll(ilrFileTask, fm36Task);
-
-            var nonContractedAppsActivityModels = _modelBuilder.BuildModel();
+            var nonContractedAppsActivityModels = _modelBuilder.BuildModel(fcsProviderTask.Result);
             string csv = await GetCsv(nonContractedAppsActivityModels, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
