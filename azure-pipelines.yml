@@ -180,6 +180,7 @@ steps:
     PathtoPublish: '$(build.artifactstagingdirectory)\ServiceFabric'
 
 - task: PublishBuildArtifacts@1
+  enabled: false
   displayName: 'Publish Artifact: NugetPackages'
   inputs:
     ArtifactName: NugetPackages
