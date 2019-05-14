@@ -38,7 +38,7 @@ steps:
     checkLatest: true
 
 - task: DotNetCoreCLI@2
-  enabled: false
+  enabled: true
   displayName: 'dotnet restore'
   inputs:
     command: restore
