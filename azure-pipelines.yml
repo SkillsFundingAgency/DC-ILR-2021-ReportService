@@ -155,13 +155,13 @@ steps:
     arguments: '--configuration $(buildConfiguration) --collect "Code coverage"'
     
 - task: VSTest@2
-  enabled: false
   displayName: 'VsTest - testAssemblies'
   inputs:
     testAssemblyVer2: |
-     **\ESFA.DC.ESF.R2.*tests.dll
-     !**\*Database.Tests*\**
-     !**\packages\**
+     **\*test*.dll
+     !**\*TestAdapter.dll
+     !**\*SmokeTests.dll
+     !**\*AcceptanceTests.dll
      !**\obj\**
     configuration: '$(BuildConfiguration)'
 
