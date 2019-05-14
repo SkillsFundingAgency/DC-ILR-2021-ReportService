@@ -21,10 +21,9 @@ pool:
   - IsBuildServer
 steps:
 - task: DotNetCoreInstaller@0
-  displayName: 'Use .NET Core sdk 2.2.203'
+  displayName: 'Use .NET Core sdk 2.2.104'
   inputs:
-    version: 2.2.203
-
+    version: 2.2.104
 
 - task: VisualStudioTestPlatformInstaller@1
   displayName: 'Visual Studio Test Platform Installer'
