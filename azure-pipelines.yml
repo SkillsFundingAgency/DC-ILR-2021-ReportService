@@ -147,7 +147,7 @@ steps:
   enabled: true
    
 - task: DotNetCoreCLI@2
-  enabled: true
+  enabled: false
   displayName: 'Run xUnit Test - Core Framework'
   inputs:
     command: test
