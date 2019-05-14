@@ -65,7 +65,6 @@ steps:
     msbuildArguments: '-p:version=$(Build.BuildNumber) -p:FileVersion=$(Build.BuildNumber) -p:SkipInvalidConfigurations=true'
     clean: true
     maximumCpuCount: true
-    restoreNugetPackages: true
     logProjectEvents: true
     createLogFile: true
 
