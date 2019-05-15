@@ -42,6 +42,7 @@
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="__TopicReports_TaskGenerateTrailblazerAppsOccupancyReport__" />
     <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="__TopicReports_TaskGenerateHNSReport__" />
     <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" Value="__TopicReports_TaskGenerateNonContractedAppsActivityReport__" />
+    <Parameter Name="TopicReports_TaskGenerateILRDataQualityReport" Value="__TopicReports_TaskGenerateILRDataQualityReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- DASPayments -->
