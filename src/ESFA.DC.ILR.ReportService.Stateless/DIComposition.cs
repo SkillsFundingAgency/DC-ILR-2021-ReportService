@@ -353,6 +353,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<ILRDataQualityReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();

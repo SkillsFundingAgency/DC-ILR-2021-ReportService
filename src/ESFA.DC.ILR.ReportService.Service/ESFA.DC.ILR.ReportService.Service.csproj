@@ -155,6 +155,7 @@
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
     <Compile Include="Reports\Abstract\AbstractReport.cs" />
     <Compile Include="Reports\NonContractedAppsActivityReport.cs" />
+    <Compile Include="Reports\PeriodEnd\ILRDataQualityReport.cs" />
     <Compile Include="Reports\PeriodEnd\FundingSummaryPeriodEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsDataMatchMonthEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsMonthlyPaymentReport.cs" />
@@ -212,6 +213,7 @@
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="Reports\Templates\1619FundingClaimReportTemplate.xlsx" />
+    <EmbeddedResource Include="Reports\Templates\ILRDataQualityReportTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR.ReportService.Interface.csproj">
