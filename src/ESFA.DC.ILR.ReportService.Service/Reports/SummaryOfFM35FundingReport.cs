@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
+using Aspose.Cells.Rendering;
 using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -121,7 +123,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             Worksheet worksheet = workbook.Worksheets[0];
             Cells cells = worksheet.Cells;
             InsertHeaderFooter(workbook, summaryOfFm35FundingHeaderModel, summaryOfFm35FundingFooterModel);
-            PopulateMainData(workbook, summaryOfFm35FundingModels);
+            //PopulateMainData(workbook, summaryOfFm35FundingModels);
+            PopulateReportData(workbook, summaryOfFm35FundingModels);
             workbook.CalculateFormula();
             using (MemoryStream ms = new MemoryStream())
             {
@@ -168,12 +171,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 return summaryOfFm35FundingModels;
             }
 
+            SummaryOfFm35FundingModel grandTotalBuilder = new SummaryOfFm35FundingModel();
             foreach (FM35Learner learnerAttribute in fm35Data.Learners)
             {
                 foreach (LearningDelivery fundLineData in learnerAttribute.LearningDeliveries)
                 {
                     var summaryOfFm35FundingModelsList = _summaryOfFm35FundingModelBuilder.BuildModel(fundLineData).ToArray();
-                    SummaryOfFm35FundingModel totalBuilder = _totalBuilder.TotalRecords("Totals", summaryOfFm35FundingModelsList);
+                    SummaryOfFm35FundingModel totalBuilder = _totalBuilder.TotalRecords(summaryOfFm35FundingModelsList);
                     summaryOfFm35FundingModels.AddRange(summaryOfFm35FundingModelsList);
                     summaryOfFm35FundingModels.Add(totalBuilder);
                 }
@@ -239,8 +243,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         {
             var sheet = workbook.Worksheets[0];
             var summaryOfFm35FundingMapper = new SummaryOfFM35FundingMapper();
-            var modelPropertiesAll = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
-            var modelPropertiesSelected = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Skip(1).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
+            var modelProperties = summaryOfFm35FundingMapper.MemberMaps.OrderBy(x => x.Data.Index).Select(x => new ModelProperty(x.Data.Names.Names.ToArray(), (PropertyInfo)x.Data.Member)).ToArray();
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
             WriteExcelRecords(sheet);
@@ -261,11 +264,79 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                     model.Period = null;
                 }
 
-                WriteExcelRecords(sheet, summaryOfFm35FundingMapper, modelPropertiesAll, model, null);
+                WriteExcelRecords(sheet, summaryOfFm35FundingMapper, modelProperties, model, null);
                 if (model.FundingLineType == "totals")
                 {
                     WriteExcelRecords(sheet);
                 }
+            }
+        }
+
+        private void PopulateReportData(Workbook workbook, IEnumerable<SummaryOfFm35FundingModel> summaryOfFm35FundingModels)
+        {
+            var sheet = workbook.Worksheets[0];
+            Cells cells = workbook.Worksheets[0].Cells;
+
+            var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
+            IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
+            DataSet ds = new DataSet();
+
+            foreach (var groupedModel in groupedSummaryOfFm35FundingModels)
+            {
+                System.Data.DataTable dt = new DataTable(); //("Table1");)
+                dt.Columns.Add("Funding Line Type", typeof(string));
+                dt.Columns.Add("Period", typeof(decimal));
+                dt.Columns.Add("On Programme", typeof(decimal));
+                dt.Columns.Add("Balancing", typeof(decimal));
+                dt.Columns.Add("Job Outcome Achievement", typeof(decimal));
+                dt.Columns.Add("Aim Achievement", typeof(decimal));
+                dt.Columns.Add("Total Achievement", typeof(decimal));
+                dt.Columns.Add("Learning Support", typeof(decimal));
+                dt.Columns.Add("Total", typeof(decimal));
+
+                foreach (var model in groupedModel.OrderBy(x => x.Period))
+                {
+                    DataRow dr = dt.NewRow();
+                    dr["Funding Line Type"] = model.Period == 99 ? "Totals" : model.Period == 1 ? groupedModel.Key : string.Empty;
+                    dr["Period"] = model.Period == 99 ? DBNull.Value : (object)model.Period;
+                    dr["On Programme"] = decimal.Round(model.OnProgramme.GetValueOrDefault(), 2);
+                    dr["Balancing"] = decimal.Round(model.Balancing.GetValueOrDefault(), 2);  //model.Balancing ?? 0;
+                    dr["Job Outcome Achievement"] = decimal.Round(model.JobOutcomeAchievement.GetValueOrDefault(), 2);  //model.JobOutcomeAchievement ?? 0;
+                    dr["Aim Achievement"] = decimal.Round(model.AimAchievement.GetValueOrDefault(), 2);  //model.AimAchievement ?? 0;
+                    dr["Total Achievement"] = decimal.Round(model.TotalAchievement.GetValueOrDefault(), 2);  //model.TotalAchievement ?? 0;
+                    dr["Learning Support"] = decimal.Round(model.LearningSupport.GetValueOrDefault(), 2);  //model.LearningSupport ?? 0;
+                    dr["Total"] = decimal.Round(model.Total.GetValueOrDefault(), 2);  //model.Total ?? 0;
+                    dt.Rows.Add(dr);
+                }
+
+                dt.Rows.Add();
+                ds.Tables.Add(dt);
+            }
+
+            Style stl = workbook.CreateStyle();
+            stl.Borders[BorderType.TopBorder].LineStyle = CellBorderType.Thin;
+            stl.Borders[BorderType.LeftBorder].LineStyle = CellBorderType.Thin;
+            stl.Borders[BorderType.BottomBorder].LineStyle = CellBorderType.Thin;
+            stl.Borders[BorderType.RightBorder].LineStyle = CellBorderType.Thin;
+            stl.Font.Size = 8;
+            StyleFlag flg = new StyleFlag();
+            flg.Borders = true;
+
+            var startRow = 5;
+
+            ImageOrPrintOptions printoption = new ImageOrPrintOptions();
+            printoption.PrintingPage = PrintingPageType.Default;
+            var printingPageBreaks = sheet.GetPrintingPageBreaks(printoption);
+            cells.StandardWidthInch = 1;
+            cells.SetColumnWidthInch(0, 2.20);
+            cells.SetColumnWidthInch(1, 0.6);
+
+            foreach (DataTable dt in ds.Tables)
+            {
+                cells.ImportData(dt, startRow, 0, new ImportTableOptions() { });
+                Range range = cells.CreateRange(startRow, 0, 14, 9);
+                startRow += printingPageBreaks[0].EndRow;
+                range.ApplyStyle(stl, flg);
             }
         }
     }

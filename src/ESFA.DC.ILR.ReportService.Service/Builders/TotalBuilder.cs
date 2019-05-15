@@ -36,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             return fundingSummaryModel;
         }
 
-        public SummaryOfFm35FundingModel TotalRecords(string title, params SummaryOfFm35FundingModel[] summaryOfFm35FundingModels)
+        public SummaryOfFm35FundingModel TotalRecords(params SummaryOfFm35FundingModel[] summaryOfFm35FundingModels)
         {
             var summaryOfFm35FundingModel = new SummaryOfFm35FundingModel();
 
@@ -49,7 +49,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
                 summaryOfFm35FundingModel.OnProgramme = Total(summaryOfFm35FundingModel.OnProgramme, summaryModel.OnProgramme);
                 summaryOfFm35FundingModel.TotalAchievement = Total(summaryOfFm35FundingModel.TotalAchievement, summaryModel.TotalAchievement);
                 summaryOfFm35FundingModel.Total = Total(summaryOfFm35FundingModel.Total, summaryModel.Total);
-                summaryOfFm35FundingModel.FundingLineType = "Totals";
+                summaryOfFm35FundingModel.FundingLineType = summaryModel.FundingLineType;
+                summaryOfFm35FundingModel.Period = 99;
             }
 
             return summaryOfFm35FundingModel;
