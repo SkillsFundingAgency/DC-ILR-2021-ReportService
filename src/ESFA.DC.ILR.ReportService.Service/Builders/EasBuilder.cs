@@ -22,7 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
 
             List<EasSubmissionValues> paymentWiseSubmissionValues = easSubmissionValues
-                .Where(sv => paymentTypeName.Contains(sv.PaymentTypeName)).ToList();
+                .Where(sv => paymentTypeName.Contains(sv.PaymentTypeName, StringComparer.OrdinalIgnoreCase)).ToList();
 
             fundingSummaryModel.Period1 = paymentWiseSubmissionValues.Where(x => x.CollectionPeriod == 1).Sum(x => x.PaymentValue);
             fundingSummaryModel.Period2 = paymentWiseSubmissionValues.Where(x => x.CollectionPeriod == 2).Sum(x => x.PaymentValue);
