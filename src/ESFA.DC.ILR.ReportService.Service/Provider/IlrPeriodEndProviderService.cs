@@ -4,16 +4,14 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
-using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
+using ESFA.DC.ILR.ReportService.Model.PeriodEnd.ILRDataQuality;
+using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
-using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using LearningDeliveryInfo = ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment.LearningDeliveryInfo;
 
@@ -23,12 +21,15 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
     {
         private const int ApprentishipsFundModel = 36;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
+        private readonly Func<IIlr1819RulebaseContext> _ilrContextFactory;
 
         public IlrPeriodEndProviderService(
             ILogger logger,
-            Func<IIlr1819ValidContext> ilrValidContextFactory)
+            Func<IIlr1819ValidContext> ilrValidContextFactory,
+            Func<IIlr1819RulebaseContext> ilrContextFactory)
         {
-          _ilrValidContextFactory = ilrValidContextFactory;
+            _ilrValidContextFactory = ilrValidContextFactory;
+            _ilrContextFactory = ilrContextFactory;
         }
 
         public async Task<AppsCoInvestmentILRInfo> GetILRInfoForAppsCoInvestmentReportAsync(int ukPrn, CancellationToken cancellationToken)
@@ -216,6 +217,34 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
             }
 
             return appsMonthlyPaymentIlrInfo;
+        }
+
+        public async Task<List<RuleViolationsInfo>> GetTop20RuleViolationsAsync(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            List<RuleViolationsInfo> top20RuleViolationsList;
+            using (var ilrContext = _ilrContextFactory())
+            {
+                top20RuleViolationsList = await ilrContext.ValidationErrors
+                    .Where(x => x.Severity == "E")
+                    .GroupBy(x => new { x.RuleName, x.ErrorMessage })
+                    .Select(x => new RuleViolationsInfo
+                    {
+                        RuleName = x.Key.RuleName,
+                        ErrorMessage = x.Key.ErrorMessage,
+                        Providers = x.Select(y => y.UKPRN).Distinct().Count(),
+                        Learners = x.Select(y => y.LearnRefNumber).Distinct().Count(),
+                        NoOfErrors = x.Select(y => y.ErrorMessage).Count()
+                    })
+                    .OrderByDescending(x => x.NoOfErrors)
+                    .ThenBy(x => x.RuleName)
+                    .ThenByDescending(x => x.Providers)
+                    .Take(20)
+                    .ToListAsync(cancellationToken);
+            }
+
+          return top20RuleViolationsList;
         }
     }
 }
