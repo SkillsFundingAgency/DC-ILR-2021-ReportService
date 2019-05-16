@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Data;
 using System.IO;
 using System.IO.Compression;
@@ -9,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
+using Aspose.Cells.Drawing;
 using Aspose.Cells.Rendering;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -124,7 +126,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             Cells cells = worksheet.Cells;
             InsertHeaderFooter(workbook, summaryOfFm35FundingHeaderModel, summaryOfFm35FundingFooterModel);
             //PopulateMainData(workbook, summaryOfFm35FundingModels);
-            PopulateReportData(workbook, summaryOfFm35FundingModels);
+            //PopulateReportData(workbook, summaryOfFm35FundingModels);
+            PopulateUsingSmartMarkers(workbook, summaryOfFm35FundingModels);
             workbook.CalculateFormula();
             using (MemoryStream ms = new MemoryStream())
             {
@@ -276,7 +279,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         {
             var sheet = workbook.Worksheets[0];
             Cells cells = workbook.Worksheets[0].Cells;
-
             var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
             IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
             DataSet ds = new DataSet();
@@ -300,12 +302,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                     dr["Funding Line Type"] = model.Period == 99 ? "Totals" : model.Period == 1 ? groupedModel.Key : string.Empty;
                     dr["Period"] = model.Period == 99 ? DBNull.Value : (object)model.Period;
                     dr["On Programme"] = decimal.Round(model.OnProgramme.GetValueOrDefault(), 2);
-                    dr["Balancing"] = decimal.Round(model.Balancing.GetValueOrDefault(), 2);  //model.Balancing ?? 0;
-                    dr["Job Outcome Achievement"] = decimal.Round(model.JobOutcomeAchievement.GetValueOrDefault(), 2);  //model.JobOutcomeAchievement ?? 0;
-                    dr["Aim Achievement"] = decimal.Round(model.AimAchievement.GetValueOrDefault(), 2);  //model.AimAchievement ?? 0;
-                    dr["Total Achievement"] = decimal.Round(model.TotalAchievement.GetValueOrDefault(), 2);  //model.TotalAchievement ?? 0;
-                    dr["Learning Support"] = decimal.Round(model.LearningSupport.GetValueOrDefault(), 2);  //model.LearningSupport ?? 0;
-                    dr["Total"] = decimal.Round(model.Total.GetValueOrDefault(), 2);  //model.Total ?? 0;
+                    dr["Balancing"] = decimal.Round(model.Balancing.GetValueOrDefault(), 2);
+                    dr["Job Outcome Achievement"] = decimal.Round(model.JobOutcomeAchievement.GetValueOrDefault(), 2);
+                    dr["Aim Achievement"] = decimal.Round(model.AimAchievement.GetValueOrDefault(), 2);
+                    dr["Total Achievement"] = decimal.Round(model.TotalAchievement.GetValueOrDefault(), 2);
+                    dr["Learning Support"] = decimal.Round(model.LearningSupport.GetValueOrDefault(), 2);
+                    dr["Total"] = decimal.Round(model.Total.GetValueOrDefault(), 2);
                     dt.Rows.Add(dr);
                 }
 
@@ -339,5 +341,79 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 range.ApplyStyle(stl, flg);
             }
         }
+
+        private void PopulateUsingSmartMarkers(Workbook workbook, IEnumerable<SummaryOfFm35FundingModel> summaryOfFm35FundingModels)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("SummaryOfFM35FundingBody.xlsx"));
+            var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
+            WorkbookDesigner designer = new WorkbookDesigner();
+            designer.Workbook = new Workbook(manifestResourceStream);
+
+            var sheet = workbook.Worksheets[0];
+            Cells cells = workbook.Worksheets[0].Cells;
+            var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
+            IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
+
+            var startRow = 5;
+            ImageOrPrintOptions printoption = new ImageOrPrintOptions();
+            printoption.PrintingPage = PrintingPageType.Default;
+            var printingPageBreaks = sheet.GetPrintingPageBreaks(printoption);
+
+            foreach (var groupedSummaryOfFm35FundingModel in groupedSummaryOfFm35FundingModels)
+            {
+                designer.SetDataSource("FundLine", groupedSummaryOfFm35FundingModel.Key);
+                designer.SetDataSource("GroupedModels", groupedSummaryOfFm35FundingModel.ToList());
+                designer.CalculateFormula = true;
+                //designer.Process(false);
+                //MemoryStream populatedData = designer.Workbook.SaveToStream();
+                //populatedData.Seek(0, 0);
+                //Workbook wb = new Workbook(populatedData);
+                //wb.CalculateFormula();
+                //var populatedCells = wb.Worksheets[0].Cells;
+
+                //var destRange = cells.CreateRange(5, 0, 13, 9);
+                //var sourceRange = populatedCells.CreateRange("A1:I14");
+
+                designer.Process();
+                //designer.Workbook.Save("populated.xlsx", SaveFormat.Xlsx);
+                var destRange = cells.CreateRange(5, 0, 13, 9);
+                var sourceRange = designer.Workbook.Worksheets[0].Cells.CreateRange("A1:I14");
+
+                destRange.Copy(sourceRange);
+
+                //cells.AddRange(populatedCells.Ranges[0]);
+                //sheet.Pictures.Add(startRow, 0, populatedData);
+                startRow += printingPageBreaks[0].EndRow;
+                designer.ClearDataSource();
+            }
+        }
+
+        //private static DataTable ConvertToDatatable<T>(List<T> data)
+        //{
+        //    PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
+        //    DataTable table = new DataTable();
+        //    for (int i = 0; i < props.Count; i++)
+        //    {
+        //        PropertyDescriptor prop = props[i];
+        //        if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
+        //            table.Columns.Add(prop.Name, prop.PropertyType.GetGenericArguments()[0]);
+        //        else
+        //            table.Columns.Add(prop.Name, prop.PropertyType);
+        //    }
+
+        //    object[] values = new object[props.Count];
+        //    foreach (T item in data)
+        //    {
+        //        for (int i = 0; i < values.Length; i++)
+        //        {
+        //            values[i] = props[i].GetValue(item);
+        //        }
+
+        //        table.Rows.Add(values);
+        //    }
+
+        //    return table;
+        //}
     }
 }
