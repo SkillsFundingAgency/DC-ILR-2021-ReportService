@@ -1,108 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 
 namespace ESFA.DC.ILR.ReportService.Service.Builders
 {
     public class TrailblazerEmployerIncentivesModelBuilder : ITrailblazerEmployerIncentivesModelBuilder
     {
-        public TrailblazerEmployerIncentivesModel BuildTrailblazerEmployerIncentivesModel(long empIdentifier, LearningDelivery fm81Data)
-        {
-            var smallEmployerIncentive = fm81Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm81SmallBusPayment, StringComparison.OrdinalIgnoreCase));
-            var apprentice1618Incentive = fm81Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm81YoungAppPayment, StringComparison.OrdinalIgnoreCase));
-            var achievementIncentive = fm81Data?.LearningDeliveryPeriodisedValues
-                ?.SingleOrDefault(attr => string.Equals(attr.AttributeName, Constants.Fm81AchPayment, StringComparison.OrdinalIgnoreCase));
-
-            var trailblazerEmployerIncentiveModel = new TrailblazerEmployerIncentivesModel()
-            {
-                EmployerIdentifier = empIdentifier,
-                Period1SmallEmployerIncentive = smallEmployerIncentive?.Period1,
-                Period2SmallEmployerIncentive = smallEmployerIncentive?.Period2,
-                Period3SmallEmployerIncentive = smallEmployerIncentive?.Period3,
-                Period4SmallEmployerIncentive = smallEmployerIncentive?.Period4,
-                Period5SmallEmployerIncentive = smallEmployerIncentive?.Period5,
-                Period6SmallEmployerIncentive = smallEmployerIncentive?.Period6,
-                Period7SmallEmployerIncentive = smallEmployerIncentive?.Period7,
-                Period8SmallEmployerIncentive = smallEmployerIncentive?.Period8,
-                Period9SmallEmployerIncentive = smallEmployerIncentive?.Period9,
-                Period10SmallEmployerIncentive = smallEmployerIncentive?.Period10,
-                Period11SmallEmployerIncentive = smallEmployerIncentive?.Period11,
-                Period12SmallEmployerIncentive = smallEmployerIncentive?.Period12,
-
-                SmallEmployerIncentiveTotal = smallEmployerIncentive?.Period1 + smallEmployerIncentive?.Period2 + smallEmployerIncentive?.Period3 +
-                                              smallEmployerIncentive?.Period4 + smallEmployerIncentive?.Period5 + smallEmployerIncentive?.Period6 +
-                                              smallEmployerIncentive?.Period7 + smallEmployerIncentive?.Period8 + smallEmployerIncentive?.Period9 +
-                                              smallEmployerIncentive?.Period10 + smallEmployerIncentive?.Period11 + smallEmployerIncentive?.Period12,
-
-                Period11618ApprenticeIncentive = apprentice1618Incentive?.Period1,
-                Period21618ApprenticeIncentive = apprentice1618Incentive?.Period2,
-                Period31618ApprenticeIncentive = apprentice1618Incentive?.Period3,
-                Period41618ApprenticeIncentive = apprentice1618Incentive?.Period4,
-                Period51618ApprenticeIncentive = apprentice1618Incentive?.Period5,
-                Period61618ApprenticeIncentive = apprentice1618Incentive?.Period6,
-                Period71618ApprenticeIncentive = apprentice1618Incentive?.Period7,
-                Period81618ApprenticeIncentive = apprentice1618Incentive?.Period8,
-                Period91618ApprenticeIncentive = apprentice1618Incentive?.Period9,
-                Period101618ApprenticeIncentive = apprentice1618Incentive?.Period10,
-                Period111618ApprenticeIncentive = apprentice1618Incentive?.Period11,
-                Period121618ApprenticeIncentive = apprentice1618Incentive?.Period12,
-
-                Apprentice1618IncentiveTotal = apprentice1618Incentive?.Period1 + apprentice1618Incentive?.Period2 + apprentice1618Incentive?.Period3 +
-                                                apprentice1618Incentive?.Period4 + apprentice1618Incentive?.Period5 + apprentice1618Incentive?.Period6 +
-                                              apprentice1618Incentive?.Period7 + apprentice1618Incentive?.Period8 + apprentice1618Incentive?.Period9 +
-                                              apprentice1618Incentive?.Period10 + apprentice1618Incentive?.Period11 + apprentice1618Incentive?.Period12,
-
-                Period1AchievementIncentive = achievementIncentive?.Period1,
-                Period2AchievementIncentive = achievementIncentive?.Period2,
-                Period3AchievementIncentive = achievementIncentive?.Period3,
-                Period4AchievementIncentive = achievementIncentive?.Period4,
-                Period5AchievementIncentive = achievementIncentive?.Period5,
-                Period6AchievementIncentive = achievementIncentive?.Period6,
-                Period7AchievementIncentive = achievementIncentive?.Period7,
-                Period8AchievementIncentive = achievementIncentive?.Period8,
-                Period9AchievementIncentive = achievementIncentive?.Period9,
-                Period10AchievementIncentive = achievementIncentive?.Period10,
-                Period11AchievementIncentive = achievementIncentive?.Period11,
-                Period12AchievementIncentive = achievementIncentive?.Period12,
-
-                AchievementTotal = achievementIncentive?.Period1 + achievementIncentive?.Period2 + achievementIncentive?.Period3 +
-                                               achievementIncentive?.Period4 + achievementIncentive?.Period5 + achievementIncentive?.Period6 +
-                                               achievementIncentive?.Period7 + achievementIncentive?.Period8 + achievementIncentive?.Period9 +
-                                               achievementIncentive?.Period10 + achievementIncentive?.Period11 + achievementIncentive?.Period12,
-
-                Period1Total = smallEmployerIncentive?.Period1 + apprentice1618Incentive?.Period1 + achievementIncentive?.Period1,
-                Period2Total = smallEmployerIncentive?.Period2 + apprentice1618Incentive?.Period2 + achievementIncentive?.Period2,
-                Period3Total = smallEmployerIncentive?.Period3 + apprentice1618Incentive?.Period3 + achievementIncentive?.Period3,
-                Period4Total = smallEmployerIncentive?.Period4 + apprentice1618Incentive?.Period4 + achievementIncentive?.Period4,
-                Period5Total = smallEmployerIncentive?.Period5 + apprentice1618Incentive?.Period5 + achievementIncentive?.Period5,
-                Period6Total = smallEmployerIncentive?.Period6 + apprentice1618Incentive?.Period6 + achievementIncentive?.Period6,
-                Period7Total = smallEmployerIncentive?.Period7 + apprentice1618Incentive?.Period7 + achievementIncentive?.Period7,
-                Period8Total = smallEmployerIncentive?.Period8 + apprentice1618Incentive?.Period8 + achievementIncentive?.Period8,
-                Period9Total = smallEmployerIncentive?.Period9 + apprentice1618Incentive?.Period9 + achievementIncentive?.Period9,
-                Period10Total = smallEmployerIncentive?.Period10 + apprentice1618Incentive?.Period10 + achievementIncentive?.Period10,
-                Period11Total = smallEmployerIncentive?.Period11 + apprentice1618Incentive?.Period11 + achievementIncentive?.Period11,
-                Period12Total = smallEmployerIncentive?.Period12 + apprentice1618Incentive?.Period12 + achievementIncentive?.Period12
-            };
-
-            trailblazerEmployerIncentiveModel.GrandTotal =
-                trailblazerEmployerIncentiveModel.Period1Total + trailblazerEmployerIncentiveModel.Period2Total +
-                trailblazerEmployerIncentiveModel.Period3Total + trailblazerEmployerIncentiveModel.Period4Total +
-                trailblazerEmployerIncentiveModel.Period5Total + trailblazerEmployerIncentiveModel.Period6Total +
-                trailblazerEmployerIncentiveModel.Period7Total + trailblazerEmployerIncentiveModel.Period8Total +
-                trailblazerEmployerIncentiveModel.Period9Total + trailblazerEmployerIncentiveModel.Period10Total +
-                trailblazerEmployerIncentiveModel.Period11Total + trailblazerEmployerIncentiveModel.Period12Total;
-
-            return trailblazerEmployerIncentiveModel;
-        }
-
         public TrailblazerEmployerIncentivesModel BuildTrailblazerEmployerIncentivesModel(long empIdentifier, Dictionary<string, int> employerIdentifier, List<LearningDelivery> fm81Data)
         {
-            var smallBusPaymentList = fm81Data?.Where(x => x.LearningDeliveryValues?.EmpIdSmallBusDate == empIdentifier).FirstOrDefault()?.LearningDeliveryPeriodisedValues.Where(l => l.AttributeName == Constants.Fm81AchPayment).ToList();
+            var smallBusPaymentList = fm81Data?.Where(x => x.LearningDeliveryValues?.EmpIdSmallBusDate == empIdentifier).FirstOrDefault()?.LearningDeliveryPeriodisedValues.Where(l => l.AttributeName == Constants.Fm81SmallBusPayment).ToList();
             var youngAppFirstPaymentList = fm81Data?.Where(x => x.LearningDeliveryValues?.EmpIdFirstYoungAppDate == empIdentifier).FirstOrDefault()?.LearningDeliveryPeriodisedValues.Where(l => l.AttributeName == Constants.Fm81YoungAppPayment).ToList();
             var youngAppSecondPaymentList = fm81Data?.Where(x => x.LearningDeliveryValues?.EmpIdSecondYoungAppDate == empIdentifier).FirstOrDefault()?.LearningDeliveryPeriodisedValues.Where(l => l.AttributeName == "YoungAppSecondPayment").ToList();
             var achPaymentList = fm81Data?.Where(x => x.LearningDeliveryValues?.EmpIdAchDate == empIdentifier).FirstOrDefault()?.LearningDeliveryPeriodisedValues.Where(l => l.AttributeName == Constants.Fm81AchPayment).ToList();

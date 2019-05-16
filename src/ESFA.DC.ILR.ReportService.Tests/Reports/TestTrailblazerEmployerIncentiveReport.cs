@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Configuration;
+using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Service;
@@ -13,7 +13,6 @@ using ESFA.DC.ILR.ReportService.Service.Builders;
 using ESFA.DC.ILR.ReportService.Service.Provider;
 using ESFA.DC.ILR.ReportService.Service.Reports;
 using ESFA.DC.ILR.ReportService.Service.Service;
-using ESFA.DC.ILR.ReportService.Tests.AutoFac;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -27,9 +26,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 {
     public class TestTrailblazerEmployerIncentiveReport
     {
-        // Used to ensure EF is initialised
-        private static SqlProviderServices instance = SqlProviderServices.Instance;
-
         [Theory]
         [InlineData("ILR-10033670-1819-20180831-094549-03.xml", "ValidLearnRefNumbers.json", "Fm81.json")]
         public async Task TestTrailblazerEmployerIncentiveReportGeneration(string ilrFilename, string validLearnRefNumbersFilename, string fm81FileName)
