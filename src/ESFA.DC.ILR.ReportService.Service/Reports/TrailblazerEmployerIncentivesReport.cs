@@ -10,7 +10,7 @@ using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Configuration;
+using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
@@ -56,6 +56,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
+            var externalFileName = GetFilename(reportServiceContext);
+            var fileName = GetZipFilename(reportServiceContext);
             Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
             Task<FM81Global> fm81Task =
                 _fm81TrailBlazerProviderService.GetFM81Data(reportServiceContext, cancellationToken);
@@ -104,11 +106,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             trailblazerEmployerIncentivesModels.Sort(new TrailblazerEmployerIncentivesModelComparer());
 
             var csv = GetReportCsv(trailblazerEmployerIncentivesModels);
-
-            var jobId = reportServiceContext.JobId;
-            var ukPrn = reportServiceContext.Ukprn.ToString();
-            var externalFileName = GetFilename(reportServiceContext);
-            var fileName = GetZipFilename(reportServiceContext);
 
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
