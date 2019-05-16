@@ -9,7 +9,7 @@ namespace ESFA.DC.ILR.ReportService.Interface.Builders
         FundingSummaryModel BuildWithEasSubValueLine(
             string title,
             List<EasSubmissionValues> easSubmissionValues,
-            string paymentTypeName,
+            string[] paymentTypeName,
             int period);
     }
 }
