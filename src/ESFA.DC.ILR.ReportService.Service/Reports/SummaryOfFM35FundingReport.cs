@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
@@ -119,7 +120,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _logger.LogInfo("Excel Report Start");
 
             var assembly = Assembly.GetExecutingAssembly();
-            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("SummaryOfFM35FundingTemplate.xltx"));
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("SummaryOfFM35FundingTemplate.xlsx"));
             var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
             Workbook workbook = new Workbook(manifestResourceStream);
             Worksheet worksheet = workbook.Worksheets[0];
@@ -180,9 +181,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 foreach (LearningDelivery fundLineData in learnerAttribute.LearningDeliveries)
                 {
                     var summaryOfFm35FundingModelsList = _summaryOfFm35FundingModelBuilder.BuildModel(fundLineData).ToArray();
-                    SummaryOfFm35FundingModel totalBuilder = _totalBuilder.TotalRecords(summaryOfFm35FundingModelsList);
+                    //SummaryOfFm35FundingModel totalBuilder = _totalBuilder.TotalRecords(summaryOfFm35FundingModelsList);
                     summaryOfFm35FundingModels.AddRange(summaryOfFm35FundingModelsList);
-                    summaryOfFm35FundingModels.Add(totalBuilder);
+                    //summaryOfFm35FundingModels.Add(totalBuilder);
                 }
             }
 
@@ -344,76 +345,62 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         private void PopulateUsingSmartMarkers(Workbook workbook, IEnumerable<SummaryOfFm35FundingModel> summaryOfFm35FundingModels)
         {
+            //var sheet = workbook.Worksheets[0];
+            Cells cells = workbook.Worksheets[0].Cells;
+            //var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
+            //IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
+
+            //var startRow = 5;
+            //ImageOrPrintOptions printoption = new ImageOrPrintOptions();
+            //printoption.PrintingPage = PrintingPageType.Default;
+            //var printingPageBreaks = sheet.GetPrintingPageBreaks(printoption);
+
+            //foreach (var groupedSummaryOfFm35FundingModel in groupedSummaryOfFm35FundingModels)
+            //{
+            //    designer.SetDataSource("FundLine", groupedSummaryOfFm35FundingModel.Key);
+            //    designer.SetDataSource("GroupedModels", groupedSummaryOfFm35FundingModel.Take(12).ToImmutableList());
+            //    designer.Process();
+            //    designer.Workbook.CalculateFormula();
+            //    var destRange = cells.CreateRange("A6:I19"); // (5, 0, 14, 9);
+            //    var sourceRange = designer.Workbook.Worksheets[0].Cells.CreateRange("A1:I14");
+            //    destRange.Copy(sourceRange, new PasteOptions() { PasteType = PasteType.All });
+            //    startRow += printingPageBreaks[0].EndRow;
+            //    designer.ClearDataSource();
+            //}
+
+            //designer.SetDataSource("GroupedModels", summaryOfFm35FundingModels);
+            //designer.Process(false);
+            //designer.Workbook.CalculateFormula();
+            //Range sourceRange = designer.Workbook.Worksheets[0].Cells.MaxDisplayRange;
+            ////var sourceCellArea = new CellArea() { StartRow = sourceRange.FirstRow, StartColumn = sourceRange.FirstColumn, EndRow = sourceRange.r};
+            //var destRange = cells.CreateRange(0, 0, sourceRange.RowCount, sourceRange.ColumnCount);
+            //destRange.Copy(sourceRange, new PasteOptions() { PasteType = PasteType.All });
+            ////designer.ClearDataSource();
+
+            var startRow = 5;
+            var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
+            IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
+
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith("SummaryOfFM35FundingBody.xlsx"));
             var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
             WorkbookDesigner designer = new WorkbookDesigner();
-            designer.Workbook = new Workbook(manifestResourceStream);
-
-            var sheet = workbook.Worksheets[0];
-            Cells cells = workbook.Worksheets[0].Cells;
-            var summaryOfFm35FundingModelsArray = summaryOfFm35FundingModels as SummaryOfFm35FundingModel[] ?? summaryOfFm35FundingModels.ToArray();
-            IGrouping<string, SummaryOfFm35FundingModel>[] groupedSummaryOfFm35FundingModels = summaryOfFm35FundingModelsArray.ToArray().GroupBy(x => x.FundingLineType).ToArray();
-
-            var startRow = 5;
-            ImageOrPrintOptions printoption = new ImageOrPrintOptions();
-            printoption.PrintingPage = PrintingPageType.Default;
-            var printingPageBreaks = sheet.GetPrintingPageBreaks(printoption);
 
             foreach (var groupedSummaryOfFm35FundingModel in groupedSummaryOfFm35FundingModels)
             {
-                designer.SetDataSource("FundLine", groupedSummaryOfFm35FundingModel.Key);
-                designer.SetDataSource("GroupedModels", groupedSummaryOfFm35FundingModel.ToList());
-                designer.CalculateFormula = true;
-                //designer.Process(false);
-                //MemoryStream populatedData = designer.Workbook.SaveToStream();
-                //populatedData.Seek(0, 0);
-                //Workbook wb = new Workbook(populatedData);
-                //wb.CalculateFormula();
-                //var populatedCells = wb.Worksheets[0].Cells;
-
-                //var destRange = cells.CreateRange(5, 0, 13, 9);
-                //var sourceRange = populatedCells.CreateRange("A1:I14");
-
+                designer.Workbook = new Workbook(manifestResourceStream);
+                designer.SetDataSource("GroupedModels", groupedSummaryOfFm35FundingModel.ToList()); //.ToImmutableList());
                 designer.Process();
-                //designer.Workbook.Save("populated.xlsx", SaveFormat.Xlsx);
-                var destRange = cells.CreateRange(5, 0, 13, 9);
-                var sourceRange = designer.Workbook.Worksheets[0].Cells.CreateRange("A1:I14");
+                //designer.Workbook.CalculateFormula();
+                Range sourceRange = designer.Workbook.Worksheets[0].Cells.CreateRange("A1:I14"); //.MaxDisplayRange;
+                var destRange = cells.CreateRange(startRow, 0, 14, 9); //sourceRange.RowCount, sourceRange.ColumnCount);
+                destRange.Copy(sourceRange, new PasteOptions() { PasteType = PasteType.All });
 
-                destRange.Copy(sourceRange);
-
-                //cells.AddRange(populatedCells.Ranges[0]);
-                //sheet.Pictures.Add(startRow, 0, populatedData);
-                startRow += printingPageBreaks[0].EndRow;
+                workbook.Worksheets[0].HorizontalPageBreaks.Add("Y30");
+                startRow += 30;
                 designer.ClearDataSource();
+                designer.Process();
             }
         }
-
-        //private static DataTable ConvertToDatatable<T>(List<T> data)
-        //{
-        //    PropertyDescriptorCollection props = TypeDescriptor.GetProperties(typeof(T));
-        //    DataTable table = new DataTable();
-        //    for (int i = 0; i < props.Count; i++)
-        //    {
-        //        PropertyDescriptor prop = props[i];
-        //        if (prop.PropertyType.IsGenericType && prop.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>))
-        //            table.Columns.Add(prop.Name, prop.PropertyType.GetGenericArguments()[0]);
-        //        else
-        //            table.Columns.Add(prop.Name, prop.PropertyType);
-        //    }
-
-        //    object[] values = new object[props.Count];
-        //    foreach (T item in data)
-        //    {
-        //        for (int i = 0; i < values.Length; i++)
-        //        {
-        //            values[i] = props[i].GetValue(item);
-        //        }
-
-        //        table.Rows.Add(values);
-        //    }
-
-        //    return table;
-        //}
     }
 }

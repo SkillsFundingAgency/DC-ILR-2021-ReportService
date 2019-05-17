@@ -208,8 +208,8 @@
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="Reports\Templates\1619FundingClaimReportTemplate.xlsx" />
-    <EmbeddedResource Include="Reports\Templates\SummaryOfFM35FundingTemplate.xltx" />
     <EmbeddedResource Include="Reports\Templates\SummaryOfFM35FundingBody.xlsx" />
+    <EmbeddedResource Include="Reports\Templates\SummaryOfFM35FundingTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR.ReportService.Interface.csproj">
