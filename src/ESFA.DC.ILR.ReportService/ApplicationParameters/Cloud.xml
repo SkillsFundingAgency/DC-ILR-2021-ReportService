@@ -41,11 +41,15 @@
     <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="__TopicReports_TaskGenerateFundingClaim1619Report__" />
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="__TopicReports_TaskGenerateTrailblazerAppsOccupancyReport__" />
     <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="__TopicReports_TaskGenerateHNSReport__" />
+    <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" Value="__TopicReports_TaskGenerateNonContractedAppsActivityReport__" />
+    <Parameter Name="TopicReports_TaskGenerateILRDataQualityReport" Value="__TopicReports_TaskGenerateILRDataQualityReport__" />
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="__TopicReports_TaskGenerateSummaryOfFM35FundingReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- DASPayments -->
     <Parameter Name="DASPaymentsConnectionString" Value="__DASPaymentsConnectionStringRO__" />
+    <!-- FCS -->
+    <Parameter Name="FCSConnectionString" Value="__FCSConnectionString__" />
     <!-- Org -->
     <Parameter Name="OrgConnectionString" Value="__OrganisationsDbConnectionStringReadOnly__" />
     <!-- DAS Commitments -->

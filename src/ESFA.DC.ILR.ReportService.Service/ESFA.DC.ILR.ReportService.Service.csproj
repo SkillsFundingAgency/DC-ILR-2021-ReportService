@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Builders\AdultFundingClaimBuilder.cs" />
     <Compile Include="Builders\AllbBuilder.cs" />
+    <Compile Include="Builders\NonContractedAppsActivityModelBuilder.cs" />
     <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
     <Compile Include="Builders\DasCommitmentBuilder.cs" />
     <Compile Include="Builders\EasBuilder.cs" />
@@ -124,6 +125,7 @@
     <Compile Include="Extensions\IEnumerableExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="Mapper\AllbOccupancyMapper.cs" />
+    <Compile Include="Mapper\NonContractedAppsActivityMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\FundingSummaryPeriodEndMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\AppsDataMatchMonthEndMapper.cs" />
     <Compile Include="Mapper\PeriodEnd\AppsMonthlyPaymentMapper.cs" />
@@ -144,6 +146,7 @@
     <Compile Include="Mapper\ValidationErrorMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Provider\Abstract\AbstractFundModelProviderService.cs" />
+    <Compile Include="Provider\FCSProviderService.cs" />
     <Compile Include="Provider\FM36PeriodEndProviderService.cs" />
     <Compile Include="Provider\FM36SqlProviderService.cs" />
     <Compile Include="Provider\IlrPeriodEndProviderService.cs" />
@@ -151,6 +154,8 @@
     <Compile Include="ReferenceData\DataLockValidationMessage.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
     <Compile Include="Reports\Abstract\AbstractReport.cs" />
+    <Compile Include="Reports\NonContractedAppsActivityReport.cs" />
+    <Compile Include="Reports\PeriodEnd\ILRDataQualityReport.cs" />
     <Compile Include="Reports\PeriodEnd\FundingSummaryPeriodEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsDataMatchMonthEndReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsMonthlyPaymentReport.cs" />
@@ -208,6 +213,7 @@
       <SubType>Designer</SubType>
     </None>
     <EmbeddedResource Include="Reports\Templates\1619FundingClaimReportTemplate.xlsx" />
+    <EmbeddedResource Include="Reports\Templates\ILRDataQualityReportTemplate.xlsx" />
     <EmbeddedResource Include="Reports\Templates\SummaryOfFM35FundingTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +307,9 @@
     </PackageReference>
     <PackageReference Include="ESFA.DC.Jobs.Model">
       <Version>0.1.27-beta0001</Version>
+    </PackageReference>
+    <PackageReference Include="ESFA.DC.ReferenceData.FCS.Model">
+      <Version>0.2.53</Version>
     </PackageReference>
     <PackageReference Include="ESFA.DC.Serialization.Json">
       <Version>0.1.5-beta0001</Version>

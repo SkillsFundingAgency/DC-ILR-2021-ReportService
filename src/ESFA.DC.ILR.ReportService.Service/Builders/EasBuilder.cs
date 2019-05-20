@@ -17,12 +17,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             _easProviderService = easProviderService;
         }
 
-        public FundingSummaryModel BuildWithEasSubValueLine(string title, List<EasSubmissionValues> easSubmissionValues, string paymentTypeName, int period)
+        public FundingSummaryModel BuildWithEasSubValueLine(string title, List<EasSubmissionValues> easSubmissionValues, string[] paymentTypeName, int period)
         {
             FundingSummaryModel fundingSummaryModel = new FundingSummaryModel(title);
 
             List<EasSubmissionValues> paymentWiseSubmissionValues = easSubmissionValues
-                .Where(sv => string.Equals(sv.PaymentTypeName, paymentTypeName, StringComparison.OrdinalIgnoreCase)).ToList();
+                .Where(sv => paymentTypeName.Contains(sv.PaymentTypeName, StringComparer.OrdinalIgnoreCase)).ToList();
 
             fundingSummaryModel.Period1 = paymentWiseSubmissionValues.Where(x => x.CollectionPeriod == 1).Sum(x => x.PaymentValue);
             fundingSummaryModel.Period2 = paymentWiseSubmissionValues.Where(x => x.CollectionPeriod == 2).Sum(x => x.PaymentValue);
