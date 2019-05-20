@@ -137,7 +137,7 @@
             <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="[TopicReports_TaskGenerateFundingClaim1619Report]" />
             <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="[TopicReports_TaskGenerateHNSReport]" />
             <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="[TopicReports_TaskGenerateTrailblazerAppsOccupancyReport]" />
-            <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" />
+            <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="[TopicReports_TaskGenerateSummaryOfFM35FundingReport]"  />
           </Section>
           <Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
