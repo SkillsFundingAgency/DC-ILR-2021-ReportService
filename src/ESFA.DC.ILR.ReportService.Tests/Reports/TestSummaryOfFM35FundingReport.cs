@@ -139,7 +139,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 postcodeProverServiceMock.Object,
                 largeEmployerProviderService.Object,
                 orgProviderService.Object,
-                totalBuilder,
                 fm35Builder);
 
             await summaryOfFm35FundingReport.GenerateReport(reportServiceContextMock.Object, null, false, CancellationToken.None);
