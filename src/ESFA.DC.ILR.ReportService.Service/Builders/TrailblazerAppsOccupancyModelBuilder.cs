@@ -129,11 +129,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             {
                 returnModel.TotalNegotiatedPrice1 = learningDelivery.AppFinRecords?
                     .Where(x => string.Equals(x.AFinType, "TNP", StringComparison.OrdinalIgnoreCase) &&
-                                x.AFinCode == 1).OrderByDescending(x => x.AFinDate).FirstOrDefault().AFinAmount;
+                                x.AFinCode == 1).OrderByDescending(x => x.AFinDate).FirstOrDefault()?.AFinAmount;
 
-                returnModel.TotalNegotiatedPrice1 = learningDelivery.AppFinRecords?
+                returnModel.TotalNegotiatedPrice2 = learningDelivery.AppFinRecords?
                     .Where(x => string.Equals(x.AFinType, "TNP", StringComparison.OrdinalIgnoreCase) &&
-                                x.AFinCode == 2).OrderByDescending(x => x.AFinDate).FirstOrDefault().AFinAmount;
+                                x.AFinCode == 2).OrderByDescending(x => x.AFinDate).FirstOrDefault()?.AFinAmount;
             }
 
             returnModel.PMRSumBeforeFundingYear =
