@@ -7,7 +7,7 @@ using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
-using ESFA.DC.ILR.ReportService.Model.PeriodEnd.NonContractedAppsActivity;
+using ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity;
 using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;

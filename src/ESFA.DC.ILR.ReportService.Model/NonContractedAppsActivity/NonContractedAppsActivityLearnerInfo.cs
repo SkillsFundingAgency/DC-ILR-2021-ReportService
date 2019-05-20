@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ESFA.DC.ILR.ReportService.Model.PeriodEnd.NonContractedAppsActivity
+namespace ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity
 {
     public class NonContractedAppsActivityLearnerInfo
     {
