@@ -393,6 +393,14 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<HNSDetailReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<SummaryOfFm35FundingReport>().As<IReport>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
                 .As<IList<IReport>>();
         }
@@ -531,6 +539,10 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
             containerBuilder.RegisterType<TrailblazerEmployerIncentivesModelBuilder>().As<ITrailblazerEmployerIncentivesModelBuilder>()
                 .InstancePerLifetimeScope();
             containerBuilder.RegisterType<TrailblazerAppsOccupancyModelBuilder>().As<ITrailblazerAppsOccupancyModelBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<HNSReportModelBuilder>().As<IHNSReportModelBuilder>()
+                .InstancePerLifetimeScope();
+            containerBuilder.RegisterType<FundingSummaryPeriodEndModelBuilder>().As<IFundingSummaryPeriodEndModelBuilder>()
                 .InstancePerLifetimeScope();
         }
 
