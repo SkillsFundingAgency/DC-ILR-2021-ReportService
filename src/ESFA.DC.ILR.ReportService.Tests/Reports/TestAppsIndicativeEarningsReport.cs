@@ -83,7 +83,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             IIlrProviderService ilrProviderService = new IlrFileServiceProvider(logger.Object, storage.Object, xmlSerializationService); Mock<ILarsProviderService> larsProviderService = new Mock<ILarsProviderService>();
             IValidLearnersService validLearnersService = new ValidLearnersService(logger.Object, storage.Object, jsonSerializationService, dataStoreConfiguration);
-            IFM36ProviderService fm36ProviderService = new FM36FileServiceProvider(logger.Object, storage.Object, jsonSerializationService, IlrRulebaseContextFactory);
+            IFM36ProviderService fm36ProviderService = new FM36FileServiceProvider(logger.Object, storage.Object, jsonSerializationService);
             IStringUtilitiesService stringUtilitiesService = new StringUtilitiesService();
             ITotalBuilder totalBuilder = new TotalBuilder();
 
