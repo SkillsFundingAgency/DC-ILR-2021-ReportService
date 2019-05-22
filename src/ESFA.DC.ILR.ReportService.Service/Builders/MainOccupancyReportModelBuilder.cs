@@ -238,10 +238,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             };
         }
 
-        public MainOccupancyModel BuildFm25Model(
-            ILearner learner,
-            ILearningDelivery learningDelivery,
-            FM25Learner fm25Data)
+        public MainOccupancyModel BuildFm25Model(ILearner learner, FM25Learner fm25Data, int fundModel)
         {
             var onProgPayment = fm25Data?.LearnerPeriodisedValues?.SingleOrDefault(attr =>
                 string.Equals(attr.AttributeName, Constants.Fm25OnProgrammeAttributeName, StringComparison.OrdinalIgnoreCase));
@@ -263,7 +260,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             {
                 LearnRefNumber = learner.LearnRefNumber,
                 Uln = learner.ULN,
-                AimSeqNumber = learningDelivery.AimSeqNumber,
                 DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
                 PostcodePrior = learner.PostcodePrior,
                 PmUkprn = learner.PMUKPRNNullable,
@@ -273,7 +269,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
                 ProvSpecLearnMonB = learner.ProviderSpecLearnerMonitorings
                     ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
                 ApplicWeightFundRate = fm25Data?.NatRate,
-                FundModel = learningDelivery.FundModel,
+                FundModel = fundModel,
                 LearnStartDate = fm25Data?.LearnerStartDate?.ToString("dd/MM/yyyy"),
                 LearnPlanEndDate = fm25Data?.LearnerPlanEndDate?.ToString("dd/MM/yyyy"),
                 LearnActEndDate = fm25Data?.LearnerActEndDate?.ToString("dd/MM/yyyy"),
