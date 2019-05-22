@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Interface.Service
 
         MainOccupancyModel BuildFm25Model(
             ILearner learner,
-            ILearningDelivery learningDelivery,
-            FM25Learner fm25Data);
+            FM25Learner fm25Data,
+            int fundModel);
     }
 }

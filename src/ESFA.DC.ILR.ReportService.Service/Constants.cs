@@ -37,7 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Service
         public const string AebOtherLearningProcuredFromNov2017 = "AEB - Other Learning (procured from Nov 2017)";
 
         // FM25 Attributes
-        public const string Fm25OnProgrammeAttributeName = "OnProgPayment";
+        public const string Fm25OnProgrammeAttributeName = "LnrOnProgPay";
 
         // FM35 Attributes
         public const string Fm35OnProgrammeAttributeName = "OnProgPayment";
