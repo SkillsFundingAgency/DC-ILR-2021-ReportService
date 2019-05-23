@@ -131,8 +131,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             try
             {
                 _logger.LogInfo("Funding Summary Report Start");
-
-                Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+                Task<IMessage> ilrFileTask = reportServiceContext.CollectionName == "ILR1819" ? _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken) : null;
                 Task<ALBGlobal> albDataTask = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
                 Task<FM25Global> fm25Task = _fm25ProviderService.GetFM25Data(reportServiceContext, cancellationToken);
                 Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
@@ -152,7 +151,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
                 _logger.LogInfo("Data Provider Tasks Start");
 
-                await Task.WhenAll(ilrFileTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, easSubmissionsValuesTask ?? Task.CompletedTask, lastSubmittedIlrFileTask);
+                await Task.WhenAll(ilrFileTask ?? Task.CompletedTask, albDataTask, fm25Task, fm35Task, fm36Task, fm81Task, validLearnersTask, providerNameTask, easSubmissionsValuesTask ?? Task.CompletedTask, lastSubmittedIlrFileTask);
 
                 _logger.LogInfo("Data Provider Tasks End");
 
@@ -1297,22 +1296,26 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 Ukprn = reportServiceContext.Ukprn,
                 ProviderName = providerNameTask.Result ?? "Unknown",
                 LastEasUpdate = !isFis ? (await _easProviderService.GetLastEasUpdate(reportServiceContext.Ukprn, cancellationToken)).ToString("dd/MM/yyyy") : null,
-                SecurityClassification = "OFFICIAL - SENSITIVE"
+                SecurityClassification = "OFFICIAL - SENSITIVE",
+                LastIlrFileUpdate = GetLastIlrFileUpdate(messageTask, lastSubmittedIlrFileTask)
             };
+
+            return fundingSummaryHeaderModel;
+        }
+
+        private string GetLastIlrFileUpdate(Task<IMessage> messageTask, Task<ILRSourceFileInfo> lastSubmittedIlrFileTask)
+        {
+            if (messageTask == null)
+            {
+                return string.Empty;
+            }
 
             if (messageTask.Result != null)
             {
-                fundingSummaryHeaderModel.LastIlrFileUpdate =
-                    messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
-            }
-            else
-            {
-                fundingSummaryHeaderModel.LastIlrFileUpdate = lastSubmittedIlrFileTask.Result != null
-                    ? lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy")
-                    : string.Empty;
+                return messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
             }
 
-            return fundingSummaryHeaderModel;
+            return lastSubmittedIlrFileTask.Result != null ? lastSubmittedIlrFileTask.Result.SubmittedTime.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
         }
 
         private async Task<FundingSummaryFooterModel> GetFooterAsync(Task<IMessage> messageTask, Task<ILRSourceFileInfo> lastSubmittedIlrFileTask, CancellationToken cancellationToken)
@@ -1327,20 +1330,26 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 OrganisationData = await _orgProviderService.GetVersionAsync(cancellationToken),
                 LargeEmployerData = await _largeEmployerProviderService.GetVersionAsync(cancellationToken),
                 LarsData = await _larsProviderService.GetVersionAsync(cancellationToken),
-                PostcodeData = await _postcodeProviderService.GetVersionAsync(cancellationToken)
+                PostcodeData = await _postcodeProviderService.GetVersionAsync(cancellationToken),
+                FilePreparationDate = GetFilePreparationDate(messageTask, lastSubmittedIlrFileTask)
             };
+
+            return fundingSummaryFooterModel;
+        }
+
+        private string GetFilePreparationDate(Task<IMessage> messageTask, Task<ILRSourceFileInfo> lastSubmittedIlrFileTask)
+        {
+            if (messageTask == null)
+            {
+                return string.Empty;
+            }
 
             if (messageTask.Result != null)
             {
-                fundingSummaryFooterModel.FilePreparationDate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
-            }
-            else
-            {
-                fundingSummaryFooterModel.FilePreparationDate = lastSubmittedIlrFileTask.Result != null ?
-                                                                                lastSubmittedIlrFileTask.Result.FilePreparationDate.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
+                return messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
             }
 
-            return fundingSummaryFooterModel;
+            return lastSubmittedIlrFileTask.Result != null ? lastSubmittedIlrFileTask.Result.FilePreparationDate.GetValueOrDefault().ToString("dd/MM/yyyy") : string.Empty;
         }
     }
 }

@@ -58,18 +58,18 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
                 fundingSummaryModelAlbAreaCosts
             };
 
-            Task<IMessage> ilrFile = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<IMessage> ilrFile = reportServiceContext.CollectionName == "ILR1819" ? _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken) : null;
             Task<List<string>> validLearners = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
             Task<ALBGlobal> albData = _allbProviderService.GetAllbData(reportServiceContext, cancellationToken);
 
-            await Task.WhenAll(ilrFile, validLearners, albData);
+            await Task.WhenAll(ilrFile ?? Task.CompletedTask, validLearners, albData);
 
             List<string> ilrError = new List<string>();
             List<string> albLearnerError = new List<string>();
 
             try
             {
-                ILearner[] learners = ilrFile.Result?.Learners?.Where(x => validLearners.Result.Contains(x.LearnRefNumber)).ToArray();
+                ILearner[] learners = ilrFile?.Result?.Learners?.Where(x => validLearners.Result.Contains(x.LearnRefNumber)).ToArray();
 
                 foreach (ILearner learner in learners ?? Enumerable.Empty<ILearner>())
                 {
