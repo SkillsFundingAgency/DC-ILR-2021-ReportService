@@ -6,7 +6,7 @@ resources:
 
 variables:
   VersionNumberMajor: '0'
-  VersionNumberMinor: '1'
+  VersionNumberMinor: '2'
   BuildConfiguration: 'Release'
   BuildPlatform: 'Any CPU'
   BuildPlatformX64: 'x64'  
