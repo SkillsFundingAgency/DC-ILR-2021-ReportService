@@ -167,7 +167,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
         public override async Task GenerateReport(IReportServiceContext reportServiceContext, ZipArchive archive, bool isFis, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
+            Task<IMessage> ilrFileTask = reportServiceContext.CollectionName == "ILR1819" ? _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken) : null;
             Task<string> providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
             Task<List<EasSubmissionValues>> easSubmissionValuesAsync = _easProviderService.GetEasSubmissionValuesAsync(reportServiceContext, cancellationToken);
             Task<FM35Global> fm35Task = _fm35ProviderService.GetFM35Data(reportServiceContext, cancellationToken);
@@ -184,7 +184,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 fm35Task,
                 albGlobalTask,
                 providerNameTask,
-                ilrFileTask,
+                ilrFileTask ?? Task.CompletedTask,
                 lastSubmittedIlrFileTask,
                 organisationDataTask,
                 largeEmployerDataTask,
@@ -201,7 +201,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
                 lastSubmittedIlrFileTask.Result,
                 _dateTimeProvider,
                 _intUtilitiesService,
-                ilrFileTask.Result,
+                ilrFileTask?.Result,
                 _versionInfo,
                 organisationDataTask.Result,
                 largeEmployerDataTask.Result,
