@@ -40,7 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             Mock<IIlrProviderService> ilrProviderServiceMock = new Mock<IIlrProviderService>();
             Mock<IFCSProviderService> fcsProviderMock = new Mock<IFCSProviderService>();
             Mock<IValidLearnersService> validLearnerServiceMock = new Mock<IValidLearnersService>();
-            Mock<IFM36ProviderService> fm36ProviderServiceMock = new Mock<IFM36ProviderService>();
+            Mock<IFM36NonContractedActivityProviderService> fm36ProviderServiceMock = new Mock<IFM36NonContractedActivityProviderService>();
             IValueProvider valueProvider = new ValueProvider();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
 

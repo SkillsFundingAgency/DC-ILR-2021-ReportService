@@ -27,7 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFCSProviderService _fcsProviderService;
         private readonly IValidLearnersService _validLearnersService;
-        private readonly IFM36ProviderService _fm36ProviderService;
+        private readonly IFM36NonContractedActivityProviderService _fm36ProviderService;
         private readonly INonContractedAppsActivityModelBuilder _modelBuilder;
 
         public NonContractedAppsActivityReport(
@@ -36,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IFCSProviderService fcsProviderService,
             IValidLearnersService validLearnersService,
-            IFM36ProviderService fm36ProviderService,
+            IFM36NonContractedActivityProviderService fm36ProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             INonContractedAppsActivityModelBuilder modelBuilder)
@@ -58,13 +58,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var externalFileName = GetFilename(reportServiceContext);
             var fileName = GetZipFilename(reportServiceContext);
 
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
-            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken);
-            Task<List<ContractAllocationInfo>> fcsProviderTask = _fcsProviderService.GetContractAllocationsForProviderAsync(reportServiceContext.Ukprn, cancellationToken);
-            await Task.WhenAll(ilrFileTask, validLearnersTask, fm36Task, fcsProviderTask);
+            var validLearnersList = await _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
+            var nonContractedAppsActivityIlrInfo = await _ilrProviderService.GetILRInfoForNonContractedAppsActivityReportAsync(validLearnersList, reportServiceContext, cancellationToken);
+            var nonContractedActivityRuleBaseInfo = await _fm36ProviderService.GetFM36InfoForNonContractedActivityReportAsync(validLearnersList, reportServiceContext, cancellationToken);
+            var contractAllocationInfos = await _fcsProviderService.GetContractAllocationsForProviderAsync(reportServiceContext.Ukprn, cancellationToken);
 
-            var nonContractedAppsActivityModels = _modelBuilder.BuildModel(fcsProviderTask.Result);
+            var nonContractedAppsActivityModels = _modelBuilder.BuildModel(nonContractedAppsActivityIlrInfo, nonContractedActivityRuleBaseInfo, contractAllocationInfos);
             string csv = await GetCsv(nonContractedAppsActivityModels, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);
