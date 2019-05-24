@@ -51,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd
                     })
                 .Returns(Task.CompletedTask);
 
-            var top20Violations = BuildTop20ViolationsModel(ukPrn);
+            var top20Violations = BuildTop20ViolationsModel();
 
             ilrPeriodEndProviderServiceMock.Setup(x => x.GetTop20RuleViolationsAsync(It.IsAny<CancellationToken>())).ReturnsAsync(top20Violations);
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
@@ -83,7 +83,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports.PeriodEnd
             File.WriteAllBytes($"{filename}.xlsx", xlsx);
         }
 
-        private List<RuleViolationsInfo> BuildTop20ViolationsModel(int ukPrn)
+        private List<RuleViolationsInfo> BuildTop20ViolationsModel()
         {
             return new List<RuleViolationsInfo>()
             {
