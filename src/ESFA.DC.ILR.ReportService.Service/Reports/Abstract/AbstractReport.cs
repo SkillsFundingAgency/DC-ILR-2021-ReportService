@@ -403,8 +403,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
         {
             var assembly = Assembly.GetExecutingAssembly();
             string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(templateFileName));
-            var manifestResourceStream = assembly.GetManifestResourceStream(resourceName);
-            return new Workbook(manifestResourceStream);
+
+            using (Stream manifestResourceStream = assembly.GetManifestResourceStream(resourceName))
+            {
+                return new Workbook(manifestResourceStream);
+            }
         }
 
         private int GetCurrentRow(Worksheet worksheet)
