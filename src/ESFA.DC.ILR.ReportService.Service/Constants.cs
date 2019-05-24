@@ -27,8 +27,17 @@ namespace ESFA.DC.ILR.ReportService.Service
         public const string StudentsWithEHCP1924FundLine = "19-24 Students with an EHCP";
         public const string ContinuingStudents19PlusFundLine = "19+ Continuing Students (excluding EHCP)";
 
+        // FM35 FundLines
+        public const string Apprenticeship1618 = "16-18 Apprenticeship";
+        public const string Apprenticeship1923 = "19-23 Apprenticeship";
+        public const string Apprenticeship24Plus = "24+ Apprenticeship";
+        public const string Traineeship1924NonProcured = "19-24 Traineeship (non-procured)";
+        public const string Traineeship1924ProcuredFromNov2017 = "19-24 Traineeship (procured from Nov 2017)";
+        public const string AebOtherLearningNonProcured = "AEB - Other Learning (non-procured)";
+        public const string AebOtherLearningProcuredFromNov2017 = "AEB - Other Learning (procured from Nov 2017)";
+
         // FM25 Attributes
-        public const string Fm25OnProgrammeAttributeName = "OnProgPayment";
+        public const string Fm25OnProgrammeAttributeName = "LnrOnProgPay";
 
         // FM35 Attributes
         public const string Fm35OnProgrammeAttributeName = "OnProgPayment";
@@ -115,7 +124,7 @@ namespace ESFA.DC.ILR.ReportService.Service
         // Dates
         public const string Year = "2018/19";
 
-        public const string FundingSummaryReportDecimalFormat = "#,##0.00;";
+        public const string FundingSummaryReportDecimalFormat = "#,##0.00";
 
         // Value Provider
         public const string Zero = "0";

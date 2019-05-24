@@ -8,13 +8,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Comparer
     {
         private readonly string[] stringOrder =
         {
-            "16-18 Apprenticeship",
-            "19-23 Apprenticeship",
-            "24+ Apprenticeship",
-            "19-24 Traineeship (non-procured)",
-            "19-24 Traineeship (procured from Nov 2017)",
-            "AEB – Other Learning (non-procured)",
-            "AEB – Other Learning (procured from Nov 2017)"
+            Constants.Apprenticeship1618,
+            Constants.Apprenticeship1923,
+            Constants.Apprenticeship24Plus,
+            Constants.Traineeship1924NonProcured,
+            Constants.Traineeship1924ProcuredFromNov2017,
+            Constants.AebOtherLearningNonProcured,
+            Constants.AebOtherLearningProcuredFromNov2017
         };
 
         public int Compare(SummaryOfFm35FundingModel x, SummaryOfFm35FundingModel y)
@@ -83,12 +83,12 @@ namespace ESFA.DC.ILR.ReportService.Service.Comparer
 
             if (x1)
             {
-                return 1;
+                return -1;
             }
 
             if (y1)
             {
-                return -1;
+                return 1;
             }
 
             return int.MaxValue;
