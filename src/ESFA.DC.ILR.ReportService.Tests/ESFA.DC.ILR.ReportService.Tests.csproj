@@ -85,6 +85,7 @@
     <Compile Include="Reports\ALB\TestAlbOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\Data Match\TestDasCommitmentBuilder.cs" />
     <Compile Include="Reports\FundigClaim1619\TestFm25GlobalBuilder.cs" />
+    <Compile Include="Reports\HNSSummary\TestHNSSummaryReport.cs" />
     <Compile Include="Reports\Main Occupancy\TestMainOccupancyReportWithTestData.cs" />
     <Compile Include="Reports\PeriodEnd\AppsAdditionalPayments\TestAppsAdditionalPaymentsReport.cs" />
     <Compile Include="Reports\PeriodEnd\AppsCoInvestmentContributions\TestAppsCoInvestmentContributionsReport.cs" />
@@ -124,6 +125,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\ALB\ILR-10033670-1819-20180909-090909-99.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\HNSSummary\ILR-10033670-1819-20190510-143555-06.XML">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\Main Occupancy\ILR-10033670-1819-20181030-101919-07.xml">
@@ -175,6 +179,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Reports\ALB\ValidationValidLearners2.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\HNSSummary\FundingFm25Output.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Reports\HNSSummary\ValidationValidLearners.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="Reports\Main Occupancy\FundingFm35Output_fm25 19C 1.json">

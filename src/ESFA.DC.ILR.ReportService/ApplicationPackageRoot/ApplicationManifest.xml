@@ -46,6 +46,7 @@
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" DefaultValue="GenerateTrailblazerAppsOccupancyReport" />
     <Parameter Name="TopicReports_TaskGenerateHNSReport" DefaultValue="TopicReports_TaskGenerateHNSReport" />
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" DefaultValue="TopicReports_TaskGenerateSummaryOfFM35FundingReport" />
+    <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" DefaultValue="TopicReports_TaskGenerateHNSSummaryReport" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" DefaultValue="" />
     <!-- FCS -->
@@ -138,6 +139,7 @@
             <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="[TopicReports_TaskGenerateHNSReport]" />
             <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="[TopicReports_TaskGenerateTrailblazerAppsOccupancyReport]" />
             <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="[TopicReports_TaskGenerateSummaryOfFM35FundingReport]" />
+            <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="[TopicReports_TaskGenerateHNSSummaryReport]" />
           </Section>
           <Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />

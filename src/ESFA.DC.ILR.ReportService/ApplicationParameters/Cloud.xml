@@ -44,6 +44,7 @@
     <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" Value="__TopicReports_TaskGenerateNonContractedAppsActivityReport__" />
     <Parameter Name="TopicReports_TaskGenerateILRDataQualityReport" Value="__TopicReports_TaskGenerateILRDataQualityReport__" />
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="__TopicReports_TaskGenerateSummaryOfFM35FundingReport__" />
+    <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="__TopicReports_TaskGenerateHNSSummaryReport__" />
     <!-- LARS -->
     <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
     <!-- DASPayments -->
