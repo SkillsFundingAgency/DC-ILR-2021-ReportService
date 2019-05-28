@@ -153,8 +153,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             pageSetup.SetHeader(0, "&16&\"Bold\"High Needs Students (HNS) Summary Report\n\n&8&\"Bold\"Provider:" + headerModel.ProviderName + "\nUKPRN: " + headerModel.Ukprn + "\nILR File:" + headerModel.IlrFile);
             pageSetup.SetHeader(2, "&10&\"Bold\"OFFICIAL-SENSITIVE\n\n&8&\"Bold\"Year:" + Constants.Year);
             pageSetup.SetFooter(0, $"&8Component Set Version: \t{footerModel.ComponentSetVersion}\nApplication Version: \t{footerModel.ApplicationVersion}\nFile Prepartion Date: \t{footerModel.FilePreparationDate}\n{footerModel.ReportGeneratedAt}");
-            pageSetup.SetFooter(1, $"&8Lars Data: \t{footerModel.LarsData}\nPostcode Data: \t{footerModel.PostcodeData}");
-            pageSetup.SetFooter(2, $"&8Large Employer Data: \t{footerModel.LargeEmployerData}\nOrganisation Data: \t{footerModel.OrganisationData}");
+            pageSetup.SetFooter(2, $"&8Lars Data: \t{footerModel.LarsData}\nPostcode Data: \t{footerModel.PostcodeData}\n&8Large Employer Data: \t{footerModel.LargeEmployerData}\nOrganisation Data: \t{footerModel.OrganisationData}");
         }
 
         private void PopulateWorkbook(Workbook workbook, HNSSummaryModel model, bool isFis)
