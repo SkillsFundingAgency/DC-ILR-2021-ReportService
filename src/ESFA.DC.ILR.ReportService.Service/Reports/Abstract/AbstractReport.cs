@@ -399,6 +399,17 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
             }
         }
 
+        protected Workbook GetWorkbookFromTemplate(string templateFileName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(templateFileName));
+
+            using (Stream manifestResourceStream = assembly.GetManifestResourceStream(resourceName))
+            {
+                return new Workbook(manifestResourceStream);
+            }
+        }
+
         private int GetCurrentRow(Worksheet worksheet)
         {
             if (!_currentRow.ContainsKey(worksheet))
