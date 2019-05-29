@@ -6,8 +6,9 @@ namespace ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity
     {
         public int UkPrn { get; set; }
 
-        public List<AECApprenticeshipPriceEpisodePeriodisedValuesInfo> AECApprenticeshipPriceEpisodePeriodisedValues { get; set; }
+        public List<PriceEpisodeInfo> PriceEpisodes { get; set; }
 
         public List<AECLearningDeliveryInfo> AECLearningDeliveries { get; set; }
+
     }
 }

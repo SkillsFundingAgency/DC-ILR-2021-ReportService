@@ -86,6 +86,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                             {
                                 AimSeqNumber = x.AimSeqNumber,
                                 LearnAimRef = x.LearnAimRef,
+                                FundModel = x.FundModel,
                                 UKPRN = reportServiceContext.Ukprn,
                                 AimType = x.AimType,
                                 SWSupAimId = x.SWSupAimId,

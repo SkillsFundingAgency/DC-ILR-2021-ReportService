@@ -40,6 +40,8 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             Mock<IIlrProviderService> ilrProviderServiceMock = new Mock<IIlrProviderService>();
             Mock<IFCSProviderService> fcsProviderMock = new Mock<IFCSProviderService>();
             Mock<IValidLearnersService> validLearnerServiceMock = new Mock<IValidLearnersService>();
+            Mock<ILarsProviderService> larsProviderServiceMock = new Mock<ILarsProviderService>();
+            Mock<IPeriodProviderService> periodProviderServiceMock = new Mock<IPeriodProviderService>();
             Mock<IFM36NonContractedActivityProviderService> fm36ProviderServiceMock = new Mock<IFM36NonContractedActivityProviderService>();
             IValueProvider valueProvider = new ValueProvider();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -47,7 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             ilrProviderServiceMock.Setup(x => x.GetIlrFile(reportServiceContextMock.Object, It.IsAny<CancellationToken>())).ReturnsAsync(new Message());
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
-            var nonContractedAppsActivityModel = new NonContractedAppsActivityModelBuilder();
+            var nonContractedAppsActivityModel = new NonContractedAppsActivityModelBuilder(periodProviderServiceMock.Object);
 
             var report = new ReportService.Service.Reports.NonContractedAppsActivityReport(
                 logger.Object,
@@ -56,6 +58,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                 fcsProviderMock.Object,
                 validLearnerServiceMock.Object,
                 fm36ProviderServiceMock.Object,
+                larsProviderServiceMock.Object,
                 dateTimeProviderMock.Object,
                 valueProvider,
                 nonContractedAppsActivityModel);
