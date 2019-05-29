@@ -220,7 +220,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
 
             if (messageTask.Result != null)
             {
-                footerModel.FilePreparationDate = messageTask.Result.HeaderEntity.SourceEntity.DateTime.ToString("dd/MM/yyyy");
+                footerModel.FilePreparationDate = messageTask.Result.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
             }
             else
             {
