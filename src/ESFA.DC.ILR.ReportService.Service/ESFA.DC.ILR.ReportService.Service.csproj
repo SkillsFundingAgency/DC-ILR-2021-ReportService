@@ -69,6 +69,7 @@
   <ItemGroup>
     <Compile Include="Builders\AdultFundingClaimBuilder.cs" />
     <Compile Include="Builders\AllbBuilder.cs" />
+    <Compile Include="Builders\HNSSummaryModelBuilder.cs" />
     <Compile Include="Builders\NonContractedAppsActivityModelBuilder.cs" />
     <Compile Include="Builders\AppsIndicativeEarningsModelBuilder.cs" />
     <Compile Include="Builders\DasCommitmentBuilder.cs" />
@@ -154,6 +155,7 @@
     <Compile Include="ReferenceData\DataLockValidationMessage.cs" />
     <Compile Include="ReferenceData\DataLockValidationMessages.cs" />
     <Compile Include="Reports\Abstract\AbstractReport.cs" />
+    <Compile Include="Reports\HNSSummaryReport.cs" />
     <Compile Include="Reports\NonContractedAppsActivityReport.cs" />
     <Compile Include="Reports\PeriodEnd\ILRDataQualityReport.cs" />
     <Compile Include="Reports\PeriodEnd\FundingSummaryPeriodEndReport.cs" />
@@ -215,6 +217,7 @@
     <EmbeddedResource Include="Reports\Templates\1619FundingClaimReportTemplate.xlsx" />
     <EmbeddedResource Include="Reports\Templates\ILRDataQualityReportTemplate.xlsx" />
     <EmbeddedResource Include="Reports\Templates\SummaryOfFM35FundingTemplate.xlsx" />
+    <EmbeddedResource Include="Reports\Templates\HNSSummaryReportTemplate.xlsx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR.ReportService.Interface.csproj">

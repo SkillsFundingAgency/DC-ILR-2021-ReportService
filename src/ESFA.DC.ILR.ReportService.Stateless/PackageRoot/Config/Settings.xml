@@ -78,6 +78,7 @@
     <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value=""/>
     <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="" />
+    <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="" />
   </Section>
   
   <Section Name="LarsSection">
