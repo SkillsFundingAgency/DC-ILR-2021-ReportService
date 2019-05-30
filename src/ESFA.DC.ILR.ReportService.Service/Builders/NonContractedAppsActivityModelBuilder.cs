@@ -188,7 +188,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
 
         private DateTime GetPeriodEndDate(int returnPeriod)
         {
-            int year = returnPeriod >= 8 ? 2018 : 2019; //Todo: Year needs to be calculated from the jobContextMessage, for eg: collectionName
+            int year = returnPeriod >= 8 ? Constants.BeginningOfYear.Year : Constants.EndOfYear.Year;
             return new DateTime(year, _periodProviderService.MonthFromPeriod(returnPeriod), DateTime.DaysInMonth(year, _periodProviderService.MonthFromPeriod(returnPeriod)));
         }
 
@@ -232,8 +232,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Builders
             {
                 return priceEpisodeValues.PriceEpisodeFundLineType;
             }
-
-            return string.Empty;
         }
 
         private string GetFundingStreamPeriod(string fundingLineType)

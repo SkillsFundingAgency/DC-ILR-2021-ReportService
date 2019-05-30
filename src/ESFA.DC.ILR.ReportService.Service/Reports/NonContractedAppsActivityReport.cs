@@ -7,14 +7,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR.ReportService.Model.FCS;
 using ESFA.DC.ILR.ReportService.Model.Lars;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
@@ -68,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var nonContractedActivityRuleBaseInfo = await _fm36ProviderService.GetFM36InfoForNonContractedActivityReportAsync(validLearnersList, reportServiceContext, cancellationToken);
             var contractAllocationInfos = await _fcsProviderService.GetContractAllocationsForProviderAsync(reportServiceContext.Ukprn, cancellationToken);
 
-            string[] learnAimRefs = nonContractedAppsActivityIlrInfo.Learners.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
+            string[] learnAimRefs = nonContractedAppsActivityIlrInfo.Learners?.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
             Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
 
             var nonContractedAppsActivityModels = _modelBuilder.BuildModel(nonContractedAppsActivityIlrInfo, nonContractedActivityRuleBaseInfo, contractAllocationInfos, larsLearningDeliveries, reportServiceContext.ReturnPeriod);
