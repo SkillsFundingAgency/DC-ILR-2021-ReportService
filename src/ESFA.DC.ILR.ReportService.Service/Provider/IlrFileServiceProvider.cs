@@ -57,7 +57,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
             return _message;
         }
 
-        public async Task<NonContractedAppsActivityILRInfo> GetILRInfoForNonContractedAppsActivityReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public async Task<NonContractedAppsActivityILRInfo> GetILRInfoForNonContractedAppsActivityReportAsync(List<string> validLearners, IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
 
@@ -69,52 +69,62 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
             var message = await GetIlrFile(reportServiceContext, cancellationToken);
 
-            foreach (var learner in message.Learners)
-            {
-                var learnerInfo = new NonContractedAppsActivityLearnerInfo
-                {
-                    LearnRefNumber = learner.LearnRefNumber,
-                    UniqueLearnerNumber = learner.ULN,
-                    DateOfBirth = learner.DateOfBirthNullable.GetValueOrDefault(),
-                    CampId = learner.CampId,
-                    LearningDeliveries = learner.LearningDeliveries.Select(x => new NonContractedAppsActivityLearningDeliveryInfo()
-                    {
-                        AimSeqNumber = x.AimSeqNumber,
-                        LearnAimRef = x.LearnAimRef,
-                        UKPRN = reportServiceContext.Ukprn,
-                        AimType = x.AimType,
-                        SWSupAimId = x.SWSupAimId,
-                        OriginalLearnStartDate = x.OrigLearnStartDateNullable,
-                        LearnStartDate = x.LearnStartDate,
-                        LearningPlannedEndDate = x.LearnPlanEndDate,
-                        LearnActualEndDate = x.LearnActEndDateNullable,
-                        ProgType = x.ProgTypeNullable,
-                        StdCode = x.StdCodeNullable,
-                        FworkCode = x.FworkCodeNullable,
-                        PwayCode = x.PwayCodeNullable,
-                        EPAOrganisation = x.EPAOrgID,
-                        PartnerUkPrn = x.PartnerUKPRNNullable,
-                        ProviderSpecDeliveryMonitorings = x.ProviderSpecDeliveryMonitorings.Select(y => new NonContractedAppsActivityProviderSpecDeliveryMonitoringInfo()
-                        {
-                            ProvSpecDelMon = y.ProvSpecDelMon,
-                            ProvSpecDelMonOccur = y.ProvSpecDelMonOccur
-                        }).ToList(),
-                        LearningDeliveryFams = x.LearningDeliveryFAMs.Select(y => new NonContractedAppsActivityLearningDeliveryFAMInfo()
-                        {
-                            LearnDelFAMType = y.LearnDelFAMType,
-                            LearnDelFAMCode = y.LearnDelFAMCode,
-                            LearnDelFAMAppliesFrom = y.LearnDelFAMDateFromNullable,
-                            LearnDelFAMAppliesTo = y.LearnDelFAMDateToNullable
-                        }).ToList()
-                    }).ToList(),
-                    ProviderSpecLearnerMonitorings = learner.ProviderSpecLearnerMonitorings.Select(x => new NonContractedAppsActivityProviderSpecLearnerMonitoringInfo()
-                    {
-                        ProvSpecLearnMon = x.ProvSpecLearnMon,
-                        ProvSpecLearnMonOccur = x.ProvSpecLearnMonOccur
-                    }).ToList()
-                };
+            var learners = message.Learners?.Where(x => validLearners.Contains(x.LearnRefNumber)).ToArray();
 
-                nonContractedAppsActivityIlrInfo.Learners.Add(learnerInfo);
+            if (learners != null)
+            {
+                foreach (var learner in learners)
+                {
+                    var learnerInfo = new NonContractedAppsActivityLearnerInfo
+                    {
+                        LearnRefNumber = learner.LearnRefNumber,
+                        UniqueLearnerNumber = learner.ULN,
+                        DateOfBirth = learner.DateOfBirthNullable.GetValueOrDefault(),
+                        CampId = learner.CampId,
+                        LearningDeliveries = learner.LearningDeliveries.Select(x =>
+                            new NonContractedAppsActivityLearningDeliveryInfo()
+                            {
+                                AimSeqNumber = x.AimSeqNumber,
+                                LearnAimRef = x.LearnAimRef,
+                                FundModel = x.FundModel,
+                                UKPRN = reportServiceContext.Ukprn,
+                                AimType = x.AimType,
+                                SWSupAimId = x.SWSupAimId,
+                                OriginalLearnStartDate = x.OrigLearnStartDateNullable,
+                                LearnStartDate = x.LearnStartDate,
+                                LearningPlannedEndDate = x.LearnPlanEndDate,
+                                LearnActualEndDate = x.LearnActEndDateNullable,
+                                ProgType = x.ProgTypeNullable,
+                                StdCode = x.StdCodeNullable,
+                                FworkCode = x.FworkCodeNullable,
+                                PwayCode = x.PwayCodeNullable,
+                                EPAOrganisation = x.EPAOrgID,
+                                PartnerUkPrn = x.PartnerUKPRNNullable,
+                                ProviderSpecDeliveryMonitorings = x.ProviderSpecDeliveryMonitorings.Select(y =>
+                                    new NonContractedAppsActivityProviderSpecDeliveryMonitoringInfo()
+                                    {
+                                        ProvSpecDelMon = y.ProvSpecDelMon,
+                                        ProvSpecDelMonOccur = y.ProvSpecDelMonOccur
+                                    }).ToList(),
+                                LearningDeliveryFams = x.LearningDeliveryFAMs.Select(y =>
+                                    new NonContractedAppsActivityLearningDeliveryFAMInfo()
+                                    {
+                                        LearnDelFAMType = y.LearnDelFAMType,
+                                        LearnDelFAMCode = y.LearnDelFAMCode,
+                                        LearnDelFAMAppliesFrom = y.LearnDelFAMDateFromNullable,
+                                        LearnDelFAMAppliesTo = y.LearnDelFAMDateToNullable
+                                    }).ToList()
+                            }).ToList(),
+                        ProviderSpecLearnerMonitorings = learner.ProviderSpecLearnerMonitorings.Select(x =>
+                            new NonContractedAppsActivityProviderSpecLearnerMonitoringInfo()
+                            {
+                                ProvSpecLearnMon = x.ProvSpecLearnMon,
+                                ProvSpecLearnMonOccur = x.ProvSpecLearnMonOccur
+                            }).ToList()
+                    };
+
+                    nonContractedAppsActivityIlrInfo.Learners.Add(learnerInfo);
+                }
             }
 
             return nonContractedAppsActivityIlrInfo;

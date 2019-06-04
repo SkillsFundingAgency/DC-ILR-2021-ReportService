@@ -40,6 +40,6 @@ namespace ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity
 
         public string EPAOrganisation { get; set; }
         public int? PartnerUkPrn { get; set; }
-       
+        public int FundModel { get; set; }
     }
 }

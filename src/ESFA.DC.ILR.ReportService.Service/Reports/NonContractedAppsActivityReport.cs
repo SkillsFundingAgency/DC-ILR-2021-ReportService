@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR.ReportService.Model.FCS;
+using ESFA.DC.ILR.ReportService.Model.Lars;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
 using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
@@ -27,7 +26,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFCSProviderService _fcsProviderService;
         private readonly IValidLearnersService _validLearnersService;
-        private readonly IFM36ProviderService _fm36ProviderService;
+        private readonly IFM36NonContractedActivityProviderService _fm36ProviderService;
+        private readonly ILarsProviderService _larsProviderService;
         private readonly INonContractedAppsActivityModelBuilder _modelBuilder;
 
         public NonContractedAppsActivityReport(
@@ -36,7 +36,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             IIlrProviderService ilrProviderService,
             IFCSProviderService fcsProviderService,
             IValidLearnersService validLearnersService,
-            IFM36ProviderService fm36ProviderService,
+            IFM36NonContractedActivityProviderService fm36ProviderService,
+            ILarsProviderService larsProviderService,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider,
             INonContractedAppsActivityModelBuilder modelBuilder)
@@ -46,6 +47,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             _fcsProviderService = fcsProviderService;
             _validLearnersService = validLearnersService;
             _fm36ProviderService = fm36ProviderService;
+            _larsProviderService = larsProviderService;
             _modelBuilder = modelBuilder;
         }
 
@@ -58,13 +60,15 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             var externalFileName = GetFilename(reportServiceContext);
             var fileName = GetZipFilename(reportServiceContext);
 
-            Task<IMessage> ilrFileTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
-            Task<List<string>> validLearnersTask = _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
-            Task<FM36Global> fm36Task = _fm36ProviderService.GetFM36Data(reportServiceContext, cancellationToken);
-            Task<List<ContractAllocationInfo>> fcsProviderTask = _fcsProviderService.GetContractAllocationsForProviderAsync(reportServiceContext.Ukprn, cancellationToken);
-            await Task.WhenAll(ilrFileTask, validLearnersTask, fm36Task, fcsProviderTask);
+            var validLearnersList = await _validLearnersService.GetLearnersAsync(reportServiceContext, cancellationToken);
+            var nonContractedAppsActivityIlrInfo = await _ilrProviderService.GetILRInfoForNonContractedAppsActivityReportAsync(validLearnersList, reportServiceContext, cancellationToken);
+            var nonContractedActivityRuleBaseInfo = await _fm36ProviderService.GetFM36InfoForNonContractedActivityReportAsync(validLearnersList, reportServiceContext, cancellationToken);
+            var contractAllocationInfos = await _fcsProviderService.GetContractAllocationsForProviderAsync(reportServiceContext.Ukprn, cancellationToken);
 
-            var nonContractedAppsActivityModels = _modelBuilder.BuildModel(fcsProviderTask.Result);
+            string[] learnAimRefs = nonContractedAppsActivityIlrInfo.Learners?.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
+            Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
+
+            var nonContractedAppsActivityModels = _modelBuilder.BuildModel(nonContractedAppsActivityIlrInfo, nonContractedActivityRuleBaseInfo, contractAllocationInfos, larsLearningDeliveries);
             string csv = await GetCsv(nonContractedAppsActivityModels, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);

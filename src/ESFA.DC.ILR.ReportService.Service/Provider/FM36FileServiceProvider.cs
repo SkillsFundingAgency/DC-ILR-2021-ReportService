@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity;
 using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
-using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -75,7 +72,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
             var nonContractedActivityRuleBaseInfo = new NonContractedActivityRuleBaseInfo()
             {
                 UkPrn = reportServiceContext.Ukprn,
-                AECApprenticeshipPriceEpisodePeriodisedValues = new List<AECApprenticeshipPriceEpisodePeriodisedValuesInfo>(),
+                PriceEpisodes = new List<PriceEpisodeInfo>(),
                 AECLearningDeliveries = new List<AECLearningDeliveryInfo>()
             };
 
@@ -89,6 +86,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                     {
                         AimSeqNumber = x.AimSeqNumber,
                         LearnRefNumber = learner.LearnRefNumber,
+                        LearningDeliveryValues = new AECLearningDeliveryValuesInfo()
+                        {
+                            LearnDelMathEng = x.LearningDeliveryValues.LearnDelMathEng.GetValueOrDefault(),
+                            LearnDelInitialFundLineType = x.LearningDeliveryValues.LearnDelInitialFundLineType,
+                            LearnAimRef = x.LearningDeliveryValues.LearnAimRef,
+                            AppAdjLearnStartDate = x.LearningDeliveryValues.AppAdjLearnStartDate.GetValueOrDefault(),
+                            AgeAtProgStart = x.LearningDeliveryValues.AgeAtProgStart.GetValueOrDefault()
+                        },
                         LearningDeliveryPeriodisedValues = x.LearningDeliveryPeriodisedValues.Select(y =>
                             new AECApprenticeshipLearningDeliveryPeriodisedValuesInfo()
                             {
@@ -108,39 +113,64 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                                     y.Period11.GetValueOrDefault(),
                                     y.Period12.GetValueOrDefault(),
                                 }
+                            }).ToList(),
+                        LearningDeliveryPeriodisedTextValues = x.LearningDeliveryPeriodisedTextValues.Where(y => y.AttributeName.Equals("FundingLineType")).Select(z =>
+                            new AECApprenticeshipLearningDeliveryPeriodisedTextValuesInfo()
+                            {
+                                AttributeName = z.AttributeName,
+                                Periods = new[]
+                                {
+                                   z.Period1,
+                                   z.Period2,
+                                   z.Period3,
+                                   z.Period4,
+                                   z.Period5,
+                                   z.Period6,
+                                   z.Period7,
+                                   z.Period8,
+                                   z.Period9,
+                                   z.Period10,
+                                   z.Period11,
+                                   z.Period12,
+                                }
+                            }).SingleOrDefault()
+                    }).ToList();
+
+                    var priceEpisodes = learner.PriceEpisodes.Select(x => new PriceEpisodeInfo()
+                    {
+                        PriceEpisodeValues = new PriceEpisodeValuesInfo()
+                        {
+                            PriceEpisodeFundLineType = x.PriceEpisodeValues.PriceEpisodeFundLineType,
+                            PriceEpisodeAimSeqNumber = x.PriceEpisodeValues.PriceEpisodeAimSeqNumber.GetValueOrDefault(),
+                            EpisodeStartDate = x.PriceEpisodeValues.EpisodeStartDate.GetValueOrDefault(),
+                            PriceEpisodeActualEndDate = x.PriceEpisodeValues.PriceEpisodeActualEndDate.GetValueOrDefault()
+                        },
+                        AECApprenticeshipPriceEpisodePeriodisedValues = x.PriceEpisodePeriodisedValues.Select(y =>
+                            new AECApprenticeshipPriceEpisodePeriodisedValuesInfo()
+                            {
+                                LearnRefNumber = learner.LearnRefNumber,
+                                PriceEpisodeIdentifier = x.PriceEpisodeIdentifier,
+                                AttributeName = y.AttributeName,
+                                Periods = new[]
+                                {
+                                    y.Period1.GetValueOrDefault(),
+                                    y.Period2.GetValueOrDefault(),
+                                    y.Period3.GetValueOrDefault(),
+                                    y.Period4.GetValueOrDefault(),
+                                    y.Period5.GetValueOrDefault(),
+                                    y.Period6.GetValueOrDefault(),
+                                    y.Period7.GetValueOrDefault(),
+                                    y.Period8.GetValueOrDefault(),
+                                    y.Period9.GetValueOrDefault(),
+                                    y.Period10.GetValueOrDefault(),
+                                    y.Period11.GetValueOrDefault(),
+                                    y.Period12.GetValueOrDefault(),
+                                }
                             }).ToList()
                     }).ToList();
 
-                    foreach (var priceEpisode in learner.PriceEpisodes)
-                    {
-                        var aecApprenticeshipPriceEpisodePeriodisedValuesInfos = priceEpisode
-                            .PriceEpisodePeriodisedValues.Select(x =>
-                                new AECApprenticeshipPriceEpisodePeriodisedValuesInfo()
-                                {
-                                    LearnRefNumber = learner.LearnRefNumber,
-                                    PriceEpisodeIdentifier = priceEpisode.PriceEpisodeIdentifier,
-                                    AttributeName = x.AttributeName,
-                                    Periods = new[]
-                                    {
-                                        x.Period1.GetValueOrDefault(),
-                                        x.Period2.GetValueOrDefault(),
-                                        x.Period3.GetValueOrDefault(),
-                                        x.Period4.GetValueOrDefault(),
-                                        x.Period5.GetValueOrDefault(),
-                                        x.Period6.GetValueOrDefault(),
-                                        x.Period7.GetValueOrDefault(),
-                                        x.Period8.GetValueOrDefault(),
-                                        x.Period9.GetValueOrDefault(),
-                                        x.Period10.GetValueOrDefault(),
-                                        x.Period11.GetValueOrDefault(),
-                                        x.Period12.GetValueOrDefault(),
-                                    }
-                                }).ToList();
-                        nonContractedActivityRuleBaseInfo.AECApprenticeshipPriceEpisodePeriodisedValues.AddRange(
-                            aecApprenticeshipPriceEpisodePeriodisedValuesInfos);
-                    }
-
                     nonContractedActivityRuleBaseInfo.AECLearningDeliveries.AddRange(aecLearningDeliveryInfos);
+                    nonContractedActivityRuleBaseInfo.PriceEpisodes.AddRange(priceEpisodes);
                 }
             }
 

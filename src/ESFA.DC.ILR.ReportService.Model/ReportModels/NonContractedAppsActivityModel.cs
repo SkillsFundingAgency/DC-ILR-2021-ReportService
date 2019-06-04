@@ -56,7 +56,7 @@
 
         public string AppAdjLearnStartDate { get; set; }
 
-        public string AgeAtProgrammeStart { get; set; }
+        public int AgeAtProgrammeStart { get; set; }
 
         public string FundingLineType { get; set; }
 
