@@ -90,6 +90,12 @@ steps:
     createLogFile: true
         
 - task: DeleteFiles@1
+  displayName: 'Delete Local.*Node.xml As only needed for Build'
+  inputs:
+    SourceFolder: '$(build.artifactstagingdirectory)'
+    Contents: '**\Local.*Node.xml'
+        
+- task: DeleteFiles@1
   displayName: 'Delete Symbols files from $(build.artifactstagingdirectory)\ServiceFabric\ApplicationPackage '
   inputs:
     SourceFolder: '$(build.artifactstagingdirectory)\ServiceFabric\ApplicationPackage'
