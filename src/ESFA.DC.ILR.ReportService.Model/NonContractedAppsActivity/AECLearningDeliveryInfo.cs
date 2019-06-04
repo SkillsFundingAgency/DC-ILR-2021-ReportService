@@ -14,5 +14,7 @@ namespace ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity
         
         public List<AECApprenticeshipLearningDeliveryPeriodisedValuesInfo> LearningDeliveryPeriodisedValues { get; set; }
 
+        public AECApprenticeshipLearningDeliveryPeriodisedTextValuesInfo LearningDeliveryPeriodisedTextValues { get; set; }
+
     }
 }

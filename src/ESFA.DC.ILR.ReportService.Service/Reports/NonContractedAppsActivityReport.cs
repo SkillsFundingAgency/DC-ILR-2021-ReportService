@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports
             string[] learnAimRefs = nonContractedAppsActivityIlrInfo.Learners?.SelectMany(x => x.LearningDeliveries).Select(x => x.LearnAimRef).Distinct().ToArray();
             Dictionary<string, LarsLearningDelivery> larsLearningDeliveries = await _larsProviderService.GetLearningDeliveriesAsync(learnAimRefs, cancellationToken);
 
-            var nonContractedAppsActivityModels = _modelBuilder.BuildModel(nonContractedAppsActivityIlrInfo, nonContractedActivityRuleBaseInfo, contractAllocationInfos, larsLearningDeliveries, reportServiceContext.ReturnPeriod);
+            var nonContractedAppsActivityModels = _modelBuilder.BuildModel(nonContractedAppsActivityIlrInfo, nonContractedActivityRuleBaseInfo, contractAllocationInfos, larsLearningDeliveries);
             string csv = await GetCsv(nonContractedAppsActivityModels, cancellationToken);
             await _streamableKeyValuePersistenceService.SaveAsync($"{externalFileName}.csv", csv, cancellationToken);
             await WriteZipEntry(archive, $"{fileName}.csv", csv);

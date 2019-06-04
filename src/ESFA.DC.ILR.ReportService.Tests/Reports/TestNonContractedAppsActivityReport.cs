@@ -47,7 +47,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             Mock<IFCSProviderService> fcsProviderMock = new Mock<IFCSProviderService>();
             Mock<IValidLearnersService> validLearnerServiceMock = new Mock<IValidLearnersService>();
             Mock<ILarsProviderService> larsProviderServiceMock = new Mock<ILarsProviderService>();
-            Mock<IPeriodProviderService> periodProviderServiceMock = new Mock<IPeriodProviderService>();
             Mock<IFM36NonContractedActivityProviderService> fm36ProviderServiceMock = new Mock<IFM36NonContractedActivityProviderService>();
             IValueProvider valueProvider = new ValueProvider();
             storage.Setup(x => x.SaveAsync($"{filename}.csv", It.IsAny<string>(), It.IsAny<CancellationToken>())).Callback<string, string, CancellationToken>((key, value, ct) => csv = value).Returns(Task.CompletedTask);
@@ -70,7 +69,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
 
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(dateTime);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(It.IsAny<DateTime>())).Returns(dateTime);
-            var nonContractedAppsActivityModel = new NonContractedAppsActivityModelBuilder(periodProviderServiceMock.Object);
+            var nonContractedAppsActivityModel = new NonContractedAppsActivityModelBuilder(new PeriodProviderService());
 
             var report = new ReportService.Service.Reports.NonContractedAppsActivityReport(
                 logger.Object,
@@ -101,7 +100,7 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             }
 
             result.Should().NotBeNullOrEmpty();
-            result.Count().Should().Be(1);
+            result.Count().Should().Be(3);
             result.First().UniqueLearnerNumber.Should().Be(1000000205);
             result.First().AgeAtProgrammeStart.Should().Be(25);
             result.First().AimSeqNumber.Should().Be(1);
@@ -137,6 +136,25 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
             result.First().JuneTotalEarnings.Should().Be(11);
             result.First().JulyTotalEarnings.Should().Be(12);
             result.First().TotalEarnings.Should().Be(78);
+
+            result.ElementAt(1).ProgrammeType.Should().Be(25);
+            result.ElementAt(1).StandardCode.Should().Be(23);
+            result.ElementAt(1).ApprenticeshipPathway.Should().Be(2);
+            result.ElementAt(1).LearningAimReference.Should().Be("50086832");
+            result.ElementAt(1).FundingLineType.Should().Be("19+ Apprenticeship (From May 2017) Levy Contract");
+            result.ElementAt(1).LearningDeliveryFAMTypeApprenticeshipContractType.Should().Be("1");
+            result.ElementAt(1).LearningDeliveryFAMTypeACTDateAppliesFrom.Should().Be("01/11/2018");
+            result.ElementAt(1).LearningDeliveryFAMTypeACTDateAppliesTo.Should().Be("31/12/2018");
+
+            result.ElementAt(2).ProgrammeType.Should().Be(25);
+            result.ElementAt(2).StandardCode.Should().Be(23);
+            result.ElementAt(2).ApprenticeshipPathway.Should().Be(2);
+            result.ElementAt(2).LearningAimReference.Should().Be("50086832");
+            result.ElementAt(2).FundingLineType.Should().Be("19+ Apprenticeship Non-Levy Contract (procured)");
+            result.ElementAt(2).LearningDeliveryFAMTypeApprenticeshipContractType.Should().Be("2");
+            result.ElementAt(2).LearningDeliveryFAMTypeACTDateAppliesFrom.Should().Be("01/01/2019");
+            result.ElementAt(2).LearningDeliveryFAMTypeACTDateAppliesTo.Should().Be(string.Empty);
+
             csv.Should().NotBeNullOrEmpty();
             File.WriteAllText($"{filename}.csv", csv);
             TestCsvHelper.CheckCsv(csv, new CsvEntry(new NonContractedAppsActivityMapper(), 1));
@@ -203,6 +221,55 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                                 Periods = new decimal[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
                             }
                         }
+                    },
+                    new AECLearningDeliveryInfo()
+                    {
+                        LearnRefNumber = "fm36 18 20",
+                        AimSeqNumber = 2,
+                        LearningDeliveryValues = new AECLearningDeliveryValuesInfo()
+                        {
+                            LearnDelMathEng = true,
+                            LearnAimRef = "50086832",
+                            AppAdjLearnStartDate = new DateTime(2018, 11, 01),
+                            AgeAtProgStart = 25,
+                        },
+                        LearningDeliveryPeriodisedValues = new List<AECApprenticeshipLearningDeliveryPeriodisedValuesInfo>()
+                        {
+                            new AECApprenticeshipLearningDeliveryPeriodisedValuesInfo()
+                            {
+                                AttributeName = "MathEngOnProgPayment",
+                                Periods = new decimal[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
+                            },
+                            new AECApprenticeshipLearningDeliveryPeriodisedValuesInfo()
+                            {
+                                AttributeName = "MathEngBalPayment",
+                                Periods = new decimal[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
+                            },
+                            new AECApprenticeshipLearningDeliveryPeriodisedValuesInfo()
+                            {
+                                AttributeName = "LearnSuppFundCash",
+                                Periods = new decimal[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12 }
+                            }
+                        },
+                        LearningDeliveryPeriodisedTextValues = new AECApprenticeshipLearningDeliveryPeriodisedTextValuesInfo()
+                        {
+                            AttributeName = "FundingLineType",
+                            Periods = new string[]
+                            {
+                                "None",
+                                "None",
+                                "None",
+                                "19+ Apprenticeship (From May 2017) Levy Contract",
+                                "19+ Apprenticeship (From May 2017) Levy Contract",
+                                "19+ Apprenticeship Non-Levy Contract (procured)",
+                                "19+ Apprenticeship Non-Levy Contract (procured)",
+                                "19+ Apprenticeship Non-Levy Contract (procured)",
+                                "19+ Apprenticeship Non-Levy Contract (procured)",
+                                "19+ Apprenticeship Non-Levy Contract (procured)",
+                                "19+ Apprenticeship Non-Levy Contract (procured)",
+                                "19+ Apprenticeship Non-Levy Contract (procured)",
+                            }
+                        }
                     }
                 }
             };
@@ -229,7 +296,6 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                        OriginalLearnStartDate = new DateTime(2018, 11, 01),
                        LearnStartDate = new DateTime(2018, 11, 01),
                        LearningPlannedEndDate = new DateTime(2020, 03, 31),
-                       //LearnActualEndDate = new DateTime(2019, 05, 01),
                        ProgType = 21,
                        StdCode = null,
                        FworkCode = 563,
@@ -246,6 +312,53 @@ namespace ESFA.DC.ILR.ReportService.Tests.Reports
                              },
                        LearningDeliveryFams = new List<NonContractedAppsActivityLearningDeliveryFAMInfo>()
                        {
+                           new NonContractedAppsActivityLearningDeliveryFAMInfo()
+                           {
+                               LearnDelFAMType = "ACT",
+                               LearnDelFAMCode = "1",
+                               LearnDelFAMAppliesFrom = new DateTime(2018, 11, 01),
+                               LearnDelFAMAppliesTo = new DateTime(2018, 12, 31)
+                           },
+                           new NonContractedAppsActivityLearningDeliveryFAMInfo()
+                           {
+                               LearnDelFAMType = "ACT",
+                               LearnDelFAMCode = "2",
+                               LearnDelFAMAppliesFrom = new DateTime(2019, 01, 01)
+                           }
+                       }
+                   },
+                     new NonContractedAppsActivityLearningDeliveryInfo()
+                   {
+                       AimSeqNumber = 2,
+                       LearnAimRef = "50086832",
+                       FundModel = 36,
+                       UKPRN = ukPrn,
+                       AimType = 3,
+                       SWSupAimId = "83282eb2aa2230439a9964374c163b9c",
+                       OriginalLearnStartDate = new DateTime(2018, 11, 01),
+                       LearnStartDate = new DateTime(2018, 11, 01),
+                       LearningPlannedEndDate = new DateTime(2020, 03, 31),
+                       ProgType = 25,
+                       StdCode = 23,
+                       FworkCode = null,
+                       PwayCode = 2,
+                       EPAOrganisation = null,
+                       PartnerUkPrn = null,
+                       ProviderSpecDeliveryMonitorings = new List<NonContractedAppsActivityProviderSpecDeliveryMonitoringInfo>()
+                           {
+                                   new NonContractedAppsActivityProviderSpecDeliveryMonitoringInfo()
+                                   {
+                                       ProvSpecDelMon = "A",
+                                       ProvSpecDelMonOccur = "1"
+                                   },
+                             },
+                       LearningDeliveryFams = new List<NonContractedAppsActivityLearningDeliveryFAMInfo>()
+                       {
+                           new NonContractedAppsActivityLearningDeliveryFAMInfo()
+                           {
+                               LearnDelFAMType = "SOF",
+                               LearnDelFAMCode = "105"
+                           },
                            new NonContractedAppsActivityLearningDeliveryFAMInfo()
                            {
                                LearnDelFAMType = "ACT",

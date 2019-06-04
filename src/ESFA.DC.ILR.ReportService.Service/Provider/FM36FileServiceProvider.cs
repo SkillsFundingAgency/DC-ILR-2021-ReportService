@@ -113,7 +113,27 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                                     y.Period11.GetValueOrDefault(),
                                     y.Period12.GetValueOrDefault(),
                                 }
-                            }).ToList()
+                            }).ToList(),
+                        LearningDeliveryPeriodisedTextValues = x.LearningDeliveryPeriodisedTextValues.Where(y => y.AttributeName.Equals("FundingLineType")).Select(z =>
+                            new AECApprenticeshipLearningDeliveryPeriodisedTextValuesInfo()
+                            {
+                                AttributeName = z.AttributeName,
+                                Periods = new[]
+                                {
+                                   z.Period1,
+                                   z.Period2,
+                                   z.Period3,
+                                   z.Period4,
+                                   z.Period5,
+                                   z.Period6,
+                                   z.Period7,
+                                   z.Period8,
+                                   z.Period9,
+                                   z.Period10,
+                                   z.Period11,
+                                   z.Period12,
+                                }
+                            }).SingleOrDefault()
                     }).ToList();
 
                     var priceEpisodes = learner.PriceEpisodes.Select(x => new PriceEpisodeInfo()

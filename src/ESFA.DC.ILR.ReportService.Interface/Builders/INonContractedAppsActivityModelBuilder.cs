@@ -12,7 +12,6 @@ namespace ESFA.DC.ILR.ReportService.Interface.Builders
            NonContractedAppsActivityILRInfo nonContractedAppsActivityIlrInfo,
            NonContractedActivityRuleBaseInfo fm36Info,
            List<ContractAllocationInfo> fcsContractAllocationInfo,
-           Dictionary<string, LarsLearningDelivery> larsLearningDeliveries,
-           int returnPeriod);
+           Dictionary<string, LarsLearningDelivery> larsLearningDeliveries);
    }
 }
