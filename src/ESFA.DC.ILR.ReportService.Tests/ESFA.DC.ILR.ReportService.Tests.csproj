@@ -10,6 +10,7 @@
     <RootNamespace>ESFA.DC.ILR.ReportService.Tests</RootNamespace>
     <AssemblyName>ESFA.DC.ILR.ReportService.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
+	<RuntimeIdentifiers>win</RuntimeIdentifiers>
     <FileAlignment>512</FileAlignment>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
