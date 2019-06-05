@@ -125,7 +125,7 @@
       <Name>ESFA.DC.ILR.ReportService.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR.ReportService.Service.csproj">
-      <Project>{7e327d70-d514-40a0-ac07-35176660149c}</Project>
+      <Project>{331D200F-C82D-450D-BE9D-F46C990CAD0D}</Project>
       <Name>ESFA.DC.ILR.ReportService.Service</Name>
     </ProjectReference>
   </ItemGroup>

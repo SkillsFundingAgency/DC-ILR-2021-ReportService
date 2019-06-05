@@ -444,7 +444,7 @@
       <Name>ESFA.DC.ILR.ReportService.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR.ReportService.Service.csproj">
-      <Project>{7E327D70-D514-40A0-AC07-35176660149C}</Project>
+      <Project>{331D200F-C82D-450D-BE9D-F46C990CAD0D}</Project>
       <Name>ESFA.DC.ILR.ReportService.Service</Name>
     </ProjectReference>
   </ItemGroup>
