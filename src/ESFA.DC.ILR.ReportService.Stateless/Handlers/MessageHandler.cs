@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.ReportService.Service;
-using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
-using ESFA.DC.ILR1819.ReportService.Stateless.Context;
-using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;
+using ESFA.DC.ILR.ReportService.Stateless.Configuration;
+using ESFA.DC.ILR.ReportService.Stateless.Context;
+using ESFA.DC.ILR.ReportService.Stateless.Interfaces;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Interface;
@@ -15,7 +15,7 @@ using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ExecutionContext = ESFA.DC.Logging.ExecutionContext;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless.Handlers
+namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 {
     public sealed class MessageHandler : IMessageHandler<JobContextMessage>
     {

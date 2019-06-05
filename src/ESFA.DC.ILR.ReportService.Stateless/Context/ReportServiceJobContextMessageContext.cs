@@ -5,7 +5,7 @@ using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Model;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless.Context
+namespace ESFA.DC.ILR.ReportService.Stateless.Context
 {
     public sealed class ReportServiceJobContextMessageContext : IReportServiceContext
     {

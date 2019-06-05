@@ -6,11 +6,11 @@ using System.Threading;
 using Autofac;
 using Autofac.Integration.ServiceFabric;
 using ESFA.DC.ILR.ReportService.Service;
-using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
+using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless
+namespace ESFA.DC.ILR.ReportService.Stateless
 {
     public static class Program
     {
