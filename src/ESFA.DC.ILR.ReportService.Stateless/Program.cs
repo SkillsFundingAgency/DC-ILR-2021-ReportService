@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading;
 using Autofac;
 using Autofac.Integration.ServiceFabric;
+using ESFA.DC.ILR.ReportService.Service;
 using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Helpers;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
@@ -43,6 +44,8 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
                 using (var container = builder.Build())
                 {
+                    container.Resolve<EntryPoint>();
+
                     ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(Stateless).Name);
 
                     // Prevents this host process from terminating so services keep running.
