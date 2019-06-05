@@ -15,7 +15,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
     public static class Program
     {
         /// <summary>
-        /// This is the entry point of the service host process.
+        /// This is the entry point of the service host process.#d
         /// </summary>
         public static void Main()
         {
@@ -40,7 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
                 builder.RegisterServiceFabricSupport();
 
                 // Register the stateless service.
-                builder.RegisterStatelessService<Stateless>("ESFA.DC.ILR1819.ReportService.StatelessType");
+                builder.RegisterStatelessService<Stateless>("ESFA.DC.ILR1920.ReportService.StatelessType");
 
                 using (var container = builder.Build())
                 {
