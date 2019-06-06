@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.EntityFrameworkCore.Design.2.1.4\build\net461\Microsoft.EntityFrameworkCore.Design.props" Condition="Exists('..\packages\Microsoft.EntityFrameworkCore.Design.2.1.4\build\net461\Microsoft.EntityFrameworkCore.Design.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -79,6 +80,10 @@
     <Reference Include="ESFA.DC.DASPayments.EF, Version=0.1.67.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.DASPayments.EF.0.1.67\lib\netstandard2.0\ESFA.DC.DASPayments.EF.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.Data.DAS.Model, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Data.DAS.Model.0.1.0\lib\netstandard2.0\ESFA.DC.Data.DAS.Model.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="ESFA.DC.DateTimeProvider, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.DateTimeProvider.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.dll</HintPath>
     </Reference>
@@ -91,6 +96,12 @@
     <Reference Include="ESFA.DC.FileService.Interface, Version=0.1.18.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.FileService.Interface.0.1.18-beta0001\lib\netstandard2.0\ESFA.DC.FileService.Interface.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM25.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>
     </Reference>
@@ -99,6 +110,12 @@
     </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model, Version=0.1.320.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1819.Model.Interface.0.1.3-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR1819.Database.EF, Version=0.1.373.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR1819.Database.EF.0.1.373\lib\netstandard2.0\ESFA.DC.ILR1819.Database.EF.dll</HintPath>
@@ -171,6 +188,10 @@
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore.Abstractions, Version=2.2.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.Abstractions.2.2.3\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.EntityFrameworkCore.Design, Version=2.1.4.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.EntityFrameworkCore.Design.2.1.4\lib\net461\Microsoft.EntityFrameworkCore.Design.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.EntityFrameworkCore.Relational, Version=2.2.3.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.EntityFrameworkCore.Relational.2.2.3\lib\netstandard2.0\Microsoft.EntityFrameworkCore.Relational.dll</HintPath>
@@ -440,6 +461,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.1\build\Microsoft.Azure.Services.AppAuthentication.targets'))" />
     <Error Condition="!Exists('..\packages\Microsoft.ServiceFabric.Actors.3.0.480\build\net45\Microsoft.ServiceFabric.Actors.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ServiceFabric.Actors.3.0.480\build\net45\Microsoft.ServiceFabric.Actors.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.EntityFrameworkCore.Design.2.1.4\build\net461\Microsoft.EntityFrameworkCore.Design.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.EntityFrameworkCore.Design.2.1.4\build\net461\Microsoft.EntityFrameworkCore.Design.props'))" />
   </Target>
   <Import Project="..\packages\Microsoft.ServiceFabric.Actors.3.0.480\build\net45\Microsoft.ServiceFabric.Actors.targets" Condition="Exists('..\packages\Microsoft.ServiceFabric.Actors.3.0.480\build\net45\Microsoft.ServiceFabric.Actors.targets')" />
 </Project>

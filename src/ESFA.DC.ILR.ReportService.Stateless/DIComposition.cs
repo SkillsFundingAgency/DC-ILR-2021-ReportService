@@ -415,6 +415,14 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
         private static void RegisterServices(ContainerBuilder containerBuilder)
         {
+            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36ProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36NonContractedActivityProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<IlrFileServiceProvider>().As<IIlrProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
