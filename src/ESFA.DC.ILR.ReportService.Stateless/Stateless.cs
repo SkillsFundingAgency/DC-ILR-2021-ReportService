@@ -6,7 +6,7 @@ using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using Microsoft.ServiceFabric.Services.Runtime;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless
+namespace ESFA.DC.ILR.ReportService.Stateless
 {
     /// <summary>
     /// An instance of this class is created for each service instance by the Service Fabric runtime.

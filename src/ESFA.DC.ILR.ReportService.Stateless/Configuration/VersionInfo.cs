@@ -1,6 +1,6 @@
 ﻿using ESFA.DC.ILR.ReportService.Interface.Configuration;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
+namespace ESFA.DC.ILR.ReportService.Stateless.Configuration
 {
     public sealed class VersionInfo : IVersionInfo
     {

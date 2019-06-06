@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
+﻿namespace ESFA.DC.ILR.ReportService.Stateless.Configuration
 {
     public class JobStatusQueueOptions
     {

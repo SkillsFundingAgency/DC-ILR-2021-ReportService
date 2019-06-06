@@ -1,6 +1,6 @@
-﻿using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;
+﻿using ESFA.DC.ILR.ReportService.Stateless.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless.Configuration
+namespace ESFA.DC.ILR.ReportService.Stateless.Configuration
 {
     public class AzureStorageOptions : IAzureStorageOptions
     {

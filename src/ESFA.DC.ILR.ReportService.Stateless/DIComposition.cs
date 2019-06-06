@@ -32,10 +32,10 @@ using ESFA.DC.ILR1819.DataStore.EF;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
-using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
-using ESFA.DC.ILR1819.ReportService.Stateless.Handlers;
-using ESFA.DC.ILR1819.ReportService.Stateless.Interfaces;
-using ESFA.DC.ILR1819.ReportService.Stateless.Modules;
+using ESFA.DC.ILR.ReportService.Stateless.Configuration;
+using ESFA.DC.ILR.ReportService.Stateless.Handlers;
+using ESFA.DC.ILR.ReportService.Stateless.Interfaces;
+using ESFA.DC.ILR.ReportService.Stateless.Modules;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
@@ -56,9 +56,9 @@ using ESFA.DC.Serialization.Json;
 using ESFA.DC.Serialization.Xml;
 using ESFA.DC.ServiceFabric.Helpers.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using VersionInfo = ESFA.DC.ILR1819.ReportService.Stateless.Configuration.VersionInfo;
+using VersionInfo = ESFA.DC.ILR.ReportService.Stateless.Configuration.VersionInfo;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless
+namespace ESFA.DC.ILR.ReportService.Stateless
 {
     public static class DIComposition
     {
@@ -415,6 +415,14 @@ namespace ESFA.DC.ILR1819.ReportService.Stateless
 
         private static void RegisterServices(ContainerBuilder containerBuilder)
         {
+            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36ProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36NonContractedActivityProviderService>()
+                .WithAttributeFiltering()
+                .InstancePerLifetimeScope();
+
             containerBuilder.RegisterType<IlrFileServiceProvider>().As<IIlrProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();

@@ -2,10 +2,10 @@
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" InitialTargets=";ValidateMSBuildFiles">
   <Import Project="..\packages\Microsoft.VisualStudio.Azure.Fabric.MSBuild.1.6.6\build\Microsoft.VisualStudio.Azure.Fabric.Application.props" Condition="Exists('..\packages\Microsoft.VisualStudio.Azure.Fabric.MSBuild.1.6.6\build\Microsoft.VisualStudio.Azure.Fabric.Application.props')" />
   <PropertyGroup Label="Globals">
-    <ProjectGuid>298f6f4f-3528-43e9-af20-d4afa5e4a6e8</ProjectGuid>
-    <ProjectVersion>2.2</ProjectVersion>
+    <ProjectGuid>4d4dc4ea-f1d3-423a-ab48-0d3909182d85</ProjectGuid>
+    <ProjectVersion>2.4</ProjectVersion>
     <MinToolsVersion>1.5</MinToolsVersion>
-    <SupportedMSBuildNuGetPackageVersion>1.6.6</SupportedMSBuildNuGetPackageVersion>
+    <SupportedMSBuildNuGetPackageVersion>1.6.7</SupportedMSBuildNuGetPackageVersion>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
   </PropertyGroup>
   <ItemGroup Label="ProjectConfigurations">
@@ -20,9 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="ApplicationPackageRoot\ApplicationManifest.xml" />
-    <None Include="ApplicationParameters\Local.1Node.xml" />
-    <None Include="ApplicationParameters\Local.5Node.xml" />
-    <None Include="ApplicationParameters\Local.1Node.xml" />
     <None Include="ApplicationParameters\Cloud.xml" />
     <None Include="ApplicationParameters\Local.1Node.xml" />
     <None Include="ApplicationParameters\Local.5Node.xml" />
@@ -32,10 +29,10 @@
     <None Include="Scripts\Deploy-FabricApplication.ps1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Stateless\ESFA.DC.ILR1819.ReportService.Stateless.csproj" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Stateless\ESFA.DC.ILR.ReportService.Stateless.csproj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.Common.targets" />
   <PropertyGroup>

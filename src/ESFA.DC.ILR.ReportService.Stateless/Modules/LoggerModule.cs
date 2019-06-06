@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
-using ESFA.DC.ILR1819.ReportService.Stateless.Configuration;
+using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.Logging;
 using ESFA.DC.Logging.Config;
 using ESFA.DC.Logging.Config.Interfaces;
 using ESFA.DC.Logging.Enums;
 using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR1819.ReportService.Stateless.Modules
+namespace ESFA.DC.ILR.ReportService.Stateless.Modules
 {
     public class LoggerModule : Module
     {
