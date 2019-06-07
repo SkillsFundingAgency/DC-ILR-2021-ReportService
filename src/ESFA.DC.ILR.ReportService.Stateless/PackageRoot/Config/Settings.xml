@@ -29,22 +29,6 @@
     <Parameter Name="AsposeLicence" Value="" />
   </Section>
 
-  <Section Name="RedisSection">
-    <Parameter Name="RedisConnectionString" Value="" />
-  </Section>
-
-  <Section Name="DataTransportSettings">
-    <Parameter Name="MaxMessageSize" Value="1073741824" MustOverride="true"/>
-    <Parameter Name="SecurityCredentialsType" Value="None" />
-    <Parameter Name="CertificateFindType" Value="" />
-    <Parameter Name="CertificateFindValue" Value="" />
-    <Parameter Name="CertificateRemoteThumbprints" Value="" />
-    <Parameter Name="CertificateStoreLocation" Value="" />
-    <Parameter Name="CertificateStoreName" Value="" />
-    <Parameter Name="CertificateProtectionLevel" Value="" />
-    <Parameter Name="CertificateRemoteCommonNames" Value="" />
-  </Section>
-
   <Section Name="VersionSection">
     <Parameter Name="ServiceReleaseVersion" Value="" />
   </Section>

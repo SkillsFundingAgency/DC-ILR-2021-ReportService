@@ -13,7 +13,6 @@
     <Parameter Name="ILRDataStoreConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
     <Parameter Name="ILRDataStoreValidConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
     <Parameter Name="LoggerConnectionstring" DefaultValue="data source=(local);initial catalog=logs;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90;" />
-    <Parameter Name="MaxMessageSize" DefaultValue="1073741824" />
     <Parameter Name="AzureBlobConnectionString" DefaultValue="UseDevelopmentStorage=true" />
     <Parameter Name="AzureBlobContainerName" DefaultValue="ilr-files" />
     <Parameter Name="AsposeLicence" DefaultValue="" />
@@ -99,18 +98,12 @@
           <Section Name="DASPaymentsSection">
             <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
           </Section>
-          <Section Name="DataTransportSettings">
-            <Parameter Name="MaxMessageSize" Value="[MaxMessageSize]" />
-          </Section>
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
             <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
           </Section>
           <Section Name="SoftwareLicenceSection">
             <Parameter Name="AsposeLicence" Value="[AsposeLicence]" />
-          </Section>
-          <Section Name="RedisSection">
-            <Parameter Name="RedisConnectionString" Value="[RedisConnectionString]" />
           </Section>
           <Section Name="VersionSection">
             <Parameter Name="ServiceReleaseVersion" Value="[ServiceReleaseVersion]" />
