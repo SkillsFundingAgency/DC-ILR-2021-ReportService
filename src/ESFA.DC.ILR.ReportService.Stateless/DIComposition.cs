@@ -127,6 +127,9 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
             containerBuilder.RegisterModule(new StatelessServiceModule(statelessServiceConfiguration));
             containerBuilder.RegisterModule<SerializationModule>();
+            
+            var versionInfo = serviceFabricConfigurationService.GetConfigSectionAs<VersionInfo>("VersionSection");
+            containerBuilder.RegisterInstance(versionInfo).As<IVersionInfo>().SingleInstance();
 
             //// get ServiceBus, Azurestorage config values and register container
             //var serviceBusOptions =

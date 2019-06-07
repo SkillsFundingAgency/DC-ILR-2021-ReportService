@@ -22,7 +22,7 @@
     <Parameter Name="ServiceReleaseVersion" DefaultValue="" />
     <Parameter Name="JobStatusQueueName" DefaultValue="" />
     <Parameter Name="JobStatusConnectionString" DefaultValue="" />
-    <Parameter Name="ReportingSubscriptionName" DefaultValue="GenerateValidationReport" />
+    <Parameter Name="ReportingSubscriptionName" DefaultValue="Reports" />
     <!-- Topic Names -->
     <Parameter Name="TopicValidation" DefaultValue="Validation" />
     <Parameter Name="TopicFunding" DefaultValue="Funding" />
