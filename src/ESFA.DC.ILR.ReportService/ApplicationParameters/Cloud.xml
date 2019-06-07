@@ -15,7 +15,6 @@
     <Parameter Name="JobStatusQueueName" Value="__JobStatusQueueName__" />
     <Parameter Name="JobStatusConnectionString" Value="__JobStatusConnectionString__" />
     <Parameter Name="ServiceReleaseVersion" Value="__ServiceReleaseVersion__" />
-    <Parameter Name="ReportingSubscriptionName" Value="__ReportingSubscriptionName__" />
     <!-- Topic Names -->
     <Parameter Name="TopicValidation" Value="__TopicValidation__" />
     <Parameter Name="TopicFunding" Value="__TopicFunding__" />

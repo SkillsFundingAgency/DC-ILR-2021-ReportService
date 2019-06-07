@@ -54,7 +54,8 @@ using ESFA.DC.ReferenceData.FCS.Model.Interface;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
 using ESFA.DC.Serialization.Xml;
-using ESFA.DC.ServiceFabric.Helpers.Interfaces;
+using ESFA.DC.ServiceFabric.Common.Config.Interface;
+using ESFA.DC.ServiceFabric.Common.Modules;
 using Microsoft.EntityFrameworkCore;
 using VersionInfo = ESFA.DC.ILR.ReportService.Stateless.Configuration.VersionInfo;
 
@@ -62,47 +63,49 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 {
     public static class DIComposition
     {
-        public static ContainerBuilder BuildContainer(IConfigurationHelper configHelper)
+        public static ContainerBuilder BuildContainer(IServiceFabricConfigurationService serviceFabricConfigurationService)
         {
             var containerBuilder = new ContainerBuilder();
 
-            var larsConfiguration = configHelper.GetSectionValues<LarsConfiguration>("LarsSection");
+            var statelessServiceConfiguration = serviceFabricConfigurationService.GetConfigSectionAsStatelessServiceConfiguration();
+
+            var larsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<LarsConfiguration>("LarsSection");
             containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
 
-            var fcsConfiguration = configHelper.GetSectionValues<FCSConfiguration>("FCSSection");
+            var fcsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<FCSConfiguration>("FCSSection");
             containerBuilder.RegisterInstance(fcsConfiguration).As<FCSConfiguration>().SingleInstance();
 
-            var dasCommitmentsConfiguration = configHelper.GetSectionValues<DasCommitmentsConfiguration>("DasCommitmentsSection");
+            var dasCommitmentsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DasCommitmentsConfiguration>("DasCommitmentsSection");
             containerBuilder.RegisterInstance(dasCommitmentsConfiguration).As<DasCommitmentsConfiguration>().SingleInstance();
 
-            var orgConfiguration = configHelper.GetSectionValues<OrgConfiguration>("OrgSection");
+            var orgConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<OrgConfiguration>("OrgSection");
             containerBuilder.RegisterInstance(orgConfiguration).As<OrgConfiguration>().SingleInstance();
 
-            var easConfiguration = configHelper.GetSectionValues<EasConfiguration>("EasSection");
+            var easConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<EasConfiguration>("EasSection");
             containerBuilder.RegisterInstance(easConfiguration).As<EasConfiguration>().SingleInstance();
 
-            var ilrValidationErrorsConfiguration = configHelper.GetSectionValues<IlrValidationErrorsConfiguration>("IlrValidationErrorsSection");
+            var ilrValidationErrorsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<IlrValidationErrorsConfiguration>("IlrValidationErrorsSection");
             containerBuilder.RegisterInstance(ilrValidationErrorsConfiguration).As<IlrValidationErrorsConfiguration>().SingleInstance();
 
-            var dataStoreConfiguration = configHelper.GetSectionValues<DataStoreConfiguration>("DataStoreSection");
+            var dataStoreConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DataStoreConfiguration>("DataStoreSection");
             containerBuilder.RegisterInstance(dataStoreConfiguration).As<DataStoreConfiguration>().SingleInstance();
 
-            var largeEmployeeConfiguration = configHelper.GetSectionValues<LargeEmployerConfiguration>("LargeEmployerSection");
+            var largeEmployeeConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<LargeEmployerConfiguration>("LargeEmployerSection");
             containerBuilder.RegisterInstance(largeEmployeeConfiguration).As<LargeEmployerConfiguration>().SingleInstance();
 
-            var dasPaymentsConfiguration = configHelper.GetSectionValues<DASPaymentsConfiguration>("DASPaymentsSection");
+            var dasPaymentsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DASPaymentsConfiguration>("DASPaymentsSection");
             containerBuilder.RegisterInstance(dasPaymentsConfiguration).As<DASPaymentsConfiguration>().SingleInstance();
 
-            var postcodeConfiguration = configHelper.GetSectionValues<PostcodeConfiguration>("PostcodeSection");
+            var postcodeConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<PostcodeConfiguration>("PostcodeSection");
             containerBuilder.RegisterInstance(postcodeConfiguration).As<PostcodeConfiguration>().SingleInstance();
 
             var collectionsManagementConfiguration =
-                configHelper.GetSectionValues<CollectionsManagementConfiguration>("CollectionsManagementSection");
+                serviceFabricConfigurationService.GetConfigSectionAs<CollectionsManagementConfiguration>("CollectionsManagementSection");
             containerBuilder.RegisterInstance(collectionsManagementConfiguration)
                 .As<CollectionsManagementConfiguration>().SingleInstance();
 
             // register azure blob storage service
-            var azureBlobStorageOptions = configHelper.GetSectionValues<AzureStorageOptions>("AzureStorageSection");
+            var azureBlobStorageOptions = serviceFabricConfigurationService.GetConfigSectionAs<AzureStorageOptions>("AzureStorageSection");
             containerBuilder.RegisterInstance(azureBlobStorageOptions).As<IAzureStorageOptions>();
             containerBuilder.Register(c =>
                     new AzureStorageKeyValuePersistenceConfig(
@@ -122,77 +125,70 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterInstance(azureStorageFileServiceConfiguration).As<IAzureStorageFileServiceConfiguration>();
             containerBuilder.RegisterType<AzureStorageFileService>().As<IFileService>();
 
-            // register serialization
-            containerBuilder.RegisterType<JsonSerializationService>()
-                .As<IJsonSerializationService>();
-            containerBuilder.RegisterType<XmlSerializationService>()
-                .As<IXmlSerializationService>();
+            containerBuilder.RegisterModule(new StatelessServiceModule(statelessServiceConfiguration));
+            containerBuilder.RegisterModule<SerializationModule>();
 
-            // get ServiceBus, Azurestorage config values and register container
-            var serviceBusOptions =
-                configHelper.GetSectionValues<ServiceBusOptions>("ServiceBusSettings");
-            containerBuilder.RegisterInstance(serviceBusOptions).As<ServiceBusOptions>().SingleInstance();
+            //// get ServiceBus, Azurestorage config values and register container
+            //var serviceBusOptions =
+            //    serviceFabricConfigurationService.GetConfigSectionAs<ServiceBusOptions>("ServiceBusSettings");
+            //containerBuilder.RegisterInstance(serviceBusOptions).As<ServiceBusOptions>().SingleInstance();
 
-            // Version info
-            var versionInfo = configHelper.GetSectionValues<VersionInfo>("VersionSection");
-            containerBuilder.RegisterInstance(versionInfo).As<IVersionInfo>().SingleInstance();
+            //// register logger
+            //var loggerOptions =
+            //    serviceFabricConfigurationService.GetConfigSectionAs<LoggerOptions>("LoggerSection");
+            //containerBuilder.RegisterInstance(loggerOptions).As<LoggerOptions>().SingleInstance();
+            //containerBuilder.RegisterModule<LoggerModule>();
 
-            // register logger
-            var loggerOptions =
-                configHelper.GetSectionValues<LoggerOptions>("LoggerSection");
-            containerBuilder.RegisterInstance(loggerOptions).As<LoggerOptions>().SingleInstance();
-            containerBuilder.RegisterModule<LoggerModule>();
+            //// auditing
+            //var auditPublishConfig = new ServiceBusQueueConfig(
+            //    serviceBusOptions.ServiceBusConnectionString,
+            //    serviceBusOptions.AuditQueueName,
+            //    Environment.ProcessorCount);
+            //containerBuilder.Register(c => new QueuePublishService<AuditingDto>(
+            //        auditPublishConfig,
+            //        c.Resolve<IJsonSerializationService>()))
+            //    .As<IQueuePublishService<AuditingDto>>();
 
-            // auditing
-            var auditPublishConfig = new ServiceBusQueueConfig(
-                serviceBusOptions.ServiceBusConnectionString,
-                serviceBusOptions.AuditQueueName,
-                Environment.ProcessorCount);
-            containerBuilder.Register(c => new QueuePublishService<AuditingDto>(
-                    auditPublishConfig,
-                    c.Resolve<IJsonSerializationService>()))
-                .As<IQueuePublishService<AuditingDto>>();
+            //// get job status queue config values and register container
+            //var jobStatusQueueOptions =
+            //    serviceFabricConfigurationService.GetConfigSectionAs<JobStatusQueueOptions>("JobStatusSection");
+            //containerBuilder.RegisterInstance(jobStatusQueueOptions).As<JobStatusQueueOptions>().SingleInstance();
 
-            // get job status queue config values and register container
-            var jobStatusQueueOptions =
-                configHelper.GetSectionValues<JobStatusQueueOptions>("JobStatusSection");
-            containerBuilder.RegisterInstance(jobStatusQueueOptions).As<JobStatusQueueOptions>().SingleInstance();
+            //// Job Status Update Service
+            //var jobStatusPublishConfig = new JobStatusQueueConfig(
+            //    jobStatusQueueOptions.JobStatusConnectionString,
+            //    jobStatusQueueOptions.JobStatusQueueName,
+            //    Environment.ProcessorCount);
 
-            // Job Status Update Service
-            var jobStatusPublishConfig = new JobStatusQueueConfig(
-                jobStatusQueueOptions.JobStatusConnectionString,
-                jobStatusQueueOptions.JobStatusQueueName,
-                Environment.ProcessorCount);
+            //containerBuilder.Register(c => new QueuePublishService<JobStatusDto>(
+            //        jobStatusPublishConfig,
+            //        c.Resolve<IJsonSerializationService>()))
+            //    .As<IQueuePublishService<JobStatusDto>>();
 
-            containerBuilder.Register(c => new QueuePublishService<JobStatusDto>(
-                    jobStatusPublishConfig,
-                    c.Resolve<IJsonSerializationService>()))
-                .As<IQueuePublishService<JobStatusDto>>();
+            //// register Job Context services
+            //var topicConfig = new ServiceBusTopicConfig(
+            //    serviceBusOptions.ServiceBusConnectionString,
+            //    serviceBusOptions.TopicName,
+            //    serviceBusOptions.ReportingSubscriptionName,
+            //    Environment.ProcessorCount);
+            //containerBuilder.Register(c =>
+            //{
+            //    var topicSubscriptionService =
+            //        new TopicSubscriptionSevice<JobContextDto>(
+            //            topicConfig,
+            //            c.Resolve<IJsonSerializationService>(),
+            //            c.Resolve<ILogger>());
+            //    return topicSubscriptionService;
+            //}).As<ITopicSubscriptionService<JobContextDto>>();
 
-            // register Job Context services
-            var topicConfig = new ServiceBusTopicConfig(
-                serviceBusOptions.ServiceBusConnectionString,
-                serviceBusOptions.TopicName,
-                serviceBusOptions.ReportingSubscriptionName,
-                Environment.ProcessorCount);
-            containerBuilder.Register(c =>
-            {
-                var topicSubscriptionService =
-                    new TopicSubscriptionSevice<JobContextDto>(
-                        topicConfig,
-                        c.Resolve<IJsonSerializationService>(),
-                        c.Resolve<ILogger>());
-                return topicSubscriptionService;
-            }).As<ITopicSubscriptionService<JobContextDto>>();
-
-            containerBuilder.Register(c =>
-            {
-                var topicPublishService =
-                    new TopicPublishService<JobContextDto>(
-                        topicConfig,
-                        c.Resolve<IJsonSerializationService>());
-                return topicPublishService;
-            }).As<ITopicPublishService<JobContextDto>>();
+            //containerBuilder.Register(c =>
+            //{
+            //    var topicPublishService =
+            //        new TopicPublishService<JobContextDto>(
+            //            topicConfig,
+            //            c.Resolve<IJsonSerializationService>());
+            //    return topicPublishService;
+            //}).As<ITopicPublishService<JobContextDto>>();
 
             // register message mapper
             containerBuilder.RegisterType<DefaultJobContextMessageMapper<JobContextMessage>>().As<IMapper<JobContextMessage, JobContextMessage>>();
@@ -204,11 +200,11 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<ZipService>().As<IZipService>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<ReportsProvider>().As<IReportsProvider>().InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<JobContextManager<JobContextMessage>>().As<IJobContextManager<JobContextMessage>>()
-                .InstancePerLifetimeScope();
+            //containerBuilder.RegisterType<JobContextManager<JobContextMessage>>().As<IJobContextManager<JobContextMessage>>()
+            //    .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
-                .InstancePerLifetimeScope();
+            //containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
+            //    .InstancePerLifetimeScope();
 
             containerBuilder.Register(context =>
             {

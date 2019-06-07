@@ -2,16 +2,29 @@
 <Settings xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <!-- Add your custom configuration sections and parameters here -->
 
+  <Section Name="StatelessServiceConfiguration">
+    <Parameter Name="ServiceBusConnectionString" Value="" />
+    <Parameter Name="TopicName" Value="" />
+    <Parameter Name="SubscriptionName" Value=""/>
+    <Parameter Name="TopicMaxConcurrentCalls" Value=""/>
+    <Parameter Name="TopicMaxCallbackTimeSpanMinutes" Value="" />
+    <Parameter Name="JobStatusQueueName" Value="" />
+    <Parameter Name="JobStatusMaxConcurrentCalls" Value="" />
+    <Parameter Name="AuditQueueName" Value="" />
+    <Parameter Name="AuditMaxConcurrentCalls" Value="" />
+    <Parameter Name="LoggerConnectionString" Value="" />
+  </Section>
+
   <Section Name="DataStoreSection">
     <Parameter Name="ILRDataStoreConnectionString" Value="" />
     <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
   </Section>
-  <Section Name="ServiceBusSettings">
-    <Parameter Name="AuditQueueName" Value="" />
+  <!--<Section Name="ServiceBusSettings">
+    --><!--<Parameter Name="AuditQueueName" Value="" />
     <Parameter Name="ServiceBusConnectionString" Value="" />
-    <Parameter Name="TopicName" Value="" />
-    <Parameter Name="ReportingSubscriptionName" Value="" />
-  </Section>
+    <Parameter Name="TopicName" Value="" />--><!--
+    --><!--<Parameter Name="SubscriptionName" Value="" />--><!--
+  </Section>-->
 
   <Section  Name="AzureStorageSection">
     <Parameter Name="AzureBlobConnectionString" Value="" />
@@ -38,18 +51,18 @@
     <Parameter Name="CertificateRemoteCommonNames" Value="" />
   </Section>
 
-  <Section Name="LoggerSection">
+  <!--<Section Name="LoggerSection">
     <Parameter Name="LoggerConnectionstring" Value="" />
-  </Section>
+  </Section>-->
 
   <Section Name="VersionSection">
     <Parameter Name="ServiceReleaseVersion" Value="" />
   </Section>
 
-  <Section Name="JobStatusSection">
+  <!--<Section Name="JobStatusSection">
     <Parameter Name="JobStatusQueueName" Value="" />
     <Parameter Name="JobStatusConnectionString" Value="" />
-  </Section>
+  </Section>-->
 
   <Section Name="TopicAndTaskSection">
     <Parameter Name="TopicValidation" Value="" />

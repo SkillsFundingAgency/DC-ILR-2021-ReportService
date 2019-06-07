@@ -4,6 +4,10 @@
     <Parameter Name="ESFA.DC.ILR1920.ReportService.Stateless_InstanceCount" DefaultValue="1" />
     <Parameter Name="ProcessingServicePlacementConstraints" DefaultValue="" />
     <Parameter Name="AuditQueueName" DefaultValue="audit-queue" />
+    <Parameter Name="TopicMaxConcurrentCalls" DefaultValue="1" />
+    <Parameter Name="TopicMaxCallbackTimeSpanMinutes" DefaultValue="30" />
+    <Parameter Name="JobStatusMaxConcurrentCalls" DefaultValue="1" />
+    <Parameter Name="AuditMaxConcurrentCalls" DefaultValue="1" />
     <Parameter Name="TopicName" DefaultValue="TopicName" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="ILRDataStoreConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
@@ -76,6 +80,18 @@
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
+          <Section Name="StatelessServiceConfiguration">
+            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
+            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="SubscriptionName" Value="[ReportingSubscriptionName]" />
+            <Parameter Name="TopicMaxConcurrentCalls" Value="[TopicMaxConcurrentCalls]" />
+            <Parameter Name="TopicMaxCallbackTimeSpanMinutes" Value="[TopicMaxCallbackTimeSpanMinutes]" />
+            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
+            <Parameter Name="JobStatusMaxConcurrentCalls" Value="[JobStatusMaxConcurrentCalls]" />
+            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+            <Parameter Name="AuditMaxConcurrentCalls" Value="[AuditMaxConcurrentCalls]" />
+            <Parameter Name="LoggerConnectionString" Value="[LoggerConnectionstring]" />
+          </Section>
           <Section Name="DataStoreSection">
             <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
             <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
@@ -83,18 +99,20 @@
           <Section Name="DASPaymentsSection">
             <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
           </Section>
-          <Section Name="ServiceBusSettings">
-            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+          <!--<Section Name="ServiceBusSettings">
+            -->
+          <!--<Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />
+            <Parameter Name="TopicName" Value="[TopicName]" />-->
+          <!--
             <Parameter Name="ReportingSubscriptionName" Value="[ReportingSubscriptionName]" />
-          </Section>
+          </Section>-->
           <Section Name="DataTransportSettings">
             <Parameter Name="MaxMessageSize" Value="[MaxMessageSize]" />
           </Section>
-          <Section Name="LoggerSection">
+          <!--<Section Name="LoggerSection">
             <Parameter Name="LoggerConnectionstring" Value="[LoggerConnectionstring]" />
-          </Section>
+          </Section>-->
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
             <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
@@ -108,10 +126,10 @@
           <Section Name="VersionSection">
             <Parameter Name="ServiceReleaseVersion" Value="[ServiceReleaseVersion]" />
           </Section>
-          <Section Name="JobStatusSection">
+          <!--<Section Name="JobStatusSection">
             <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
             <Parameter Name="JobStatusConnectionString" Value="[JobStatusConnectionString]" />
-          </Section>
+          </Section>-->
           <Section Name="TopicAndTaskSection">
             <Parameter Name="TopicValidation" Value="[TopicValidation]" />
             <Parameter Name="TopicFunding" Value="[TopicFunding]" />
