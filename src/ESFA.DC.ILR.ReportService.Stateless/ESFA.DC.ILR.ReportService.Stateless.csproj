@@ -417,23 +417,15 @@
   <ItemGroup>
     <Compile Include="Configuration\AzureStorageKeyValuePersistenceConfig.cs" />
     <Compile Include="Configuration\AzureStorageOptions.cs" />
-    <Compile Include="Configuration\JobStatusQueueConfig.cs" />
-    <Compile Include="Configuration\JobStatusQueueOptions.cs" />
-    <Compile Include="Configuration\LoggerOptions.cs" />
-    <Compile Include="Configuration\ServiceBusOptions.cs" />
-    <Compile Include="Configuration\ServiceBusQueueConfig.cs" />
-    <Compile Include="Configuration\ServiceBusTopicConfig.cs" />
     <Compile Include="Configuration\SoftwareLicenceSection.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContext.cs" />
     <Compile Include="DIComposition.cs" />
     <Compile Include="Handlers\MessageHandler.cs" />
     <Compile Include="Interfaces\IAzureStorageOptions.cs" />
-    <Compile Include="Modules\LoggerModule.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ServiceEventSource.cs" />
-    <Compile Include="Stateless.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="PackageRoot\Config\Settings.xml" />

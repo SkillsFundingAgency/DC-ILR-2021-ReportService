@@ -99,20 +99,9 @@
           <Section Name="DASPaymentsSection">
             <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
           </Section>
-          <!--<Section Name="ServiceBusSettings">
-            -->
-          <!--<Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
-            <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
-            <Parameter Name="TopicName" Value="[TopicName]" />-->
-          <!--
-            <Parameter Name="ReportingSubscriptionName" Value="[ReportingSubscriptionName]" />
-          </Section>-->
           <Section Name="DataTransportSettings">
             <Parameter Name="MaxMessageSize" Value="[MaxMessageSize]" />
           </Section>
-          <!--<Section Name="LoggerSection">
-            <Parameter Name="LoggerConnectionstring" Value="[LoggerConnectionstring]" />
-          </Section>-->
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
             <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
@@ -126,10 +115,6 @@
           <Section Name="VersionSection">
             <Parameter Name="ServiceReleaseVersion" Value="[ServiceReleaseVersion]" />
           </Section>
-          <!--<Section Name="JobStatusSection">
-            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="JobStatusConnectionString" Value="[JobStatusConnectionString]" />
-          </Section>-->
           <Section Name="TopicAndTaskSection">
             <Parameter Name="TopicValidation" Value="[TopicValidation]" />
             <Parameter Name="TopicFunding" Value="[TopicFunding]" />

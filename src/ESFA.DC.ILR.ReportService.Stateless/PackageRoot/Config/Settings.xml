@@ -19,13 +19,7 @@
     <Parameter Name="ILRDataStoreConnectionString" Value="" />
     <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
   </Section>
-  <!--<Section Name="ServiceBusSettings">
-    --><!--<Parameter Name="AuditQueueName" Value="" />
-    <Parameter Name="ServiceBusConnectionString" Value="" />
-    <Parameter Name="TopicName" Value="" />--><!--
-    --><!--<Parameter Name="SubscriptionName" Value="" />--><!--
-  </Section>-->
-
+  
   <Section  Name="AzureStorageSection">
     <Parameter Name="AzureBlobConnectionString" Value="" />
     <Parameter Name="AzureBlobContainerName" Value="" />
@@ -51,18 +45,9 @@
     <Parameter Name="CertificateRemoteCommonNames" Value="" />
   </Section>
 
-  <!--<Section Name="LoggerSection">
-    <Parameter Name="LoggerConnectionstring" Value="" />
-  </Section>-->
-
   <Section Name="VersionSection">
     <Parameter Name="ServiceReleaseVersion" Value="" />
   </Section>
-
-  <!--<Section Name="JobStatusSection">
-    <Parameter Name="JobStatusQueueName" Value="" />
-    <Parameter Name="JobStatusConnectionString" Value="" />
-  </Section>-->
 
   <Section Name="TopicAndTaskSection">
     <Parameter Name="TopicValidation" Value="" />

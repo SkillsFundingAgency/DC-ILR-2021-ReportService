@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Autofac;
 using Autofac.Features.AttributeFilters;
-using ESFA.DC.Auditing.Interface;
 using ESFA.DC.DASPayments.EF;
 using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -35,25 +34,15 @@ using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Handlers;
 using ESFA.DC.ILR.ReportService.Stateless.Interfaces;
-using ESFA.DC.ILR.ReportService.Stateless.Modules;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;
-using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
-using ESFA.DC.JobContextManager.Model.Interface;
-using ESFA.DC.JobStatus.Interface;
-using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Mapping.Interface;
-using ESFA.DC.Queueing;
-using ESFA.DC.Queueing.Interface;
 using ESFA.DC.ReferenceData.FCS.Model;
 using ESFA.DC.ReferenceData.FCS.Model.Interface;
-using ESFA.DC.Serialization.Interfaces;
-using ESFA.DC.Serialization.Json;
-using ESFA.DC.Serialization.Xml;
 using ESFA.DC.ServiceFabric.Common.Config.Interface;
 using ESFA.DC.ServiceFabric.Common.Modules;
 using Microsoft.EntityFrameworkCore;
@@ -127,71 +116,9 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
             containerBuilder.RegisterModule(new StatelessServiceModule(statelessServiceConfiguration));
             containerBuilder.RegisterModule<SerializationModule>();
-            
+
             var versionInfo = serviceFabricConfigurationService.GetConfigSectionAs<VersionInfo>("VersionSection");
             containerBuilder.RegisterInstance(versionInfo).As<IVersionInfo>().SingleInstance();
-
-            //// get ServiceBus, Azurestorage config values and register container
-            //var serviceBusOptions =
-            //    serviceFabricConfigurationService.GetConfigSectionAs<ServiceBusOptions>("ServiceBusSettings");
-            //containerBuilder.RegisterInstance(serviceBusOptions).As<ServiceBusOptions>().SingleInstance();
-
-            //// register logger
-            //var loggerOptions =
-            //    serviceFabricConfigurationService.GetConfigSectionAs<LoggerOptions>("LoggerSection");
-            //containerBuilder.RegisterInstance(loggerOptions).As<LoggerOptions>().SingleInstance();
-            //containerBuilder.RegisterModule<LoggerModule>();
-
-            //// auditing
-            //var auditPublishConfig = new ServiceBusQueueConfig(
-            //    serviceBusOptions.ServiceBusConnectionString,
-            //    serviceBusOptions.AuditQueueName,
-            //    Environment.ProcessorCount);
-            //containerBuilder.Register(c => new QueuePublishService<AuditingDto>(
-            //        auditPublishConfig,
-            //        c.Resolve<IJsonSerializationService>()))
-            //    .As<IQueuePublishService<AuditingDto>>();
-
-            //// get job status queue config values and register container
-            //var jobStatusQueueOptions =
-            //    serviceFabricConfigurationService.GetConfigSectionAs<JobStatusQueueOptions>("JobStatusSection");
-            //containerBuilder.RegisterInstance(jobStatusQueueOptions).As<JobStatusQueueOptions>().SingleInstance();
-
-            //// Job Status Update Service
-            //var jobStatusPublishConfig = new JobStatusQueueConfig(
-            //    jobStatusQueueOptions.JobStatusConnectionString,
-            //    jobStatusQueueOptions.JobStatusQueueName,
-            //    Environment.ProcessorCount);
-
-            //containerBuilder.Register(c => new QueuePublishService<JobStatusDto>(
-            //        jobStatusPublishConfig,
-            //        c.Resolve<IJsonSerializationService>()))
-            //    .As<IQueuePublishService<JobStatusDto>>();
-
-            //// register Job Context services
-            //var topicConfig = new ServiceBusTopicConfig(
-            //    serviceBusOptions.ServiceBusConnectionString,
-            //    serviceBusOptions.TopicName,
-            //    serviceBusOptions.ReportingSubscriptionName,
-            //    Environment.ProcessorCount);
-            //containerBuilder.Register(c =>
-            //{
-            //    var topicSubscriptionService =
-            //        new TopicSubscriptionSevice<JobContextDto>(
-            //            topicConfig,
-            //            c.Resolve<IJsonSerializationService>(),
-            //            c.Resolve<ILogger>());
-            //    return topicSubscriptionService;
-            //}).As<ITopicSubscriptionService<JobContextDto>>();
-
-            //containerBuilder.Register(c =>
-            //{
-            //    var topicPublishService =
-            //        new TopicPublishService<JobContextDto>(
-            //            topicConfig,
-            //            c.Resolve<IJsonSerializationService>());
-            //    return topicPublishService;
-            //}).As<ITopicPublishService<JobContextDto>>();
 
             // register message mapper
             containerBuilder.RegisterType<DefaultJobContextMessageMapper<JobContextMessage>>().As<IMapper<JobContextMessage, JobContextMessage>>();
@@ -202,12 +129,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<EntryPoint>().WithAttributeFiltering().InstancePerLifetimeScope();
             containerBuilder.RegisterType<ZipService>().As<IZipService>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<ReportsProvider>().As<IReportsProvider>().InstancePerLifetimeScope();
-
-            //containerBuilder.RegisterType<JobContextManager<JobContextMessage>>().As<IJobContextManager<JobContextMessage>>()
-            //    .InstancePerLifetimeScope();
-
-            //containerBuilder.RegisterType<JobContextMessage>().As<IJobContextMessage>()
-            //    .InstancePerLifetimeScope();
 
             containerBuilder.Register(context =>
             {
