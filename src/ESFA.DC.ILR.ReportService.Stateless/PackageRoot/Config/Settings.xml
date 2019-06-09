@@ -15,11 +15,6 @@
     <Parameter Name="LoggerConnectionString" Value="" />
   </Section>
 
-  <!--<Section Name="DataStoreSection">
-    <Parameter Name="ILRDataStoreConnectionString" Value="" />
-    <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
-  </Section>-->
-  
   <Section  Name="AzureStorageSection">
     <Parameter Name="AzureBlobConnectionString" Value="" />
     <Parameter Name="AzureBlobContainerName" Value="" />
@@ -77,44 +72,4 @@
     <Parameter Name="ILRDataStoreConnectionString" Value="" />
     <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
   </Section>
-
-  <!--<Section Name="LarsSection">
-    <Parameter Name="LarsConnectionString" Value=""/>
-  </Section>
-
-  <Section Name="FCSSection">
-    <Parameter Name="FCSConnectionString" Value=""/>
-  </Section>
-
-  <Section Name="DASPaymentsSection">
-    <Parameter Name="DASPaymentsConnectionString" Value=""/>
-  </Section>
-
-  <Section Name="OrgSection">
-    <Parameter Name="OrgConnectionString" Value="" />
-  </Section>
-
-  <Section Name="DasCommitmentsSection">
-    <Parameter Name="DasCommitmentsConnectionString" Value="" />
-  </Section>
-
-  <Section Name="CollectionsManagementSection">
-    <Parameter Name="CollectionsManagementConnectionString" Value="" />
-  </Section>
-
-  <Section Name="EasSection">
-    <Parameter Name="EasConnectionString" Value="" />
-  </Section>
-
-  <Section Name="PostcodeSection">
-    <Parameter Name="PostcodeConnectionString" Value="" />
-  </Section>
-
-  <Section Name="LargeEmployerSection">
-    <Parameter Name="LargeEmployerConnectionString" Value="" />
-  </Section>
-
-  <Section Name="IlrValidationErrorsSection">
-    <Parameter Name="IlrValidationErrorsConnectionString" Value="" />
-  </Section>-->
 </Settings>

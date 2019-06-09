@@ -105,13 +105,6 @@
             <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
             <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
           </Section>
-          <!--<Section Name="DataStoreSection">
-            <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
-            <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
-          </Section>
-          <Section Name="DASPaymentsSection">
-            <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
-          </Section>-->
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
             <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
@@ -151,33 +144,6 @@
             <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="[TopicReports_TaskGenerateSummaryOfFM35FundingReport]" />
             <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="[TopicReports_TaskGenerateHNSSummaryReport]" />
           </Section>
-          <!--<Section Name="LarsSection">
-            <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
-          </Section>
-          <Section Name="FCSSection">
-            <Parameter Name="FCSConnectionString" Value="[FCSConnectionString]" />
-          </Section>
-          <Section Name="OrgSection">
-            <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />
-          </Section>
-          <Section Name="DasCommitmentsSection">
-            <Parameter Name="DasCommitmentsConnectionString" Value="[DasCommitmentsConnectionString]" />
-          </Section>
-          <Section Name="EasSection">
-            <Parameter Name="EasConnectionString" Value="[EasConnectionString]" />
-          </Section>
-          <Section Name="PostcodeSection">
-            <Parameter Name="PostcodeConnectionString" Value="[PostcodeConnectionString]" />
-          </Section>
-          <Section Name="LargeEmployerSection">
-            <Parameter Name="LargeEmployerConnectionString" Value="[LargeEmployerConnectionString]" />
-          </Section>
-          <Section Name="CollectionsManagementSection">
-            <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />
-          </Section>
-          <Section Name="IlrValidationErrorsSection">
-            <Parameter Name="IlrValidationErrorsConnectionString" Value="[IlrValidationErrorsConnectionString]" />
-          </Section>-->
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>

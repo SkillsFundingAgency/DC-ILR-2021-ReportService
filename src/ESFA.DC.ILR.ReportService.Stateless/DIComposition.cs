@@ -60,40 +60,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             var reportServiceConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<ReportServiceConfiguration>("ReportServiceConfiguration");
             containerBuilder.RegisterInstance(reportServiceConfiguration).As<IReportServiceConfiguration>();
 
-            //var larsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<LarsConfiguration>("LarsSection");
-            //containerBuilder.RegisterInstance(larsConfiguration).As<LarsConfiguration>().SingleInstance();
-
-            //var fcsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<FCSConfiguration>("FCSSection");
-            //containerBuilder.RegisterInstance(fcsConfiguration).As<FCSConfiguration>().SingleInstance();
-
-            //var dasCommitmentsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DasCommitmentsConfiguration>("DasCommitmentsSection");
-            //containerBuilder.RegisterInstance(dasCommitmentsConfiguration).As<DasCommitmentsConfiguration>().SingleInstance();
-
-            //var orgConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<OrgConfiguration>("OrgSection");
-            //containerBuilder.RegisterInstance(orgConfiguration).As<OrgConfiguration>().SingleInstance();
-
-            //var easConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<EasConfiguration>("EasSection");
-            //containerBuilder.RegisterInstance(easConfiguration).As<EasConfiguration>().SingleInstance();
-
-            //var ilrValidationErrorsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<IlrValidationErrorsConfiguration>("IlrValidationErrorsSection");
-            //containerBuilder.RegisterInstance(ilrValidationErrorsConfiguration).As<IlrValidationErrorsConfiguration>().SingleInstance();
-
-            //var dataStoreConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DataStoreConfiguration>("DataStoreSection");
-            //containerBuilder.RegisterInstance(dataStoreConfiguration).As<DataStoreConfiguration>().SingleInstance();
-
-            //var largeEmployeeConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<LargeEmployerConfiguration>("LargeEmployerSection");
-            //containerBuilder.RegisterInstance(largeEmployeeConfiguration).As<LargeEmployerConfiguration>().SingleInstance();
-
-            //var dasPaymentsConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DASPaymentsConfiguration>("DASPaymentsSection");
-            //containerBuilder.RegisterInstance(dasPaymentsConfiguration).As<DASPaymentsConfiguration>().SingleInstance();
-
-            //var postcodeConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<PostcodeConfiguration>("PostcodeSection");
-            //containerBuilder.RegisterInstance(postcodeConfiguration).As<PostcodeConfiguration>().SingleInstance();
-
-            //var collectionsManagementConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<CollectionsManagementConfiguration>("CollectionsManagementSection");
-            //containerBuilder.RegisterInstance(collectionsManagementConfiguration)
-            //    .As<CollectionsManagementConfiguration>().SingleInstance();
-
             // register azure blob storage service
             var azureBlobStorageOptions = serviceFabricConfigurationService.GetConfigSectionAs<AzureStorageOptions>("AzureStorageSection");
             containerBuilder.RegisterInstance(azureBlobStorageOptions).As<IAzureStorageOptions>();
@@ -130,17 +96,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<EntryPoint>().WithAttributeFiltering().InstancePerLifetimeScope();
             containerBuilder.RegisterType<ZipService>().As<IZipService>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<ReportsProvider>().As<IReportsProvider>().InstancePerLifetimeScope();
-
-            //containerBuilder.Register(context =>
-            //{
-            //    DbContextOptionsBuilder optionsBuilder = new DbContextOptionsBuilder();
-            //    optionsBuilder.UseSqlServer(
-            //        reportServiceConfiguration.CollectionsManagementConnectionString,
-            //        options => options.EnableRetryOnFailure(3, TimeSpan.FromSeconds(3), new List<int>()));
-            //    return optionsBuilder.Options;
-            //})
-            //.As<DbContextOptions>()
-            //.InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<ILR1819_DataStoreEntitiesValid>().As<IIlr1819ValidContext>();
             containerBuilder.Register(context =>
