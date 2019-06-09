@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
@@ -19,7 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
         private readonly ILogger _logger;
         private readonly IStreamableKeyValuePersistenceService _storage;
         private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly DataStoreConfiguration _dataStoreConfiguration;
+        private readonly IReportServiceConfiguration _reportServiceConfiguration;
 
         private readonly SemaphoreSlim _getDataLock;
 
@@ -32,13 +32,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
-            DataStoreConfiguration dataStoreConfiguration)
+            IReportServiceConfiguration reportServiceConfiguration)
         {
             _filename = key;
             _logger = logger;
             _storage = storage;
             _jsonSerializationService = jsonSerializationService;
-            _dataStoreConfiguration = dataStoreConfiguration;
+            _reportServiceConfiguration = reportServiceConfiguration;
             _loadedData = null;
             _getDataLock = new SemaphoreSlim(1, 1);
         }
@@ -71,7 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
                 {
                     var validLearnersList = new List<string>();
 
-                    DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_dataStoreConfiguration.ILRDataStoreValidConnectionString).Options;
+                    DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_reportServiceConfiguration.ILRDataStoreValidConnectionString).Options;
                     using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
                     {
                         validLearnersList = ilrValidContext.Learners.Where(x => x.UKPRN == ukPrn).Select(x => x.LearnRefNumber).ToList();

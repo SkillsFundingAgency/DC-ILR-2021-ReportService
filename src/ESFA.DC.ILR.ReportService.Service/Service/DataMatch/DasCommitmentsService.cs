@@ -5,8 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.DAS.Model;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.DasCommitments;
 using ESFA.DC.ILR.ReportService.Service.Comparer;
 using ESFA.DC.Logging.Interfaces;
@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service.DataMatch
     {
         private static readonly IEqualityComparer<DasCommitments> Comparer = new DasCommitmentsComparer();
 
-        private readonly DasCommitmentsConfiguration _dasCommitmentsConfiguration;
+        private readonly IReportServiceConfiguration _reportServiceConfiguration;
         private readonly IDasCommitmentBuilder _dasCommitmentBuilder;
         private readonly ILogger _logger;
         private readonly SemaphoreSlim _getDataLock;
@@ -26,11 +26,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Service.DataMatch
         private List<DasCommitment> _dasCommitments;
 
         public DasCommitmentsService(
-            DasCommitmentsConfiguration dasCommitmentsConfiguration,
+            IReportServiceConfiguration reportServiceConfiguration,
             IDasCommitmentBuilder dasCommitmentBuilder,
             ILogger logger)
         {
-            _dasCommitmentsConfiguration = dasCommitmentsConfiguration;
+            _reportServiceConfiguration = reportServiceConfiguration;
             _dasCommitmentBuilder = dasCommitmentBuilder;
             _logger = logger;
 
@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service.DataMatch
 
                 List<DasCommitments> dasCommitments = new List<DasCommitments>();
 
-                DbContextOptions<DAS_commitmentsRefContext> options = new DbContextOptionsBuilder<DAS_commitmentsRefContext>().UseSqlServer(_dasCommitmentsConfiguration.DasCommitmentsConnectionString).Options;
+                DbContextOptions<DAS_commitmentsRefContext> options = new DbContextOptionsBuilder<DAS_commitmentsRefContext>().UseSqlServer(_reportServiceConfiguration.DasCommitmentsConnectionString).Options;
 
                 using (DAS_commitmentsRefContext dasCommitmentsRefContext = new DAS_commitmentsRefContext(options))
                 {

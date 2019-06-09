@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using ESFA.DC.Data.LARS.Model;
 using ESFA.DC.Data.LARS.Model.Interfaces;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.Lars;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
 using ESFA.DC.Logging.Interfaces;
@@ -18,8 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
     public sealed class LarsProviderService : ILarsProviderService
     {
         private readonly ILogger _logger;
-
-        private readonly LarsConfiguration _larsConfiguration;
+        private readonly IReportServiceConfiguration _reportServiceConfiguration;
 
         private readonly SemaphoreSlim _getLearningDeliveriesLock;
 
@@ -37,10 +36,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
         private string _version;
 
-        public LarsProviderService(ILogger logger, LarsConfiguration larsConfiguration)
+        public LarsProviderService(ILogger logger, IReportServiceConfiguration reportServiceConfiguration)
         {
             _logger = logger;
-            _larsConfiguration = larsConfiguration;
+            _reportServiceConfiguration = reportServiceConfiguration;
             _loadedLearningDeliveries = null;
             _loadedFrameworkAims = null;
             _version = null;
@@ -67,7 +66,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
                 if (_loadedLearningDeliveries == null)
                 {
-                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    ILARS larsContext = new LARS(_reportServiceConfiguration.LarsConnectionString);
                     _loadedLearningDeliveries = await larsContext.LARS_LearningDelivery
                         .Where(
                             x => validLearnerAimRefs.Contains(x.LearnAimRef))
@@ -111,7 +110,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
                 if (!_loadedStandards.ContainsKey(learningDeliveryStandardCode))
                 {
-                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    ILARS larsContext = new LARS(_reportServiceConfiguration.LarsConnectionString);
                     LARS_Standard larsStandard = await larsContext.LARS_Standard
                         .SingleOrDefaultAsync(l => l.StandardCode == learningDeliveryStandardCode, cancellationToken);
                     _loadedStandards[learningDeliveryStandardCode] = larsStandard?.NotionalEndLevel ?? "NA";
@@ -157,7 +156,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                         _loadedFrameworkAims.Add(new LearnerAndDeliveries(learner.LearnRefNumber, learningDeliveries));
                     }
 
-                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    ILARS larsContext = new LARS(_reportServiceConfiguration.LarsConnectionString);
                     LarsFrameworkAim[] res = await larsContext.LARS_FrameworkAims
                         .Where(x => learnAimRefs.Contains(x.LearnAimRef))
                         .Select(x =>
@@ -214,7 +213,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
                 if (string.IsNullOrEmpty(_version))
                 {
-                    ILARS larsContext = new LARS(_larsConfiguration.LarsConnectionString);
+                    ILARS larsContext = new LARS(_reportServiceConfiguration.LarsConnectionString);
                     _version = (await larsContext.Current_Version.SingleAsync(cancellationToken)).CurrentVersion;
                 }
             }
@@ -236,7 +235,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
             cancellationToken.ThrowIfCancellationRequested();
 
-            using (var larsContext = new LARS(_larsConfiguration.LarsConnectionString))
+            using (var larsContext = new LARS(_reportServiceConfiguration.LarsConnectionString))
             {
                 var larsLearningDeliveries = await larsContext.LARS_LearningDelivery.Where(x => learnerAimRefs.Contains(x.LearnAimRef)).ToListAsync(cancellationToken);
 

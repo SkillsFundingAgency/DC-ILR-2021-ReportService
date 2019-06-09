@@ -15,10 +15,10 @@
     <Parameter Name="LoggerConnectionString" Value="" />
   </Section>
 
-  <Section Name="DataStoreSection">
+  <!--<Section Name="DataStoreSection">
     <Parameter Name="ILRDataStoreConnectionString" Value="" />
     <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
-  </Section>
+  </Section>-->
   
   <Section  Name="AzureStorageSection">
     <Parameter Name="AzureBlobConnectionString" Value="" />
@@ -62,8 +62,23 @@
     <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="" />
     <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="" />
   </Section>
-  
-  <Section Name="LarsSection">
+
+  <Section Name="ReportServiceConfiguration">
+    <Parameter Name="LarsConnectionString" Value="" />
+    <Parameter Name="FCSConnectionString" Value="" />
+    <Parameter Name="DASPaymentsConnectionString" Value="" />
+    <Parameter Name="OrgConnectionString" Value=""/>
+    <Parameter Name="DasCommitmentsConnectionString" Value="" />
+    <Parameter Name="CollectionsManagementConnectionString" Value="" />
+    <Parameter Name="EasConnectionString" Value="asdf" />
+    <Parameter Name="PostcodeConnectionString" Value="" />
+    <Parameter Name="LargeEmployerConnectionString" Value="" />
+    <Parameter Name="IlrValidationErrorsConnectionString" Value="" />
+    <Parameter Name="ILRDataStoreConnectionString" Value="" />
+    <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
+  </Section>
+
+  <!--<Section Name="LarsSection">
     <Parameter Name="LarsConnectionString" Value=""/>
   </Section>
 
@@ -101,5 +116,5 @@
 
   <Section Name="IlrValidationErrorsSection">
     <Parameter Name="IlrValidationErrorsConnectionString" Value="" />
-  </Section>
+  </Section>-->
 </Settings>

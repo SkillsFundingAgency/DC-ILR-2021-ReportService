@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using ESFA.DC.DASPayments.EF;
 using ESFA.DC.DASPayments.EF.Interfaces;
 using ESFA.DC.ILR.ReportService.Interface.Service;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsCoInvestment;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsMonthlyPayment;
@@ -20,7 +19,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
         private int[] TransactionTypes = { 1, 2, 3 };
         private int[] AppsAdditionalPaymentsTransactionTypes = { 4, 5, 6, 7, 16 };
         private readonly Func<IDASPaymentsContext> _dasPaymentsContextFactory;
-        private readonly DASPaymentsConfiguration _dasPaymentsConfiguration;
 
         public DASPaymentsProviderService(Func<IDASPaymentsContext> dasPaymentsContextFactory)
         {

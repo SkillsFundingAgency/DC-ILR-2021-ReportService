@@ -91,13 +91,27 @@
             <Parameter Name="AuditMaxConcurrentCalls" Value="[AuditMaxConcurrentCalls]" />
             <Parameter Name="LoggerConnectionString" Value="[LoggerConnectionstring]" />
           </Section>
-          <Section Name="DataStoreSection">
+          <Section Name="ReportServiceConfiguration">
+            <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
+            <Parameter Name="FCSConnectionString" Value="[FCSConnectionString]" />
+            <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
+            <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />
+            <Parameter Name="DasCommitmentsConnectionString" Value="[DasCommitmentsConnectionString]" />
+            <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />
+            <Parameter Name="EasConnectionString" Value="[EasConnectionString]" />
+            <Parameter Name="PostcodeConnectionString" Value="[PostcodeConnectionString]" />
+            <Parameter Name="LargeEmployerConnectionString" Value="[LargeEmployerConnectionString]" />
+            <Parameter Name="IlrValidationErrorsConnectionString" Value="[IlrValidationErrorsConnectionString]" />
+            <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
+            <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
+          </Section>
+          <!--<Section Name="DataStoreSection">
             <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
             <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
           </Section>
           <Section Name="DASPaymentsSection">
             <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
-          </Section>
+          </Section>-->
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
             <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
@@ -137,7 +151,7 @@
             <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="[TopicReports_TaskGenerateSummaryOfFM35FundingReport]" />
             <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="[TopicReports_TaskGenerateHNSSummaryReport]" />
           </Section>
-          <Section Name="LarsSection">
+          <!--<Section Name="LarsSection">
             <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
           </Section>
           <Section Name="FCSSection">
@@ -163,7 +177,7 @@
           </Section>
           <Section Name="IlrValidationErrorsSection">
             <Parameter Name="IlrValidationErrorsConnectionString" Value="[IlrValidationErrorsConnectionString]" />
-          </Section>
+          </Section>-->
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>
