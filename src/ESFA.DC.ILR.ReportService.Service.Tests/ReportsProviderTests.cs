@@ -31,9 +31,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Tests
 
             NewProvider(reports, loggerMock.Object).ProvideReportsForContext(reportServiceContext.Object).Should().BeEmpty();
 
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportOne}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportTwo}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportThree}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportOne}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportTwo}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportThree}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
         }
 
         [Fact]
@@ -132,9 +132,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Tests
 
             NewProvider(reports, loggerMock.Object).ProvideReportsForContext(reportServiceContext.Object).Should().BeEmpty();
 
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFourTaskName}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFiveTaskName}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportSixTaskName}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFourTaskName}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFiveTaskName}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportSixTaskName}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
         }
 
         [Fact]
@@ -168,8 +168,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Tests
             reportServiceContext
                 .SetupGet(c => c.Tasks)
                 .Returns(new List<string>()
-                { 
-                    reportOneTaskName, 
+                {
+                    reportOneTaskName,
                     reportTwoTaskName,
                     reportThreeTaskName,
                     reportFourTaskName,
@@ -178,14 +178,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Tests
                 });
 
             var matchingReports = NewProvider(reports, loggerMock.Object).ProvideReportsForContext(reportServiceContext.Object);
-            
+
             matchingReports.Should().Contain(reportOneMock.Object);
             matchingReports.Should().Contain(reportTwoMock.Object);
             matchingReports.Should().Contain(reportThreeMock.Object);
 
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFourTaskName}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFiveTaskName}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
-            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportSixTaskName}", null, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFourTaskName}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportFiveTaskName}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
+            loggerMock.Verify(l => l.LogWarning($"Missing Report Task - {reportSixTaskName}", null, -1, It.IsAny<string>(), It.IsAny<string>(), It.IsAny<int>()));
         }
 
         private ReportsProvider NewProvider(IList<IReport> reports = null, ILogger logger = null)

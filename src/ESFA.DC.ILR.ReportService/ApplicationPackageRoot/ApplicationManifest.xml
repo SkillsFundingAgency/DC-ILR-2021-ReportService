@@ -4,12 +4,15 @@
     <Parameter Name="ESFA.DC.ILR1920.ReportService.Stateless_InstanceCount" DefaultValue="1" />
     <Parameter Name="ProcessingServicePlacementConstraints" DefaultValue="" />
     <Parameter Name="AuditQueueName" DefaultValue="audit-queue" />
+    <Parameter Name="TopicMaxConcurrentCalls" DefaultValue="1" />
+    <Parameter Name="TopicMaxCallbackTimeSpanMinutes" DefaultValue="30" />
+    <Parameter Name="JobStatusMaxConcurrentCalls" DefaultValue="1" />
+    <Parameter Name="AuditMaxConcurrentCalls" DefaultValue="1" />
     <Parameter Name="TopicName" DefaultValue="TopicName" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
     <Parameter Name="ILRDataStoreConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
     <Parameter Name="ILRDataStoreValidConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
     <Parameter Name="LoggerConnectionstring" DefaultValue="data source=(local);initial catalog=logs;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90;" />
-    <Parameter Name="MaxMessageSize" DefaultValue="1073741824" />
     <Parameter Name="AzureBlobConnectionString" DefaultValue="UseDevelopmentStorage=true" />
     <Parameter Name="AzureBlobContainerName" DefaultValue="ilr-files" />
     <Parameter Name="AsposeLicence" DefaultValue="" />
@@ -18,7 +21,7 @@
     <Parameter Name="ServiceReleaseVersion" DefaultValue="" />
     <Parameter Name="JobStatusQueueName" DefaultValue="" />
     <Parameter Name="JobStatusConnectionString" DefaultValue="" />
-    <Parameter Name="ReportingSubscriptionName" DefaultValue="GenerateValidationReport" />
+    <Parameter Name="ReportingSubscriptionName" DefaultValue="Reports" />
     <!-- Topic Names -->
     <Parameter Name="TopicValidation" DefaultValue="Validation" />
     <Parameter Name="TopicFunding" DefaultValue="Funding" />
@@ -76,24 +79,31 @@
     <ConfigOverrides>
       <ConfigOverride Name="Config">
         <Settings>
-          <Section Name="DataStoreSection">
-            <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
-            <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
-          </Section>
-          <Section Name="DASPaymentsSection">
-            <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
-          </Section>
-          <Section Name="ServiceBusSettings">
-            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+          <Section Name="StatelessServiceConfiguration">
             <Parameter Name="ServiceBusConnectionString" Value="[ServiceBusConnectionString]" />
             <Parameter Name="TopicName" Value="[TopicName]" />
-            <Parameter Name="ReportingSubscriptionName" Value="[ReportingSubscriptionName]" />
+            <Parameter Name="SubscriptionName" Value="[ReportingSubscriptionName]" />
+            <Parameter Name="TopicMaxConcurrentCalls" Value="[TopicMaxConcurrentCalls]" />
+            <Parameter Name="TopicMaxCallbackTimeSpanMinutes" Value="[TopicMaxCallbackTimeSpanMinutes]" />
+            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
+            <Parameter Name="JobStatusMaxConcurrentCalls" Value="[JobStatusMaxConcurrentCalls]" />
+            <Parameter Name="AuditQueueName" Value="[AuditQueueName]" />
+            <Parameter Name="AuditMaxConcurrentCalls" Value="[AuditMaxConcurrentCalls]" />
+            <Parameter Name="LoggerConnectionString" Value="[LoggerConnectionstring]" />
           </Section>
-          <Section Name="DataTransportSettings">
-            <Parameter Name="MaxMessageSize" Value="[MaxMessageSize]" />
-          </Section>
-          <Section Name="LoggerSection">
-            <Parameter Name="LoggerConnectionstring" Value="[LoggerConnectionstring]" />
+          <Section Name="ReportServiceConfiguration">
+            <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
+            <Parameter Name="FCSConnectionString" Value="[FCSConnectionString]" />
+            <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
+            <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />
+            <Parameter Name="DasCommitmentsConnectionString" Value="[DasCommitmentsConnectionString]" />
+            <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />
+            <Parameter Name="EasConnectionString" Value="[EasConnectionString]" />
+            <Parameter Name="PostcodeConnectionString" Value="[PostcodeConnectionString]" />
+            <Parameter Name="LargeEmployerConnectionString" Value="[LargeEmployerConnectionString]" />
+            <Parameter Name="IlrValidationErrorsConnectionString" Value="[IlrValidationErrorsConnectionString]" />
+            <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
+            <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
           </Section>
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
@@ -102,15 +112,8 @@
           <Section Name="SoftwareLicenceSection">
             <Parameter Name="AsposeLicence" Value="[AsposeLicence]" />
           </Section>
-          <Section Name="RedisSection">
-            <Parameter Name="RedisConnectionString" Value="[RedisConnectionString]" />
-          </Section>
           <Section Name="VersionSection">
             <Parameter Name="ServiceReleaseVersion" Value="[ServiceReleaseVersion]" />
-          </Section>
-          <Section Name="JobStatusSection">
-            <Parameter Name="JobStatusQueueName" Value="[JobStatusQueueName]" />
-            <Parameter Name="JobStatusConnectionString" Value="[JobStatusConnectionString]" />
           </Section>
           <Section Name="TopicAndTaskSection">
             <Parameter Name="TopicValidation" Value="[TopicValidation]" />
@@ -140,33 +143,6 @@
             <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="[TopicReports_TaskGenerateTrailblazerAppsOccupancyReport]" />
             <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="[TopicReports_TaskGenerateSummaryOfFM35FundingReport]" />
             <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="[TopicReports_TaskGenerateHNSSummaryReport]" />
-          </Section>
-          <Section Name="LarsSection">
-            <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
-          </Section>
-          <Section Name="FCSSection">
-            <Parameter Name="FCSConnectionString" Value="[FCSConnectionString]" />
-          </Section>
-          <Section Name="OrgSection">
-            <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />
-          </Section>
-          <Section Name="DasCommitmentsSection">
-            <Parameter Name="DasCommitmentsConnectionString" Value="[DasCommitmentsConnectionString]" />
-          </Section>
-          <Section Name="EasSection">
-            <Parameter Name="EasConnectionString" Value="[EasConnectionString]" />
-          </Section>
-          <Section Name="PostcodeSection">
-            <Parameter Name="PostcodeConnectionString" Value="[PostcodeConnectionString]" />
-          </Section>
-          <Section Name="LargeEmployerSection">
-            <Parameter Name="LargeEmployerConnectionString" Value="[LargeEmployerConnectionString]" />
-          </Section>
-          <Section Name="CollectionsManagementSection">
-            <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />
-          </Section>
-          <Section Name="IlrValidationErrorsSection">
-            <Parameter Name="IlrValidationErrorsConnectionString" Value="[IlrValidationErrorsConnectionString]" />
           </Section>
         </Settings>
       </ConfigOverride>

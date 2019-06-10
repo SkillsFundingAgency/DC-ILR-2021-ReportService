@@ -2,9 +2,9 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.ReferenceData.Organisations.Model;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +14,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
     public sealed class OrgProviderService : IOrgProviderService
     {
         private readonly ILogger _logger;
-
-        private readonly OrgConfiguration _orgConfiguration;
+        private readonly IReportServiceConfiguration _reportServiceConfiguration;
 
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
 
@@ -27,10 +26,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
         private decimal? _cofRemoval;
 
-        public OrgProviderService(ILogger logger, OrgConfiguration orgConfiguration)
+        public OrgProviderService(ILogger logger, IReportServiceConfiguration reportServiceConfiguration)
         {
             _logger = logger;
-            _orgConfiguration = orgConfiguration;
+            _reportServiceConfiguration = reportServiceConfiguration;
         }
 
         public async Task<string> GetProviderName(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
@@ -52,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                 _loadedDataAlready = true;
                 string ukPrnStr = reportServiceContext.Ukprn.ToString();
                 long ukPrn = Convert.ToInt64(ukPrnStr);
-                DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_orgConfiguration.OrgConnectionString).Options;
+                DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_reportServiceConfiguration.OrgConnectionString).Options;
                 using (OrganisationsContext organisations = new OrganisationsContext(options))
                 {
                     _loadedData = organisations.OrgDetails.Where(x => x.Ukprn == ukPrn).Select(x => x.Name)
@@ -85,7 +84,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
                 if (string.IsNullOrEmpty(_version))
                 {
-                    DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_orgConfiguration.OrgConnectionString).Options;
+                    DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_reportServiceConfiguration.OrgConnectionString).Options;
                     using (OrganisationsContext organisations = new OrganisationsContext(options))
                     {
                         await GetVersion(organisations, cancellationToken);
@@ -117,7 +116,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
                 string ukPrnStr = reportServiceContext.Ukprn.ToString();
                 long ukPrn = Convert.ToInt64(ukPrnStr);
-                DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_orgConfiguration.OrgConnectionString).Options;
+                DbContextOptions<OrganisationsContext> options = new DbContextOptionsBuilder<OrganisationsContext>().UseSqlServer(_reportServiceConfiguration.OrgConnectionString).Options;
                 using (OrganisationsContext organisations = new OrganisationsContext(options))
                 {
                     _cofRemoval = organisations.ConditionOfFundingRemovals.Where(x => x.Ukprn == ukPrn).OrderByDescending(x => x.EffectiveFrom).Select(x => x.CoFremoval).SingleOrDefault();

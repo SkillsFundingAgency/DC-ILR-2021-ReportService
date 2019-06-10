@@ -7,8 +7,9 @@ using Autofac;
 using Autofac.Integration.ServiceFabric;
 using ESFA.DC.ILR.ReportService.Service;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
-using ESFA.DC.ServiceFabric.Helpers;
-using ESFA.DC.ServiceFabric.Helpers.Interfaces;
+using ESFA.DC.ServiceFabric.Common.Config;
+using ESFA.DC.ServiceFabric.Common.Config.Interface;
+
 
 namespace ESFA.DC.ILR.ReportService.Stateless
 {
@@ -21,10 +22,10 @@ namespace ESFA.DC.ILR.ReportService.Stateless
         {
             try
             {
-                IConfigurationHelper configHelper = new ConfigurationHelper();
+                IServiceFabricConfigurationService serviceFabricConfigurationService = new ServiceFabricConfigurationService();
 
                 // License Aspose.Cells
-                SoftwareLicenceSection softwareLicenceSection = configHelper.GetSectionValues<SoftwareLicenceSection>(nameof(SoftwareLicenceSection));
+                SoftwareLicenceSection softwareLicenceSection = serviceFabricConfigurationService.GetConfigSectionAs<SoftwareLicenceSection>(nameof(SoftwareLicenceSection));
                 if (!string.IsNullOrEmpty(softwareLicenceSection.AsposeLicence))
                 {
                     using (MemoryStream ms = new MemoryStream(Encoding.UTF8.GetBytes(softwareLicenceSection.AsposeLicence.Replace("&lt;", "<").Replace("&gt;", ">"))))
@@ -34,19 +35,19 @@ namespace ESFA.DC.ILR.ReportService.Stateless
                 }
 
                 // Setup Autofac
-                ContainerBuilder builder = DIComposition.BuildContainer(configHelper);
+                ContainerBuilder builder = DIComposition.BuildContainer(serviceFabricConfigurationService);
 
                 // Register the Autofac magic for Service Fabric support.
                 builder.RegisterServiceFabricSupport();
 
                 // Register the stateless service.
-                builder.RegisterStatelessService<Stateless>("ESFA.DC.ILR1920.ReportService.StatelessType");
+                builder.RegisterStatelessService<ServiceFabric.Common.Stateless>("ESFA.DC.ILR1920.ReportService.StatelessType");
 
                 using (var container = builder.Build())
                 {
                     container.Resolve<EntryPoint>();
 
-                    ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(Stateless).Name);
+                    ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(ServiceFabric.Common.Stateless).Name);
 
                     // Prevents this host process from terminating so services keep running.
                     Thread.Sleep(Timeout.Infinite);

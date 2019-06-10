@@ -7,7 +7,6 @@ using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.ILR1819.DataStore.EF.Interface;
@@ -22,7 +21,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
     public sealed class IlrMetadataProviderService : IIlrMetadataProviderService
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly DataStoreConfiguration _dataStoreConfiguration;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
 

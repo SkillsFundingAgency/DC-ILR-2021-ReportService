@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.Data.Postcodes.Model;
 using ESFA.DC.Data.Postcodes.Model.Interfaces;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
-using ESFA.DC.ILR.ReportService.Model.Configuration;
 using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
@@ -13,17 +13,16 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
     public sealed class PostcodeProviderService : IPostcodeProviderService
     {
         private readonly ILogger _logger;
-
-        private readonly PostcodeConfiguration _postcodeConfiguration;
+        private readonly IReportServiceConfiguration _reportServiceConfiguration;
 
         private readonly SemaphoreSlim _getVersionLock;
 
         private string _version;
 
-        public PostcodeProviderService(ILogger logger, PostcodeConfiguration postcodeConfiguration)
+        public PostcodeProviderService(ILogger logger, IReportServiceConfiguration reportServiceConfiguration)
         {
             _logger = logger;
-            _postcodeConfiguration = postcodeConfiguration;
+            _reportServiceConfiguration = reportServiceConfiguration;
             _version = null;
             _getVersionLock = new SemaphoreSlim(1, 1);
         }
@@ -41,7 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
                 if (string.IsNullOrEmpty(_version))
                 {
-                    IPostcodes postcodesContext = new Postcodes(_postcodeConfiguration.PostcodeConnectionString);
+                    IPostcodes postcodesContext = new Postcodes(_reportServiceConfiguration.PostcodeConnectionString);
                     _version = (await postcodesContext.VersionInfos.SingleOrDefaultAsync(cancellationToken))?.VersionNumber ?? "NA";
                 }
             }
