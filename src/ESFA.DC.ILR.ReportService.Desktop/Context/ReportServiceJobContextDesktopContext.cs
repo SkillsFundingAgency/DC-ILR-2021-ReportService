@@ -16,24 +16,16 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         }
 
         public long JobId { get; }
-        public int Ukprn { get; }
-        public string Filename
-        {
-            get => _desktopContext.KeyValuePairs[ILRContextKeys.Filename].ToString();
-            set => _desktopContext.KeyValuePairs[ILRContextKeys.Filename] = value;
-        }
-
-        public string OriginalFilename
-        {
-            get => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
-            set => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename] = value;
-        }
+        public int Ukprn => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
+        public string Filename => _desktopContext.KeyValuePairs[ILRContextKeys.Filename].ToString();
+        
+        public string OriginalFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
 
         public string Container => _desktopContext.KeyValuePairs[ILRContextKeys.Container].ToString();
 
         public string ValidationErrorsKey => _desktopContext.KeyValuePairs[ILRContextKeys.ValidationErrors].ToString();
 
-        public DateTime SubmissionDateTimeUtc { get; }
+        public DateTime SubmissionDateTimeUtc => _desktopContext.DateTimeUtc;
         public long FileSizeInBytes => long.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.FileSizeInBytes].ToString());
 
         public int ValidLearnRefNumbersCount => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.ValidLearnRefNumbersCount].ToString());

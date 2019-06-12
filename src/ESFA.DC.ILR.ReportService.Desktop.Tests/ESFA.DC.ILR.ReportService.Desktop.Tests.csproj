@@ -81,7 +81,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DesktopContextTest.cs" />
+    <Compile Include="ReportServiceJobContextDesktopContextTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportServiceContextFactoryTest.cs" />
   </ItemGroup>
