@@ -34,7 +34,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
         private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IDateTimeProvider _dateTimeProvider;
-        
+        private readonly IValueProvider _valueProvider;
+
+        private string _externalFileName;
+        private string _fileName;
         private FileValidationResult _ilrValidationResult;
 
         public ValidationErrorsReport(
@@ -51,6 +54,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
             _dateTimeProvider = dateTimeProvider;
+            _valueProvider = valueProvider;
         }
 
         public string ReportFileName => "Rule Violation Report";
@@ -63,15 +67,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(reportServiceContext, cancellationToken);
             await Task.WhenAll(ilrTask, validationErrorDtosTask);
 
-            var externalFileName = GetFilename(reportServiceContext);
-            var fileName = GetZipFilename(reportServiceContext);
+            _externalFileName = GetFilename(reportServiceContext);
+            _fileName = GetZipFilename(reportServiceContext);
 
             List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
 
             List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
             GenerateFrontEndValidationReport(reportServiceContext, validationErrorDtos);
 
-            await PersistValuesToStorage(validationErrors, reportServiceContext, externalFileName, cancellationToken);
+            await PersistValuesToStorage(validationErrors, reportServiceContext, cancellationToken);
         }
 
         private string GetFilename(IReportServiceContext reportServiceContext)
@@ -85,7 +89,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
             return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
-
         private void GenerateFrontEndValidationReport(
             IReportServiceContext reportServiceContext,
             List<ValidationErrorDto> validationErrorDtos)
@@ -158,14 +161,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             return result;
         }
 
-        private async Task PersistValuesToStorage(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext,string externalFileName, CancellationToken cancellationToken)
+        private async Task PersistValuesToStorage(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            using (Stream fileStream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.json", reportServiceContext.Container, cancellationToken))
+            using (Stream fileStream = await _fileService.OpenWriteStreamAsync($"{_externalFileName}.json", reportServiceContext.Container, cancellationToken))
             {
                 _jsonSerializationService.Serialize(_jsonSerializationService.Serialize(_ilrValidationResult), fileStream);
             }
 
-            using (Stream stream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.csv", reportServiceContext.Container, cancellationToken))
+            using (Stream stream = await _fileService.OpenWriteStreamAsync($"{_externalFileName}.csv", reportServiceContext.Container, cancellationToken))
             {
                 UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
                 using (TextWriter textWriter = new StreamWriter(stream, utF8Encoding))
@@ -183,7 +186,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             Worksheet sheet = workbook.Worksheets[0];
             WriteExcelRecords(sheet, new ValidationErrorMapper(), validationErrors, null, null);
 
-            using (Stream ms = await _fileService.OpenWriteStreamAsync($"{externalFileName}.xlsx", reportServiceContext.Container, cancellationToken))
+            using (Stream ms = await _fileService.OpenWriteStreamAsync($"{_externalFileName}.xlsx", reportServiceContext.Container, cancellationToken))
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
             }
