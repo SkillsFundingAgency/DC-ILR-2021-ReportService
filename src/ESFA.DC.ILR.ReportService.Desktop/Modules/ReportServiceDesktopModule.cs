@@ -9,7 +9,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 
 namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 {
-    public class ReportServieDesktopModule : Module
+    public class ReportServiceDesktopModule : Module
     {
         protected override void Load(ContainerBuilder builder)
         {

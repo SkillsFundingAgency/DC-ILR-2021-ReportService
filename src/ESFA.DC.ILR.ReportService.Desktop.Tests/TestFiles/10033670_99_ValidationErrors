@@ -1,1 +1,1664 @@
-[{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":null,"RuleName":"EmpId_01","Severity":"E","ValidationErrorParameters":[{"PropertyName":"EmpId","Value":"154549452"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":1,"RuleName":"EmpStat_08","Severity":"E","ValidationErrorParameters":[{"PropertyName":"LearnStartDate","Value":"01/08/2017"},{"PropertyName":"FundModel","Value":"35"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":1,"RuleName":"LearnDelFAMType_01","Severity":"E","ValidationErrorParameters":null},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":2,"RuleName":"LearnDelFAMType_61","Severity":"E","ValidationErrorParameters":[{"PropertyName":"FundModel","Value":"35"},{"PropertyName":"LearnDelFAMType","Value":"FFI"},{"PropertyName":"LearnDelFAMCode","Value":"1"},{"PropertyName":"LearnStartDate","Value":"14/10/2018"},{"PropertyName":"DateOfBirth","Value":"14/07/1998"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":3,"RuleName":"LearnDelFAMType_61","Severity":"E","ValidationErrorParameters":[{"PropertyName":"FundModel","Value":"35"},{"PropertyName":"LearnDelFAMType","Value":"FFI"},{"PropertyName":"LearnDelFAMCode","Value":"1"},{"PropertyName":"LearnStartDate","Value":"14/10/2018"},{"PropertyName":"DateOfBirth","Value":"14/07/1998"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":2,"RuleName":"LearnDelFAMType_65","Severity":"E","ValidationErrorParameters":[{"PropertyName":"FundModel","Value":"35"},{"PropertyName":"LearnDelFAMType","Value":"FFI"},{"PropertyName":"LearnDelFAMCode","Value":"1"},{"PropertyName":"LearnStartDate","Value":"14/10/2018"},{"PropertyName":"DateOfBirth","Value":"14/07/1998"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":3,"RuleName":"LearnDelFAMType_65","Severity":"E","ValidationErrorParameters":[{"PropertyName":"FundModel","Value":"35"},{"PropertyName":"LearnDelFAMType","Value":"FFI"},{"PropertyName":"LearnDelFAMCode","Value":"1"},{"PropertyName":"LearnStartDate","Value":"14/10/2018"},{"PropertyName":"DateOfBirth","Value":"14/07/1998"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":1,"RuleName":"UKPRN_06","Severity":"E","ValidationErrorParameters":[{"PropertyName":"FundModel","Value":"35"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":2,"RuleName":"UKPRN_06","Severity":"E","ValidationErrorParameters":[{"PropertyName":"FundModel","Value":"35"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":3,"RuleName":"UKPRN_06","Severity":"E","ValidationErrorParameters":[{"PropertyName":"FundModel","Value":"35"}]},{"LearnerReferenceNumber":"4LdfamTy61","AimSequenceNumber":null,"RuleName":"ULN_05","Severity":"W","ValidationErrorParameters":[{"PropertyName":"ULN","Value":"9000000504"}]}]
+[
+  {
+    "LearnerReferenceNumber": "0Accm01",
+    "AimSequenceNumber": null,
+    "RuleName": "Accom_01",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "Accom",
+        "Value": "6"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0Accm01",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_06",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt03",
+    "AimSequenceNumber": 1,
+    "RuleName": "AchDate_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "AchDate",
+        "Value": "13/10/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt03",
+    "AimSequenceNumber": 1,
+    "RuleName": "AchDate_05",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "13/11/2018"
+      },
+      {
+        "PropertyName": "AchDate",
+        "Value": "13/10/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt03",
+    "AimSequenceNumber": 1,
+    "RuleName": "AchDate_09",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "5"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": null
+      },
+      {
+        "PropertyName": "AchDate",
+        "Value": "13/10/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt08",
+    "AimSequenceNumber": 1,
+    "RuleName": "AchDate_08",
+    "Severity": "E",
+    "ValidationErrorParameters": null
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EPAOrgID_01",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EPAOrgID",
+        "Value": "EPA0032"
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnPlanEndDate",
+        "Value": "31/07/2020"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt08",
+    "AimSequenceNumber": 1,
+    "RuleName": "R90",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "ZPROG001"
+      },
+      {
+        "PropertyName": "AimType",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": "25"
+      },
+      {
+        "PropertyName": "FworkCode",
+        "Value": null
+      },
+      {
+        "PropertyName": "PwayCode",
+        "Value": null
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "01/09/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt08",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_09",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "UKPRN",
+        "Value": "10033670"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "81"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": "25"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AchDt08",
+    "AimSequenceNumber": 2,
+    "RuleName": "UKPRN_09",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "UKPRN",
+        "Value": "10033670"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "81"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": "25"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AchDt08",
+    "AimSequenceNumber": 1,
+    "RuleName": "AchDate_08",
+    "Severity": "E",
+    "ValidationErrorParameters": null
+  },
+  {
+    "LearnerReferenceNumber": "1AchDt08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_18",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ESMType",
+        "Value": "EII"
+      },
+      {
+        "PropertyName": "ESMCode",
+        "Value": "4"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AchDt08",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_06",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AchDt08",
+    "AimSequenceNumber": 2,
+    "RuleName": "UKPRN_06",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "10"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "60133533"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "25"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "60133533"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "99"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "60133533"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "3AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "82"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "3AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "60133533"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "4AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AddHours_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "60133533"
+      },
+      {
+        "PropertyName": "AddHours",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "4AddHr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_06",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AfinDt02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AFinDate_02",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AFinDate",
+        "Value": "09/08/2018"
+      },
+      {
+        "PropertyName": "DD19",
+        "Value": "DD19"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AfinDt02",
+    "AimSequenceNumber": 1,
+    "RuleName": "AFinDate_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "08/08/2017"
+      },
+      {
+        "PropertyName": "AFinType",
+        "Value": "TNP"
+      },
+      {
+        "PropertyName": "AFinDate",
+        "Value": "09/08/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AfinDt02",
+    "AimSequenceNumber": 1,
+    "RuleName": "EPAOrgID_01",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EPAOrgID",
+        "Value": "EPA0032"
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnPlanEndDate",
+        "Value": "08/08/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "AFinDate_02",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AFinDate",
+        "Value": "08/09/2018"
+      },
+      {
+        "PropertyName": "DD19",
+        "Value": "DD19"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "AFinDate_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "07/09/2017"
+      },
+      {
+        "PropertyName": "AFinType",
+        "Value": "TNP"
+      },
+      {
+        "PropertyName": "AFinDate",
+        "Value": "08/09/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "AFinType_10",
+    "Severity": "W",
+    "ValidationErrorParameters": []
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "AFinType_13",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "8/1/2016 12:00:00 AM"
+      },
+      {
+        "PropertyName": "AFinType",
+        "Value": "TNP"
+      },
+      {
+        "PropertyName": "AFinDate",
+        "Value": ""
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 1,
+    "RuleName": "EPAOrgID_01",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EPAOrgID",
+        "Value": "EPA0032"
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnPlanEndDate",
+        "Value": "08/08/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "FundModel_05",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "01/08/2016"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "FundModel_09",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "LearnDelFAMType_64",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "ACT"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 1,
+    "RuleName": "R99",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "01/08/2016"
+      },
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "08/08/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "R99",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "01/08/2016"
+      },
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "07/09/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AfinDt02",
+    "AimSequenceNumber": 3,
+    "RuleName": "R100",
+    "Severity": "E",
+    "ValidationErrorParameters": null
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy01",
+    "AimSequenceNumber": 1,
+    "RuleName": "AFinType_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      },
+      {
+        "PropertyName": "AimType",
+        "Value": "7"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": "2"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy01",
+    "AimSequenceNumber": 1,
+    "RuleName": "AimType_01",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "7"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy01",
+    "AimSequenceNumber": 2,
+    "RuleName": "AimType_01",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "7"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy01",
+    "AimSequenceNumber": 1,
+    "RuleName": "LearnAimRef_30",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "ZPROG001"
+      },
+      {
+        "PropertyName": "AimType",
+        "Value": "7"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy01",
+    "AimSequenceNumber": 1,
+    "RuleName": "LearnDelFAMType_63",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "7"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "ACT"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy01",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_10",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "UKPRN",
+        "Value": "10033670"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "ACT"
+      },
+      {
+        "PropertyName": "LearnDelFAMCode",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AimTy01",
+    "AimSequenceNumber": 1,
+    "RuleName": "AimType_01",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "9"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2AimTy01",
+    "AimSequenceNumber": 1,
+    "RuleName": "AimType_01",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "0"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2AimTy01",
+    "AimSequenceNumber": null,
+    "RuleName": "R63",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "25"
+      },
+      {
+        "PropertyName": "AimType",
+        "Value": "5"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy07",
+    "AimSequenceNumber": 1,
+    "RuleName": "AimType_07",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "5"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "SOF"
+      },
+      {
+        "PropertyName": "LearnDelFAMCode",
+        "Value": "105"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0AimTy07",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EmpStat",
+        "Value": "98"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "8/1/2017 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AimTy07",
+    "AimSequenceNumber": 1,
+    "RuleName": "AimType_07",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "AimType",
+        "Value": "5"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "SOF"
+      },
+      {
+        "PropertyName": "LearnDelFAMCode",
+        "Value": "105"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1AimTy07",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EmpStat",
+        "Value": "98"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "8/1/2017 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "3AimTy07",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EmpStat",
+        "Value": "98"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "7/31/2017 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0Compsts02",
+    "AimSequenceNumber": 1,
+    "RuleName": "CompStatus_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "CompStatus",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "13/11/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0Compsts02",
+    "AimSequenceNumber": 1,
+    "RuleName": "CompStatus_05",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "CompStatus",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "Outcome",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "2"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DD06",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "2"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DD06",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_06",
+    "Severity": null,
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "2"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_06",
+    "Severity": null,
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "RUI"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1ContPr02",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_07",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "PlanLearnHours",
+        "Value": "90"
+      },
+      {
+        "PropertyName": "PlanEEPHours",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "30/07/2013"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "PMC"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "3"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "PMC"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "PMC"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "2"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DD06",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "PMC"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "3"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DD06",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "PMC"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2ContPr02",
+    "AimSequenceNumber": null,
+    "RuleName": "ContPrefType_03",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DD06",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "ContPrefType",
+        "Value": "PMC"
+      },
+      {
+        "PropertyName": "ContPrefCode",
+        "Value": "2"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0DOB27",
+    "AimSequenceNumber": null,
+    "RuleName": "DateOfBirth_14",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateOfBirth",
+        "Value": "01/08/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0DOB27",
+    "AimSequenceNumber": null,
+    "RuleName": "DateOfBirth_27",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateOfBirth",
+        "Value": "01/08/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0DOB46",
+    "AimSequenceNumber": 1,
+    "RuleName": "DateOfBirth_46",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnPlanEndDate",
+        "Value": "29/09/2017"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "30/09/2016"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0DOB46",
+    "AimSequenceNumber": 1,
+    "RuleName": "DateOfBirth_47",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateOfBirth",
+        "Value": "30/09/1997"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": "25"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0DOB46",
+    "AimSequenceNumber": 1,
+    "RuleName": "EPAOrgID_01",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EPAOrgID",
+        "Value": "EPA0032"
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnPlanEndDate",
+        "Value": "29/09/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0DOB46",
+    "AimSequenceNumber": 1,
+    "RuleName": "R89",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "ZPROG001"
+      },
+      {
+        "PropertyName": "AimType",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": "25"
+      },
+      {
+        "PropertyName": "FworkCode",
+        "Value": null
+      },
+      {
+        "PropertyName": "PwayCode",
+        "Value": null
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "29/09/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1DOB46",
+    "AimSequenceNumber": 1,
+    "RuleName": "EPAOrgID_01",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EPAOrgID",
+        "Value": "EPA0032"
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnPlanEndDate",
+        "Value": "29/09/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1DOB46",
+    "AimSequenceNumber": 1,
+    "RuleName": "R89",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnAimRef",
+        "Value": "ZPROG001"
+      },
+      {
+        "PropertyName": "AimType",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "ProgType",
+        "Value": "25"
+      },
+      {
+        "PropertyName": "FworkCode",
+        "Value": null
+      },
+      {
+        "PropertyName": "PwayCode",
+        "Value": null
+      },
+      {
+        "PropertyName": "StdCode",
+        "Value": "1"
+      },
+      {
+        "PropertyName": "LearnActEndDate",
+        "Value": "29/09/2017"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_08",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "ESMType_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "10/16/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_06",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_08",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "81"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "1EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "ESMType_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "10/16/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_08",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "99"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "2EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "ESMType_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "10/16/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "3EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_09",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EmpStat",
+        "Value": "(missing)"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "10/14/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "3EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_12",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "3EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "ESMType_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "10/16/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "3EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "R110",
+    "Severity": "E",
+    "ValidationErrorParameters": null
+  },
+  {
+    "LearnerReferenceNumber": "3EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_10",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "UKPRN",
+        "Value": "10033670"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "ACT"
+      },
+      {
+        "PropertyName": "LearnDelFAMCode",
+        "Value": "1"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "4EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "ESMType_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "10/16/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "4EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "ProgType_02",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "ProgType",
+        "Value": "24"
+      },
+      {
+        "PropertyName": "AimType",
+        "Value": "4"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "4EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_06",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "5EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_08",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "5EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "ESMType_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "10/16/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "5EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "LearnDelFAMType_04",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "LDM"
+      },
+      {
+        "PropertyName": "LearnDelFAMCode",
+        "Value": "34"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "5EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "LearnDelFAMType_06",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "LDM"
+      },
+      {
+        "PropertyName": "LearnDelFAMCode",
+        "Value": "34"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "5EmpStat08",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_06",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "FundModel",
+        "Value": "35"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "6EmpStat08",
+    "AimSequenceNumber": null,
+    "RuleName": "ESMType_11",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "DateEmpStatApp",
+        "Value": "10/16/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0EmpStat15",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_12",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "14/10/2018"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0EmpStat15",
+    "AimSequenceNumber": 1,
+    "RuleName": "EmpStat_15",
+    "Severity": "E",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "EmpStat",
+        "Value": "98"
+      },
+      {
+        "PropertyName": "LearnStartDate",
+        "Value": "10/14/2018 12:00:00 AM"
+      }
+    ]
+  },
+  {
+    "LearnerReferenceNumber": "0EmpStat15",
+    "AimSequenceNumber": 1,
+    "RuleName": "R110",
+    "Severity": "E",
+    "ValidationErrorParameters": null
+  },
+  {
+    "LearnerReferenceNumber": "0EmpStat15",
+    "AimSequenceNumber": 1,
+    "RuleName": "UKPRN_10",
+    "Severity": "W",
+    "ValidationErrorParameters": [
+      {
+        "PropertyName": "UKPRN",
+        "Value": "10033670"
+      },
+      {
+        "PropertyName": "FundModel",
+        "Value": "36"
+      },
+      {
+        "PropertyName": "LearnDelFAMType",
+        "Value": "ACT"
+      },
+      {
+        "PropertyName": "LearnDelFAMCode",
+        "Value": "1"
+      }
+    ]
+  }
+]
