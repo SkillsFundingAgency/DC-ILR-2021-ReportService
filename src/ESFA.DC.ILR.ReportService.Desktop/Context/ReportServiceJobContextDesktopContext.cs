@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -40,9 +41,19 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public string FundingFM25OutputKey => _desktopContext.KeyValuePairs[ILRContextKeys.FundingFm25Output].ToString();
         public string FundingALBOutputKey => _desktopContext.KeyValuePairs[ILRContextKeys.FundingAlbOutput].ToString();
         public string ValidLearnRefNumbersKey => _desktopContext.KeyValuePairs[ILRContextKeys.ValidLearnRefNumbers].ToString();
-        public IEnumerable<string> Tasks { get; }
+
+        public IEnumerable<string> Tasks
+        {
+            get
+            {
+                var tasks = _desktopContext.KeyValuePairs["Tasks"].ToString().Split('|').ToList();
+                return tasks;
+            }
+        }
+
         public string InvalidLearnRefNumbersKey => _desktopContext.KeyValuePairs[ILRContextKeys.InvalidLearnRefNumbers].ToString();
         public string CollectionName { get; }
         public int ReturnPeriod => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
+        public bool IsFis => true;
     }
 }
