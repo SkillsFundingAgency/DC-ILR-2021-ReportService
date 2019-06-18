@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using FluentAssertions;
@@ -36,7 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "FundingAlbOutput", "FundingAlbOutput"},
                 { "ValidLearnRefNumbers", "ValidLearnRefNumbers"},
                 { "ReturnPeriod", 8},
-
+                { "Tasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
             };
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 10, 10));
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
@@ -64,6 +65,10 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             context.ValidLearnRefNumbersKey.Should().Be("ValidLearnRefNumbers");
             context.ReturnPeriod.Should().Be(8);
             context.SubmissionDateTimeUtc.Should().Be(new DateTime(2019, 10, 10));
+            context.Tasks.Count().Should().Be(3);
+            context.Tasks.ElementAt(0).Should().Be("TaskGenerateValidationReport");
+            context.Tasks.ElementAt(1).Should().Be("TaskGenerateFundingSummaryReport");
+            context.Tasks.ElementAt(2).Should().Be("TaskGenerateAdultFundingClaimReport");
         }
 
         private ReportServiceJobContextDesktopContext NewContext(IDesktopContext desktopContext)

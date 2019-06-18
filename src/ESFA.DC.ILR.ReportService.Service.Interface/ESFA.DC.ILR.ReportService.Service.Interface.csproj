@@ -4,4 +4,19 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="CsvHelper" Version="7.1.0" />
+    <PackageReference Include="ESFA.DC.ILR.1920.Model.Interface" Version="0.1.4-beta0001" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Model\ESFA.DC.ILR.ReportService.Service.Model.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="CsvHelper">
+      <HintPath>..\..\..\..\..\Users\hari\.nuget\packages\csvhelper\7.1.0\lib\netstandard2.0\CsvHelper.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>
