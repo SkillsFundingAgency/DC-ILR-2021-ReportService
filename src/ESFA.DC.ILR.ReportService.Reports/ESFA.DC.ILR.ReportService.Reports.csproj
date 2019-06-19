@@ -11,6 +11,7 @@
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.1920.Model" Version="0.1.7-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR1920.ReferenceDataService.Model" Version="0.0.64" />
     <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.7-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.6-beta0001" />

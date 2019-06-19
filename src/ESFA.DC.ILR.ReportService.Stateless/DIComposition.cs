@@ -32,7 +32,6 @@ using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.ILR1819.DataStore.EF.Valid.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Handlers;
-using ESFA.DC.ILR.ReportService.Stateless.Interfaces;
 using ESFA.DC.IO.AzureStorage;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.IO.Interfaces;

@@ -54,6 +54,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "UkPrn", 12345678},
                 { "FileSizeInBytes", 128},
                 { "Container", @"TestFiles\"},
+                { "IlrReferenceData", @"IlrReferenceData.json"},
                 { "ValidationErrors", "10033670_99_ValidationErrors"},
                 { "ValidLearnRefNumbersCount", 1},
                 { "InvalidLearnRefNumbersCount", 2},

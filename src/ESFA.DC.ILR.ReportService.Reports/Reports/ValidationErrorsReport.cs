@@ -1,12 +1,14 @@
-﻿using CsvHelper;
+﻿using Aspose.Cells;
+using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Comparer;
+using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
+using ESFA.DC.ILR.ReportService.Reports.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
-using ESFA.DC.ILR.ReportService.Service.Model;
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.Jobs.Model;
@@ -19,37 +21,42 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Aspose.Cells;
-using ESFA.DC.ILR.ReportService.Reports.Abstract;
-using ESFA.DC.ILR.ReportService.Reports.Mapper;
+using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
     public sealed class ValidationErrorsReport : AbstractReport, IReport
     {
-        private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
-
         private readonly ILogger _logger;
         private readonly IFileService _fileService;
         private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IIlrProviderService _ilrProviderService;
+        private readonly IFileProviderService<IMessage> _ilrProviderService;
+        private readonly IFileProviderService<ReferenceDataRoot> _ilrReferenceDataProviderService;
+        private readonly IFileProviderService<List<ValidationError>> _ilrValidationErrorsProvider;
+        private readonly IValidationErrorsReportBuilder _validationErrorsReportBuilder;
         private readonly IDateTimeProvider _dateTimeProvider;
-        
+
         private FileValidationResult _ilrValidationResult;
 
         public ValidationErrorsReport(
             ILogger logger,
             IFileService fileService,
             IJsonSerializationService jsonSerializationService,
-            IIlrProviderService ilrProviderService,
+            IFileProviderService<IMessage> ilrProviderService,
+            IFileProviderService<ReferenceDataRoot> ilrReferenceDataProviderService,
+            IFileProviderService<List<ValidationError>> ilrValidationErrorsProvider,
+            IValidationErrorsReportBuilder validationErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
-            IValueProvider valueProvider):
+            IValueProvider valueProvider) :
             base(valueProvider)
         {
             _logger = logger;
             _fileService = fileService;
             _jsonSerializationService = jsonSerializationService;
             _ilrProviderService = ilrProviderService;
+            _ilrReferenceDataProviderService = ilrReferenceDataProviderService;
+            _ilrValidationErrorsProvider = ilrValidationErrorsProvider;
+            _validationErrorsReportBuilder = validationErrorsReportBuilder;
             _dateTimeProvider = dateTimeProvider;
         }
 
@@ -59,112 +66,21 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public async Task GenerateReport(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            Task<IMessage> ilrTask = _ilrProviderService.GetIlrFile(reportServiceContext, cancellationToken);
-            Task<List<ValidationErrorDto>> validationErrorDtosTask = ReadAndDeserialiseValidationErrorsAsync(reportServiceContext, cancellationToken);
-            await Task.WhenAll(ilrTask, validationErrorDtosTask);
-
             var externalFileName = GetFilename(reportServiceContext);
-            var fileName = GetZipFilename(reportServiceContext);
 
-            List<ValidationErrorDto> validationErrorDtos = validationErrorDtosTask.Result;
+            IMessage ilrMessage = await _ilrProviderService.ProvideAsync(reportServiceContext, cancellationToken);
+            ReferenceDataRoot ilrReferenceData = await _ilrReferenceDataProviderService.ProvideAsync(reportServiceContext, cancellationToken);
+            List<ValidationError> ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
 
-            List<ValidationErrorModel> validationErrors = ValidationErrorModels(ilrTask.Result, validationErrorDtos);
-            GenerateFrontEndValidationReport(reportServiceContext, validationErrorDtos);
+            var validationErrorModels = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
+            await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
 
-            await PersistValuesToStorage(validationErrors, reportServiceContext, externalFileName, cancellationToken);
+            List<ValidationErrorDto> validationErrorsDto = BuildValidationErrors(ilrValidationErrors, ilrReferenceData.MetaDatas.ValidationErrors);
+            await GenerateFrontEndValidationReport(reportServiceContext, validationErrorsDto, externalFileName, cancellationToken);
         }
 
-        private string GetFilename(IReportServiceContext reportServiceContext)
+        private async Task PersistValidationErrorsReport(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
         {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
-            return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
-        }
-
-        private string GetZipFilename(IReportServiceContext reportServiceContext)
-        {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
-            return $"{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
-        }
-
-        private void GenerateFrontEndValidationReport(
-            IReportServiceContext reportServiceContext,
-            List<ValidationErrorDto> validationErrorDtos)
-        {
-            var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase) || string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase)).ToArray();
-            var warnings = validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
-
-            _ilrValidationResult = new FileValidationResult
-            {
-                TotalLearners = GetNumberOfLearners(reportServiceContext),
-                TotalErrors = errors.Length,
-                TotalWarnings = warnings.Length,
-                TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber),
-                TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber),
-                ErrorMessage = validationErrorDtos.FirstOrDefault(x => string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase))?.ErrorMessage,
-                //TotalDataMatchErrors = _validationStageOutputCache.DataMatchProblemCount,
-                //TotalDataMatchLearners = _validationStageOutputCache.DataMatchProblemLearnersCount
-            };
-        }
-
-        private async Task<List<ValidationErrorDto>> ReadAndDeserialiseValidationErrorsAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
-        {
-            List<ValidationErrorDto> result = new List<ValidationErrorDto>();
-
-            try
-            {
-                string validationErrorsStr = string.Empty;
-
-                using (var stream = await _fileService.OpenReadStreamAsync(reportServiceContext.ValidationErrorsKey, reportServiceContext.Container, cancellationToken))
-                {
-                    StreamReader reader = new StreamReader(stream);
-                    validationErrorsStr = reader.ReadToEnd();
-                }
-
-                try
-                {
-                    List<ValidationError> validationErrors = _jsonSerializationService.Deserialize<List<ValidationError>>(validationErrorsStr);
-
-                    // Extract the rules names and fetch the details for them.
-                    string[] rulesNames = validationErrors.Select(x => x.RuleName).Distinct().ToArray();
-                    List<ValidationErrorDetails> validationErrorDetails = rulesNames.Select(x => new ValidationErrorDetails(x)).ToList();
-
-                    foreach (ValidationError validationError in validationErrors)
-                    {
-                        ValidationErrorDetails validationErrorDetail = validationErrorDetails.SingleOrDefault(x => string.Equals(x.RuleName, validationError.RuleName, StringComparison.OrdinalIgnoreCase));
-
-                        result.Add(new ValidationErrorDto
-                        {
-                            AimSequenceNumber = validationError.AimSequenceNumber,
-                            LearnerReferenceNumber = validationError.LearnerReferenceNumber,
-                            RuleName = validationError.RuleName,
-                            Severity = validationError.Severity,
-                            ErrorMessage = validationErrorDetail?.Message,
-                            FieldValues = validationError.ValidationErrorParameters == null
-                                ? string.Empty
-                                : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
-                        });
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError("Failed to merge validation error messages", ex);
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Can't process validation errors", ex);
-            }
-
-            return result;
-        }
-
-        private async Task PersistValuesToStorage(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext,string externalFileName, CancellationToken cancellationToken)
-        {
-            using (Stream fileStream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.json", reportServiceContext.Container, cancellationToken))
-            {
-                _jsonSerializationService.Serialize(_jsonSerializationService.Serialize(_ilrValidationResult), fileStream);
-            }
-
             using (Stream stream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.csv", reportServiceContext.Container, cancellationToken))
             {
                 UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
@@ -188,49 +104,68 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
                 workbook.Save(ms, SaveFormat.Xlsx);
             }
         }
-       
-        private List<ValidationErrorModel> ValidationErrorModels(IMessage message, List<ValidationErrorDto> validationErrorDtos)
-        {
-            var validationErrors = new List<ValidationErrorModel>();
-            foreach (ValidationErrorDto validationErrorDto in validationErrorDtos)
-            {
-                if (message == null)
-                {
-                    validationErrors.Add(new ValidationErrorModel(
-                        validationErrorDto.Severity,
-                        validationErrorDto.LearnerReferenceNumber,
-                        validationErrorDto.RuleName,
-                        validationErrorDto.FieldValues,
-                        validationErrorDto.ErrorMessage,
-                        validationErrorDto.AimSequenceNumber));
-                }
-                else
-                {
-                    ILearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationErrorDto.LearnerReferenceNumber);
-                    ILearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == validationErrorDto.AimSequenceNumber);
 
-                    validationErrors.Add(new ValidationErrorModel(
-                        validationErrorDto.Severity,
-                        validationErrorDto.LearnerReferenceNumber,
-                        validationErrorDto.RuleName,
-                        validationErrorDto.FieldValues,
-                        validationErrorDto.ErrorMessage,
-                        validationErrorDto.AimSequenceNumber,
-                        learningDelivery?.LearnAimRef,
-                        learningDelivery?.SWSupAimId,
-                        learningDelivery?.FundModel,
-                        learningDelivery?.PartnerUKPRNNullable,
-                        learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                        learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                        learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                        learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                        learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                        learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon));
+        private string GetFilename(IReportServiceContext reportServiceContext)
+        {
+            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
+            return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
+        }
+
+        #region Front End Report(Will be a new report) 
+        private async Task GenerateFrontEndValidationReport(
+            IReportServiceContext reportServiceContext,
+            List<ValidationErrorDto> validationErrorDtos,
+            string externalFileName,
+            CancellationToken cancellationToken)
+        {
+            var errors = validationErrorDtos.Where(x => string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase) || string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase)).ToArray();
+            var warnings = validationErrorDtos.Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
+
+            _ilrValidationResult = new FileValidationResult
+            {
+                TotalLearners = GetNumberOfLearners(reportServiceContext),
+                TotalErrors = errors.Length,
+                TotalWarnings = warnings.Length,
+                TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber),
+                TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber),
+                ErrorMessage = validationErrorDtos.FirstOrDefault(x => string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase))?.ErrorMessage,
+                //TotalDataMatchErrors = _validationStageOutputCache.DataMatchProblemCount,
+                //TotalDataMatchLearners = _validationStageOutputCache.DataMatchProblemLearnersCount
+            };
+
+            using (Stream fileStream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.json", reportServiceContext.Container, cancellationToken))
+            {
+                _jsonSerializationService.Serialize(_jsonSerializationService.Serialize(_ilrValidationResult), fileStream);
+            }
+        }
+
+        private List<ValidationErrorDto> BuildValidationErrors(List<ValidationError> ilrValidationErrors, IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
+        {
+            List<ValidationErrorDto> result = new List<ValidationErrorDto>();
+            try
+            {
+                foreach (ValidationError validationError in ilrValidationErrors)
+                {
+                    result.Add(new ValidationErrorDto
+                    {
+                        AimSequenceNumber = validationError.AimSequenceNumber,
+                        LearnerReferenceNumber = validationError.LearnerReferenceNumber,
+                        RuleName = validationError.RuleName,
+                        Severity = validationError.Severity,
+                        ErrorMessage = validationErrorsMetadata.FirstOrDefault(x => string.Equals(x.RuleName, validationError.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
+                        FieldValues = validationError.ValidationErrorParameters == null
+                             ? string.Empty
+                             : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
+                    });
                 }
             }
+            catch (Exception ex)
+            {
+                _logger.LogError("Failed to merge validation error messages", ex);
+            }
 
-            validationErrors.Sort(ValidationErrorsModelComparer);
-            return validationErrors;
+
+            return result;
         }
 
         private string GetValidationErrorParameters(List<ValidationErrorParameter> validationErrorParameters)
@@ -259,5 +194,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
             return ret;
         }
+        #endregion 
     }
 }

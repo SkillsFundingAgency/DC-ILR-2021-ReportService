@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
-using ESFA.DC.ILR.ReportService.Stateless.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Stateless.Configuration
 {
