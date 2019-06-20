@@ -26,6 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             builder.RegisterType<IlrReferenceDataProviderService>().As<IFileProviderService<ReferenceDataRoot>>().InstancePerLifetimeScope();
             builder.RegisterType<IlrValidationErrorsProvider>().As<IFileProviderService<List<ValidationError>>>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationErrorsReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
+            builder.RegisterType<ValueProvider>().As<IValueProvider>().InstancePerLifetimeScope();
 
             //Reports
             builder.RegisterType<ValidationErrorsReport>().As<IReport>();
