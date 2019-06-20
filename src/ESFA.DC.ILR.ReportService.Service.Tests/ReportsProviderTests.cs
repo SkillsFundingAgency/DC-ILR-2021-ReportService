@@ -88,7 +88,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Tests
             };
 
             var loggerMock = new Mock<ILogger>();
-
             var reportServiceContext = new Mock<IReportServiceContext>();
 
             reportServiceContext.SetupGet(c => c.Tasks).Returns(new List<string>() { reportOneTaskName, reportTwoTaskName, reportThreeTaskName });

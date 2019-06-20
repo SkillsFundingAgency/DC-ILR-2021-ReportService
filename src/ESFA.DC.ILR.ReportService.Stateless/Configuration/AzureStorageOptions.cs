@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR.ReportService.Stateless.Interfaces;
+﻿using ESFA.DC.ILR.ReportService.Interface.Configuration;
 
 namespace ESFA.DC.ILR.ReportService.Stateless.Configuration
 {

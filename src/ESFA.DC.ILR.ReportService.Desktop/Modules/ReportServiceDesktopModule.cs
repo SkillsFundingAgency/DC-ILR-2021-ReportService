@@ -1,11 +1,17 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using Autofac;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Reports;
+using ESFA.DC.ILR.ReportService.Reports.Builders;
 using ESFA.DC.ILR.ReportService.Reports.Providers;
 using ESFA.DC.ILR.ReportService.Reports.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
+using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
 namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 {
@@ -16,7 +22,10 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             builder.RegisterType<EntryPoint>().As<IEntryPoint>();
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
             builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory>();
-            builder.RegisterType<IlrFileServiceProvider>().As<IIlrProviderService>();
+            builder.RegisterType<IlrFileServiceProvider>().As<IFileProviderService<IMessage>>().InstancePerLifetimeScope();
+            builder.RegisterType<IlrReferenceDataProviderService>().As<IFileProviderService<ReferenceDataRoot>>().InstancePerLifetimeScope();
+            builder.RegisterType<IlrValidationErrorsProvider>().As<IFileProviderService<List<ValidationError>>>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationErrorsReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
 
             //Reports
             builder.RegisterType<ValidationErrorsReport>().As<IReport>();

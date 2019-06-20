@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR.ReportService.Stateless.Interfaces
+﻿namespace ESFA.DC.ILR.ReportService.Interface.Configuration
 {
     public interface IAzureStorageOptions
     {

@@ -4,6 +4,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Model.ReportModels
 {
     public sealed class ValidationErrorModel : ValidationErrorDto
     {
+        public ValidationErrorModel()
+        {
+            
+        }
         public ValidationErrorModel(string severity, string learnerReferenceNumber, string ruleName, string fieldValues, string errorMessage, long? aimSequenceNumber)
         {
             Severity = severity;
