@@ -66,12 +66,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public async Task GenerateReport(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            var externalFileName = GetFilename(reportServiceContext);
-
             IMessage ilrMessage = await _ilrProviderService.ProvideAsync(reportServiceContext, cancellationToken);
             ReferenceDataRoot ilrReferenceData = await _ilrReferenceDataProviderService.ProvideAsync(reportServiceContext, cancellationToken);
             List<ValidationError> ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
 
+            reportServiceContext.Ukprn = ilrMessage.HeaderEntity.SourceEntity.UKPRN;
+            var externalFileName = GetFilename(reportServiceContext);
             var validationErrorModels = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
             await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
 

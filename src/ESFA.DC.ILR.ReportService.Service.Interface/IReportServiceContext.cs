@@ -8,7 +8,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
     {
         long JobId { get; }
 
-        int Ukprn { get; }
+        int Ukprn { get; set; }
 
         string Filename { get; }
 
