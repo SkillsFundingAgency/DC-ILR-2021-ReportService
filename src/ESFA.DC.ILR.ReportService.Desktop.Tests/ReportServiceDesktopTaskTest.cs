@@ -69,7 +69,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "FundingAlbOutput", "FundingAlbOutput"},
                 { "ValidLearnRefNumbers", "ValidLearnRefNumbers"},
                 { "ReturnPeriod", 8},
-                { "Tasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
+                { "ReportTasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
             };
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(DateTime.UtcNow);
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
