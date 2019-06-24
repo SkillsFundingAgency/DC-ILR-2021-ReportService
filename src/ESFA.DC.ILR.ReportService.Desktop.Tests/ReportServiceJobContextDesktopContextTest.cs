@@ -20,7 +20,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             {
                 { "Filename", "someilr.xml" },
                 { "OriginalFilename", "mtheoriginal.xml"},
-                { "UkPrn", 12345678},
                 { "FileSizeInBytes", 128},
                 { "Container", "ilr-files"},
                 { "ValidationErrors", "ValidationErrors"},
@@ -37,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "FundingAlbOutput", "FundingAlbOutput"},
                 { "ValidLearnRefNumbers", "ValidLearnRefNumbers"},
                 { "ReturnPeriod", 8},
-                { "Tasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
+                { "ReportTasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
             };
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 10, 10));
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
@@ -46,7 +45,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             context.Filename.Should().Be("someilr.xml");
             context.OriginalFilename.Should().Be("mtheoriginal.xml");
-            context.Ukprn.Should().Be(12345678);
             context.FileSizeInBytes.Should().Be(128);
             context.Container.Should().Be("ilr-files");
             context.ValidationErrorsKey.Should().Be("ValidationErrors");

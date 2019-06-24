@@ -3,12 +3,12 @@ using System.Fabric;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
+using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Service;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
-using ESFA.DC.JobContext.Interface;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
@@ -76,7 +76,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                 var azureBlobStorageOptions = _parentLifeTimeScope.Resolve<IAzureStorageOptions>();
                 c.RegisterInstance(new AzureStorageKeyValuePersistenceConfig(
                         azureBlobStorageOptions.AzureBlobConnectionString,
-                        jobContextMessage.KeyValuePairs[JobContextMessageKey.Container].ToString()))
+                        jobContextMessage.KeyValuePairs[ILRContextKeys.Container].ToString()))
                     .As<IAzureStorageKeyValuePersistenceServiceConfig>();
                 DIComposition.RegisterServicesByCollectionName(jobContextMessage.KeyValuePairs["CollectionName"].ToString(), c);
             });
