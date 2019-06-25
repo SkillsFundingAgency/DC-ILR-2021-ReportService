@@ -56,5 +56,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string IlrReferenceDataKey { get; }
 
+        string ReportOutputFileNames { get; set; }
+
     }
 }

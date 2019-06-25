@@ -8,6 +8,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
     public interface IEntryPoint
     {
-        Task<bool> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
+        Task<List<string>> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
     }
 }

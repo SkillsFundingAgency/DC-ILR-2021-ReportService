@@ -55,5 +55,11 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public string CollectionName { get; }
         public int ReturnPeriod => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
         public string IlrReferenceDataKey => _desktopContext.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
+
+        public string ReportOutputFileNames
+        {
+            get => _desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString();
+            set => _desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
+        }
     }
 }
