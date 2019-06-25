@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -23,8 +24,9 @@ namespace ESFA.DC.ILR.ReportService.Desktop
         {
             var reportServiceContext = _reportServiceContextFactory.Build(desktopContext);
 
-            await _entryPoint.Callback(reportServiceContext, cancellationToken);
+            var reportOutputFileNames = await _entryPoint.Callback(reportServiceContext, cancellationToken);
 
+            desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = reportOutputFileNames;
             return desktopContext;
         }
     }

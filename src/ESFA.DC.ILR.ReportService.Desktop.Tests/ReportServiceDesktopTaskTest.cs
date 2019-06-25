@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             reportServiceContextFactoryMock.Setup(f => f.Build(desktopContextMock.Object)).Returns(reportServiceContextMock.Object);
 
-            entryPointMock.Setup(s => s.Callback(reportServiceContextMock.Object, cancellationToken)).Returns(Task.FromResult(true)).Verifiable();
+            entryPointMock.Setup(s => s.Callback(reportServiceContextMock.Object, cancellationToken)).Returns(Task.FromResult(new List<string>())).Verifiable();
 
             var result = await NewTask(entryPointMock.Object, reportServiceContextFactoryMock.Object).ExecuteAsync(desktopContextMock.Object, cancellationToken);
 
@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var container = DIComposition.BuildContainer().Build();
             var entryPoint = container.Resolve<IEntryPoint>();
             Mock<IDesktopContext> mockDesktopContext = new Mock<IDesktopContext>();
-
+            var dateTime = DateTime.UtcNow;
             var keyValuePairs = new Dictionary<string, object>
             {
                 { "Filename", "ILR-10033670-1819-20190617-102124-03.xml" },
@@ -71,13 +71,15 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "ReturnPeriod", 8},
                 { "ReportTasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
             };
-            mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(DateTime.UtcNow);
+            mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(dateTime);
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
 
             var reportServiceJobContextDesktopContext = new ReportServiceJobContextDesktopContext(mockDesktopContext.Object);
 
-            var callback = entryPoint.Callback(reportServiceJobContextDesktopContext, cancellationToken);
+            var reportOutputFileNames = await entryPoint.Callback(reportServiceJobContextDesktopContext, cancellationToken);
 
+            reportOutputFileNames.Should().NotBeNullOrEmpty();
+            reportOutputFileNames.Count.Should().Be(2);
         }
 
         private ReportServiceDesktopTask NewTask(IEntryPoint entryPoint = null, IReportServiceContextFactory reportServiceContextFactory = null)

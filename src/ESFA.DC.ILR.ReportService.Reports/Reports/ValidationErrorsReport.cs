@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -64,8 +65,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public string ReportTaskName => ReportTaskNameConstants.ValidationReport;
 
-        public async Task GenerateReport(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public async Task<List<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
+            List<string> reportOutputFilenames = new List<string>();
+
             IMessage ilrMessage = await _ilrProviderService.ProvideAsync(reportServiceContext, cancellationToken);
             ReferenceDataRoot ilrReferenceData = await _ilrReferenceDataProviderService.ProvideAsync(reportServiceContext, cancellationToken);
             List<ValidationError> ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
@@ -73,14 +76,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             reportServiceContext.Ukprn = ilrMessage.HeaderEntity.SourceEntity.UKPRN;
             var externalFileName = GetFilename(reportServiceContext);
             var validationErrorModels = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
-            await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
+            var list = await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
+            reportOutputFilenames.AddRange(list);
 
             List<ValidationErrorDto> validationErrorsDto = BuildValidationErrors(ilrValidationErrors, ilrReferenceData.MetaDatas.ValidationErrors);
             await GenerateFrontEndValidationReport(reportServiceContext, validationErrorsDto, externalFileName, cancellationToken);
+            
+            return reportOutputFilenames;
         }
 
-        private async Task PersistValidationErrorsReport(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
+        private async Task<List<string>> PersistValidationErrorsReport(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
         {
+            List<string> filesGenerated = new List<string>();
+
             using (Stream stream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.csv", reportServiceContext.Container, cancellationToken))
             {
                 UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
@@ -94,6 +102,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
                     }
                 }
             }
+            filesGenerated.Add($"{externalFileName}.csv");
 
             Workbook workbook = new Workbook();
             Worksheet sheet = workbook.Worksheets[0];
@@ -103,6 +112,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             {
                 workbook.Save(ms, SaveFormat.Xlsx);
             }
+            filesGenerated.Add($"{externalFileName}.xlsx");
+            return filesGenerated;
         }
 
         private string GetFilename(IReportServiceContext reportServiceContext)
@@ -112,7 +123,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
         }
 
         #region Front End Report(Will be a new report) 
-        private async Task GenerateFrontEndValidationReport(
+        private async Task<string> GenerateFrontEndValidationReport(
             IReportServiceContext reportServiceContext,
             List<ValidationErrorDto> validationErrorDtos,
             string externalFileName,
@@ -137,6 +148,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             {
                 _jsonSerializationService.Serialize(_jsonSerializationService.Serialize(_ilrValidationResult), fileStream);
             }
+
+            return $"{externalFileName}.json";
         }
 
         private List<ValidationErrorDto> BuildValidationErrors(List<ValidationError> ilrValidationErrors, IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)

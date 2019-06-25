@@ -25,8 +25,9 @@ namespace ESFA.DC.ILR.ReportService.Reports
             _fileService = fileService;
             _reports = reports;
         }
-        public async Task<bool> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public async Task<List<string>> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
+            List<string> reportOutputFilenames = new List<string>();
             var stopWatch = new Stopwatch();
             _logger.LogDebug("Inside ReportService callback");
 
@@ -36,7 +37,6 @@ namespace ESFA.DC.ILR.ReportService.Reports
                 if (cancellationToken.IsCancellationRequested)
                 {
                     _logger.LogDebug("ReportService Callback  cancelling before Generating Reports");
-                    return false;
                 }
 
                 // list of reports to be generated
@@ -50,7 +50,8 @@ namespace ESFA.DC.ILR.ReportService.Reports
                 foreach (var report in reportsToBeGenerated)
                 {
                     _logger.LogDebug($"Attempting to generate {report.GetType().Name}");
-                    await report.GenerateReport(reportServiceContext, cancellationToken);
+                    var reportsGenerated = await report.GenerateReportAsync(reportServiceContext, cancellationToken);
+                    reportOutputFilenames.AddRange(reportsGenerated);
                 }
 
                 stopWatch.Restart();
@@ -63,7 +64,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
                 throw;
             }
 
-            return true;
+            return reportOutputFilenames;
         }
     }
 }
