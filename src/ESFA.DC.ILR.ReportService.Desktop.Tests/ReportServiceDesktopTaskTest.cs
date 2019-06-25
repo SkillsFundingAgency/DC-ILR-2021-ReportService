@@ -38,8 +38,10 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             entryPointMock.VerifyAll();
         }
 
-        [Fact]
-        public async Task TestValidationErrorsReport_EndToEnd()
+        [Theory]
+        [InlineData("TaskGenerateValidationReport")]
+        [InlineData("TaskGenerateValidationSchemaErrorsReport")]
+        public async Task TestValidationReports_EndToEnd(string validationReportName)
         {
             var cancellationToken = CancellationToken.None;
 
@@ -50,7 +52,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             {
                 { "Filename", "ILR-10033670-1819-20190617-102124-03.xml" },
                 { "OriginalFilename", "mtheoriginal.xml"},
-                { "UkPrn", 12345678},
                 { "FileSizeInBytes", 128},
                 { "Container", @"TestFiles\"},
                 { "IlrReferenceData", @"IlrReferenceData.json"},
@@ -68,7 +69,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "FundingAlbOutput", "FundingAlbOutput"},
                 { "ValidLearnRefNumbers", "ValidLearnRefNumbers"},
                 { "ReturnPeriod", 8},
-                { "ReportTasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
+                { "ReportTasks", validationReportName}
             };
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 06, 25));
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);

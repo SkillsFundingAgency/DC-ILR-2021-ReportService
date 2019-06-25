@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             builder.RegisterType<IlrReferenceDataProviderService>().As<IFileProviderService<ReferenceDataRoot>>().InstancePerLifetimeScope();
             builder.RegisterType<IlrValidationErrorsProvider>().As<IFileProviderService<List<ValidationErrors.Interface.Models.ValidationError>>>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationErrorsReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             builder.RegisterType<XmlSerializationService>().As<IXmlSerializationService>();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>();
@@ -43,6 +44,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             //Reports
             builder.RegisterType<ValidationErrorsReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>().InstancePerLifetimeScope();
 
             return builder;
         }
