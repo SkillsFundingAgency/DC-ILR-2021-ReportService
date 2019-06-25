@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public string ReportTaskName => ReportTaskNameConstants.ValidationReport;
 
-        public async Task<List<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             List<string> reportOutputFilenames = new List<string>();
 
@@ -146,7 +146,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
             using (Stream fileStream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.json", reportServiceContext.Container, cancellationToken))
             {
-                _jsonSerializationService.Serialize(_jsonSerializationService.Serialize(_ilrValidationResult), fileStream);
+                _jsonSerializationService.Serialize(_ilrValidationResult, fileStream);
             }
 
             return $"{externalFileName}.json";

@@ -54,6 +54,8 @@ namespace ESFA.DC.ILR.ReportService.Reports
                     reportOutputFilenames.AddRange(reportsGenerated);
                 }
 
+                reportServiceContext.ReportOutputFileNames = string.Join("|", reportOutputFilenames);
+
                 stopWatch.Restart();
 
                 _logger.LogDebug("Completed ReportService callback");

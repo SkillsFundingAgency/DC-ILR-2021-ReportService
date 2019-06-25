@@ -12,6 +12,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string ReportFileName { get; }
 
-        Task<List<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
+        Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
     }
 }

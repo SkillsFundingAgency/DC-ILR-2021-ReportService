@@ -24,9 +24,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop
         {
             var reportServiceContext = _reportServiceContextFactory.Build(desktopContext);
 
-            var reportOutputFileNames = await _entryPoint.Callback(reportServiceContext, cancellationToken);
+            await _entryPoint.Callback(reportServiceContext, cancellationToken);
 
-            desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = reportOutputFileNames;
             return desktopContext;
         }
     }
