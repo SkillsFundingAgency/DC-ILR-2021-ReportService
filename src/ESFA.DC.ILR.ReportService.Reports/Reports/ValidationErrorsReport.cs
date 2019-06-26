@@ -104,15 +104,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             }
             filesGenerated.Add($"{externalFileName}.csv");
 
-            Workbook workbook = new Workbook();
-            Worksheet sheet = workbook.Worksheets[0];
-            WriteExcelRecords(sheet, new ValidationErrorMapper(), validationErrors, null, null);
-
-            using (Stream ms = await _fileService.OpenWriteStreamAsync($"{externalFileName}.xlsx", reportServiceContext.Container, cancellationToken))
-            {
-                workbook.Save(ms, SaveFormat.Xlsx);
-            }
-            filesGenerated.Add($"{externalFileName}.xlsx");
             return filesGenerated;
         }
 
