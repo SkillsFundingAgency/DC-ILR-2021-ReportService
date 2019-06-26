@@ -16,6 +16,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
 
         private readonly IFileService _fileService;
 
+        public CsvService(IFileService fileService)
+        {
+            _fileService = fileService;
+        }
+
         public async Task WriteAsync<T, TClassMap>(IEnumerable<T> rows, string fileName, string container, CancellationToken cancellationToken)
             where TClassMap : ClassMap<T>
         {
