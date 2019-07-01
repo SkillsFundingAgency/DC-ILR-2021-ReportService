@@ -14,15 +14,18 @@ namespace ESFA.DC.ILR.ReportService.Reports
     {
         private readonly ILogger _logger;
         private readonly IFileService _fileService;
+        private readonly IReportsDependentDataPopulationService _reportsDependentDataPopulationService;
         private readonly IList<IReport> _reports;
 
         public EntryPoint(
             ILogger logger,
             IFileService fileService,
+            IReportsDependentDataPopulationService reportsDependentDataPopulationService,
             IList<IReport> reports)
         {
             _logger = logger;
             _fileService = fileService;
+            _reportsDependentDataPopulationService = reportsDependentDataPopulationService;
             _reports = reports;
         }
         public async Task<List<string>> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
@@ -47,10 +50,14 @@ namespace ESFA.DC.ILR.ReportService.Reports
                     _logger.LogDebug($"No reports found.");
                 }
 
+                // Populate Dependent data.
+                var reportsDependsOn = reportsToBeGenerated.SelectMany(x => x.DependsOn).Distinct().ToList();
+                var reportsDependentData = await _reportsDependentDataPopulationService.PopulateAsync(reportServiceContext, reportsDependsOn, cancellationToken);
+
                 foreach (var report in reportsToBeGenerated)
                 {
                     _logger.LogDebug($"Attempting to generate {report.GetType().Name}");
-                    var reportsGenerated = await report.GenerateReportAsync(reportServiceContext, cancellationToken);
+                    var reportsGenerated = await report.GenerateReportAsync(reportServiceContext, reportsDependentData, cancellationToken);
                     reportOutputFilenames.AddRange(reportsGenerated);
                 }
 

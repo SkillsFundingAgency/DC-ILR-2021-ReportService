@@ -34,6 +34,12 @@
     <Reference Include="Aspose.Cells, Version=19.2.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
       <HintPath>..\packages\Aspose.Cells.19.2.0\lib\net40\Aspose.Cells.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.0.64.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.0.64\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
     </Reference>
@@ -48,11 +54,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Generation\ModelProperty.cs" />
+    <Compile Include="Interface\IReportServiceDependentData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportModels\ValidationErrorModel.cs" />
+    <Compile Include="ReportServiceDependentData.cs" />
     <Compile Include="Styling\CellStyle.cs" />
     <Compile Include="Styling\HeaderType.cs" />
-    <Compile Include="ValidationErrorDetails.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
