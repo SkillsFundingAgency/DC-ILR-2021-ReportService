@@ -12,8 +12,10 @@ using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Builders;
 using ESFA.DC.ILR.ReportService.Reports.Providers;
 using ESFA.DC.ILR.ReportService.Reports.Reports;
+using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -45,6 +47,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             //Reports
             builder.RegisterType<ValidationErrorsReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>().InstancePerLifetimeScope();
+
+            builder.RegisterType<CsvService>().As<ICsvService>();
 
             return builder;
         }

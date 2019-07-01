@@ -18,36 +18,34 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
     public sealed class ValidationSchemaErrorsReport : AbstractReport, IReport
     {
         private readonly ILogger _logger;
-        private readonly IFileService _fileService;
-        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IFileProviderService<List<ValidationError>> _ilrValidationErrorsProvider;
         private readonly IValidationSchemaErrorsReportBuilder _validationSchemaErrorsReportBuilder;
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly ICsvService _csvService;
 
         private FileValidationResult _ilrValidationResult;
 
         public ValidationSchemaErrorsReport(
             ILogger logger,
-            IFileService fileService,
-            IJsonSerializationService jsonSerializationService,
             IFileProviderService<List<ValidationError>> ilrValidationErrorsProvider,
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
+            ICsvService csvService,
             IValueProvider valueProvider) :
             base(valueProvider)
         {
             _logger = logger;
-            _fileService = fileService;
-            _jsonSerializationService = jsonSerializationService;
             _ilrValidationErrorsProvider = ilrValidationErrorsProvider;
             _validationSchemaErrorsReportBuilder = validationSchemaErrorsReportBuilder;
             _dateTimeProvider = dateTimeProvider;
+            _csvService = csvService;
         }
 
         public string ReportFileName => "Rule Violation Report";
@@ -56,37 +54,24 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            List<string> reportOutputFileNames = new List<string>();
             reportServiceContext.Ukprn = GetUkPrn(reportServiceContext.Filename);
+
             var externalFileName = GetFilename(reportServiceContext);
-            List<ValidationError> ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
+
+            var ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
+
             var validationErrorModels = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
-            var list = await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
-            reportOutputFileNames.AddRange(list);
-            
-            return reportOutputFileNames;
+
+            return await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
         }
       
-        private async Task<List<string>> PersistValidationErrorsReport(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
+        private async Task<IEnumerable<string>> PersistValidationErrorsReport(IEnumerable<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
         {
-            List<string> filesGenerated = new List<string>();
+            var fileName = $"{externalFileName}.csv";
 
-            using (Stream stream = await _fileService.OpenWriteStreamAsync($"{externalFileName}.csv", reportServiceContext.Container, cancellationToken))
-            {
-                UTF8Encoding utF8Encoding = new UTF8Encoding(false, true);
-                using (TextWriter textWriter = new StreamWriter(stream, utF8Encoding))
-                {
-                    using (CsvWriter csvWriter = new CsvWriter(textWriter))
-                    {
-                        WriteCsvRecords<ValidationErrorMapper, ValidationErrorModel>(csvWriter, validationErrors);
-                        csvWriter.Flush();
-                        textWriter.Flush();
-                    }
-                }
-            }
-            filesGenerated.Add($"{externalFileName}.csv");
+            await _csvService.WriteAsync<ValidationErrorModel, ValidationErrorMapper>(validationErrors, fileName, reportServiceContext.Container, cancellationToken);
 
-            return filesGenerated;
+            return new []{ fileName };
         }
 
         private string GetFilename(IReportServiceContext reportServiceContext)

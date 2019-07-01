@@ -117,20 +117,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
             SetCurrentRow(worksheet, currentRow);
         }
 
-        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records)
-            where TMapper : ClassMap
-            where TModel : class
-        {
-            csvWriter.Configuration.RegisterClassMap<TMapper>();
-
-            csvWriter.WriteHeader<TModel>();
-            csvWriter.NextRecord();
-
-            csvWriter.WriteRecords(records);
-
-            csvWriter.Configuration.UnregisterClassMap();
-        }
-
         private int GetCurrentRow(Worksheet worksheet)
         {
             if (!_currentRow.ContainsKey(worksheet))
