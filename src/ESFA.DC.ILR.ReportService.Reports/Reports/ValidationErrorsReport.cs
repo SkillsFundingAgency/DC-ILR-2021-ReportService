@@ -1,5 +1,4 @@
-﻿using Aspose.Cells;
-using CsvHelper;
+﻿using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Model.Interface;
@@ -18,7 +17,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
