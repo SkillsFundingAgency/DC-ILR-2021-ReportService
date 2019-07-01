@@ -8,7 +8,7 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Providers
 {
-    public class IlrReferenceDataProviderService : IFileProviderService<ReferenceDataRoot>
+    public class IlrReferenceDataProviderService : IExternalDataProvider
     {
         private readonly IFileService _fileService;
         private readonly IJsonSerializationService _jsonSerializationService;
@@ -19,7 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Providers
             _jsonSerializationService = jsonSerializationService;
         }
 
-        public async Task<ReferenceDataRoot> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public async Task<object> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             ReferenceDataRoot referenceData;
 

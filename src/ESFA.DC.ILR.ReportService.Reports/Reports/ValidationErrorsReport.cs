@@ -20,6 +20,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
@@ -30,9 +31,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
         private readonly ILogger _logger;
         private readonly IFileService _fileService;
         private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IFileProviderService<IMessage> _ilrProviderService;
-        private readonly IFileProviderService<ReferenceDataRoot> _ilrReferenceDataProviderService;
-        private readonly IFileProviderService<List<ValidationError>> _ilrValidationErrorsProvider;
         private readonly IValidationErrorsReportBuilder _validationErrorsReportBuilder;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICsvService _csvService;
@@ -43,9 +41,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             ILogger logger,
             IFileService fileService,
             IJsonSerializationService jsonSerializationService,
-            IFileProviderService<IMessage> ilrProviderService,
-            IFileProviderService<ReferenceDataRoot> ilrReferenceDataProviderService,
-            IFileProviderService<List<ValidationError>> ilrValidationErrorsProvider,
             IValidationErrorsReportBuilder validationErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
             ICsvService csvService)
@@ -53,9 +48,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             _logger = logger;
             _fileService = fileService;
             _jsonSerializationService = jsonSerializationService;
-            _ilrProviderService = ilrProviderService;
-            _ilrReferenceDataProviderService = ilrReferenceDataProviderService;
-            _ilrValidationErrorsProvider = ilrValidationErrorsProvider;
             _validationErrorsReportBuilder = validationErrorsReportBuilder;
             _dateTimeProvider = dateTimeProvider;
             _csvService = csvService;
@@ -65,11 +57,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public string ReportTaskName => ReportTaskNameConstants.ValidationReport;
 
-        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public IEnumerable<Type> DependsOn => new List<Type>()
         {
-            IMessage ilrMessage = await _ilrProviderService.ProvideAsync(reportServiceContext, cancellationToken);
-            ReferenceDataRoot ilrReferenceData = await _ilrReferenceDataProviderService.ProvideAsync(reportServiceContext, cancellationToken);
-            List<ValidationError> ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
+            typeof(IMessage),
+            typeof(ReferenceDataRoot),
+            typeof(List<ValidationError>)
+        };
+
+        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
+        {
+            List<string> reportOutputFilenames = new List<string>();
+
+            IMessage ilrMessage =  reportsDependentData.Get<IMessage>();
+            ReferenceDataRoot ilrReferenceData = reportsDependentData.Get<ReferenceDataRoot>();
+            List<ValidationError> ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
 
             reportServiceContext.Ukprn = ilrMessage.HeaderEntity.SourceEntity.UKPRN;
             var externalFileName = GetFilename(reportServiceContext);

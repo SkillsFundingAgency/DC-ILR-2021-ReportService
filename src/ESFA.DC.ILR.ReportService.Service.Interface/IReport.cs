@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
@@ -12,6 +12,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string ReportFileName { get; }
 
-        Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
+        Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken);
+
+       IEnumerable<Type> DependsOn { get; }
     }
 }
