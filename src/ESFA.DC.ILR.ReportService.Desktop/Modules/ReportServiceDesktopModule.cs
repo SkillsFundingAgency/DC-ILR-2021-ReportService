@@ -11,6 +11,8 @@ using ESFA.DC.ILR.ReportService.Reports.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
+using ESFA.DC.ILR.ReportService.Service.Model;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
 namespace ESFA.DC.ILR.ReportService.Desktop.Modules
@@ -38,6 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             builder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
             builder.RegisterType<ValueProvider>().As<IValueProvider>().InstancePerLifetimeScope();
 
+            builder.RegisterType<ReportServiceDependentData>().As<IReportServiceDependentData>();
             // Builders 
             builder.RegisterType<ValidationErrorsReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();

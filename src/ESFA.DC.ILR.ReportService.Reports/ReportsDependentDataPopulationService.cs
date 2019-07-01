@@ -6,6 +6,7 @@ using Autofac.Features.Indexed;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports
 {
@@ -19,18 +20,17 @@ namespace ESFA.DC.ILR.ReportService.Reports
            
         }
 
-        public async Task<ReportServiceDependentData> PopulateAsync(
+        public async Task<IReportServiceDependentData> PopulateAsync(
             IReportServiceContext reportServiceContext,
             IEnumerable<Type> dependentTypes,
             CancellationToken cancellationToken)
         {
-            ReportServiceDependentData rsDependentData = new ReportServiceDependentData
+            var rsDependentData = new ReportServiceDependentData();
+
+            foreach (Type type in dependentTypes)
             {
-                Data = new Dictionary<Type, object>()
-            };
-            foreach (var type in dependentTypes)
-            {
-                rsDependentData.Data[type] = await _providers[type].ProvideAsync(reportServiceContext, cancellationToken);
+                var value = await _providers[type].ProvideAsync(reportServiceContext, cancellationToken);
+                rsDependentData.Set(type, value);
             }
 
             return rsDependentData;

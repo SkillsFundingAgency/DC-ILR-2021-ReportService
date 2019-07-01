@@ -41,10 +41,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
 
             var result = await service.PopulateAsync(reportServiceMock.Object, dependsOnTypes, cancellationToken);
 
-            result.Data.Should().NotBeEmpty();
-            result.Data[typeof(IMessage)].Should().BeSameAs(message);
-            result.Data[typeof(ReferenceDataRoot)].Should().BeSameAs(referenceDataRoot);
-            result.Data[typeof(List<ValidationErrors.Interface.Models.ValidationError>)].Should().BeSameAs(validationErrors);
+            
+            result.Get<IMessage>().Should().BeSameAs(message);
+            result.Get<ReferenceDataRoot>().Should().BeSameAs(referenceDataRoot);
+            result.Get<List<ValidationErrors.Interface.Models.ValidationError>>().Should().BeSameAs(validationErrors);
         }
     }
 }

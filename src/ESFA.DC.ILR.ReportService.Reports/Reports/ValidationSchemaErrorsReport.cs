@@ -17,6 +17,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Model;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
@@ -51,12 +52,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             typeof(List<ValidationError>)
         };
 
-        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, ReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
             List<string> reportOutputFileNames = new List<string>();
             reportServiceContext.Ukprn = GetUkPrn(reportServiceContext.Filename);
             var externalFileName = GetFilename(reportServiceContext);
-            List<ValidationError> ilrValidationErrors = (List<ValidationError>)reportsDependentData.Data[typeof(List<ValidationError>)];
+            List<ValidationError> ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
             var validationErrorModels = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
             var list = await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
             reportOutputFileNames.AddRange(list);

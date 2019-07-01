@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
 namespace ESFA.DC.ILR.ReportService.Service.Model
 {
-    public class ReportServiceDependentData
+    public class ReportServiceDependentData : IReportServiceDependentData
     {
-        public IDictionary<Type, Object> Data { get; set; }
+        private IDictionary<Type, Object> Data { get; set; } = new Dictionary<Type, object>();
 
         public IMessage IlrMessage { get; set; }
 
@@ -20,9 +18,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Model
         public List<ValidationError> ValidationErrors { get; set; }
 
         public T Get<T>()
-            where T : class
         {
-            return Data[typeof(T)] as T;
+            return (T) Data[typeof(T)];
+        }
+
+        public void Set(Type type, Object value) 
+        {
+            Data[type] = value;
         }
     }
 }

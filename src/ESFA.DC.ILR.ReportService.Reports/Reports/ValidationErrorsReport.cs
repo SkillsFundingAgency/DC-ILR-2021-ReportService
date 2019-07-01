@@ -24,6 +24,8 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Model;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
+using IMessage = ESFA.DC.ILR.Model.Interface.IMessage;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
@@ -64,14 +66,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             typeof(List<ValidationError>)
         };
 
-        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, ReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
             List<string> reportOutputFilenames = new List<string>();
 
-            IMessage ilrMessage = (Message) reportsDependentData.Data[typeof(IMessage)];
-            ReferenceDataRoot ilrReferenceData = (ReferenceDataRoot) reportsDependentData.Data[typeof(ReferenceDataRoot)];
-            List<ValidationError> ilrValidationErrors = (List<ValidationError>) reportsDependentData.Data[typeof(List<ValidationError>)];
-            
+            IMessage ilrMessage =  reportsDependentData.Get<IMessage>();
+            ReferenceDataRoot ilrReferenceData = reportsDependentData.Get<ReferenceDataRoot>();
+            List<ValidationError> ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
+
             reportServiceContext.Ukprn = ilrMessage.HeaderEntity.SourceEntity.UKPRN;
             var externalFileName = GetFilename(reportServiceContext);
             var validationErrorModels = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
@@ -83,6 +85,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             
             return reportOutputFilenames;
         }
+
+
+        //private Type GetReportsDependentData(ReportServiceDependentData reportsDependentData,Type type )
+        //{
+        //    return (Type) reportsDependentData.Data[type];
+        //}
 
         private async Task<List<string>> PersistValidationErrorsReport(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
         {

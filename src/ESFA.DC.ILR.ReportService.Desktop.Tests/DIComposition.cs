@@ -15,6 +15,8 @@ using ESFA.DC.ILR.ReportService.Reports.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
+using ESFA.DC.ILR.ReportService.Service.Model;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -50,6 +52,9 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             builder.RegisterType<XmlSerializationService>().As<IXmlSerializationService>();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>();
             builder.RegisterType<ValueProvider>().As<IValueProvider>();
+
+            builder.RegisterType<ReportServiceDependentData>().As<IReportServiceDependentData>();
+
             builder.RegisterType<LoggerStub>().As<ILogger>();
 
             // Builders 
