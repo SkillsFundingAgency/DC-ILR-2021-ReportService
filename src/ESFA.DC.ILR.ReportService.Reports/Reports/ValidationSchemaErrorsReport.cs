@@ -8,9 +8,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
-using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
-using ESFA.DC.Serialization.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,6 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Service.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
@@ -25,18 +24,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
     {
         private readonly ILogger _logger;
         private readonly IFileService _fileService;
-        private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IFileProviderService<List<ValidationError>> _ilrValidationErrorsProvider;
         private readonly IValidationSchemaErrorsReportBuilder _validationSchemaErrorsReportBuilder;
         private readonly IDateTimeProvider _dateTimeProvider;
 
-        private FileValidationResult _ilrValidationResult;
 
         public ValidationSchemaErrorsReport(
             ILogger logger,
             IFileService fileService,
-            IJsonSerializationService jsonSerializationService,
-            IFileProviderService<List<ValidationError>> ilrValidationErrorsProvider,
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
             IValueProvider valueProvider) :
@@ -44,8 +38,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
         {
             _logger = logger;
             _fileService = fileService;
-            _jsonSerializationService = jsonSerializationService;
-            _ilrValidationErrorsProvider = ilrValidationErrorsProvider;
             _validationSchemaErrorsReportBuilder = validationSchemaErrorsReportBuilder;
             _dateTimeProvider = dateTimeProvider;
         }
@@ -54,12 +46,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public string ReportTaskName => ReportTaskNameConstants.ValidationSchemaErrorReport;
 
-        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public List<Type> DependsOn => new List<Type>()
+        {
+            typeof(List<ValidationError>)
+        };
+
+        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, ReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
             List<string> reportOutputFileNames = new List<string>();
             reportServiceContext.Ukprn = GetUkPrn(reportServiceContext.Filename);
             var externalFileName = GetFilename(reportServiceContext);
-            List<ValidationError> ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
+            List<ValidationError> ilrValidationErrors = (List<ValidationError>)reportsDependentData.Data[typeof(List<ValidationError>)];
             var validationErrorModels = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
             var list = await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
             reportOutputFileNames.AddRange(list);
