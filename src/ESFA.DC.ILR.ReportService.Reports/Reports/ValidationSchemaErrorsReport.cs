@@ -22,7 +22,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
-    public sealed class ValidationSchemaErrorsReport : AbstractReport, IReport
+    public sealed class ValidationSchemaErrorsReport : IReport
     {
         private readonly ILogger _logger;
         private readonly IFileProviderService<List<ValidationError>> _ilrValidationErrorsProvider;
@@ -37,9 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             IFileProviderService<List<ValidationError>> ilrValidationErrorsProvider,
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
-            ICsvService csvService,
-            IValueProvider valueProvider) :
-            base(valueProvider)
+            ICsvService csvService)
         {
             _logger = logger;
             _ilrValidationErrorsProvider = ilrValidationErrorsProvider;
@@ -76,9 +74,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         private string GetFilename(IReportServiceContext reportServiceContext)
         {
-            var ukPrn = 124;
             DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
-            return $"{ukPrn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
+            return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
         private int GetUkPrn(string fileName)
         {

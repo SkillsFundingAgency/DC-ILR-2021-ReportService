@@ -25,7 +25,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
-    public sealed class ValidationErrorsReport : AbstractReport, IReport
+    public sealed class ValidationErrorsReport : IReport
     {
         private readonly ILogger _logger;
         private readonly IFileService _fileService;
@@ -48,9 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             IFileProviderService<List<ValidationError>> ilrValidationErrorsProvider,
             IValidationErrorsReportBuilder validationErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
-            ICsvService csvService,
-            IValueProvider valueProvider) 
-            : base(valueProvider)
+            ICsvService csvService)
         {
             _logger = logger;
             _fileService = fileService;
@@ -69,17 +67,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            List<string> reportOutputFilenames = new List<string>();
-
             IMessage ilrMessage = await _ilrProviderService.ProvideAsync(reportServiceContext, cancellationToken);
             ReferenceDataRoot ilrReferenceData = await _ilrReferenceDataProviderService.ProvideAsync(reportServiceContext, cancellationToken);
             List<ValidationError> ilrValidationErrors = await _ilrValidationErrorsProvider.ProvideAsync(reportServiceContext, cancellationToken);
 
             reportServiceContext.Ukprn = ilrMessage.HeaderEntity.SourceEntity.UKPRN;
             var externalFileName = GetFilename(reportServiceContext);
+
             var validationErrorModels = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
-            var list = await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
-            reportOutputFilenames.AddRange(list);
+            var reportOutputFilenames = await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
 
             var validationErrorsDto = BuildValidationErrors(ilrValidationErrors, ilrReferenceData.MetaDatas.ValidationErrors);
 
@@ -88,17 +84,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             return reportOutputFilenames;
         }
 
-        private async Task<List<string>> PersistValidationErrorsReport(List<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
+        private async Task<IEnumerable<string>> PersistValidationErrorsReport(IEnumerable<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
         {
-            List<string> filesGenerated = new List<string>();
-
             var fileName = $"{externalFileName}.csv";
 
             await _csvService.WriteAsync<ValidationErrorModel, ValidationErrorMapper>(validationErrors, fileName, reportServiceContext.Container, cancellationToken);
-            
-            filesGenerated.Add(fileName);
 
-            return filesGenerated;
+            return new[] {fileName};
         }
 
         private string GetFilename(IReportServiceContext reportServiceContext)
