@@ -59,7 +59,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public string ReportTaskName => ReportTaskNameConstants.ValidationReport;
 
-        public List<Type> DependsOn => new List<Type>()
+        public IEnumerable<Type> DependsOn => new List<Type>()
         {
             typeof(IMessage),
             typeof(ReferenceDataRoot),

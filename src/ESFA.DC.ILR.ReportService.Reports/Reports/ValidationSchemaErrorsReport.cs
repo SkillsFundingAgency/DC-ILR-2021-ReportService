@@ -47,7 +47,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public string ReportTaskName => ReportTaskNameConstants.ValidationSchemaErrorReport;
 
-        public List<Type> DependsOn => new List<Type>()
+        public IEnumerable<Type> DependsOn => new List<Type>()
         {
             typeof(List<ValidationError>)
         };
