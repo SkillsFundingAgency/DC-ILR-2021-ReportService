@@ -1,31 +1,24 @@
-﻿using Aspose.Cells;
-using CsvHelper;
-using ESFA.DC.DateTimeProvider.Interface;
+﻿using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.Logging.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
+using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
     public sealed class ValidationSchemaErrorsReport : IReport
     {
         private readonly ILogger _logger;
-        private readonly IFileService _fileService;
-        private readonly IJsonSerializationService _jsonSerializationService;
-        private readonly IFileProviderService<List<ValidationError>> _ilrValidationErrorsProvider;
         private readonly IValidationSchemaErrorsReportBuilder _validationSchemaErrorsReportBuilder;
         private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICsvService _csvService;
@@ -35,15 +28,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             ILogger logger,
             IFileService fileService,
             IJsonSerializationService jsonSerializationService,
-            IFileProviderService<List<ValidationError>> ilrValidationErrorsProvider,
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
             ICsvService csvService)
         {
             _logger = logger;
-            _fileService = fileService;
-            _jsonSerializationService = jsonSerializationService;
-            _ilrValidationErrorsProvider = ilrValidationErrorsProvider;
             _validationSchemaErrorsReportBuilder = validationSchemaErrorsReportBuilder;
             _dateTimeProvider = dateTimeProvider;
             _csvService = csvService;
@@ -63,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             reportServiceContext.Ukprn = GetUkPrn(reportServiceContext.Filename);
 
             var externalFileName = GetFilename(reportServiceContext);
-            List<ValidationError> ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
+            var ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
             var validationErrorModels = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
 
             return await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);

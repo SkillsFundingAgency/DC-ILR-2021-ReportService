@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
+using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Reports
 {
@@ -66,8 +67,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
-            List<string> reportOutputFilenames = new List<string>();
-
             IMessage ilrMessage =  reportsDependentData.Get<IMessage>();
             ReferenceDataRoot ilrReferenceData = reportsDependentData.Get<ReferenceDataRoot>();
             List<ValidationError> ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
