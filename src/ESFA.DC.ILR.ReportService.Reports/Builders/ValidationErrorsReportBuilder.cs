@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Comparer;
-using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
@@ -14,8 +14,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Builders
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 
-        public List<ValidationErrorModel> Build(
-            List<ValidationError> ilrValidationErrors,
+        public IEnumerable<ValidationErrorModel> Build(
+            IEnumerable<ValidationError> ilrValidationErrors,
             IMessage message,
             IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
         {

@@ -2,7 +2,7 @@
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
-namespace ESFA.DC.ILR.ReportService.Service.Interface.Builders
+namespace ESFA.DC.ILR.ReportService.Reports.Interface
 {
     public interface IValidationSchemaErrorsReportBuilder
     {

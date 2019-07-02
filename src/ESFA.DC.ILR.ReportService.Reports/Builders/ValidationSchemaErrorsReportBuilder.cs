@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Text;
 using ESFA.DC.ILR.ReportService.Reports.Comparer;
-using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 

@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
-namespace ESFA.DC.ILR.ReportService.Service.Interface.Builders
+namespace ESFA.DC.ILR.ReportService.Reports.Interface
 {
     public interface IValidationErrorsReportBuilder
     {
-        List<ValidationErrorModel> Build(
-            List<ValidationError> ilrValidationErrors,
+        IEnumerable<ValidationErrorModel> Build(
+            IEnumerable<ValidationError> ilrValidationErrors,
             IMessage message,
             IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata);
     }
