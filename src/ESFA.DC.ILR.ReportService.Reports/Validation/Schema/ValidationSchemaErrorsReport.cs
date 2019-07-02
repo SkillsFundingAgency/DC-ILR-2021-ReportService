@@ -34,14 +34,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
 
         public string ReportFileName => "Rule Violation Report";
 
-        public string ReportTaskName => ReportTaskNameConstants.ValidationSchemaErrorReport;
+        public string TaskName => ReportTaskNameConstants.ValidationSchemaErrorReport;
 
         public IEnumerable<Type> DependsOn => new List<Type>()
         {
             DependentDataCatalog.ValidationErrors
         };
 
-        public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
             reportServiceContext.Ukprn = GetUkPrn(reportServiceContext.Filename);
 

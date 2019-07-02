@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
                 }
 
                 // list of reports to be generated
-                var reportsToBeGenerated = _reports.Where(x => reportServiceContext.Tasks.Contains(x.ReportTaskName)).ToList();
+                var reportsToBeGenerated = _reports.Where(x => reportServiceContext.Tasks.Contains(x.TaskName)).ToList();
 
                 if (!_reports.Any())
                 {
@@ -57,7 +57,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
                 foreach (var report in reportsToBeGenerated)
                 {
                     _logger.LogDebug($"Attempting to generate {report.GetType().Name}");
-                    var reportsGenerated = await report.GenerateReportAsync(reportServiceContext, reportsDependentData, cancellationToken);
+                    var reportsGenerated = await report.GenerateAsync(reportServiceContext, reportsDependentData, cancellationToken);
                     reportOutputFilenames.AddRange(reportsGenerated);
                 }
 

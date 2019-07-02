@@ -69,13 +69,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
 
             var report = NewReport(validationErrorBuilder.Object, csvServiceMock.Object, frontEndValidationReportMock.Object, fileNameServiceMock.Object);
 
-            var result = await report.GenerateReportAsync(reportServiceContext.Object, dependentData.Object, cancellationToken);
+            var result = await report.GenerateAsync(reportServiceContext.Object, dependentData.Object, cancellationToken);
 
             result.Should().HaveCount(1);
             result.First().Should().Be(fileName);
 
             frontEndValidationReportMock.Verify(r => r.GenerateAsync(reportServiceContext.Object, validationErrorRows, cancellationToken));
             csvServiceMock.Verify(s => s.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrorRows, fileName, container, cancellationToken));
+        }
+
+        [Fact]
+        public void FileName()
+        {
+            NewReport().FileName.Should().Be("Rule Violation Report");
+        }
+
+        [Fact]
+        public void TaskName()
+        {
+            NewReport().TaskName.Should().Be("TaskGenerationValidationReport");
         }
 
         private ValidationErrorsDetailReport NewReport(

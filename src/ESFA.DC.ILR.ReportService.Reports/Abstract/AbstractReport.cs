@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
 using CsvHelper;
@@ -20,17 +21,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
     {
         private readonly Dictionary<Worksheet, int> _currentRow = new Dictionary<Worksheet, int>();
 
-        /// <summary>
-        /// Builds an Excel report using the specified mapper as the list of column names.
-        /// </summary>
-        /// <typeparam name="TMapper">The mapper.</typeparam>
-        /// <typeparam name="TModel">The model.</typeparam>
-        /// <param name="worksheet">The worksheet to operate on.</param>
-        /// <param name="classMap">The class mapper to use to write the headers, and to get the properties references from.</param>
-        /// <param name="records">The records to write.</param>
-        /// <param name="headerStyle">The style to apply to the header.</param>
-        /// <param name="recordStyle">The style to apply to the records.</param>
-        /// <param name="pivot">Whether to write the data vertically, rather than horizontally.</param>
+        protected AbstractReport(string taskName, string fileName)
+        {
+            TaskName = taskName;
+            FileName = fileName;
+        }
+
+        public string TaskName { get; }
+
+        public string FileName { get; }
+
         protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, IEnumerable<TModel> records, CellStyle headerStyle, CellStyle recordStyle, bool pivot = false)
             where TMapper : ClassMap
             where TModel : class
