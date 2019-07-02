@@ -2,17 +2,16 @@
 using Autofac;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Builders;
-using ESFA.DC.ILR.ReportService.Reports.Providers;
 using ESFA.DC.ILR.ReportService.Reports.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model;
 using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
@@ -40,7 +39,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
                 .InstancePerLifetimeScope();
 
             builder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
-            builder.RegisterType<ValueProvider>().As<IValueProvider>().InstancePerLifetimeScope();
 
             builder.RegisterType<ReportServiceDependentData>().As<IReportServiceDependentData>();
             // Builders 

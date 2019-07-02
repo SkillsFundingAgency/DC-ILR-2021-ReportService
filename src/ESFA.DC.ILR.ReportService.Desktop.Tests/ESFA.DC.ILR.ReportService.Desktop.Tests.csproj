@@ -178,6 +178,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Data\ESFA.DC.ILR.ReportService.Data.csproj">
+      <Project>{733FF8EB-CE2A-4496-8B47-1A4C6673FCC1}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Data</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Desktop\ESFA.DC.ILR.ReportService.Desktop.csproj">
       <Project>{1FBAB247-ADF1-4A86-9D1F-7126E086CF5C}</Project>
       <Name>ESFA.DC.ILR.ReportService.Desktop</Name>

@@ -5,18 +5,17 @@ using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Tests.Stubs;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Builders;
-using ESFA.DC.ILR.ReportService.Reports.Providers;
 using ESFA.DC.ILR.ReportService.Reports.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model;
 using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
@@ -53,7 +52,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             builder.RegisterType<XmlSerializationService>().As<IXmlSerializationService>();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>();
-            builder.RegisterType<ValueProvider>().As<IValueProvider>();
 
             builder.RegisterType<ReportServiceDependentData>().As<IReportServiceDependentData>();
 

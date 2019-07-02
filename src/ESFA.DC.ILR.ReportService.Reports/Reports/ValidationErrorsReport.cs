@@ -7,7 +7,6 @@ using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.Jobs.Model;

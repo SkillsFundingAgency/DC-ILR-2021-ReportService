@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
-using ESFA.DC.Serialization.Interfaces;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.FileService.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
+using ESFA.DC.Serialization.Interfaces;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Providers
+namespace ESFA.DC.ILR.ReportService.Data.Providers
 {
     public class IlrValidationErrorsProvider : IExternalDataProvider
     {
