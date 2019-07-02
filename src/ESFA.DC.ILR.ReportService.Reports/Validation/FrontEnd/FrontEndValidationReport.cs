@@ -8,6 +8,7 @@ using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -18,16 +19,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
     {
         private readonly IFileService _fileService;
         private readonly IJsonSerializationService _jsonSerializationService;
+        private readonly IFileNameService _fileNameService;
         private readonly ILogger _logger;
+        
 
-        public FrontEndValidationReport(IFileService fileService, IJsonSerializationService jsonSerializationService, ILogger logger)
+        public FrontEndValidationReport(IFileService fileService, IJsonSerializationService jsonSerializationService, IFileNameService fileNameService, ILogger logger)
         {
             _fileService = fileService;
             _jsonSerializationService = jsonSerializationService;
+            _fileNameService = fileNameService;
             _logger = logger;
         }
 
-        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrorDtos, string externalFileName, CancellationToken cancellationToken)
+        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrorDtos, CancellationToken cancellationToken)
         {
             var validationErrorDtosList = validationErrorDtos.ToList();
 
@@ -51,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
                 //TotalDataMatchLearners = _validationStageOutputCache.DataMatchProblemLearnersCount
             };
 
-            var fileName = $"{externalFileName}.json";
+            var fileName = _fileNameService.GetFilename(reportServiceContext, "Validation Error Report", OutputTypes.Json);
 
             using (var fileStream = await _fileService.OpenWriteStreamAsync(fileName, reportServiceContext.Container, cancellationToken))
             {

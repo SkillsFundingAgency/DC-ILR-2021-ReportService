@@ -41,6 +41,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             builder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
 
             builder.RegisterType<ReportServiceDependentData>().As<IReportServiceDependentData>();
+            builder.RegisterType<FileNameService>().As<IFileNameService>();
+
             // Builders 
             builder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();

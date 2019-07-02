@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Validation.Interface
 {
     public interface IFrontEndValidationReport
     {
-        Task GenerateAsync(IReportServiceContext reportServiceContext,
-            IEnumerable<ValidationErrorRow> validationErrorDtos,
-            string externalFileName,
-            CancellationToken cancellationToken)
+        Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrors, CancellationToken cancellationToken);
     }
 }
