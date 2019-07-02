@@ -64,12 +64,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
             reportServiceContext.Ukprn = ilrMessage.HeaderEntity.SourceEntity.UKPRN;
             var externalFileName = GetFilename(reportServiceContext);
 
-            var validationErrorModels = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
-            var reportOutputFilenames = await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
+            var validationErrorRows = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
+            var reportOutputFilenames = await PersistValidationErrorsReport(validationErrorRows, reportServiceContext, externalFileName, cancellationToken);
 
-            var validationErrorsDto = BuildValidationErrors(ilrValidationErrors, ilrReferenceData.MetaDatas.ValidationErrors);
-
-            await _frontEndValidationReport.GenerateAsync(reportServiceContext, validationErrorsDto, externalFileName, cancellationToken);
+            await _frontEndValidationReport.GenerateAsync(reportServiceContext, validationErrorRows, externalFileName, cancellationToken);
             
             return reportOutputFilenames;
         }
@@ -88,47 +86,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
             DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
             return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
-
-        #region Front End Report(Will be a new report) 
-
-        private IEnumerable<ValidationErrorDto> BuildValidationErrors(List<ValidationError> ilrValidationErrors, IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
-        {
-            try
-            {
-                return ilrValidationErrors.Select(e =>
-                    new ValidationErrorDto
-                    {
-                        AimSequenceNumber = e.AimSequenceNumber,
-                        LearnerReferenceNumber = e.LearnerReferenceNumber,
-                        RuleName = e.RuleName,
-                        Severity = e.Severity,
-                        ErrorMessage = validationErrorsMetadata.FirstOrDefault(x => string.Equals(x.RuleName, e.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
-                        FieldValues = e.ValidationErrorParameters == null
-                            ? string.Empty
-                            : GetValidationErrorParameters(e.ValidationErrorParameters)
-                    });
-              
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to merge validation error messages", ex);
-
-                throw;
-            }
-        }
-
-        private string GetValidationErrorParameters(IEnumerable<ValidationErrorParameter> validationErrorParameters)
-        {
-            StringBuilder result = new StringBuilder();
-
-            foreach (var parameter in validationErrorParameters)
-            {
-                result.Append($"{parameter.PropertyName}={parameter.Value}|");
-            }
-
-            return result.ToString();
-        }
-
-        #endregion 
     }
 }

@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.Jobs.Model;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
@@ -28,7 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
             _logger = logger;
         }
 
-        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorDto> validationErrorDtos, string externalFileName, CancellationToken cancellationToken)
+        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrorDtos, string externalFileName, CancellationToken cancellationToken)
         {
             var validationErrorDtosList = validationErrorDtos.ToList();
 
