@@ -12,37 +12,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Builders
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 
-        public List<ValidationErrorModel> Build(List<ValidationError> ilrValidationErrors)
+        public IEnumerable<ValidationErrorModel> Build(IEnumerable<ValidationError> ilrValidationErrors)
         {
-            List<ValidationErrorModel> validationErrorModels = new List<ValidationErrorModel>();
-
-            foreach (ValidationError validationError in ilrValidationErrors)
-            {
-                validationErrorModels.Add(new ValidationErrorModel()
+            return ilrValidationErrors
+                .Select(e => new ValidationErrorModel()
                 {
-                    AimSequenceNumber = validationError.AimSequenceNumber,
+                    AimSequenceNumber = e.AimSequenceNumber,
                     ErrorMessage = string.Empty,
-                    FieldValues = validationError.ValidationErrorParameters == null
+                    FieldValues = e.ValidationErrorParameters == null
                         ? string.Empty
-                        : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
-                    LearnerReferenceNumber = validationError.LearnerReferenceNumber,
-                      RuleName = validationError.RuleName,
-                    Severity = validationError.Severity
-                });
-            }
-
-            validationErrorModels.Sort(ValidationErrorsModelComparer);
-            return validationErrorModels;
+                        : GetValidationErrorParameters(e.ValidationErrorParameters),
+                    LearnerReferenceNumber = e.LearnerReferenceNumber,
+                    RuleName = e.RuleName,
+                    Severity = e.Severity
+                }).OrderBy(v => v, ValidationErrorsModelComparer);
         }
 
-        private string GetValidationErrorParameters(List<ValidationErrorParameter> validationErrorParameters)
+        private string GetValidationErrorParameters(IEnumerable<ValidationErrorParameter> validationErrorParameters)
         {
             StringBuilder result = new StringBuilder();
-            validationErrorParameters.ForEach(x =>
-            {
-                result.Append($"{x.PropertyName}={x.Value}|");
-            });
 
+            foreach (var parameter in validationErrorParameters)
+            {
+                result.Append($"{parameter.PropertyName}={parameter.Value}|");
+            }
+          
             return result.ToString();
         }
     }

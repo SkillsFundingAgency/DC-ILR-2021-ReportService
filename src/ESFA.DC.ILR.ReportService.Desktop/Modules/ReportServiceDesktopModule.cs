@@ -8,8 +8,10 @@ using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Builders;
 using ESFA.DC.ILR.ReportService.Reports.Providers;
 using ESFA.DC.ILR.ReportService.Reports.Reports;
+using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
+using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model;
 using ESFA.DC.ILR.ReportService.Service.Model.Interface;
@@ -46,8 +48,10 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();
 
             //Reports
-            builder.RegisterType<ValidationErrorsReport>().As<IReport>().InstancePerLifetimeScope();
-            builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationErrorsReport>().As<IReport>();
+            builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
+
+            builder.RegisterType<CsvService>().As<ICsvService>();
         }
     }
 }

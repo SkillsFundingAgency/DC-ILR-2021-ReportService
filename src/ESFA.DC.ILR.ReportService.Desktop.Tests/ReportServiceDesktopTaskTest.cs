@@ -85,9 +85,9 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var reportOutputFileNames = await entryPoint.Callback(reportServiceJobContextDesktopContext, cancellationToken);
 
             reportOutputFileNames.Should().NotBeNullOrEmpty();
-            reportOutputFileNames.Count.Should().Be(2);
+            reportOutputFileNames.Count.Should().Be(1);
             reportServiceJobContextDesktopContext.ReportOutputFileNames.Should().NotBeNullOrEmpty();
-            reportServiceJobContextDesktopContext.ReportOutputFileNames.Split('|').ToArray().Length.Should().Be(2);
+            reportServiceJobContextDesktopContext.ReportOutputFileNames.Split('|').ToArray().Length.Should().Be(1);
         }
 
         private ReportServiceDesktopTask NewTask(IEntryPoint entryPoint = null, IReportServiceContextFactory reportServiceContextFactory = null)
