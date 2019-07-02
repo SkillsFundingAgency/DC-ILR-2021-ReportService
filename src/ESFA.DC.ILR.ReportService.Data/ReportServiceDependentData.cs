@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using ESFA.DC.ILR.ReportService.Service.Model.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
-namespace ESFA.DC.ILR.ReportService.Service.Model
+namespace ESFA.DC.ILR.ReportService.Data
 {
     public class ReportServiceDependentData : IReportServiceDependentData
     {
-        private IDictionary<Type, Object> Data { get; set; } = new ConcurrentDictionary<Type, object>();
+        private IDictionary<Type, object> Data { get; } = new ConcurrentDictionary<Type, object>();
 
         public T Get<T>()
         {

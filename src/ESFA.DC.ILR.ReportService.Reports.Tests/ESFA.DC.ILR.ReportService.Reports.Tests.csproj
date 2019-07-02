@@ -99,6 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Builders\ValidationSchemaErrorsReportBuilderTests.cs" />
+    <Compile Include="DependentDataCatalogTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />

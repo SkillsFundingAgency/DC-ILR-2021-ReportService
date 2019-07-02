@@ -10,14 +10,13 @@ using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Tests.Stubs;
 using ESFA.DC.ILR.ReportService.Reports;
-using ESFA.DC.ILR.ReportService.Reports.Builders;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Service;
+using ESFA.DC.ILR.ReportService.Reports.Validation;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using ESFA.DC.ILR.ReportService.Service.Model;
-using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -58,11 +57,11 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             builder.RegisterType<LoggerStub>().As<ILogger>();
 
             // Builders 
-            builder.RegisterType<ValidationErrorsReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();
 
             //Reports
-            builder.RegisterType<ValidationErrorsReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>().InstancePerLifetimeScope();
 
             builder.RegisterType<CsvService>().As<ICsvService>();

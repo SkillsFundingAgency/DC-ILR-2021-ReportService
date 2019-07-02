@@ -1,20 +1,16 @@
-﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Mapper;
-using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
-using ESFA.DC.Logging.Interfaces;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using ESFA.DC.ILR.ReportService.Service.Model.Interface;
-using ESFA.DC.Serialization.Interfaces;
+using ESFA.DC.ILR.ValidationErrors.Interface.Models;
+using ESFA.DC.Logging.Interfaces;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Reports
+namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
 {
     public sealed class ValidationSchemaErrorsReport : IReport
     {
@@ -26,8 +22,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public ValidationSchemaErrorsReport(
             ILogger logger,
-            IFileService fileService,
-            IJsonSerializationService jsonSerializationService,
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
             IDateTimeProvider dateTimeProvider,
             ICsvService csvService)
@@ -44,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
 
         public IEnumerable<Type> DependsOn => new List<Type>()
         {
-            typeof(List<ValidationError>)
+            DependentDataCatalog.ValidationErrors
         };
 
         public async Task<IEnumerable<string>> GenerateReportAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
@@ -58,11 +52,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             return await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
         }
       
-        private async Task<IEnumerable<string>> PersistValidationErrorsReport(IEnumerable<ValidationErrorModel> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
+        private async Task<IEnumerable<string>> PersistValidationErrorsReport(IEnumerable<ValidationErrorRow> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
         {
             var fileName = $"{externalFileName}.csv";
 
-            await _csvService.WriteAsync<ValidationErrorModel, ValidationErrorMapper>(validationErrors, fileName, reportServiceContext.Container, cancellationToken);
+            await _csvService.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrors, fileName, reportServiceContext.Container, cancellationToken);
 
             return new []{ fileName };
         }
@@ -72,6 +66,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Reports
             DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
             return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
         }
+
         private int GetUkPrn(string fileName)
         {
             var ukPrn = 99999999;

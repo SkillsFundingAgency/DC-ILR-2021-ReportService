@@ -4,8 +4,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Autofac.Features.Indexed;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Model;
-using ESFA.DC.ILR.ReportService.Service.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports
 {

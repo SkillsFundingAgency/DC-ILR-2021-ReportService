@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Comparer
+namespace ESFA.DC.ILR.ReportService.Reports.Validation
 {
-    public sealed class ValidationErrorsModelComparer : IComparer<ValidationErrorModel>
+    public sealed class ValidationErrorsModelComparer : IComparer<ValidationErrorRow>
     {
-        public int Compare(ValidationErrorModel x, ValidationErrorModel y)
+        public int Compare(ValidationErrorRow x, ValidationErrorRow y)
         {
             if (x == null && y == null)
             {
@@ -42,22 +39,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Comparer
             }
 
             return string.Compare(x.RuleName, y.RuleName, StringComparison.OrdinalIgnoreCase);
-
-            //if ((IsError(x) && IsError(y)) || (IsWarning(x) && IsWarning(y)))
-            //{
-
-            //}
         }
 
-        private bool IsError(ValidationErrorModel x)
+        private bool IsError(ValidationErrorRow x)
         {
             return string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase) ||
                    string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase);
-        }
-
-        private bool IsWarning(ValidationErrorModel x)
-        {
-            return string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

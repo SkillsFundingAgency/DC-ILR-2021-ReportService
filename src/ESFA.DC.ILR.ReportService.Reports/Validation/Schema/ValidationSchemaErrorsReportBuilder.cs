@@ -1,21 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ESFA.DC.ILR.ReportService.Reports.Comparer;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
-using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Builders
+namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
 {
     public class ValidationSchemaErrorsReportBuilder : IValidationSchemaErrorsReportBuilder
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 
-        public IEnumerable<ValidationErrorModel> Build(IEnumerable<ValidationError> ilrValidationErrors)
+        public IEnumerable<ValidationErrorRow> Build(IEnumerable<ValidationError> ilrValidationErrors)
         {
             return ilrValidationErrors
-                .Select(e => new ValidationErrorModel()
+                .Select(e => new ValidationErrorRow()
                 {
                     AimSequenceNumber = e.AimSequenceNumber,
                     ErrorMessage = string.Empty,

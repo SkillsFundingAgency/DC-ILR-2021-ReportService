@@ -3,30 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Comparer;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
-using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Builders
+namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
 {
-    public class ValidationErrorsReportBuilder : IValidationErrorsReportBuilder
+    public class ValidationErrorsDetailReportBuilder : IValidationErrorsReportBuilder
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 
-        public IEnumerable<ValidationErrorModel> Build(
+        public IEnumerable<ValidationErrorRow> Build(
             IEnumerable<ValidationError> ilrValidationErrors,
             IMessage message,
             IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
         {
-            List<ValidationErrorModel> validationErrorModels = new List<ValidationErrorModel>();
+            List<ValidationErrorRow> validationErrorModels = new List<ValidationErrorRow>();
 
             foreach (ValidationError validationError in ilrValidationErrors)
             {
                 ILearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationError.LearnerReferenceNumber);
                 ILearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == validationError.AimSequenceNumber);
 
-                validationErrorModels.Add(new ValidationErrorModel()
+                validationErrorModels.Add(new ValidationErrorRow()
                 {
                     AimSequenceNumber = validationError.AimSequenceNumber,
                     ErrorMessage = validationErrorsMetadata.FirstOrDefault(x => string.Equals(x.RuleName, validationError.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,

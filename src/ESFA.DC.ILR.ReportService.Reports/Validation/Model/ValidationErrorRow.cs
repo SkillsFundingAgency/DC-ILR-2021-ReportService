@@ -1,14 +1,14 @@
 ﻿using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
-namespace ESFA.DC.ILR.ReportService.Service.Model.ReportModels
+namespace ESFA.DC.ILR.ReportService.Reports.Validation.Model
 {
-    public sealed class ValidationErrorModel : ValidationErrorDto
+    public sealed class ValidationErrorRow
     {
-        public ValidationErrorModel()
+        public ValidationErrorRow()
         {
-            
         }
-        public ValidationErrorModel(string severity, string learnerReferenceNumber, string ruleName, string fieldValues, string errorMessage, long? aimSequenceNumber)
+
+        public ValidationErrorRow(string severity, string learnerReferenceNumber, string ruleName, string fieldValues, string errorMessage, long? aimSequenceNumber)
         {
             Severity = severity;
             LearnerReferenceNumber = learnerReferenceNumber;
@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Model.ReportModels
             AimSequenceNumber = aimSequenceNumber;
         }
 
-        public ValidationErrorModel(string severity, string learnerReferenceNumber, string ruleName, string fieldValues, string errorMessage, long? aimSequenceNumber, string learnAimRef, string sWSupAimId, int? fundModel, int? partnerUkprn, string provSpecLearnMon1, string provSpecLearnMon2, string provSpecDelMon1, string provSpecDelMon2, string provSpecDelMon3, string provSpecDelMon4)
+        public ValidationErrorRow(string severity, string learnerReferenceNumber, string ruleName, string fieldValues, string errorMessage, long? aimSequenceNumber, string learnAimRef, string sWSupAimId, int? fundModel, int? partnerUkprn, string provSpecLearnMon1, string provSpecLearnMon2, string provSpecDelMon1, string provSpecDelMon2, string provSpecDelMon3, string provSpecDelMon4)
             : this(severity, learnerReferenceNumber, ruleName, fieldValues, errorMessage, aimSequenceNumber)
         {
             LearnAimRef = learnAimRef;
@@ -32,6 +32,18 @@ namespace ESFA.DC.ILR.ReportService.Service.Model.ReportModels
             ProviderSpecDelOccurC = provSpecDelMon3;
             ProviderSpecDelOccurD = provSpecDelMon4;
         }
+
+        public string ErrorMessage { get; set; }
+
+        public string LearnerReferenceNumber { get; set; }
+
+        public string FieldValues { get; set; }
+
+        public string Severity { get; set; }
+
+        public long? AimSequenceNumber { get; set; }
+
+        public string RuleName { get; set; }
 
         public string LearnAimRef { get; set; }
 

@@ -1,9 +1,9 @@
 ﻿using CsvHelper.Configuration;
-using ESFA.DC.ILR.ReportService.Service.Model.ReportModels;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Mapper
+namespace ESFA.DC.ILR.ReportService.Reports.Validation
 {
-    public sealed class ValidationErrorMapper : ClassMap<ValidationErrorModel>
+    public sealed class ValidationErrorMapper : ClassMap<ValidationErrorRow>
     {
         public ValidationErrorMapper()
         {

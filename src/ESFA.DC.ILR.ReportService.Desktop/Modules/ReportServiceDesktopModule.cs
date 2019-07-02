@@ -6,15 +6,15 @@ using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Reports;
-using ESFA.DC.ILR.ReportService.Reports.Builders;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Service;
+using ESFA.DC.ILR.ReportService.Reports.Validation;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
+using ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using ESFA.DC.ILR.ReportService.Service.Model;
-using ESFA.DC.ILR.ReportService.Service.Model.Interface;
-using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
 namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 {
@@ -42,12 +42,13 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 
             builder.RegisterType<ReportServiceDependentData>().As<IReportServiceDependentData>();
             // Builders 
-            builder.RegisterType<ValidationErrorsReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
             builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();
 
             //Reports
-            builder.RegisterType<ValidationErrorsReport>().As<IReport>();
+            builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
+            builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
 
             builder.RegisterType<CsvService>().As<ICsvService>();
         }
