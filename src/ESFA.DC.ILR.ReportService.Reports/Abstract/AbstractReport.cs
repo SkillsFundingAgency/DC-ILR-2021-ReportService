@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
 using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
 using ESFA.DC.ILR.ReportService.Service.Model.Generation;
 using ESFA.DC.ILR.ReportService.Service.Model.Styling;
 using ESFA.DC.Logging.Interfaces;
@@ -18,25 +19,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 {
     public abstract class AbstractReport
     {
-        private readonly IValueProvider _valueProvider;
         private readonly Dictionary<Worksheet, int> _currentRow = new Dictionary<Worksheet, int>();
 
-        protected AbstractReport(IValueProvider valueProvider)
+        protected AbstractReport(string taskName, string fileName)
         {
-            _valueProvider = valueProvider;
+            TaskName = taskName;
+            FileName = fileName;
         }
 
-        /// <summary>
-        /// Builds an Excel report using the specified mapper as the list of column names.
-        /// </summary>
-        /// <typeparam name="TMapper">The mapper.</typeparam>
-        /// <typeparam name="TModel">The model.</typeparam>
-        /// <param name="worksheet">The worksheet to operate on.</param>
-        /// <param name="classMap">The class mapper to use to write the headers, and to get the properties references from.</param>
-        /// <param name="records">The records to write.</param>
-        /// <param name="headerStyle">The style to apply to the header.</param>
-        /// <param name="recordStyle">The style to apply to the records.</param>
-        /// <param name="pivot">Whether to write the data vertically, rather than horizontally.</param>
+        public string TaskName { get; }
+
+        public string FileName { get; }
+
         protected void WriteExcelRecords<TMapper, TModel>(Worksheet worksheet, TMapper classMap, IEnumerable<TModel> records, CellStyle headerStyle, CellStyle recordStyle, bool pivot = false)
             where TMapper : ClassMap
             where TModel : class
@@ -70,7 +64,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
                 foreach (ModelProperty modelProperty in modelProperties)
                 {
                     List<object> values = new List<object>();
-                    _valueProvider.GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record), classMap, modelProperty);
+                    GetFormattedValue(values, modelProperty.MethodInfo.GetValue(record), classMap, modelProperty);
 
                     worksheet.Cells.ImportObjectArray(values.ToArray(), localRow, column, false);
                     if (recordStyle != null)
@@ -117,20 +111,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
             SetCurrentRow(worksheet, currentRow);
         }
 
-        protected void WriteCsvRecords<TMapper, TModel>(CsvWriter csvWriter, IEnumerable<TModel> records)
-            where TMapper : ClassMap
-            where TModel : class
-        {
-            csvWriter.Configuration.RegisterClassMap<TMapper>();
-
-            csvWriter.WriteHeader<TModel>();
-            csvWriter.NextRecord();
-
-            csvWriter.WriteRecords(records);
-
-            csvWriter.Configuration.UnregisterClassMap();
-        }
-
         private int GetCurrentRow(Worksheet worksheet)
         {
             if (!_currentRow.ContainsKey(worksheet))
@@ -146,7 +126,135 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
             _currentRow[worksheet] = currentRow;
         }
 
-        
+        private void GetFormattedValue(List<object> values, object value, ClassMap mapper, ModelProperty modelProperty)
+        {
+            Type propertyType = modelProperty.MethodInfo.PropertyType;
+
+            if (value == null)
+            {
+                if (IsNullable(propertyType) && propertyType == typeof(decimal?))
+                {
+                    if (IsNullableMapper(mapper, modelProperty))
+                    {
+                        values.Add(Constants.NotApplicable);
+                        return;
+                    }
+
+                    int decimalPoints = GetDecimalPoints(mapper, modelProperty);
+                    values.Add(PadDecimal(0, decimalPoints));
+                    return;
+                }
+
+                values.Add(string.Empty);
+                return;
+            }
+
+            if (value is bool b)
+            {
+                values.Add(b ? "Yes" : "No");
+                return;
+            }
+
+            if (value is decimal d1)
+            {
+                int decimalPoints = GetDecimalPoints(mapper, modelProperty);
+                decimal rounded = decimal.Round(d1, decimalPoints);
+                values.Add(rounded);
+                return;
+            }
+
+            if (IsOfNullableType<decimal>(propertyType))
+            {
+                decimal? d = (decimal?)value;
+                int decimalPoints = GetDecimalPoints(mapper, modelProperty);
+                decimal rounded = decimal.Round(d.GetValueOrDefault(0), decimalPoints);
+                values.Add(rounded);
+                return;
+            }
+
+            if (value is int i)
+            {
+                if (i == 0)
+                {
+                    if (!CanAddZeroInt(mapper, modelProperty))
+                    {
+                        values.Add(string.Empty);
+                        return;
+                    }
+                }
+            }
+
+            if (value is string str)
+            {
+                if (str == Constants.DateTimeMin)
+                {
+                    values.Add(string.Empty);
+                    return;
+                }
+            }
+
+            values.Add(value);
+        }
+
+        private bool IsNullableMapper(ClassMap mapper, ModelProperty modelProperty)
+        {
+            MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
+            return memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains(Constants.NotApplicable) ?? false;
+        }
+
+        private bool CanAddZeroInt(ClassMap mapper, ModelProperty modelProperty)
+        {
+            MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
+            return !(memberMap?.Data?.TypeConverterOptions?.NullValues?.Contains(Constants.Zero) ?? false);
+        }
+
+        private bool IsOfNullableType<T>(object o)
+        {
+            return Nullable.GetUnderlyingType(o.GetType()) != null && o is T;
+        }
+
+        private bool IsNullable(Type propertyType)
+        {
+            return propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
+        }
+
+        private int GetDecimalPoints(ClassMap mapper, ModelProperty modelProperty)
+        {
+            if (mapper == null || modelProperty == null)
+            {
+                return 2;
+            }
+
+            MemberMap memberMap = mapper.MemberMaps.SingleOrDefault(x => x.Data.Names.Names.Intersect(modelProperty.Names).Any());
+            string[] format = memberMap?.Data?.TypeConverterOptions?.Formats ?? new[] { "0.00" };
+            if (format.Length > 0)
+            {
+                string[] decimals = format[0].Split('.');
+                if (decimals.Length == 2)
+                {
+                    return decimals[1].Length;
+                }
+            }
+
+            return 2;
+        }
+
+        private string PadDecimal(decimal value, int decimalPoints)
+        {
+            string valueStr = value.ToString(CultureInfo.InvariantCulture);
+            int decimalPointPos = valueStr.IndexOf('.');
+            int actualDecimalPoints = 0;
+            if (decimalPointPos > -1)
+            {
+                actualDecimalPoints = valueStr.Length - (decimalPointPos + 1);
+            }
+            else
+            {
+                valueStr += ".";
+            }
+
+            return valueStr + new string('0', decimalPoints - actualDecimalPoints);
+        }
 
     }
 }
