@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Builders;
+using ESFA.DC.ILR.ReportService.Reports.Validation;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
 using ESFA.DC.ILR.Tests.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using FluentAssertions;
@@ -18,7 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
         [Fact]
         public void TestValidationReportBuilder()
         {
-            var sut = new ValidationErrorsReportBuilder();
+            var sut = new ValidationErrorsDetailReportBuilder();
             var buildIlrValidationErrors = BuildIlrValidationErrors();
             var buildIlrMessage = BuildIlrMessage();
             var buildIlrValidationErrorsMetadata = BuildIlrValidationErrorsMetadata();
