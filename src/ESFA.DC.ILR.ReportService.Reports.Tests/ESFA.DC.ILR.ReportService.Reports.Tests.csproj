@@ -111,6 +111,7 @@
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
+    <Compile Include="ValidationSchemaErrorsReportTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

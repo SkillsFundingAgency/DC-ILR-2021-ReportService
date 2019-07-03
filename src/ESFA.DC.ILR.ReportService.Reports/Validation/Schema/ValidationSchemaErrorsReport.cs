@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -12,29 +13,23 @@ using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
 {
-    public sealed class ValidationSchemaErrorsReport : IReport
+    public sealed class ValidationSchemaErrorsReport : AbstractReport, IReport
     {
-        private readonly ILogger _logger;
         private readonly IValidationSchemaErrorsReportBuilder _validationSchemaErrorsReportBuilder;
-        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ICsvService _csvService;
+        private readonly IFileNameService _fileNameService;
 
 
         public ValidationSchemaErrorsReport(
-            ILogger logger,
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
-            IDateTimeProvider dateTimeProvider,
-            ICsvService csvService)
+            ICsvService csvService,
+            IFileNameService fileNameService)
+        : base(ReportTaskNameConstants.ValidationSchemaErrorReport, "Rule Violation Report")
         {
-            _logger = logger;
             _validationSchemaErrorsReportBuilder = validationSchemaErrorsReportBuilder;
-            _dateTimeProvider = dateTimeProvider;
             _csvService = csvService;
+            _fileNameService = fileNameService;
         }
-
-        public string ReportFileName => "Rule Violation Report";
-
-        public string TaskName => ReportTaskNameConstants.ValidationSchemaErrorReport;
 
         public IEnumerable<Type> DependsOn => new List<Type>()
         {
@@ -43,45 +38,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
 
         public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
-            reportServiceContext.Ukprn = GetUkPrn(reportServiceContext.Filename);
-
-            var externalFileName = GetFilename(reportServiceContext);
             var ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
-            var validationErrorModels = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
 
-            return await PersistValidationErrorsReport(validationErrorModels, reportServiceContext, externalFileName, cancellationToken);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Csv);
+
+            var validationErrorRows = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
+
+            await _csvService.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrorRows, fileName, reportServiceContext.Container, cancellationToken);
+
+            return new[] { fileName };
         }
-      
-        private async Task<IEnumerable<string>> PersistValidationErrorsReport(IEnumerable<ValidationErrorRow> validationErrors, IReportServiceContext reportServiceContext, string externalFileName, CancellationToken cancellationToken)
-        {
-            var fileName = $"{externalFileName}.csv";
-
-            await _csvService.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrors, fileName, reportServiceContext.Container, cancellationToken);
-
-            return new []{ fileName };
-        }
-
-        private string GetFilename(IReportServiceContext reportServiceContext)
-        {
-            DateTime dateTime = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
-            return $"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{ReportFileName} {dateTime:yyyyMMdd-HHmmss}";
-        }
-
-        private int GetUkPrn(string fileName)
-        {
-            var ukPrn = 99999999;
-            try
-            {
-                var fileNameParts = fileName.Substring(0, fileName.IndexOf('.')).Split('-');
-                ukPrn = Convert.ToInt32(fileNameParts[1]);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("ValidationErrorsSchemaReport - Could not parse UkPRN from the filename");
-            }
-
-            return ukPrn;
-        }
-
     }
 }
