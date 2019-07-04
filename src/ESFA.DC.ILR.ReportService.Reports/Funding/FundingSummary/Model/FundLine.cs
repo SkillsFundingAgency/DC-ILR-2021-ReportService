@@ -2,7 +2,7 @@
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
-    public class FundLine : IFundingSummaryReportRow
+    public class FundLine : IFundLine
     {
         private readonly decimal[] _periods;
         

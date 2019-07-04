@@ -107,6 +107,7 @@
     <Compile Include="Builders\ValidationSchemaErrorsReportBuilderTests.cs" />
     <Compile Include="DependentDataCatalogTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
+    <Compile Include="Funding\FundingSummary\Model\Performance.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
