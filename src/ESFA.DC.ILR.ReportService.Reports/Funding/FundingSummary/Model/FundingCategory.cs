@@ -8,16 +8,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundingCategory : IFundingCategory
     {
-        private readonly IEnumerable<IFundingSubCategory> _fundingSubCategories;
-
-        public FundingCategory(string title, string fundingCategoryTitle, string cumulativeFundingCategoryTitle, IEnumerable<IFundingSubCategory> fundingSubCategories)
+        public FundingCategory(string title, string fundingCategoryTitle, string cumulativeFundingCategoryTitle, List<IFundingSubCategory> fundingSubCategories)
         {
             Title = title;
             FundingCategoryTitle = fundingCategoryTitle;
             CumulativeFundingCategoryTitle = cumulativeFundingCategoryTitle;
 
-            _fundingSubCategories = fundingSubCategories ?? new List<IFundingSubCategory>();
+            FundingSubCategories = fundingSubCategories ?? new List<IFundingSubCategory>();
         }
+
+        public List<IFundingSubCategory> FundingSubCategories { get; }
 
         public string Title { get; }
 
@@ -25,37 +25,37 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
         public string CumulativeFundingCategoryTitle { get; }
 
-        public decimal Period1 => _fundingSubCategories.Sum(fsc => fsc.Period1);
+        public decimal Period1 => FundingSubCategories.Sum(fsc => fsc.Period1);
 
-        public decimal Period2 => _fundingSubCategories.Sum(fsc => fsc.Period2);
+        public decimal Period2 => FundingSubCategories.Sum(fsc => fsc.Period2);
 
-        public decimal Period3 => _fundingSubCategories.Sum(fsc => fsc.Period3);
+        public decimal Period3 => FundingSubCategories.Sum(fsc => fsc.Period3);
 
-        public decimal Period4 => _fundingSubCategories.Sum(fsc => fsc.Period4);
+        public decimal Period4 => FundingSubCategories.Sum(fsc => fsc.Period4);
 
-        public decimal Period5 => _fundingSubCategories.Sum(fsc => fsc.Period5);
+        public decimal Period5 => FundingSubCategories.Sum(fsc => fsc.Period5);
 
-        public decimal Period6 => _fundingSubCategories.Sum(fsc => fsc.Period6);
+        public decimal Period6 => FundingSubCategories.Sum(fsc => fsc.Period6);
 
-        public decimal Period7 => _fundingSubCategories.Sum(fsc => fsc.Period7);
+        public decimal Period7 => FundingSubCategories.Sum(fsc => fsc.Period7);
 
-        public decimal Period8 => _fundingSubCategories.Sum(fsc => fsc.Period8);
+        public decimal Period8 => FundingSubCategories.Sum(fsc => fsc.Period8);
 
-        public decimal Period9 => _fundingSubCategories.Sum(fsc => fsc.Period9);
+        public decimal Period9 => FundingSubCategories.Sum(fsc => fsc.Period9);
 
-        public decimal Period10 => _fundingSubCategories.Sum(fsc => fsc.Period10);
+        public decimal Period10 => FundingSubCategories.Sum(fsc => fsc.Period10);
 
-        public decimal Period11 => _fundingSubCategories.Sum(fsc => fsc.Period11);
+        public decimal Period11 => FundingSubCategories.Sum(fsc => fsc.Period11);
 
-        public decimal Period12 => _fundingSubCategories.Sum(fsc => fsc.Period12);
+        public decimal Period12 => FundingSubCategories.Sum(fsc => fsc.Period12);
 
-        public decimal Period1To8 => _fundingSubCategories.Sum(fsc => fsc.Period1To8);
+        public decimal Period1To8 => FundingSubCategories.Sum(fsc => fsc.Period1To8);
 
-        public decimal Period9To12 => _fundingSubCategories.Sum(fsc => fsc.Period9To12);
+        public decimal Period9To12 => FundingSubCategories.Sum(fsc => fsc.Period9To12);
 
-        public decimal YearToDate => _fundingSubCategories.Sum(fsc => fsc.YearToDate);
+        public decimal YearToDate => FundingSubCategories.Sum(fsc => fsc.YearToDate);
 
-        public decimal Total => _fundingSubCategories.Sum(fsc => fsc.Total);
+        public decimal Total => FundingSubCategories.Sum(fsc => fsc.Total);
 
         public decimal CumulativePeriod1 => Period1;
 

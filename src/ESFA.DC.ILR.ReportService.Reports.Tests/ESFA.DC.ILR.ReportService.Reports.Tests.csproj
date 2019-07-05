@@ -34,6 +34,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aspose.Cells, Version=19.2.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Cells.19.2.0\lib\net40\Aspose.Cells.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=4.9.2.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.4.9.2\lib\net45\Autofac.dll</HintPath>
     </Reference>
@@ -107,7 +110,7 @@
     <Compile Include="Builders\ValidationSchemaErrorsReportBuilderTests.cs" />
     <Compile Include="DependentDataCatalogTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
-    <Compile Include="Funding\FundingSummary\Model\Performance.cs" />
+    <Compile Include="Funding\FundingSummary\FundingSummaryReportRenderServiceTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
@@ -137,6 +140,9 @@
       <Project>{3FD0C9F9-3D83-4EC8-9FA6-1A96A5E465BB}</Project>
       <Name>ESFA.DC.ILR.ReportService.Service.Model</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Funding\FundingSummary\Model\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

@@ -1,7 +1,11 @@
-﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface
+﻿using System.Collections.Generic;
+
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface
 {
     public interface IFundingCategory : IFundingSummaryReportRow
     {
+        List<IFundingSubCategory> FundingSubCategories { get; }
+
         string FundingCategoryTitle { get; }
 
         string CumulativeFundingCategoryTitle { get; }

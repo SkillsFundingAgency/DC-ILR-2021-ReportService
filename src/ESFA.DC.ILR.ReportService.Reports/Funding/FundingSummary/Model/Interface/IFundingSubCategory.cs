@@ -6,6 +6,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interfa
 {
     public interface IFundingSubCategory :  IFundingSummaryReportRow
     {
+        IList<IFundLineGroup> FundLineGroups { get; }
+
         string FundingSubCategoryTitle { get; }
     }
 }
