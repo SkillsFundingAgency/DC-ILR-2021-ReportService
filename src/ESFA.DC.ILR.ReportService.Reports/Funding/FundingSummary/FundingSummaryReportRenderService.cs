@@ -1,9 +1,8 @@
-﻿using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.Drawing;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
     public class FundingSummaryReportRenderService
     {
@@ -15,8 +14,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
 
         private readonly Style _defaultStyle;
         private readonly Style _fundingCategoryStyle;
-
-       
+        private readonly Style _fundingSubCategoryStyle;
+        private readonly Style _fundLineGroupStyle;
 
         private readonly StyleFlag _styleFlag = new StyleFlag()
         {
@@ -29,6 +28,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
 
             _defaultStyle = cellsFactory.CreateStyle();
             _fundingCategoryStyle = cellsFactory.CreateStyle();
+            _fundingSubCategoryStyle = cellsFactory.CreateStyle();
+            _fundLineGroupStyle = cellsFactory.CreateStyle();
 
             ConfigureStyles();
         }
@@ -36,60 +37,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
         public Worksheet Render(IFundingSummaryReport fundingSummaryReport, Worksheet worksheet)
         {
             worksheet.Workbook.DefaultStyle = _defaultStyle;
+            worksheet.Cells.StandardWidth = 20;
+            worksheet.Cells.Columns[0].Width = 65;
 
             foreach (var fundingCategory in fundingSummaryReport.FundingCategories)
             {
                 RenderFundingCategory(worksheet, fundingCategory);
             }
-
+            
             return worksheet;
-        }
-
-        private void ConfigureStyles()
-        {
-            _defaultStyle.Font.Size = 10;
-            _defaultStyle.Font.IsBold = false;
-            _defaultStyle.Font.Name = "Arial";
-            _defaultStyle.SetCustom(DecimalFormat, false);
-
-            _fundingCategoryStyle.ForegroundColor = System.Drawing.Color.FromArgb(191, 191, 191);
-            _fundingCategoryStyle.Pattern = BackgroundType.Solid;
-            _fundingCategoryStyle.Font.Size = 13;
-            _fundingCategoryStyle.Font.IsBold = true;
-            _fundingCategoryStyle.Font.Name = "Arial";
-            _fundingCategoryStyle.SetCustom(DecimalFormat, false);
-            
-            //Style style2 = workbook.CreateStyle();
-            //style2.ForegroundColor = System.Drawing.Color.FromArgb(216, 216, 216);
-            //style2.Pattern = BackgroundType.Solid;
-            //style2.Font.Size = 12;
-            //style2.Font.IsBold = true;
-            //style2.Font.Name = "Arial";
-            //style2.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
-            
-            //Style style3 = workbook.CreateStyle();
-            //style3.ForegroundColor = System.Drawing.Color.FromArgb(242, 242, 242);
-            //style3.Pattern = BackgroundType.Solid;
-            //style3.Font.Size = 11;
-            //style3.Font.IsBold = true;
-            //style3.Font.Name = "Arial";
-            //style3.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
-            
-            //Style style4 = workbook.CreateStyle();
-            //style4.Font.Size = 11;
-            //style4.Font.IsBold = true;
-            //style4.Font.Name = "Arial";
-            //style4.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
-            
-            //Style style5 = workbook.CreateStyle();
-            //style5.Font.Size = 10;
-            //style5.Font.Name = "Arial";
-            //style5.SetCustom(Constants.FundingSummaryReportDecimalFormat, true);
-        }
-
-        private void ApplyStyleToRow(Worksheet worksheet, int row, Style style)
-        {
-            worksheet.Cells.CreateRange(row, StartColumn, 1, ColumnCount).ApplyStyle(style, _styleFlag);
         }
 
         private Worksheet RenderFundingCategory(Worksheet worksheet, IFundingCategory fundingCategory)
@@ -161,7 +117,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             return worksheet;
         }
 
-
         private Worksheet RenderFundingSubCategory(Worksheet worksheet, IFundingSubCategory fundingSubCategory)
         {
             var row = NextRow(worksheet) + 1;
@@ -186,13 +141,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                 "Year To Date",
                 "Total",
             }, row, 0, false);
+            ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
 
             foreach (var fundLineGroup in fundingSubCategory.FundLineGroups)
             {
                 RenderFundLineGroup(worksheet, fundLineGroup);
             }
 
-            RenderFundingSummaryReportRow(worksheet, NextRow(worksheet), fundingSubCategory);
+            row = NextRow(worksheet);
+            RenderFundingSummaryReportRow(worksheet, row, fundingSubCategory);
+            ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
 
             return worksheet;
         }
@@ -204,7 +162,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                 RenderFundLine(worksheet, fundLine);
             }
 
-            RenderFundingSummaryReportRow(worksheet, NextRow(worksheet), fundLineGroup);
+            var row = NextRow(worksheet);
+            RenderFundingSummaryReportRow(worksheet, row, fundLineGroup);
+            ApplyStyleToRow(worksheet, row, _fundLineGroupStyle);
 
             return worksheet;
         }
@@ -218,11 +178,39 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
 
         private int NextRow(Worksheet worksheet)
         {
-            var maxRow = worksheet.Cells.MaxRow;
+            return worksheet.Cells.MaxRow + 1;
+        }
 
-            maxRow = maxRow == -1 ? 0 : maxRow;
+        private void ApplyStyleToRow(Worksheet worksheet, int row, Style style)
+        {
+            worksheet.Cells.CreateRange(row, StartColumn, 1, ColumnCount).ApplyStyle(style, _styleFlag);
+        }
 
-            return maxRow + 1;
+        private void ConfigureStyles()
+        {
+            _defaultStyle.Font.Size = 10;
+            _defaultStyle.Font.IsBold = false;
+            _defaultStyle.Font.Name = "Arial";
+            _defaultStyle.SetCustom(DecimalFormat, false);
+
+            _fundingCategoryStyle.ForegroundColor = System.Drawing.Color.FromArgb(191, 191, 191);
+            _fundingCategoryStyle.Pattern = BackgroundType.Solid;
+            _fundingCategoryStyle.Font.Size = 13;
+            _fundingCategoryStyle.Font.IsBold = true;
+            _fundingCategoryStyle.Font.Name = "Arial";
+            _fundingCategoryStyle.SetCustom(DecimalFormat, false);
+
+            _fundingSubCategoryStyle.ForegroundColor = System.Drawing.Color.FromArgb(242, 242, 242);
+            _fundingSubCategoryStyle.Pattern = BackgroundType.Solid;
+            _fundingSubCategoryStyle.Font.Size = 11;
+            _fundingSubCategoryStyle.Font.IsBold = true;
+            _fundingSubCategoryStyle.Font.Name = "Arial";
+            _fundingSubCategoryStyle.SetCustom(DecimalFormat, false);
+
+            _fundLineGroupStyle.Font.Size = 11;
+            _fundLineGroupStyle.Font.IsBold = true;
+            _fundLineGroupStyle.Font.Name = "Arial";
+            _fundLineGroupStyle.SetCustom(DecimalFormat, false);
         }
     }
 }
