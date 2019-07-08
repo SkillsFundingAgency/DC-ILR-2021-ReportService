@@ -15,7 +15,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
         {
             var workbook = new Workbook();
 
-            var fundingSummaryReport = new FundingSummaryReport(Enumerable.Range(1, 5)
+            var fundingSummaryReport = new FundingSummaryReportModel(Enumerable.Range(1, 5)
                 .Select(l => (IFundingCategory)new FundingCategory("Title", "FCTitle", "CFCTitle", Enumerable.Range(1, 10)
                     .Select(k => (IFundingSubCategory)new FundingSubCategory("Funding Sub Category SubTitle", "Funding SubCategory Title", Enumerable.Range(1, 3)
                         .Select(i => (IFundLineGroup)new FundLineGroup("FundLineGroup", Enumerable.Range(0, 5)

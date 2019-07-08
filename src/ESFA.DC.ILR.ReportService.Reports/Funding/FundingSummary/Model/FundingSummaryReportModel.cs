@@ -3,9 +3,9 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
-    public class FundingSummaryReport : IFundingSummaryReport
+    public class FundingSummaryReportModel : IFundingSummaryReport
     {
-        public FundingSummaryReport(List<IFundingCategory> fundingCategories)
+        public FundingSummaryReportModel(List<IFundingCategory> fundingCategories)
         {
             FundingCategories = fundingCategories ?? new List<IFundingCategory>();
         }
