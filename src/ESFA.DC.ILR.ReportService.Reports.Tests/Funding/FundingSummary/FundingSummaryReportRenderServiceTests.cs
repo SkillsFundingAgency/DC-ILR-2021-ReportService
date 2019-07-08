@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
-using System.Security.Permissions;
-using System.Text;
-using System.Threading.Tasks;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Service;
 using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
