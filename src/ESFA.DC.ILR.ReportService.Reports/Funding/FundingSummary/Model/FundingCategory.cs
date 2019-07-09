@@ -8,10 +8,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundingCategory : IFundingCategory
     {
-        public FundingCategory(string title, string fundingCategoryTitle, string cumulativeFundingCategoryTitle, List<IFundingSubCategory> fundingSubCategories)
+        public FundingCategory(string fundingCategoryTitle, string title, string cumulativeFundingCategoryTitle, List<IFundingSubCategory> fundingSubCategories)
         {
-            Title = title;
             FundingCategoryTitle = fundingCategoryTitle;
+            Title = title;
             CumulativeFundingCategoryTitle = cumulativeFundingCategoryTitle;
 
             FundingSubCategories = fundingSubCategories ?? new List<IFundingSubCategory>();
