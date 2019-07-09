@@ -9,6 +9,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
@@ -50,14 +51,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                         @"ILR Total 16-18 Apprenticeship Frameworks (£)",
                                         new List<IFundLine>()
                                         {
+                                            BuildFundLine(
+                                                "ILR 16-18 Apprenticeship Frameworks Programme Funding (£)",
+                                                currentPeriod,
+                                                FundModels.FM35,
+                                                new []{ FundLineConstants.Apprenticeship1618 },
+                                                new [] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievemePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment },
+                                                periodisedValues),
+                                            BuildFundLine(
+                                                "ILR 16-18 Apprenticeship Frameworks Learning Support (£)",
+                                                currentPeriod,
+                                                FundModels.FM35,
+                                                new [] { FundLineConstants.Apprenticeship1618 },
+                                                new [] { AttributeConstants.Fm35LearnSuppFundCash },
+                                                periodisedValues)
                                         })
                                 })
                         })
                 });
         }
-
-
-
 
         public IFundLine BuildFundLine(
             string title,
