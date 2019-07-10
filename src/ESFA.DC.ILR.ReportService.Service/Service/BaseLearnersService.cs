@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
-using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;

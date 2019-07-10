@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.ReportService.Interface.Context;
-using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ILogger = ESFA.DC.Logging.Interfaces.ILogger;
+using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 
 namespace ESFA.DC.ILR.ReportService.Service.Service
 {

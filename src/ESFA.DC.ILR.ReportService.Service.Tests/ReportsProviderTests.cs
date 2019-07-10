@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Reports;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using ESFA.DC.Logging.Interfaces;
 using FluentAssertions;
 using Moq;
 using Xunit;
+using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 
 namespace ESFA.DC.ILR.ReportService.Service.Tests
 {

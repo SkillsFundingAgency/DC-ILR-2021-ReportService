@@ -11,7 +11,6 @@ using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
-using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
@@ -28,7 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var cancellationToken = CancellationToken.None;
 
             var desktopContextMock = new Mock<IDesktopContext>();
-            var reportServiceContextFactoryMock = new Mock<IReportServiceContextFactory>();
+            var reportServiceContextFactoryMock = new Mock<IReportServiceContextFactory<IDesktopContext>>();
             var reportServiceContextMock = new Mock<IReportServiceContext>();
             var entryPointMock = new Mock<IEntryPoint>();
 
@@ -89,11 +88,9 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             reportServiceJobContextDesktopContext.ReportOutputFileNames.Split('|').ToArray().Length.Should().Be(1);
         }
 
-        private ReportServiceDesktopTask NewTask(IEntryPoint entryPoint = null, IReportServiceContextFactory reportServiceContextFactory = null)
+        private ReportServiceDesktopTask NewTask(IEntryPoint entryPoint = null, IReportServiceContextFactory<IDesktopContext> reportServiceContextFactory = null)
         {
-            return new ReportServiceDesktopTask(reportServiceContextFactory ?? new Mock<IReportServiceContextFactory>().Object, entryPoint ?? Mock.Of<IEntryPoint>());
+            return new ReportServiceDesktopTask(reportServiceContextFactory ?? new Mock<IReportServiceContextFactory<IDesktopContext>>().Object, entryPoint ?? Mock.Of<IEntryPoint>());
         }
     }
-
-   
 }

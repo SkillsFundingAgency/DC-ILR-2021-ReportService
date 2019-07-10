@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR.ReportService.Interface.Context
+﻿namespace ESFA.DC.ILR.ReportService.Interface
 {
     public static class ReportTaskNameConstants
     {

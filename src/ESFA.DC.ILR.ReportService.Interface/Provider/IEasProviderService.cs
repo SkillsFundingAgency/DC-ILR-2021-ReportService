@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Model.Eas;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using EasSubmissionValues = ESFA.DC.ILR.ReportService.Model.Eas.EasSubmissionValues;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Provider

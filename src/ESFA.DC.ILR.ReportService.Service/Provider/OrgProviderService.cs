@@ -3,7 +3,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
-using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.ReferenceData.Organisations.Model;

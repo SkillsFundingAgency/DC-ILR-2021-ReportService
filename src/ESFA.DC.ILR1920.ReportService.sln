@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR.ReportService.R
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.ILR.ReportService.Data", "ESFA.DC.ILR.ReportService.Data\ESFA.DC.ILR.ReportService.Data.csproj", "{733FF8EB-CE2A-4496-8B47-1A4C6673FCC1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR.ReportService.Modules", "ESFA.DC.ILR.ReportService.Modules\ESFA.DC.ILR.ReportService.Modules.csproj", "{9E623E50-C936-4DAC-B035-12A42815F02C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -159,6 +161,14 @@ Global
 		{733FF8EB-CE2A-4496-8B47-1A4C6673FCC1}.Release|Any CPU.Build.0 = Release|Any CPU
 		{733FF8EB-CE2A-4496-8B47-1A4C6673FCC1}.Release|x64.ActiveCfg = Release|Any CPU
 		{733FF8EB-CE2A-4496-8B47-1A4C6673FCC1}.Release|x64.Build.0 = Release|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Debug|x64.Build.0 = Debug|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Release|x64.ActiveCfg = Release|Any CPU
+		{9E623E50-C936-4DAC-B035-12A42815F02C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

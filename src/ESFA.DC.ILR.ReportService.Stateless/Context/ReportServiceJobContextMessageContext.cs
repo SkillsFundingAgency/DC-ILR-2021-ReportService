@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Constants;
-using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.JobContextManager.Model;
 
 namespace ESFA.DC.ILR.ReportService.Stateless.Context
@@ -63,6 +63,18 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
         public string CollectionName => _jobContextMessage.KeyValuePairs["CollectionName"].ToString();
 
         public int ReturnPeriod => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
+
+        public string IlrReferenceDataKey
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
+
+        public string ReportOutputFileNames
+        {
+            get => throw new NotImplementedException();
+            set => throw new NotImplementedException();
+        }
 
         public long JobId => _jobContextMessage.JobId;
     }
