@@ -1,10 +1,6 @@
 ﻿using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;

@@ -35,7 +35,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.ILR.ReportService.R
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR.ReportService.Reports.Tests", "ESFA.DC.ILR.ReportService.Reports.Tests\ESFA.DC.ILR.ReportService.Reports.Tests.csproj", "{FD7E58C9-BF83-456F-8B5E-2EBBFAA177E0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ESFA.DC.ILR.ReportService.Data", "ESFA.DC.ILR.ReportService.Data\ESFA.DC.ILR.ReportService.Data.csproj", "{733FF8EB-CE2A-4496-8B47-1A4C6673FCC1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ESFA.DC.ILR.ReportService.Data", "ESFA.DC.ILR.ReportService.Data\ESFA.DC.ILR.ReportService.Data.csproj", "{733FF8EB-CE2A-4496-8B47-1A4C6673FCC1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -77,8 +77,8 @@ Global
 		{331D200F-C82D-450D-BE9D-F46C990CAD0D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{331D200F-C82D-450D-BE9D-F46C990CAD0D}.Release|x64.ActiveCfg = Release|Any CPU
 		{331D200F-C82D-450D-BE9D-F46C990CAD0D}.Release|x64.Build.0 = Release|Any CPU
-		{920FC933-1FD0-47A2-854E-4D49990B3942}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{920FC933-1FD0-47A2-854E-4D49990B3942}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{920FC933-1FD0-47A2-854E-4D49990B3942}.Debug|Any CPU.ActiveCfg = Debug|x64
+		{920FC933-1FD0-47A2-854E-4D49990B3942}.Debug|Any CPU.Build.0 = Debug|x64
 		{920FC933-1FD0-47A2-854E-4D49990B3942}.Debug|x64.ActiveCfg = Debug|x64
 		{920FC933-1FD0-47A2-854E-4D49990B3942}.Debug|x64.Build.0 = Debug|x64
 		{920FC933-1FD0-47A2-854E-4D49990B3942}.Release|Any CPU.ActiveCfg = Release|Any CPU

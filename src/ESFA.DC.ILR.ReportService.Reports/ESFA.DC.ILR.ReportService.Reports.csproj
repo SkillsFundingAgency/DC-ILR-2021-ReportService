@@ -24,10 +24,4 @@
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Model\ESFA.DC.ILR.ReportService.Service.Model.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model">
-      <HintPath>..\..\..\..\..\Users\MCHILDS\.nuget\packages\esfa.dc.ilr.fundingservice.fm25.fundingoutput.model\0.1.320\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>
