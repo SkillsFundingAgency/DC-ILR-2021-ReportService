@@ -45,7 +45,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
                 using (var container = builder.Build())
                 {
-                    container.Resolve<EntryPoint>();
+                    var entryPoint = container.Resolve<EntryPoint>();
 
                     ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(ServiceFabric.Common.Stateless).Name);
 
