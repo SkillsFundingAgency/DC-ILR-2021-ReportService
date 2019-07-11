@@ -24,7 +24,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class MathsAndEnglishReport : AbstractReport, ILegacyReport
+    public sealed class MathsAndEnglishReport : AbstractLegacyReport, ILegacyReport
     {
         private static readonly MathsAndEnglishModelComparer MathsAndEnglishModelComparer = new MathsAndEnglishModelComparer();
 

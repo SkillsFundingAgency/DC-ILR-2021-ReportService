@@ -12,7 +12,7 @@ namespace ESFA.DC.ILR.ReportService.Service
     using IO.Interfaces;
     using Logging.Interfaces;
 
-    public sealed class EntryPoint
+    public sealed class LegacyEntryPoint
     {
         private readonly ILogger _logger;
 
@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Service
 
         private readonly IList<ILegacyReport> _reports;
 
-        public EntryPoint(
+        public LegacyEntryPoint(
             ILogger logger,
             IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService,
             IList<ILegacyReport> reports)

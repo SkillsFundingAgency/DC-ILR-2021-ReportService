@@ -25,7 +25,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class MainOccupancyReport : AbstractReport
+    public sealed class MainOccupancyReport : AbstractLegacyReport
     {
         private static readonly MainOccupancyModelComparer MainOccupancyModelComparer = new MainOccupancyModelComparer();
 

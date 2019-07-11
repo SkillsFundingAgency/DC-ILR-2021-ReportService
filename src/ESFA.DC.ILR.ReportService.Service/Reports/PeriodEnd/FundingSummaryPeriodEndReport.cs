@@ -21,7 +21,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
-    public class FundingSummaryPeriodEndReport : AbstractReport, ILegacyReport
+    public class FundingSummaryPeriodEndReport : AbstractLegacyReport, ILegacyReport
     {
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36PeriodEndProviderService _fm36ProviderService;

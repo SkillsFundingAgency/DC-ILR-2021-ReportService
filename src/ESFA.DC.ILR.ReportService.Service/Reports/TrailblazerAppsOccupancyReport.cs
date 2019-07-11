@@ -28,7 +28,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class TrailblazerAppsOccupancyReport : AbstractReport, ILegacyReport
+    public sealed class TrailblazerAppsOccupancyReport : AbstractLegacyReport, ILegacyReport
     {
         private readonly IFM81TrailBlazerProviderService _fm81TrailBlazerProviderService;
         private readonly IIlrProviderService _ilrProviderService;

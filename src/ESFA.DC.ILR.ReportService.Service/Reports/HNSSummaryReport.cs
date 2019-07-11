@@ -25,7 +25,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class HNSSummaryReport : AbstractReport, ILegacyReport
+    public sealed class HNSSummaryReport : AbstractLegacyReport, ILegacyReport
     {
         private const string FundLine1416LearnDelFamACellName = "E4";
         private const string FundLine1416LearnDelFamBCellName = "E5";

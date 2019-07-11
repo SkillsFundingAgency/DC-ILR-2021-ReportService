@@ -20,7 +20,7 @@ using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 {
-    public abstract class AbstractReport : ILegacyReport
+    public abstract class AbstractLegacyReport : ILegacyReport
     {
         protected readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
         protected readonly ILogger _logger;
@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Reports.Abstract
 
         private readonly Dictionary<Worksheet, int> _currentRow = new Dictionary<Worksheet, int>();
 
-        protected AbstractReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService, ILogger logger)
+        protected AbstractLegacyReport(IDateTimeProvider dateTimeProvider, IValueProvider valueProvider, IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService, ILogger logger)
         {
             _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
             _logger = logger;

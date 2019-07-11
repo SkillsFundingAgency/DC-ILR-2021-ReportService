@@ -25,7 +25,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class HNSDetailReport : AbstractReport, ILegacyReport
+    public sealed class HNSDetailReport : AbstractLegacyReport, ILegacyReport
     {
         private static readonly HNSModelComparer _hnsModelComparer = new HNSModelComparer();
 

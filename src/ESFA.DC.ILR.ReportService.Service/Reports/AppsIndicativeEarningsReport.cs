@@ -27,7 +27,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class AppsIndicativeEarningsReport : AbstractReport, ILegacyReport
+    public sealed class AppsIndicativeEarningsReport : AbstractLegacyReport, ILegacyReport
     {
         private static readonly AppsIndicativeEarningsModelComparer AppsIndicativeEarningsModelComparer = new AppsIndicativeEarningsModelComparer();
 

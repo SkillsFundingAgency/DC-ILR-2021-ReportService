@@ -22,7 +22,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public class NonContractedAppsActivityReport : AbstractReport, ILegacyReport
+    public class NonContractedAppsActivityReport : AbstractLegacyReport, ILegacyReport
     {
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFCSProviderService _fcsProviderService;

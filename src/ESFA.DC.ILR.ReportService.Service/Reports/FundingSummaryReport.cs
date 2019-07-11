@@ -35,7 +35,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class FundingSummaryReport : AbstractReport, ILegacyReport
+    public sealed class FundingSummaryReport : AbstractLegacyReport, ILegacyReport
     {
         private readonly FundingSummaryMapper _fundingSummaryMapper = new FundingSummaryMapper();
 

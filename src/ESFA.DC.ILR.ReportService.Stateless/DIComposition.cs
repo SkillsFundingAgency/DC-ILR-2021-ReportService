@@ -92,7 +92,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             // register MessageHandler
             containerBuilder.RegisterType<MessageHandler>().As<IMessageHandler<JobContextMessage>>().InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<EntryPoint>().WithAttributeFiltering().InstancePerLifetimeScope();
+            containerBuilder.RegisterType<LegacyEntryPoint>().WithAttributeFiltering().InstancePerLifetimeScope();
             containerBuilder.RegisterType<ZipService>().As<IZipService>().InstancePerLifetimeScope();
             containerBuilder.RegisterType<ReportsProvider>().As<IReportsProvider>().InstancePerLifetimeScope();
 

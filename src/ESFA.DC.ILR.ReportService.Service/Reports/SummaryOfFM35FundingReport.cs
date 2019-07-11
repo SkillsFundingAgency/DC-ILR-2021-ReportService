@@ -28,7 +28,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public class SummaryOfFm35FundingReport : AbstractReport
+    public class SummaryOfFm35FundingReport : AbstractLegacyReport
     {
         private const int REPORT_DATA_START_ROW = 6;
 

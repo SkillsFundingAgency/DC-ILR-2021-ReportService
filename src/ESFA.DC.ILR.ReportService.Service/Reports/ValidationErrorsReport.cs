@@ -30,7 +30,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class ValidationErrorsReport : AbstractReport, ILegacyReport
+    public sealed class ValidationErrorsReport : AbstractLegacyReport, ILegacyReport
     {
         private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
 

@@ -31,7 +31,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class DataMatchReport : AbstractReport, ILegacyReport
+    public sealed class DataMatchReport : AbstractLegacyReport, ILegacyReport
     {
         private static readonly DataMatchModelComparer DataMatchModelComparer = new DataMatchModelComparer();
 

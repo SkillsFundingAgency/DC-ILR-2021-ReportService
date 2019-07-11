@@ -24,7 +24,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class SummaryOfFunding1619Report : AbstractReport, ILegacyReport
+    public sealed class SummaryOfFunding1619Report : AbstractLegacyReport, ILegacyReport
     {
         private static readonly SummaryOfFunding1619ModelComparer SummaryOfFunding1619ModelComparer = new SummaryOfFunding1619ModelComparer();
 

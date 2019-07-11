@@ -24,7 +24,7 @@ using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNa
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class FundingClaim1619Report : AbstractReport, ILegacyReport
+    public sealed class FundingClaim1619Report : AbstractLegacyReport, ILegacyReport
     {
         private const string ProviderCellName = "C3";
         private const string UKPrnCellName = "C4";
