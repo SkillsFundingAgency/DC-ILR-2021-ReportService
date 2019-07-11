@@ -11,9 +11,9 @@ using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace ESFA.DC.ILR.ReportService.Service.Service
+namespace ESFA.DC.ILR.ReportService.Service.Provider.Abstract
 {
-    public abstract class BaseLearnersService
+    public abstract class BaseLearnRefNumbersProvider
     {
         private readonly string _filename;
         private readonly ILogger _logger;
@@ -27,7 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
 
         private List<string> _loadedData;
 
-        protected BaseLearnersService(
+        protected BaseLearnRefNumbersProvider(
             string key,
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
