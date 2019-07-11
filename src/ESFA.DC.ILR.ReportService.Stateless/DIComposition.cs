@@ -373,12 +373,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<ExcelStyleProvider>().As<IExcelStyleProvider>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery[]>>()
-                .InstancePerDependency();
-            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery[]>>()
-                .InstancePerDependency();
-            containerBuilder.RegisterType<CacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>().As<ICacheProviderService<ILR.FundingService.FM81.FundingOutput.Model.Output.LearningDelivery[]>>()
-                .InstancePerDependency();
+            containerBuilder.RegisterGeneric(typeof(CacheProviderService<>)).As(typeof(ICacheProviderService<>));
 
             containerBuilder.RegisterType<ValueProvider>().As<IValueProvider>()
                 .InstancePerLifetimeScope();
