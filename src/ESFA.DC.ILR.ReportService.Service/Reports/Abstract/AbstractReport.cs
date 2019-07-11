@@ -10,7 +10,7 @@ using Aspose.Cells;
 using CsvHelper;
 using CsvHelper.Configuration;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Reports;
+using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Generation;
 using ESFA.DC.ILR.ReportService.Model.Styling;

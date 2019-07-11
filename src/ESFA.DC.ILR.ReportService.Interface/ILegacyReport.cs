@@ -1,10 +1,9 @@
-﻿using System;
-using System.IO.Compression;
+﻿using System.IO.Compression;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
-namespace ESFA.DC.ILR.ReportService.Interface.Reports
+namespace ESFA.DC.ILR.ReportService.Interface
 {
     public interface ILegacyReport
     {

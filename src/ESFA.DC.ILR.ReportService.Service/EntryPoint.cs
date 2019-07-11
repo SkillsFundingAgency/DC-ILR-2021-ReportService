@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR.ReportService.Service.Interface;
+﻿using ESFA.DC.ILR.ReportService.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Service
 {
@@ -8,7 +9,6 @@ namespace ESFA.DC.ILR.ReportService.Service
     using System.IO.Compression;
     using System.Threading;
     using System.Threading.Tasks;
-    using ESFA.DC.ILR.ReportService.Interface.Reports;
     using IO.Interfaces;
     using Logging.Interfaces;
 
