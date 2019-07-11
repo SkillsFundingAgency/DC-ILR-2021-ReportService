@@ -13,6 +13,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
@@ -20,12 +21,11 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
-using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNameConstants;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class HNSSummaryReport : AbstractReport, IReport
+    public sealed class HNSSummaryReport : AbstractReport, ILegacyReport
     {
         private const string FundLine1416LearnDelFamACellName = "E4";
         private const string FundLine1416LearnDelFamBCellName = "E5";

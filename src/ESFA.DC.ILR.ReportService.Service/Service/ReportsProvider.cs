@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ILogger = ESFA.DC.Logging.Interfaces.ILogger;
-using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 
 namespace ESFA.DC.ILR.ReportService.Service.Service
 {
     public class ReportsProvider : IReportsProvider
     {
-        private readonly IList<IReport> _reports;
+        private readonly IList<ILegacyReport> _reports;
         private readonly ILogger _logger;
 
-        public ReportsProvider(IList<IReport> reports, ILogger logger)
+        public ReportsProvider(IList<ILegacyReport> reports, ILogger logger)
         {
             _reports = reports;
             _logger = logger;
         }
 
-        public IEnumerable<IReport> ProvideReportsForContext(IReportServiceContext reportServiceContext)
+        public IEnumerable<ILegacyReport> ProvideReportsForContext(IReportServiceContext reportServiceContext)
         {
             var missingReportTasks =
                 reportServiceContext

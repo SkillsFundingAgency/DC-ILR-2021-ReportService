@@ -9,6 +9,7 @@ using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.Lars;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
@@ -17,12 +18,11 @@ using ESFA.DC.ILR.ReportService.Service.Mapper;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
-using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNameConstants;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public class NonContractedAppsActivityReport : AbstractReport, IReport
+    public class NonContractedAppsActivityReport : AbstractReport, ILegacyReport
     {
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFCSProviderService _fcsProviderService;

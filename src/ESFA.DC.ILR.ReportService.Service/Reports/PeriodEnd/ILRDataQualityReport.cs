@@ -6,18 +6,18 @@ using System.Threading.Tasks;
 using Aspose.Cells;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.ILRDataQuality;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
-using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNameConstants;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
-    public sealed class ILRDataQualityReport : AbstractReport, IReport
+    public sealed class ILRDataQualityReport : AbstractReport, ILegacyReport
     {
         private readonly IIlrPeriodEndProviderService _ilrPeriodEndProviderService;
 

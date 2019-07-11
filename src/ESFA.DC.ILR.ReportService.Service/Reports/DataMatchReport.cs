@@ -14,6 +14,7 @@ using ESFA.DC.ILR.ReportService.Interface.Builders;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.DataMatch;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.DasCommitments;
 using ESFA.DC.ILR.ReportService.Model.ReportModels;
@@ -26,12 +27,11 @@ using ESFA.DC.ILR.ReportService.Service.ReferenceData;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
-using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNameConstants;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports
 {
-    public sealed class DataMatchReport : AbstractReport, IReport
+    public sealed class DataMatchReport : AbstractReport, ILegacyReport
     {
         private static readonly DataMatchModelComparer DataMatchModelComparer = new DataMatchModelComparer();
 

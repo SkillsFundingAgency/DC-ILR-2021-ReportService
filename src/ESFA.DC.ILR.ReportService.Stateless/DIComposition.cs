@@ -191,100 +191,100 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
         private static void RegisterReports(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<AllbOccupancyReport>().As<IReport>()
+            containerBuilder.RegisterType<AllbOccupancyReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<MainOccupancyReport>().As<IReport>()
+            containerBuilder.RegisterType<MainOccupancyReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FundingSummaryReport>().As<IReport>()
+            containerBuilder.RegisterType<FundingSummaryReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<AdultFundingClaimReport>().As<IReport>()
+            containerBuilder.RegisterType<AdultFundingClaimReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<SummaryOfFunding1619Report>().As<IReport>()
+            containerBuilder.RegisterType<SummaryOfFunding1619Report>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<MathsAndEnglishReport>().As<IReport>()
+            containerBuilder.RegisterType<MathsAndEnglishReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<ValidationErrorsReport>().As<IReport>()
+            containerBuilder.RegisterType<ValidationErrorsReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<SummaryOfFm35FundingReport>().As<IReport>()
+            containerBuilder.RegisterType<SummaryOfFm35FundingReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<AppsAdditionalPaymentsReport>().As<IReport>()
+            containerBuilder.RegisterType<AppsAdditionalPaymentsReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<NonContractedAppsActivityReport>().As<IReport>()
+            containerBuilder.RegisterType<NonContractedAppsActivityReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<ILRDataQualityReport>().As<IReport>()
+            containerBuilder.RegisterType<ILRDataQualityReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>()
+            containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<DataMatchReport>().As<IReport>()
+            containerBuilder.RegisterType<DataMatchReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<TrailblazerEmployerIncentivesReport>().As<IReport>()
+            containerBuilder.RegisterType<TrailblazerEmployerIncentivesReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FundingClaim1619Report>().As<IReport>()
+            containerBuilder.RegisterType<FundingClaim1619Report>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<AppsCoInvestmentContributionsReport>().As<IReport>()
+            containerBuilder.RegisterType<AppsCoInvestmentContributionsReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<AppsMonthlyPaymentReport>().As<IReport>()
+            containerBuilder.RegisterType<AppsMonthlyPaymentReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<AppsDataMatchMonthEndReport>().As<IReport>()
+            containerBuilder.RegisterType<AppsDataMatchMonthEndReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FundingSummaryPeriodEndReport>().As<IReport>()
+            containerBuilder.RegisterType<FundingSummaryPeriodEndReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<TrailblazerAppsOccupancyReport>().As<IReport>()
+            containerBuilder.RegisterType<TrailblazerAppsOccupancyReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<HNSDetailReport>().As<IReport>()
+            containerBuilder.RegisterType<HNSDetailReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<SummaryOfFm35FundingReport>().As<IReport>()
+            containerBuilder.RegisterType<SummaryOfFm35FundingReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<HNSSummaryReport>().As<IReport>()
+            containerBuilder.RegisterType<HNSSummaryReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.Register(c => new List<IReport>(c.Resolve<IEnumerable<IReport>>()))
-                .As<IList<IReport>>();
+            containerBuilder.Register(c => new List<ILegacyReport>(c.Resolve<IEnumerable<ILegacyReport>>()))
+                .As<IList<ILegacyReport>>();
         }
 
         private static void RegisterServices(ContainerBuilder containerBuilder)

@@ -6,7 +6,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Reports
 {
-    public interface IReport
+    public interface ILegacyReport
     {
         string ReportTaskName { get; }
 

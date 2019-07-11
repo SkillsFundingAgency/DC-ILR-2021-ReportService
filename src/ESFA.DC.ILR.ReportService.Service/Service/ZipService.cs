@@ -7,9 +7,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
+using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using IReport = ESFA.DC.ILR.ReportService.Interface.Reports.IReport;
 
 namespace ESFA.DC.ILR.ReportService.Service.Service
 {
@@ -22,7 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Service
             _fileService = fileService;
         }
 
-        public async Task AddReportToArchiveAsync(ZipArchive zipArchive, IReport report, IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+        public async Task AddReportToArchiveAsync(ZipArchive zipArchive, ILegacyReport report, IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             var zipFileName = report.GetZipFilename(reportServiceContext);
             var fileReference = report.GetFilename(reportServiceContext);
