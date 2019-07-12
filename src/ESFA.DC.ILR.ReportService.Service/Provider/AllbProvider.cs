@@ -22,7 +22,7 @@ using LearningDeliveryValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class AllbProviderService : AbstractFundModelProviderService, IAllbProviderService
+    public sealed class AllbProvider : AbstractFundModelProviderService, IAllbProviderService
     {
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
         private bool _loadedDataAlready;
         private ALBGlobal _fundingOutputs;
 
-        public AllbProviderService(
+        public AllbProvider(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,
