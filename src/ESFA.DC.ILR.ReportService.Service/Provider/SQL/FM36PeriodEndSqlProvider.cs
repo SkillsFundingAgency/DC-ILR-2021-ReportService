@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.PeriodEnd.AppsAdditionalPayment;
@@ -17,7 +18,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider.SQL
 {
-    public class FM36PeriodEndSqlProvider : AbstractFundModelProviderService, IFM36PeriodEndProviderService
+    public class FM36PeriodEndSqlProvider : IFM36PeriodEndProviderService
     {
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
@@ -25,11 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.SQL
         private FM36Global _fundingOutputs;
 
         public FM36PeriodEndSqlProvider(
-            ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
-            IJsonSerializationService jsonSerializationService,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
-        : base(storage, jsonSerializationService, logger)
         {
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
         }

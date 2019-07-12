@@ -22,26 +22,23 @@ using LearningDeliveryValue = ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider.SQL
 {
-    public sealed class AllbSqlProvider : AbstractFundModelProviderService, IAllbProviderService
+    public sealed class AllbSqlProvider : IAllbProviderService
     {
+        private readonly ILogger _logger;
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
-        private readonly SemaphoreSlim _getDataLock;
+        private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
         private bool _loadedDataAlready;
         private ALBGlobal _fundingOutputs;
 
         public AllbSqlProvider(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
-            IJsonSerializationService jsonSerializationService,
             Func<IIlr1819ValidContext> ilrValidContextFactory,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
-            : base(storage, jsonSerializationService, logger)
         {
+            _logger = logger;
             _ilrValidContextFactory = ilrValidContextFactory;
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
-            _fundingOutputs = null;
-            _getDataLock = new SemaphoreSlim(1, 1);
         }
 
         public async Task<ALBGlobal> GetAllbData(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
@@ -62,84 +59,72 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.SQL
 
                 _logger.LogWarning($"ReportServiceCollectionName {reportServiceContext.CollectionName};");
 
-                if (string.Equals(reportServiceContext.CollectionName, "ILR1819", StringComparison.OrdinalIgnoreCase))
+
+                ALBGlobal albGlobal = new ALBGlobal();
+                using (var ilrContext = _ilrRulebaseContextFactory())
                 {
-                    string albFilename = reportServiceContext.FundingALBOutputKey;
-                    _logger.LogWarning($"Reading {albFilename}; Storage is {_streamableKeyValuePersistenceService}; CancellationToken is {cancellationToken}");
-                    using (MemoryStream ms = new MemoryStream())
+                    _logger.LogWarning($"AllbProviderService - Accessing Db;");
+                    var albGlobalDb = await ilrContext.ALB_globals.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
+                    using (var ilrValidContext = _ilrValidContextFactory())
                     {
-                        await _streamableKeyValuePersistenceService.GetAsync(albFilename, ms, cancellationToken);
-                        _fundingOutputs = _serializationService.Deserialize<ALBGlobal>(ms);
-                    }
-                }
-                else
-                {
-                    ALBGlobal albGlobal = new ALBGlobal();
-                    using (var ilrContext = _ilrRulebaseContextFactory())
-                    {
-                        _logger.LogWarning($"AllbProviderService - Accessing Db;");
-                        var albGlobalDb = await ilrContext.ALB_globals.FirstOrDefaultAsync(x => x.UKPRN == ukPrn, cancellationToken);
-                        using (var ilrValidContext = _ilrValidContextFactory())
+                        ALB_LearningDelivery[] res = await ilrContext.ALB_LearningDeliveries
+                            .Where(x => x.UKPRN == ukPrn)
+                            .Include(x => x.ALB_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
+
+                        IGrouping<string, ALB_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
+
+                        albGlobal.Learners = new System.Collections.Generic.List<ALBLearner>();
+
+                        foreach (IGrouping<string, ALB_LearningDelivery> albLearningDeliveries in learners)
                         {
-                            ALB_LearningDelivery[] res = await ilrContext.ALB_LearningDeliveries
-                                .Where(x => x.UKPRN == ukPrn)
-                                .Include(x => x.ALB_LearningDelivery_PeriodisedValues).ToArrayAsync(cancellationToken);
-
-                            IGrouping<string, ALB_LearningDelivery>[] learners = res.GroupBy(x => x.LearnRefNumber).ToArray();
-
-                            albGlobal.Learners = new System.Collections.Generic.List<ALBLearner>();
-
-                            foreach (IGrouping<string, ALB_LearningDelivery> albLearningDeliveries in learners)
+                            var learningDeliveryDto = new List<LearningDelivery>();
+                            foreach (var ld in albLearningDeliveries)
                             {
-                                var learningDeliveryDto = new List<LearningDelivery>();
-                                foreach (var ld in albLearningDeliveries)
-                                {
-                                    var ldPeriodisedValues = ld.ALB_LearningDelivery_PeriodisedValues.Select(ldpv =>
-                                        new LearningDeliveryPeriodisedValue()
-                                        {
-                                            AttributeName = ldpv.AttributeName,
-                                            Period1 = ldpv.Period_1,
-                                            Period2 = ldpv.Period_2,
-                                            Period3 = ldpv.Period_3,
-                                            Period4 = ldpv.Period_4,
-                                            Period5 = ldpv.Period_5,
-                                            Period6 = ldpv.Period_6,
-                                            Period7 = ldpv.Period_7,
-                                            Period8 = ldpv.Period_8,
-                                            Period9 = ldpv.Period_9,
-                                            Period10 = ldpv.Period_10,
-                                            Period11 = ldpv.Period_11,
-                                            Period12 = ldpv.Period_12
-                                        }).ToList();
-
-                                    learningDeliveryDto.Add(new LearningDelivery()
+                                var ldPeriodisedValues = ld.ALB_LearningDelivery_PeriodisedValues.Select(ldpv =>
+                                    new LearningDeliveryPeriodisedValue()
                                     {
-                                        AimSeqNumber = ld.AimSeqNumber,
-                                        LearningDeliveryPeriodisedValues = ldPeriodisedValues,
-                                        LearningDeliveryValue = new LearningDeliveryValue()
-                                        {
-                                            FundLine = ld.FundLine // todo: finish the entire LearningDeliveryValue here
-                                        }
-                                    });
-                                }
+                                        AttributeName = ldpv.AttributeName,
+                                        Period1 = ldpv.Period_1,
+                                        Period2 = ldpv.Period_2,
+                                        Period3 = ldpv.Period_3,
+                                        Period4 = ldpv.Period_4,
+                                        Period5 = ldpv.Period_5,
+                                        Period6 = ldpv.Period_6,
+                                        Period7 = ldpv.Period_7,
+                                        Period8 = ldpv.Period_8,
+                                        Period9 = ldpv.Period_9,
+                                        Period10 = ldpv.Period_10,
+                                        Period11 = ldpv.Period_11,
+                                        Period12 = ldpv.Period_12
+                                    }).ToList();
 
-                                ALBLearner learner = new ALBLearner()
+                                learningDeliveryDto.Add(new LearningDelivery()
                                 {
-                                    LearnRefNumber = albLearningDeliveries.Key,
-                                    LearningDeliveries = learningDeliveryDto
-                                };
-
-                                albGlobal.Learners.Add(learner);
+                                    AimSeqNumber = ld.AimSeqNumber,
+                                    LearningDeliveryPeriodisedValues = ldPeriodisedValues,
+                                    LearningDeliveryValue = new LearningDeliveryValue()
+                                    {
+                                        FundLine = ld.FundLine // todo: finish the entire LearningDeliveryValue here
+                                    }
+                                });
                             }
-                        }
 
-                        if (albGlobalDb != null)
-                        {
-                            albGlobal.LARSVersion = albGlobalDb.LARSVersion;
-                            albGlobal.PostcodeAreaCostVersion = albGlobalDb.PostcodeAreaCostVersion;
-                            albGlobal.RulebaseVersion = albGlobalDb.RulebaseVersion;
-                            albGlobal.UKPRN = albGlobalDb.UKPRN;
+                            ALBLearner learner = new ALBLearner()
+                            {
+                                LearnRefNumber = albLearningDeliveries.Key,
+                                LearningDeliveries = learningDeliveryDto
+                            };
+
+                            albGlobal.Learners.Add(learner);
                         }
+                    }
+
+                    if (albGlobalDb != null)
+                    {
+                        albGlobal.LARSVersion = albGlobalDb.LARSVersion;
+                        albGlobal.PostcodeAreaCostVersion = albGlobalDb.PostcodeAreaCostVersion;
+                        albGlobal.RulebaseVersion = albGlobalDb.RulebaseVersion;
+                        albGlobal.UKPRN = albGlobalDb.UKPRN;
                     }
 
                     _fundingOutputs = albGlobal;
@@ -151,60 +136,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.SQL
             }
 
             return _fundingOutputs;
-        }
-
-        public async Task<List<ALBLearningDeliveryValues>> GetALBDataFromDataStore(
-            IReportServiceContext reportServiceContext,
-            CancellationToken cancellationToken)
-        {
-            await _getDataLock.WaitAsync(cancellationToken);
-            var albLearningDeliveryPeriodisedValues = new List<ALBLearningDeliveryValues>();
-            try
-            {
-                if (cancellationToken.IsCancellationRequested)
-                {
-                    return null;
-                }
-
-                var ukPrn = reportServiceContext.Ukprn;
-                using (var ilrContext = _ilrRulebaseContextFactory())
-                {
-                    albLearningDeliveryPeriodisedValues = (from pv in ilrContext.ALB_LearningDelivery_PeriodisedValues
-                                                           join ld in ilrContext.ALB_LearningDeliveries
-                                                               on new { pv.LearnRefNumber, pv.AimSeqNumber, pv.UKPRN } equals new { ld.LearnRefNumber, ld.AimSeqNumber, ld.UKPRN }
-                                                           where pv.UKPRN == ukPrn
-                                                           select new ALBLearningDeliveryValues()
-                                                           {
-                                                               AttributeName = pv.AttributeName,
-                                                               UKPRN = pv.UKPRN,
-                                                               LearnRefNumber = pv.LearnRefNumber,
-                                                               AimSeqNumber = pv.AimSeqNumber,
-                                                               FundLine = ld.FundLine,
-                                                               Period1 = pv.Period_1,
-                                                               Period2 = pv.Period_2,
-                                                               Period3 = pv.Period_3,
-                                                               Period4 = pv.Period_4,
-                                                               Period5 = pv.Period_5,
-                                                               Period6 = pv.Period_6,
-                                                               Period7 = pv.Period_7,
-                                                               Period8 = pv.Period_8,
-                                                               Period9 = pv.Period_9,
-                                                               Period10 = pv.Period_10,
-                                                               Period11 = pv.Period_11,
-                                                               Period12 = pv.Period_12
-                                                           }).ToList();
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Failed to get Alb Learning delivery Periodised values", ex);
-            }
-            finally
-            {
-                _getDataLock.Release();
-            }
-
-            return albLearningDeliveryPeriodisedValues.ToList();
         }
     }
 }

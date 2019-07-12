@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider.SQL
 {
-    public class FM36SqlProvider : AbstractFundModelProviderService, IFM36ProviderService
+    public class FM36SqlProvider : IFM36ProviderService
     {
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
@@ -24,11 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.SQL
         private FM36Global _fundingOutputs;
 
         public FM36SqlProvider(
-            ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
-            IJsonSerializationService jsonSerializationService,
             Func<IIlr1819RulebaseContext> ilrRulebaseContextFactory)
-        : base(storage, jsonSerializationService, logger)
         {
             _ilrRulebaseContextFactory = ilrRulebaseContextFactory;
         }

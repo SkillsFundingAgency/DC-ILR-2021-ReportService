@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.ILR;
@@ -23,9 +24,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
         public AllbProvider(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
+            IFileService fileService,
             IJsonSerializationService jsonSerializationService)
-            : base(storage, jsonSerializationService, logger)
+            : base(fileService, jsonSerializationService, logger)
         {
             _fundingOutputs = null;
             _getDataLock = new SemaphoreSlim(1, 1);
