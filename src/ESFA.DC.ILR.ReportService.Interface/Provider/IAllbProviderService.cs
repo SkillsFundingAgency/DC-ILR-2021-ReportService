@@ -10,7 +10,5 @@ namespace ESFA.DC.ILR.ReportService.Interface.Provider
     public interface IAllbProviderService
     {
         Task<ALBGlobal> GetAllbData(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
-
-        Task<List<ALBLearningDeliveryValues>> GetALBDataFromDataStore(IReportServiceContext reportServiceContext, CancellationToken cancellationToken);
     }
 }

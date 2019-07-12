@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
@@ -22,9 +23,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
 
         public IlrProvider(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
+            IFileService fileService,
             IXmlSerializationService xmlSerializationService)
-        : base(storage, xmlSerializationService, logger)
+        : base(fileService, xmlSerializationService, logger)
         {
         }
 
@@ -40,14 +41,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
+                
+                _message = await Provide<Message>(reportServiceContext.Filename, reportServiceContext.Container, cancellationToken);
 
-                string filename = reportServiceContext.Filename;
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    await _streamableKeyValuePersistenceService.GetAsync(filename, ms, cancellationToken);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    _message = _serializationService.Deserialize<Message>(ms);
-                }
             }
             finally
             {

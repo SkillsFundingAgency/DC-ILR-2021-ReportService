@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR1819.DataStore.EF.Valid;
@@ -14,13 +13,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider.Abstract
 {
-    public abstract class BaseLearnRefNumbersProvider : AbstractFundModelProviderService
+    public abstract class BaseLearnRefNumbersSqlProvider
     {
         private readonly string _filename;
         private readonly ILogger _logger;
-        private readonly IFileService _fileService;
-        private readonly IStreamableKeyValuePersistenceService _storage;
-        private readonly IJsonSerializationService _jsonSerializationService;
         private readonly IReportServiceConfiguration _reportServiceConfiguration;
 
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
@@ -29,18 +25,13 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.Abstract
 
         private List<string> _loadedData;
 
-        protected BaseLearnRefNumbersProvider(
+        protected BaseLearnRefNumbersSqlProvider(
             string key,
             ILogger logger,
-            IFileService fileService,
-            IJsonSerializationService jsonSerializationService,
             IReportServiceConfiguration reportServiceConfiguration)
-        : base(fileService, jsonSerializationService, logger)
         {
             _filename = key;
             _logger = logger;
-            _fileService = fileService;
-            _jsonSerializationService = jsonSerializationService;
             _reportServiceConfiguration = reportServiceConfiguration;
         }
 
@@ -60,9 +51,18 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.Abstract
                     return null;
                 }
 
-                _loadedData = await Provide<List<string>>(_filename, reportServiceContext.Container, cancellationToken);
-
                 _loadedDataAlready = true;
+                int ukPrn = reportServiceContext.Ukprn;
+
+                var validLearnersList = new List<string>();
+
+                DbContextOptions<ILR1819_DataStoreEntitiesValid> validContextOptions = new DbContextOptionsBuilder<ILR1819_DataStoreEntitiesValid>().UseSqlServer(_reportServiceConfiguration.ILRDataStoreValidConnectionString).Options;
+                using (var ilrValidContext = new ILR1819_DataStoreEntitiesValid(validContextOptions))
+                {
+                    validLearnersList = ilrValidContext.Learners.Where(x => x.UKPRN == ukPrn).Select(x => x.LearnRefNumber).ToList();
+                }
+
+                _loadedData = validLearnersList;
             }
             catch (Exception ex)
             {

@@ -1,7 +1,7 @@
-﻿using ESFA.DC.ILR.ReportService.Interface.Configuration;
+﻿using ESFA.DC.FileService.Interface;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
-using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -11,10 +11,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
     {
         public ValidLearnRefNumbersProvider(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
+            IFileService fileService,
             IJsonSerializationService jsonSerializationService,
             IReportServiceConfiguration reportServiceConfiguration)
-        : base("ValidLearnRefNumbers", logger, storage, jsonSerializationService, reportServiceConfiguration)
+        : base("ValidLearnRefNumbers", logger, fileService, jsonSerializationService, reportServiceConfiguration)
         {
         }
     }
