@@ -20,7 +20,7 @@ using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Out
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public class FM35ProviderService : AbstractFundModelProviderService, IFM35ProviderService
+    public class FM35Provider : AbstractFundModelProviderService, IFM35ProviderService
     {
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
         private bool _loadedDataAlready;
         private FM35Global _fundingOutputs;
 
-        public FM35ProviderService(
+        public FM35Provider(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,

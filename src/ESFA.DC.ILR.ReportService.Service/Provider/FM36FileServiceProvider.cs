@@ -13,13 +13,13 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public class FM36FileServiceProvider : AbstractFundModelProviderService, IFM36ProviderService, IFM36NonContractedActivityProviderService
+    public class FM36Provider : AbstractFundModelProviderService, IFM36ProviderService, IFM36NonContractedActivityProviderService
     {
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
         private bool _loadedDataAlready;
         private FM36Global _fundingOutputs;
 
-        public FM36FileServiceProvider(
+        public FM36Provider(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService)

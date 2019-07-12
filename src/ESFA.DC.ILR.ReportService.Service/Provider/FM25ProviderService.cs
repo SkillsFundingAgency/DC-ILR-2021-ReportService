@@ -16,14 +16,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public class FM25ProviderService : AbstractFundModelProviderService, IFM25ProviderService
+    public class FM25Provider : AbstractFundModelProviderService, IFM25ProviderService
     {
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
         private bool _loadedDataAlready;
         private FM25Global _fundingOutputs;
 
-        public FM25ProviderService(
+        public FM25Provider(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,

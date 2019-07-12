@@ -18,7 +18,7 @@ using LearningDelivery = ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Out
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class FM81TrailBlazerProviderService : AbstractFundModelProviderService, IFM81TrailBlazerProviderService
+    public sealed class FM81TrailblazerProvider : AbstractFundModelProviderService, IFM81TrailBlazerProviderService
     {
         private readonly Func<IIlr1819ValidContext> _ilrValidContextFactory;
         private readonly Func<IIlr1819RulebaseContext> _ilrRulebaseContextFactory;
@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
         private bool _loadedDataAlready;
         private FM81Global _fundingOutputs;
 
-        public FM81TrailBlazerProviderService(
+        public FM81TrailblazerProvider(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,

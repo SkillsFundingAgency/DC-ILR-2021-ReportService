@@ -7,9 +7,9 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class ValidLearnersService : BaseLearnRefNumbersProvider, IValidLearnersService
+    public sealed class ValidLearnRefNumbersProvider : BaseLearnRefNumbersProvider, IValidLearnersService
     {
-        public ValidLearnersService(
+        public ValidLearnRefNumbersProvider(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IJsonSerializationService jsonSerializationService,

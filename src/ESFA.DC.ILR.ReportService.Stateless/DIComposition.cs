@@ -174,18 +174,18 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
         private static void RegisterILRServices(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36ProviderService>()
+            containerBuilder.RegisterType<FM36Provider>().As<IFM36ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36NonContractedActivityProviderService>()
+            containerBuilder.RegisterType<FM36Provider>().As<IFM36NonContractedActivityProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
         }
 
         private static void RegisterNonILRServices(ContainerBuilder containerBuilder)
         {
-           containerBuilder.RegisterType<FM36SqlProviderService>().As<IFM36ProviderService>()
+           containerBuilder.RegisterType<FM36SqlProvider>().As<IFM36ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
         }
@@ -290,60 +290,60 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
         private static void RegisterServices(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36ProviderService>()
+            containerBuilder.RegisterType<FM36Provider>().As<IFM36ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FM36FileServiceProvider>().As<IFM36NonContractedActivityProviderService>()
+            containerBuilder.RegisterType<FM36Provider>().As<IFM36NonContractedActivityProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<IlrFileServiceProvider>().As<IIlrProviderService>()
+            containerBuilder.RegisterType<IlrProvider>().As<IIlrProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<IlrMetadataProviderService>().As<IIlrMetadataProviderService>()
+            containerBuilder.RegisterType<IlrMetadataSqlProvider>().As<IIlrMetadataProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<IlrPeriodEndProviderService>().As<IIlrPeriodEndProviderService>()
+            containerBuilder.RegisterType<IlrPeriodEndSqlProvider>().As<IIlrPeriodEndProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<DASPaymentsProviderService>().As<IDASPaymentsProviderService>()
+            containerBuilder.RegisterType<DASPaymentsSqlProvider>().As<IDASPaymentsProviderService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<LarsProviderService>().As<ILarsProviderService>()
+            containerBuilder.RegisterType<LarsSqlProvider>().As<ILarsProviderService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FCSProviderService>().As<IFCSProviderService>()
+            containerBuilder.RegisterType<FCSSqlProvider>().As<IFCSProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<AllbProvider>().As<IAllbProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FM25ProviderService>().As<IFM25ProviderService>()
+            containerBuilder.RegisterType<FM25Provider>().As<IFM25ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FM35ProviderService>().As<IFM35ProviderService>()
+            containerBuilder.RegisterType<FM35Provider>().As<IFM35ProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FM36PeriodEndProviderService>().As<IFM36PeriodEndProviderService>()
+            containerBuilder.RegisterType<FM36PeriodEndSqlProvider>().As<IFM36PeriodEndProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<FM81TrailBlazerProviderService>().As<IFM81TrailBlazerProviderService>()
+            containerBuilder.RegisterType<FM81TrailblazerProvider>().As<IFM81TrailBlazerProviderService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<ValidLearnersService>().As<IValidLearnersService>()
+            containerBuilder.RegisterType<ValidLearnRefNumbersProvider>().As<IValidLearnersService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<InvalidLearnersService>().As<IInvalidLearnersService>()
+            containerBuilder.RegisterType<InvalidLearnRefNumbersProvider>().As<IInvalidLearnersService>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
@@ -353,7 +353,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<IntUtilitiesService>().As<IIntUtilitiesService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<OrgProviderService>().As<IOrgProviderService>()
+            containerBuilder.RegisterType<OrgSqlProvider>().As<IOrgProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<PeriodProviderService>().As<IPeriodProviderService>()
@@ -362,13 +362,13 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<DasCommitmentsService>().As<IDasCommitmentsService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<EasProviderService>().As<IEasProviderService>()
+            containerBuilder.RegisterType<EasSqlProvider>().As<IEasProviderService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<PostcodeProviderService>().As<IPostcodeProviderService>()
+            containerBuilder.RegisterType<PostcodeSqlProvider>().As<IPostcodeProviderService>()
                 .InstancePerLifetimeScope();
 
-            containerBuilder.RegisterType<LargeEmployerProviderService>().As<ILargeEmployerProviderService>()
+            containerBuilder.RegisterType<LargeEmployersSqlProvider>().As<ILargeEmployerProviderService>()
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<ExcelStyleProvider>().As<IExcelStyleProvider>()

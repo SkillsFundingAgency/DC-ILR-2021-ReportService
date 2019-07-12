@@ -15,12 +15,12 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class IlrFileServiceProvider : AbstractFundModelProviderService, IIlrProviderService
+    public sealed class IlrProvider : AbstractFundModelProviderService, IIlrProviderService
     {
         private readonly SemaphoreSlim _getIlrLock = new SemaphoreSlim(1, 1);
         private Message _message;
 
-        public IlrFileServiceProvider(
+        public IlrProvider(
             ILogger logger,
             IStreamableKeyValuePersistenceService storage,
             IXmlSerializationService xmlSerializationService)
