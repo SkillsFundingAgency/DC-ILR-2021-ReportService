@@ -128,7 +128,7 @@
     <Service Name="ESFA.DC.ILR1920.ReportService.Stateless" ServicePackageActivationMode="ExclusiveProcess">
       <StatelessService ServiceTypeName="ESFA.DC.ILR1920.ReportService.StatelessType" InstanceCount="[ESFA.DC.ILR1920.ReportService.Stateless_InstanceCount]">
         <SingletonPartition />
-        <PlacementConstraints></PlacementConstraints>
+        <PlacementConstraints>[ProcessingServicePlacementConstraints]</PlacementConstraints>
       </StatelessService>
     </Service>
   </DefaultServices>
