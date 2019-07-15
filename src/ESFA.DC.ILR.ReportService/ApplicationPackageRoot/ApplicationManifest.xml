@@ -126,7 +126,7 @@
          
          The attribute ServiceTypeName below must match the name defined in the imported ServiceManifest.xml file. -->
     <Service Name="ESFA.DC.ILR1920.ReportService.Stateless" ServicePackageActivationMode="ExclusiveProcess">
-      <StatelessService ServiceTypeName="ESFA.DC.ILR1920.ReportService.StatelessType" InstanceCount="[ESFA.DC.ILR1920.ReportService.Stateless_InstanceCount]">
+      <StatelessService ServiceTypeName="ESFA.DC.ILR1920.ReportService.StatelessType" InstanceCount="1">
         <SingletonPartition />
         <PlacementConstraints>[ProcessingServicePlacementConstraints]</PlacementConstraints>
       </StatelessService>
