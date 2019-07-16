@@ -8,7 +8,7 @@ resources:
 variables:
   VersionNumberMajor: '0'
   VersionNumberMinor: '0'
-  BuildConfiguration: 'Release'
+  BuildConfiguration: 'debug'
   BuildPlatform: 'Any CPU'
   BuildPlatformX64: 'x64'  
   ServiceFabricApplicationParametersFolder: 'src\ESFA.DC.ILR.ReportService\ApplicationParameters'
