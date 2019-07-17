@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.ILR.ReportService.Interface.Context;
-using ESFA.DC.ILR.ReportService.Interface.Reports;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Interface.Service
 {
     public interface IReportsProvider
     {
-        IEnumerable<IReport> ProvideReportsForContext(IReportServiceContext reportServiceContext);
+        IEnumerable<ILegacyReport> ProvideReportsForContext(IReportServiceContext reportServiceContext);
     }
 }

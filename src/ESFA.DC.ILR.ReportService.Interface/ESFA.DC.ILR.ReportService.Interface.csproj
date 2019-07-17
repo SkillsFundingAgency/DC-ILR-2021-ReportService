@@ -12,7 +12,7 @@
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.1819.Model.Interface" Version="0.1.3-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.106" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model" Version="0.0.106" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model" Version="0.0.118" />
     <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM36.FundingOutput.Model" Version="0.0.106" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.FM25.FundingOutput.Model" Version="0.1.446" />
     <PackageReference Include="ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model" Version="0.1.446" />
@@ -27,6 +27,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR.ReportService.Model.csproj" />
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Interface\ESFA.DC.ILR.ReportService.Service.Interface.csproj" />
   </ItemGroup>
 
 </Project>

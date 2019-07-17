@@ -2,10 +2,11 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
@@ -13,17 +14,17 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public class FM36FileServiceProvider : AbstractFundModelProviderService, IFM36ProviderService, IFM36NonContractedActivityProviderService
+    public class FM36Provider : AbstractFundModelProviderService, IFM36ProviderService, IFM36NonContractedActivityProviderService
     {
         private readonly SemaphoreSlim _getDataLock = new SemaphoreSlim(1, 1);
         private bool _loadedDataAlready;
         private FM36Global _fundingOutputs;
 
-        public FM36FileServiceProvider(
+        public FM36Provider(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
+            IFileService fileService,
             IJsonSerializationService jsonSerializationService)
-        : base(storage, jsonSerializationService, logger)
+        : base(fileService, jsonSerializationService, logger)
         {
         }
 
@@ -41,16 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                 cancellationToken.ThrowIfCancellationRequested();
                 _loadedDataAlready = true;
 
-                string fm36Filename = reportServiceContext.FundingFM36OutputKey;
-                string fm36 = await _streamableKeyValuePersistenceService.GetAsync(fm36Filename, cancellationToken);
-
-                if (string.IsNullOrEmpty(fm36))
-                {
-                    _fundingOutputs = null;
-                    return _fundingOutputs;
-                }
-
-                _fundingOutputs = _serializationService.Deserialize<FM36Global>(fm36);
+                _fundingOutputs = await Provide<FM36Global>(reportServiceContext.FundingFM36OutputKey, reportServiceContext.Container, cancellationToken);
             }
             finally
             {

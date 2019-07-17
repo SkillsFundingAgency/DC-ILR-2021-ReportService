@@ -6,6 +6,7 @@ using System.Threading;
 using Autofac;
 using Autofac.Integration.ServiceFabric;
 using ESFA.DC.ILR.ReportService.Service;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ServiceFabric.Common.Config;
 using ESFA.DC.ServiceFabric.Common.Config.Interface;
@@ -45,7 +46,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
                 using (var container = builder.Build())
                 {
-                    var entryPoint = container.Resolve<EntryPoint>();
+                    var legacyEntryPoint = container.Resolve<LegacyEntryPoint>();
+                    var entryPoint = container.Resolve<IEntryPoint>();
 
                     ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(ServiceFabric.Common.Stateless).Name);
 

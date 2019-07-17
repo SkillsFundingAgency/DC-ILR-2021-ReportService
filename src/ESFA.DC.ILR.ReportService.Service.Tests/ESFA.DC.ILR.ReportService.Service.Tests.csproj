@@ -127,6 +127,10 @@
       <Project>{4d408f22-661b-44b3-b6ca-3c6cee60ac87}</Project>
       <Name>ESFA.DC.ILR.ReportService.Interface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Interface\ESFA.DC.ILR.ReportService.Service.Interface.csproj">
+      <Project>{C547D956-67C7-4A79-B197-4664CBCA0BE1}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Service.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service\ESFA.DC.ILR.ReportService.Service.csproj">
       <Project>{331D200F-C82D-450D-BE9D-F46C990CAD0D}</Project>
       <Name>ESFA.DC.ILR.ReportService.Service</Name>

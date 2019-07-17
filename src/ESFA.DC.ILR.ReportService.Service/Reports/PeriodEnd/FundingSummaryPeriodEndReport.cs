@@ -6,21 +6,22 @@ using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Builders.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
-using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
-using ESFA.DC.ILR.ReportService.Interface.Reports;
 using ESFA.DC.ILR.ReportService.Interface.Service;
 using ESFA.DC.ILR.ReportService.Model.ReportModels.PeriodEnd;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Mapper.PeriodEnd;
 using ESFA.DC.ILR.ReportService.Service.Reports.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
+using ReportTaskNameConstants = ESFA.DC.ILR.ReportService.Interface.ReportTaskNameConstants;
 
 namespace ESFA.DC.ILR.ReportService.Service.Reports.PeriodEnd
 {
-    public class FundingSummaryPeriodEndReport : AbstractReport, IReport
+    public class FundingSummaryPeriodEndReport : AbstractLegacyReport, ILegacyReport
     {
         private readonly IIlrProviderService _ilrProviderService;
         private readonly IFM36PeriodEndProviderService _fm36ProviderService;

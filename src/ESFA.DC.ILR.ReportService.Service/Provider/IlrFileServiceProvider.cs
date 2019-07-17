@@ -3,11 +3,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Context;
 using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Model.NonContractedAppsActivity;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Provider.Abstract;
 using ESFA.DC.IO.Interfaces;
 using ESFA.DC.Logging.Interfaces;
@@ -15,16 +16,16 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Service.Provider
 {
-    public sealed class IlrFileServiceProvider : AbstractFundModelProviderService, IIlrProviderService
+    public sealed class IlrProvider : AbstractFundModelProviderService, IIlrProviderService
     {
         private readonly SemaphoreSlim _getIlrLock = new SemaphoreSlim(1, 1);
         private Message _message;
 
-        public IlrFileServiceProvider(
+        public IlrProvider(
             ILogger logger,
-            IStreamableKeyValuePersistenceService storage,
+            IFileService fileService,
             IXmlSerializationService xmlSerializationService)
-        : base(storage, xmlSerializationService, logger)
+        : base(fileService, xmlSerializationService, logger)
         {
         }
 
@@ -40,14 +41,9 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider
                 }
 
                 cancellationToken.ThrowIfCancellationRequested();
+                
+                _message = await Provide<Message>(reportServiceContext.Filename, reportServiceContext.Container, cancellationToken);
 
-                string filename = reportServiceContext.Filename;
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    await _streamableKeyValuePersistenceService.GetAsync(filename, ms, cancellationToken);
-                    ms.Seek(0, SeekOrigin.Begin);
-                    _message = _serializationService.Deserialize<Message>(ms);
-                }
             }
             finally
             {

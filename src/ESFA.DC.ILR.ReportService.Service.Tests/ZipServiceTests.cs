@@ -7,8 +7,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.ReportService.Interface.Context;
-using ESFA.DC.ILR.ReportService.Interface.Reports;
+using ESFA.DC.ILR.ReportService.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Service;
 using FluentAssertions;
 using Moq;
@@ -31,7 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Tests
 
                 var fileServiceMock = new Mock<IFileService>();
                 var reportServiceContextMock = new Mock<IReportServiceContext>();
-                var reportMock = new Mock<IReport>();
+                var reportMock = new Mock<ILegacyReport>();
 
                 reportServiceContextMock.SetupGet(c => c.Container).Returns(container);
 

@@ -115,35 +115,6 @@
           <Section Name="VersionSection">
             <Parameter Name="ServiceReleaseVersion" Value="[ServiceReleaseVersion]" />
           </Section>
-          <Section Name="TopicAndTaskSection">
-            <Parameter Name="TopicValidation" Value="[TopicValidation]" />
-            <Parameter Name="TopicFunding" Value="[TopicFunding]" />
-            <Parameter Name="TopicDeds" Value="[TopicDeds]" />
-            <Parameter Name="TopicReports" Value="[TopicReports]" />
-            <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="[TopicReports_TaskGenerateValidationReport]" />
-            <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="[TopicReports_TaskGenerateAllbOccupancyReport]" />
-            <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="[TopicReports_TaskGenerateFundingSummaryReport]" />
-            <Parameter Name="TopicReports_TaskGenerateAdultFundingClaimReport" Value="[TopicReports_TaskGenerateAdultFundingClaimReport]" />
-            <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="[TopicReports_TaskGenerateSummaryOfFunding1619Report]" />
-            <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="[TopicReports_TaskGenerateMathsAndEnglishReport]" />
-            <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="[TopicReports_TaskGenerateMainOccupancyReport]" />
-            <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="[TopicReports_TaskGenerateDataMatchReport]" />
-            <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="[TopicDeds_TaskPersistDataToDeds]" />
-            <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="[TopicReports_TaskGenerateAppsAdditionalPaymentsReport]" />
-            <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" Value="[TopicReports_TaskGenerateNonContractedAppsActivityReport]" />
-            <Parameter Name="TopicReports_TaskGenerateILRDataQualityReport" Value="[TopicReports_TaskGenerateILRDataQualityReport]" />
-            <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="[TopicReports_TaskGenerateAppsIndicativeEarningsReport]" />
-            <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" Value="[TopicReports_TaskGenerateAppsCoInvestmentContributionsReport]" />
-            <Parameter Name="TopicReports_TaskGenerateAppsMonthlyPaymentReport" Value="[TopicReports_TaskGenerateAppsMonthlyPaymentReport]" />
-            <Parameter Name="TopicReports_TaskGenerateAppsDataMatchMonthEndReport" Value="[TopicReports_TaskGenerateAppsDataMatchMonthEndReport]" />
-            <Parameter Name="TopicReports_TaskGenerateFundingSummaryPeriodEndReport" Value="[TopicReports_TaskGenerateFundingSummaryPeriodEndReport]" />
-            <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value="[TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport]" />
-            <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="[TopicReports_TaskGenerateFundingClaim1619Report]" />
-            <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="[TopicReports_TaskGenerateHNSReport]" />
-            <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value="[TopicReports_TaskGenerateTrailblazerAppsOccupancyReport]" />
-            <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="[TopicReports_TaskGenerateSummaryOfFM35FundingReport]" />
-            <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="[TopicReports_TaskGenerateHNSSummaryReport]" />
-          </Section>
         </Settings>
       </ConfigOverride>
     </ConfigOverrides>

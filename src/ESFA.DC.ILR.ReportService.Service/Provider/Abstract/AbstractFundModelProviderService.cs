@@ -13,16 +13,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.Abstract
 
         protected readonly ISerializationService _serializationService;
 
-        protected readonly IStreamableKeyValuePersistenceService _streamableKeyValuePersistenceService;
-
         private readonly IFileService _fileService;
-
-        protected AbstractFundModelProviderService(IStreamableKeyValuePersistenceService streamableKeyValuePersistenceService, ISerializationService serializationService, ILogger logger)
-        {
-            _streamableKeyValuePersistenceService = streamableKeyValuePersistenceService;
-            _serializationService = serializationService;
-            _logger = logger;
-        }
 
         protected AbstractFundModelProviderService(IFileService fileService, ISerializationService serializationService, ILogger logger)
         {
@@ -33,9 +24,15 @@ namespace ESFA.DC.ILR.ReportService.Service.Provider.Abstract
 
         protected async Task<TModel> Provide<TModel>(string fileReference, string container, CancellationToken cancellationToken)
         {
+            _logger.LogInfo($"File Service Starting Provide Container : {container} FileReference : {fileReference}");
+
             using (var stream = await _fileService.OpenReadStreamAsync(fileReference, container, cancellationToken))
             {
-                return _serializationService.Deserialize<TModel>(stream);
+                var model = _serializationService.Deserialize<TModel>(stream);
+
+                _logger.LogInfo($"File Service Starting Provide Container : {container} FileReference : {fileReference}");
+
+                return model;
             }
         }
     }

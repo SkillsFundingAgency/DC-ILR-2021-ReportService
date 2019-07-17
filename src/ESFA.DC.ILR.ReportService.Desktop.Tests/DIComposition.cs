@@ -3,11 +3,11 @@ using Autofac;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
+using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
-using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Tests.Stubs;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
@@ -33,7 +33,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var builder = new ContainerBuilder();
             builder.RegisterType<EntryPoint>().As<IEntryPoint>();
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
-            builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory>();
+            builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory<IDesktopContext>>();
             builder.RegisterType<FileSystemFileService>().As<IFileService>();
             
             builder.RegisterType<IlrReferenceDataProviderService>()
