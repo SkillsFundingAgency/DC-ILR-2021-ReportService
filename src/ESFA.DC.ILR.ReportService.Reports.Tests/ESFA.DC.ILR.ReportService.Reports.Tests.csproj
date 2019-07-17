@@ -113,6 +113,8 @@
     <Compile Include="Builders\ValidationSchemaErrorsReportBuilderTests.cs" />
     <Compile Include="DependentDataCatalogTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
+    <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportTests.cs" />
     <Compile Include="Funding\FundingSummary\FundingSummaryReportModelBuilderTests.cs" />
     <Compile Include="Funding\FundingSummary\FundingSummaryReportRenderServiceTests.cs" />
