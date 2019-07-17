@@ -14,7 +14,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
     {
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
-            "110", "111", "112", "113", "114", "115", "116"
+            LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_LiverpoolCityRegionCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_WestMidlandsCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_WestOfEnglandCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority,
         };
 
         public IEnumerable<DevolvedAdultEducationOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
