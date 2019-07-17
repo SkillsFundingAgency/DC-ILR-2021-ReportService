@@ -9,7 +9,7 @@ using ESFA.DC.ILR.ReportService.Reports.Constants;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
-    public class FundingSummaryReportModelBuilder
+    public class FundingSummaryReportModelBuilder : IModelBuilder<FundingSummaryReportModel>
     {
         private readonly IPeriodisedValuesLookupProvider _periodisedValuesLookupProvider;
 
@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _periodisedValuesLookupProvider = periodisedValuesLookupProvider;
         }
 
-        public FundingSummaryReportModel BuildModel(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
+        public FundingSummaryReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var periodisedValues = _periodisedValuesLookupProvider.Provide(_fundModels, reportServiceDependentData);
 
