@@ -52,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                                 currentPeriod,
                                                 FundModels.FM35,
                                                 new []{ FundLineConstants.Apprenticeship1618 },
-                                                new [] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievemePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment },
+                                                new [] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment },
                                                 periodisedValues),
                                             BuildFundLine(
                                                 "ILR 16-18 Apprenticeship Frameworks Learning Support (£)",

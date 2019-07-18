@@ -174,10 +174,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                         csvReader.Read();
                         csvReader.ReadHeader();
                         var header = csvReader.Context.HeaderRecord;
-
-                        header.Should().HaveCount(128);
-
+                        
                         header.Should().ContainInOrder(orderedColumns);
+                        
+                        header.Should().HaveCount(128);
                     }
                 }
             }
@@ -194,11 +194,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                     {
                         LearnRefNumber = "Test"
                     },
-                    LearningDelivery = new TestLearningDelivery(),
-                    LarsLearningDelivery = new LARSLearningDelivery(),
+                   // LearningDelivery = new TestLearningDelivery(),
+                    //LarsLearningDelivery = new LARSLearningDelivery(),
                     Fm35LearningDelivery = new LearningDeliveryValue(),
                     ProviderSpecLearnerMonitoring = new ProviderSpecLearnerMonitoringModel(),
-                    ProviderSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel(),
+                    //ProviderSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel(),
                 }
             };
 

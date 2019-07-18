@@ -46,8 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             result.First().Should().Be(fileName);
             result.Should().HaveCount(1);
         }
-
-
+        
         private DevolvedAdultEducationOccupancyReport NewReport(
             IFileNameService fileNameService = null,
             IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>> devolvedAdultEducationOccupancyReportModelBuilder = null,
@@ -55,14 +54,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
         {
             return new DevolvedAdultEducationOccupancyReport(fileNameService, devolvedAdultEducationOccupancyReportModelBuilder, csvService);
         }
-
-        //var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Csv);
-
-        //var model = _devolvedAdultEducationOccupancyReportModelBuilder.Build(reportServiceContext, reportsDependentData);
-
-        //await _csvService.WriteAsync<DevolvedAdultEducationOccupancyReportModel, DevolvedAdultEducationOccupancyReportClassMap>(model, fileName, reportServiceContext.Container, cancellationToken);
-
-        //    return new[] { fileName
-        //};
-}
+    }
 }
