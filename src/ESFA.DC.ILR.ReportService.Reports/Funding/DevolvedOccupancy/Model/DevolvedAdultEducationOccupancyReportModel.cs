@@ -8,9 +8,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
     {
         public ILearner Learner { get; set; }
 
+        public ProviderSpecLearnerMonitoringModel ProviderSpecLearnerMonitoring { get; set; }
+
         public ILearningDelivery LearningDelivery { get; set; }
+
+        public ProviderSpecDeliveryMonitoringModel ProviderSpecDeliveryMonitoring { get; set; }
         
-        public LearningDelivery Fm35LearningDelivery { get; set; }
+        public LearningDeliveryValue Fm35LearningDelivery { get; set; }
 
         public LARSLearningDelivery LarsLearningDelivery { get; set; }
     }

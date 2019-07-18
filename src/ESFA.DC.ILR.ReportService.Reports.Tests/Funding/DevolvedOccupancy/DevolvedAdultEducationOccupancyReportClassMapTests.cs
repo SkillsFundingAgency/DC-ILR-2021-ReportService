@@ -1,6 +1,15 @@
 ﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using CsvHelper;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model;
+using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
@@ -8,30 +17,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
     public class DevolvedAdultEducationOccupancyReportClassMapTests
     {
         [Fact]
-        public void Map_ColumnCount()
-        {
-            var classMap = new DevolvedAdultEducationOccupancyReportClassMap();
-            
-            classMap.GetMaxIndex().Should().Be(127);
-        }
-
-        [Fact]
         public void Map_Columns()
         {
-            var classMap = new DevolvedAdultEducationOccupancyReportClassMap();
-
-            var columnDictionary = new Dictionary<int, string>();
-
-            foreach (var map in classMap.MemberMaps)
-            {
-                columnDictionary.Add(map.Data.Index, map.Data.Names[0]);
-            }
-
-            foreach (var map in classMap.ParameterMaps)
-            {
-                columnDictionary.Add(map.Data.Index, map.Data.Name);
-            }
-
             var orderedColumns = new string[]
             {
                 "Learner reference number",
@@ -164,9 +151,78 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "OFFICIAL – SENSITIVE",
             };
 
-            foreach (var keyValue in columnDictionary)
+            var input = new List<DevolvedAdultEducationOccupancyReportModel>();
+
+            using (var stream = new MemoryStream())
             {
-                orderedColumns[keyValue.Key].Should().Be(keyValue.Value);
+                using (var streamWriter = new StreamWriter(stream, Encoding.UTF8, 8096, true))
+                {
+                    using (var csvWriter = new CsvWriter(streamWriter))
+                    {
+                        csvWriter.Configuration.RegisterClassMap<DevolvedAdultEducationOccupancyReportClassMap>();
+
+                        csvWriter.WriteRecords(input);
+                    }
+                }
+
+                stream.Position = 0;
+
+                using (var streamReader = new StreamReader(stream))
+                {
+                    using (var csvReader = new CsvReader(streamReader))
+                    {
+                        csvReader.Read();
+                        csvReader.ReadHeader();
+                        var header = csvReader.Context.HeaderRecord;
+
+                        header.Should().HaveCount(128);
+
+                        header.Should().ContainInOrder(orderedColumns);
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public void Test()
+        {
+            var input = new List<DevolvedAdultEducationOccupancyReportModel>()
+            {
+                new DevolvedAdultEducationOccupancyReportModel()
+                {
+                    Learner = new TestLearner()
+                    {
+                        LearnRefNumber = "Test"
+                    },
+                    LearningDelivery = new TestLearningDelivery(),
+                    LarsLearningDelivery = new LARSLearningDelivery(),
+                    Fm35LearningDelivery = new LearningDeliveryValue(),
+                    ProviderSpecLearnerMonitoring = new ProviderSpecLearnerMonitoringModel(),
+                    ProviderSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel(),
+                }
+            };
+
+            using (var stream = new MemoryStream())
+            {
+                using (var streamWriter = new StreamWriter(stream, Encoding.UTF8, 8096, true))
+                {
+                    using (var csvWriter = new CsvWriter(streamWriter))
+                    {
+                        csvWriter.Configuration.RegisterClassMap<DevolvedAdultEducationOccupancyReportClassMap>();
+
+                        csvWriter.WriteRecords(input);
+                    }
+                }
+
+                stream.Position = 0;
+
+                using (var streamReader = new StreamReader(stream))
+                {
+                    using (var csvReader = new CsvReader(streamReader))
+                    {
+                        var output = csvReader.GetRecords<dynamic>().ToList();
+                    }
+                }
             }
         }
     }
