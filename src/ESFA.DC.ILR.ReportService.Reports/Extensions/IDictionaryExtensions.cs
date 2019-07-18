@@ -8,7 +8,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Extensions
     {
         public static TValue GetValueOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, TKey key)
         {
-            if (dictionary == null)
+            if (dictionary == null || key == null)
             {
                 return default(TValue);
             }

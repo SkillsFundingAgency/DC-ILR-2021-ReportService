@@ -184,7 +184,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
         }
 
         [Fact]
-        public void Test()
+        public void ClassMap_Model()
         {
             var input = new List<DevolvedAdultEducationOccupancyReportModel>()
             {
@@ -194,11 +194,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                     {
                         LearnRefNumber = "Test"
                     },
-                   // LearningDelivery = new TestLearningDelivery(),
-                    //LarsLearningDelivery = new LARSLearningDelivery(),
+                    LearningDelivery = new TestLearningDelivery(),
+                    LarsLearningDelivery = new LARSLearningDelivery(),
                     Fm35LearningDelivery = new LearningDeliveryValue(),
                     ProviderSpecLearnerMonitoring = new ProviderSpecLearnerMonitoringModel(),
-                    //ProviderSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel(),
+                    ProviderSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel(),
                 }
             };
 
@@ -221,6 +221,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                     using (var csvReader = new CsvReader(streamReader))
                     {
                         var output = csvReader.GetRecords<dynamic>().ToList();
+
+                        (output[0] as IDictionary<string, object>).Values.ToArray()[0].Should().Be("Test");
                     }
                 }
             }

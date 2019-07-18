@@ -1,6 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy;
+using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -216,6 +222,172 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             result.B.Should().Be(bMon);
             result.C.Should().Be(cMon);
             result.D.Should().Be(dMon);
+        }
+
+        [Fact]
+        public void Build_SingleRow()
+        {
+            var reportServiceContext = Mock.Of<IReportServiceContext>();
+            var dependentDataMock = new Mock<IReportServiceDependentData>();
+
+            var learningDelivery = new TestLearningDelivery()
+            {
+                LearnAimRef = "learnAimRef",
+                AimSeqNumber = 1,
+                LearningDeliveryFAMs = new List<ILearningDeliveryFAM>()
+                {
+                    new TestLearningDeliveryFAM()
+                    {
+                        LearnDelFAMType = "SOF",
+                        LearnDelFAMCode = "110",
+                    }
+                }
+            };
+
+            var learner = new TestLearner()
+            {
+                LearnRefNumber = "LearnRefNumber",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                }
+            };
+
+            var message = new TestMessage()
+            {
+                Learners = new List<ILearner>()
+                {
+                    learner
+                }
+            };
+
+            var larsLearningDelivery = new LARSLearningDelivery()
+            {
+                LearnAimRef = "learnAimRef"
+            };
+
+            var referenceDataRoot = new ReferenceDataRoot()
+            {
+                LARSLearningDeliveries = new List<LARSLearningDelivery>()
+                {
+                    larsLearningDelivery
+                }
+            };
+
+            var fm35LearningDeliveryValue = new LearningDeliveryValue();
+
+            var fm35LearningDelivery = new LearningDelivery()
+            {
+                AimSeqNumber = 1,
+                LearningDeliveryValue = fm35LearningDeliveryValue
+            };
+
+            var fm35Global = new FM35Global()
+            {
+                Learners = new List<FM35Learner>()
+                {
+                    new FM35Learner()
+                    {
+                        LearnRefNumber = "LearnRefNumber",
+                        LearningDeliveries = new List<LearningDelivery>()
+                        {
+                            fm35LearningDelivery
+                        }
+                    }
+                }
+            };
+
+            dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
+            dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
+            dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
+
+            var result = NewBuilder().Build(reportServiceContext, dependentDataMock.Object).ToList();   
+
+            result.Should().HaveCount(1);
+
+            var row = result[0];
+
+            row.Learner.Should().Be(learner);
+            row.LearningDelivery.Should().Be(learningDelivery);
+            row.LarsLearningDelivery.Should().Be(larsLearningDelivery);
+            row.Fm35LearningDelivery.Should().Be(fm35LearningDeliveryValue);
+
+            row.ProviderSpecDeliveryMonitoring.Should().NotBeNull();
+            row.ProviderSpecDeliveryMonitoring.Should().NotBeNull();
+            row.PeriodisedValues.Should().NotBeNull();
+            row.LearningDeliveryFAMs.Should().NotBeNull();
+        }
+
+        [Fact]
+        public void Build_FiftyThousandLearners()
+        {
+            var reportServiceContext = Mock.Of<IReportServiceContext>();
+            var dependentDataMock = new Mock<IReportServiceDependentData>();
+
+            var learnerCount = 50000;
+            
+            var message = new TestMessage()
+            {
+                Learners = 
+                    Enumerable.Range(0, learnerCount).Select(
+                        l => new TestLearner()
+                        {
+                            LearnRefNumber = "LearnRefNumber" + l,
+                            LearningDeliveries = new List<ILearningDelivery>()
+                            {
+                                new TestLearningDelivery()
+                                {
+                                    LearnAimRef = "learnAimRef" + l,
+                                    AimSeqNumber = 1,
+                                    LearningDeliveryFAMs = new List<ILearningDeliveryFAM>()
+                                    {
+                                        new TestLearningDeliveryFAM()
+                                        {
+                                            LearnDelFAMType = "SOF",
+                                            LearnDelFAMCode = "110",
+                                        }
+                                    }
+                                }
+                            }
+                        }).ToList()
+            };
+
+            var referenceDataRoot = new ReferenceDataRoot()
+            {
+                LARSLearningDeliveries = Enumerable.Range(0, learnerCount)
+                    .Select(ld => 
+                    new LARSLearningDelivery()
+                    {
+                        LearnAimRef = "learnAimRef" + ld
+                    }).ToList()
+            };
+            
+            var fm35Global = new FM35Global()
+            {
+                Learners = Enumerable.Range(0, learnerCount)
+                    .Select(
+                        l =>
+                        new FM35Learner()
+                        {
+                            LearnRefNumber = "LearnRefNumber" + l,
+                            LearningDeliveries = new List<LearningDelivery>()
+                            {
+                                new LearningDelivery()
+                                {
+                                    AimSeqNumber = 1,
+                                    LearningDeliveryValue = new LearningDeliveryValue()
+                                }
+                            }
+                        }).ToList()
+            };
+
+            dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
+            dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
+            dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
+
+            var result = NewBuilder().Build(reportServiceContext, dependentDataMock.Object).ToList();
+
+            result.Should().HaveCount(learnerCount);
         }
 
         private DevolvedAdultEducationOccupancyReportModelBuilder NewBuilder() => new DevolvedAdultEducationOccupancyReportModelBuilder();

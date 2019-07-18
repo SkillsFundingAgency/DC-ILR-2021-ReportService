@@ -41,17 +41,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
 
             var models = new List<DevolvedAdultEducationOccupancyReportModel>();
 
-            foreach (var learner in message.Learners)
+            foreach (var learner in message?.Learners?.Where(l => l != null) ?? Enumerable.Empty<ILearner>())
             {
-                foreach (var learningDelivery in learner.LearningDeliveries.Where(LearningDeliveryReportFilter))
+                foreach (var learningDelivery in learner.LearningDeliveries?.Where(LearningDeliveryReportFilter) ?? Enumerable.Empty<ILearningDelivery>())
                 {
                     var fm35LearningDelivery = fm35LearningDeliveries.GetValueOrDefault(learner.LearnRefNumber).GetValueOrDefault(learningDelivery.AimSeqNumber);
                     var larsLearningDelivery = larsLearningDeliveries.GetValueOrDefault(learningDelivery.LearnAimRef);
                     var providerSpecLearnerMonitoring = BuildProviderSpecLearnerMonitoring(learner.ProviderSpecLearnerMonitorings);
                     var providerSpecDeliveryMonitoring = BuildProviderSpecDeliveryMonitoring(learningDelivery.ProviderSpecDeliveryMonitorings);
                     var learningDeliveryFams = BuildLearningDeliveryFAMsModel(learningDelivery.LearningDeliveryFAMs);
-                    var periodisedValues = BuildPeriodisedValuesModel(fm35LearningDelivery.LearningDeliveryPeriodisedValues);
-
+                    var periodisedValues = BuildPeriodisedValuesModel(fm35LearningDelivery?.LearningDeliveryPeriodisedValues);
 
                     models.Add(new DevolvedAdultEducationOccupancyReportModel()
                     {
@@ -133,24 +132,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
 
         public IDictionary<string, decimal[]> BuildPeriodisedValuesDictionary(IEnumerable<LearningDeliveryPeriodisedValue> periodisedValues)
         {
-            return periodisedValues.ToDictionary(
-                pv => pv.AttributeName,
-                pv => new decimal[]
-                {
-                    pv.Period1 ?? 0,
-                    pv.Period2 ?? 0,
-                    pv.Period3 ?? 0,
-                    pv.Period4 ?? 0,
-                    pv.Period5 ?? 0,
-                    pv.Period6 ?? 0,
-                    pv.Period7 ?? 0,
-                    pv.Period8 ?? 0,
-                    pv.Period9 ?? 0,
-                    pv.Period10 ?? 0,
-                    pv.Period11 ?? 0,
-                    pv.Period12 ?? 0,
-                }, 
-                StringComparer.OrdinalIgnoreCase);
+            return periodisedValues?
+                .ToDictionary(
+                    pv => pv.AttributeName,
+                    pv => new decimal[]
+                    {
+                        pv.Period1 ?? 0,
+                        pv.Period2 ?? 0,
+                        pv.Period3 ?? 0,
+                        pv.Period4 ?? 0,
+                        pv.Period5 ?? 0,
+                        pv.Period6 ?? 0,
+                        pv.Period7 ?? 0,
+                        pv.Period8 ?? 0,
+                        pv.Period9 ?? 0,
+                        pv.Period10 ?? 0,
+                        pv.Period11 ?? 0,
+                        pv.Period12 ?? 0,
+                    }, 
+                    StringComparer.OrdinalIgnoreCase)
+                ?? new Dictionary<string, decimal[]>();
         }
 
         public IEnumerable<DevolvedAdultEducationOccupancyReportModel> Order(IEnumerable<DevolvedAdultEducationOccupancyReportModel> models)
@@ -162,8 +163,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
         {
             return new ProviderSpecLearnerMonitoringModel()
             {
-                A = monitorings.FirstOrDefault(m => m.ProvSpecLearnMonOccur.CaseInsensitiveEquals("A"))?.ProvSpecLearnMon,
-                B = monitorings.FirstOrDefault(m => m.ProvSpecLearnMonOccur.CaseInsensitiveEquals("B"))?.ProvSpecLearnMon,
+                A = monitorings?.FirstOrDefault(m => m.ProvSpecLearnMonOccur.CaseInsensitiveEquals("A"))?.ProvSpecLearnMon,
+                B = monitorings?.FirstOrDefault(m => m.ProvSpecLearnMonOccur.CaseInsensitiveEquals("B"))?.ProvSpecLearnMon,
             };
         }
 
@@ -171,10 +172,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
         {
             return new ProviderSpecDeliveryMonitoringModel()
             {
-                A = monitorings.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("A"))?.ProvSpecDelMon,
-                B = monitorings.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("B"))?.ProvSpecDelMon,
-                C = monitorings.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("C"))?.ProvSpecDelMon,
-                D = monitorings.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("D"))?.ProvSpecDelMon,
+                A = monitorings?.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("A"))?.ProvSpecDelMon,
+                B = monitorings?.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("B"))?.ProvSpecDelMon,
+                C = monitorings?.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("C"))?.ProvSpecDelMon,
+                D = monitorings?.FirstOrDefault(m => m.ProvSpecDelMonOccur.CaseInsensitiveEquals("D"))?.ProvSpecDelMon,
             };
         }
 
@@ -215,14 +216,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
 
         private IDictionary<string, LARSLearningDelivery> BuildLarsLearningDeliveryDictionary(ReferenceDataRoot referenceDataRoot)
         {
-            return referenceDataRoot.LARSLearningDeliveries.ToDictionary(ld => ld.LearnAimRef, ld => ld, StringComparer.OrdinalIgnoreCase);
+            return referenceDataRoot?.LARSLearningDeliveries?.ToDictionary(ld => ld.LearnAimRef, ld => ld, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, LARSLearningDelivery>();
         }
-
 
         private IDictionary<string, Dictionary<int, LearningDelivery>> BuildFm35LearningDeliveryDictionary(FM35Global fm35Global)
         {
-            return fm35Global
-                .Learners
+            return fm35Global?
+                .Learners?
                 .ToDictionary(
                     l => l.LearnRefNumber,
                     l => l.LearningDeliveries
@@ -230,7 +230,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
                         .ToDictionary(
                             ld => ld.AimSeqNumber.Value,
                             ld => ld),
-                    StringComparer.OrdinalIgnoreCase);
+                    StringComparer.OrdinalIgnoreCase)
+                ?? new Dictionary<string, Dictionary<int, LearningDelivery>>();
         }
     }
 }
