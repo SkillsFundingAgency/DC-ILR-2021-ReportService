@@ -9,7 +9,7 @@
         public const string Fm35OnProgPayment = "OnProgPayment";
         public const string Fm35BalancePayment = "BalancePayment";
         public const string Fm35EmpOutcomePay = "EmpOutcomePay";
-        public const string Fm35AchievemePayment = "AchievePayment";
+        public const string Fm35AchievePayment = "AchievePayment";
         public const string Fm35LearnSuppFundCash = "LearnSuppFundCash";
         public const string Fm35AchievePayPct = "AchievePayPct";
 

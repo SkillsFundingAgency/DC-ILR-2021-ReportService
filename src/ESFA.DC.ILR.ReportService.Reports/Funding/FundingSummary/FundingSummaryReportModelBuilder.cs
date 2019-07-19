@@ -9,7 +9,7 @@ using ESFA.DC.ILR.ReportService.Reports.Constants;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
-    public class FundingSummaryReportModelBuilder
+    public class FundingSummaryReportModelBuilder : IModelBuilder<FundingSummaryReportModel>
     {
         private readonly IPeriodisedValuesLookupProvider _periodisedValuesLookupProvider;
 
@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _periodisedValuesLookupProvider = periodisedValuesLookupProvider;
         }
 
-        public FundingSummaryReportModel BuildModel(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
+        public FundingSummaryReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var periodisedValues = _periodisedValuesLookupProvider.Provide(_fundModels, reportServiceDependentData);
 
@@ -47,20 +47,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                         @"ILR Total 16-18 Apprenticeship Frameworks (£)",
                                         new List<IFundLine>()
                                         {
-                                            BuildFundLine(
-                                                "ILR 16-18 Apprenticeship Frameworks Programme Funding (£)",
-                                                currentPeriod,
-                                                FundModels.FM35,
-                                                new []{ FundLineConstants.Apprenticeship1618 },
-                                                new [] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievemePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment },
-                                                periodisedValues),
-                                            BuildFundLine(
-                                                "ILR 16-18 Apprenticeship Frameworks Learning Support (£)",
-                                                currentPeriod,
-                                                FundModels.FM35,
-                                                new [] { FundLineConstants.Apprenticeship1618 },
-                                                new [] { AttributeConstants.Fm35LearnSuppFundCash },
-                                                periodisedValues)
+                                            BuildFundLine("ILR 16-18 Apprenticeship Frameworks Programme Funding (£)", currentPeriod, FundModels.FM35, new []{ FundLineConstants.Apprenticeship1618 }, new [] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment }, periodisedValues),
+                                            BuildFundLine("ILR 16-18 Apprenticeship Frameworks Learning Support (£)", currentPeriod, FundModels.FM35, new [] { FundLineConstants.Apprenticeship1618 }, new [] { AttributeConstants.Fm35LearnSuppFundCash }, periodisedValues)
                                         })
                                 })
                         })

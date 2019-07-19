@@ -6,6 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.144" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model" Version="0.0.144" />
     <PackageReference Include="ESFA.DC.ILR.1920.Model" Version="0.1.8-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
     <PackageReference Include="ESFA.DC.ILR1920.ReferenceDataService.Model" Version="0.0.130" />

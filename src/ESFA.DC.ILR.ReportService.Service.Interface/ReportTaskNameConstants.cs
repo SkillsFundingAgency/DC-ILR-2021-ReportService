@@ -29,5 +29,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
         public const string NonContractedAppsActivityReport = "TaskGenerateNonContractedAppsActivityReport";
         public const string ILRDataQualityReport = "TaskGenerateILRDataQualityReport";
         public const string HNSSummaryReport = "TaskGenerateHNSSummaryReport";
+        public const string DevolvedAdultEducationOccupancyReport = "TaskGenerateDevolvedAdultEducationOccupancyReport";
     }
 }

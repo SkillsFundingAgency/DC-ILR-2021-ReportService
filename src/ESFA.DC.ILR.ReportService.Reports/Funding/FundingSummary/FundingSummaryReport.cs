@@ -16,10 +16,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         }
 
         public IEnumerable<Type> DependsOn
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+            => new[] 
+            {
+                DependentDataCatalog.Fm35,
+            };
 
         public Task<IEnumerable<string>> GenerateAsync(
             IReportServiceContext reportServiceContext,
