@@ -35,8 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
             _csvService = csvService;
         }
 
-        public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData,
-            CancellationToken cancellationToken)
+        public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
             var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Csv);
 

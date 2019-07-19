@@ -1,5 +1,7 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using Autofac;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy;
+using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
@@ -24,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>();
 
             builder.RegisterType<DevolvedAdultEducationOccupancyReport>().As<IReport>();
-            builder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IReport>();
+            builder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>>();
 
             builder.RegisterType<CsvService>().As<ICsvService>();
         }

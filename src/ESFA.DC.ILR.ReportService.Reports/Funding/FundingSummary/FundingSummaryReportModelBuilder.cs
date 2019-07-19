@@ -47,20 +47,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                         @"ILR Total 16-18 Apprenticeship Frameworks (£)",
                                         new List<IFundLine>()
                                         {
-                                            BuildFundLine(
-                                                "ILR 16-18 Apprenticeship Frameworks Programme Funding (£)",
-                                                currentPeriod,
-                                                FundModels.FM35,
-                                                new []{ FundLineConstants.Apprenticeship1618 },
-                                                new [] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment },
-                                                periodisedValues),
-                                            BuildFundLine(
-                                                "ILR 16-18 Apprenticeship Frameworks Learning Support (£)",
-                                                currentPeriod,
-                                                FundModels.FM35,
-                                                new [] { FundLineConstants.Apprenticeship1618 },
-                                                new [] { AttributeConstants.Fm35LearnSuppFundCash },
-                                                periodisedValues)
+                                            BuildFundLine("ILR 16-18 Apprenticeship Frameworks Programme Funding (£)", currentPeriod, FundModels.FM35, new []{ FundLineConstants.Apprenticeship1618 }, new [] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment }, periodisedValues),
+                                            BuildFundLine("ILR 16-18 Apprenticeship Frameworks Learning Support (£)", currentPeriod, FundModels.FM35, new [] { FundLineConstants.Apprenticeship1618 }, new [] { AttributeConstants.Fm35LearnSuppFundCash }, periodisedValues)
                                         })
                                 })
                         })
