@@ -47,6 +47,7 @@ using ESFA.DC.ServiceFabric.Common.Modules;
 using Microsoft.EntityFrameworkCore;
 using VersionInfo = ESFA.DC.ILR.ReportService.Stateless.Configuration.VersionInfo;
 using ESFA.DC.ILR.ReportService.Desktop.Modules;
+using ESFA.DC.ILR.ReportService.Modules;
 
 namespace ESFA.DC.ILR.ReportService.Stateless
 {
