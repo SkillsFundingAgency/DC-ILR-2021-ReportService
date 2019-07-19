@@ -21,5 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
         public LearningDeliveryPeriodisedValuesModel PeriodisedValues { get; set; }
 
         public LARSLearningDelivery LarsLearningDelivery { get; set; }
+
+        public string McaGlaShortCode { get; set; }
     }
 }

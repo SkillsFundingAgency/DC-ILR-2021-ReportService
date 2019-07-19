@@ -30,6 +30,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
         
         private const decimal _defaultDecimal = 0;
 
+        private IDictionary<string, string> _sofCodesDictionary = new Dictionary<string, string>()
+        {
+            [LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority] = "GMCA",
+            [LearningDeliveryFAMCodeConstants.SOF_LiverpoolCityRegionCombinedAuthority] = "LCRCA",
+            [LearningDeliveryFAMCodeConstants.SOF_WestMidlandsCombinedAuthority] = "WMCA",
+            [LearningDeliveryFAMCodeConstants.SOF_WestOfEnglandCombinedAuthority] = "WECA",
+            [LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority] = "TVCA",
+            [LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority] = "CPCA",
+            [LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority] = "London",
+        };
+
         public IEnumerable<DevolvedAdultEducationOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var message = reportServiceDependentData.Get<IMessage>();
@@ -51,6 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
                     var providerSpecDeliveryMonitoring = BuildProviderSpecDeliveryMonitoring(learningDelivery.ProviderSpecDeliveryMonitorings);
                     var learningDeliveryFams = BuildLearningDeliveryFAMsModel(learningDelivery.LearningDeliveryFAMs);
                     var periodisedValues = BuildPeriodisedValuesModel(fm35LearningDelivery?.LearningDeliveryPeriodisedValues);
+                    var mcaGlaShortCode = _sofCodesDictionary.GetValueOrDefault(learningDeliveryFams.SOF);
 
                     models.Add(new DevolvedAdultEducationOccupancyReportModel()
                     {
@@ -62,7 +74,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy
                         Fm35LearningDelivery = fm35LearningDelivery?.LearningDeliveryValue,
                         LarsLearningDelivery = larsLearningDelivery,
                         PeriodisedValues = periodisedValues,
-
+                        McaGlaShortCode = mcaGlaShortCode,
                         // devolved
                     });
                 }

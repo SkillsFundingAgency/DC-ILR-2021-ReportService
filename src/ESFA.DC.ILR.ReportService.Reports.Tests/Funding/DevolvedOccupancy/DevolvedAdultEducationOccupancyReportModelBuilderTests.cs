@@ -4,6 +4,7 @@ using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.Tests.Model;
@@ -279,7 +280,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             var fm35LearningDelivery = new LearningDelivery()
             {
                 AimSeqNumber = 1,
-                LearningDeliveryValue = fm35LearningDeliveryValue
+                LearningDeliveryValue = fm35LearningDeliveryValue,
+                LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValue>()
+                {
+                    BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35OnProgPayment),
+                    BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35AchievePayPct),
+                    BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35AchievePayment),
+                    BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35EmpOutcomePay),
+                    BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35BalancePayment),
+                    BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35LearnSuppFundCash),
+                }
             };
 
             var fm35Global = new FM35Global()
@@ -291,7 +301,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                         LearnRefNumber = "LearnRefNumber",
                         LearningDeliveries = new List<LearningDelivery>()
                         {
-                            fm35LearningDelivery
+                            fm35LearningDelivery,
                         }
                     }
                 }
@@ -316,6 +326,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             row.ProviderSpecDeliveryMonitoring.Should().NotBeNull();
             row.PeriodisedValues.Should().NotBeNull();
             row.LearningDeliveryFAMs.Should().NotBeNull();
+
+            row.McaGlaShortCode.Should().Be("GMCA");
         }
 
         [Fact]
@@ -375,7 +387,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                                 new LearningDelivery()
                                 {
                                     AimSeqNumber = 1,
-                                    LearningDeliveryValue = new LearningDeliveryValue()
+                                    LearningDeliveryValue = new LearningDeliveryValue(),
+                                    LearningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValue>()
+                                    {
+                                        BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35OnProgPayment),
+                                        BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35AchievePayPct),
+                                        BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35AchievePayment),
+                                        BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35EmpOutcomePay),
+                                        BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35BalancePayment),
+                                        BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35LearnSuppFundCash),
+                                    }
                                 }
                             }
                         }).ToList()
@@ -410,6 +431,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             monitoringMock.SetupGet(a => a.ProvSpecDelMon).Returns(mon);
 
             return monitoringMock.Object;
+        }
+
+        private LearningDeliveryPeriodisedValue BuildPeriodisedValuesForAttribute(string attribute)
+        {
+            return new LearningDeliveryPeriodisedValue()
+            {
+                AttributeName = attribute,
+                Period1 = 1.111m,
+                Period2 = 2.222m,
+                Period3 = 3.333m,
+                Period4 = 4.444m,
+                Period5 = 5.555m,
+                Period6 = 6.666m,
+                Period7 = 7.777m,
+                Period8 = 8.888m,
+                Period9 = 9.999m,
+                Period10 = 10.1010m,
+                Period11 = 11.1111m,
+                Period12 =  12.1212m
+            };
         }
     }
 }
