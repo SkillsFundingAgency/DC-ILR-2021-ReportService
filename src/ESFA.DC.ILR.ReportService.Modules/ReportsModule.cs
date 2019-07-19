@@ -20,8 +20,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
             builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
-            builder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
-            builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>();
+            builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>();
 
             builder.RegisterType<DevolvedAdultEducationOccupancyReport>().As<IReport>();
             builder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IReport>();

@@ -112,7 +112,9 @@
   <ItemGroup>
     <Compile Include="Builders\ValidationSchemaErrorsReportBuilderTests.cs" />
     <Compile Include="DependentDataCatalogTests.cs" />
+    <Compile Include="Extensions\IDictionaryExtensionsTests.cs" />
     <Compile Include="Extensions\IEnumerableExtensionsTests.cs" />
+    <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />

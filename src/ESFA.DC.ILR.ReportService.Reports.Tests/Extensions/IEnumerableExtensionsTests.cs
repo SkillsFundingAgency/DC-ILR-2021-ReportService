@@ -64,5 +64,78 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Extensions
 
         }
 
+        [Fact]
+        public void MinOrDefault_Null()
+        {
+            IEnumerable<int> nullEnumerable = null;
+
+            Action action = () => nullEnumerable.MinOrDefault(i => i);
+
+            action.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void MinOrDefault_Empty()
+        {
+            IEnumerable<int> emptyEnumerable = new List<int>();
+
+            emptyEnumerable.MinOrDefault(i => i).Should().Be(0);
+        }
+
+        [Fact]
+        public void MinOrDefault()
+        {
+            IEnumerable<int> enumerable = new List<int>() { 1, 2, 3, };
+
+            enumerable.MinOrDefault(i => i).Should().Be(1);
+        }
+
+        [Fact]
+        public void MinOrDefault_Nullable()
+        {
+            IEnumerable<int?> enumerable = new List<int?>();
+
+            enumerable.MinOrDefault(i => i).Should().Be(null);
+        }
+
+
+        [Fact]
+        public void MaxOrDefault_Null()
+        {
+            IEnumerable<int> nullEnumerable = null;
+
+            Action action = () => nullEnumerable.MaxOrDefault(i => i);
+            Action actionNoFunc = () => nullEnumerable.MaxOrDefault();
+
+            action.Should().Throw<ArgumentNullException>();
+            actionNoFunc.Should().Throw<ArgumentNullException>();
+        }
+
+        [Fact]
+        public void MaxOrDefault_Empty()
+        {
+            IEnumerable<int> emptyEnumerable = new List<int>();
+
+            emptyEnumerable.MaxOrDefault(i => i).Should().Be(0);
+            emptyEnumerable.MaxOrDefault().Should().Be(0);
+        }
+
+        [Fact]
+        public void MaxOrDefault()
+        {
+            IEnumerable<int> enumerable = new List<int>() { 1, 2, 3, };
+
+            enumerable.MaxOrDefault(i => i).Should().Be(3);
+            enumerable.MaxOrDefault().Should().Be(3);
+        }
+
+        [Fact]
+        public void MaxOrDefault_Nullable()
+        {
+            IEnumerable<int?> enumerable = new List<int?>();
+
+            enumerable.MaxOrDefault(i => i).Should().BeNull();
+            enumerable.MaxOrDefault().Should().BeNull();
+        }
     }
 }

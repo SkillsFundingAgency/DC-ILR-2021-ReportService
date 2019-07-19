@@ -6,6 +6,7 @@ using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy;
+using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
@@ -223,6 +224,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             result.B.Should().Be(bMon);
             result.C.Should().Be(cMon);
             result.D.Should().Be(dMon);
+        }
+
+        [Fact]
+        public void OrderBy()
+        {
+            var six = new DevolvedAdultEducationOccupancyReportModel() { Learner = new TestLearner() { LearnRefNumber = "D" }, LearningDelivery = new TestLearningDelivery() { AimSeqNumber = 1 } };
+            var five = new DevolvedAdultEducationOccupancyReportModel() { Learner = new TestLearner() { LearnRefNumber = "C" }, LearningDelivery = new TestLearningDelivery() { AimSeqNumber = 1 } };
+            var two = new DevolvedAdultEducationOccupancyReportModel() { Learner = new TestLearner() { LearnRefNumber = "A" }, LearningDelivery = new TestLearningDelivery() { AimSeqNumber = 2 } };
+            var four = new DevolvedAdultEducationOccupancyReportModel() { Learner = new TestLearner() { LearnRefNumber = "B" }, LearningDelivery = new TestLearningDelivery() { AimSeqNumber = 1 } };
+            var three = new DevolvedAdultEducationOccupancyReportModel() { Learner = new TestLearner() { LearnRefNumber = "A" }, LearningDelivery = new TestLearningDelivery() { AimSeqNumber = 3 } };
+            var one = new DevolvedAdultEducationOccupancyReportModel() { Learner = new TestLearner() { LearnRefNumber = "A" }, LearningDelivery = new TestLearningDelivery() { AimSeqNumber = 1 } };
+
+            var rows = new List<DevolvedAdultEducationOccupancyReportModel>()
+            {
+                six, five, two, four, three, one
+            };
+
+            var result = NewBuilder().Order(rows).ToList();
+
+            result.Should().ContainInOrder(one, two, three, four, five, six);
         }
 
         [Fact]
