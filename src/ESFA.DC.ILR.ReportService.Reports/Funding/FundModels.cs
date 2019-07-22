@@ -3,5 +3,7 @@
     public enum FundModels
     {
         FM35,
+        FM36,
+        FM81,
     }
 }

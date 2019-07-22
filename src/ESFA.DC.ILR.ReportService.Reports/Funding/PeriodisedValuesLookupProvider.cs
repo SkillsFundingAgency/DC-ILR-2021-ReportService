@@ -18,14 +18,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
 
             if (fundModels.Contains(FundModels.FM35))
             {
-                periodisedValuesLookup[FundModels.FM35] =
-                    BuildFm35Dictionary(reportServiceDependentData.Get<FM35Global>());
+                periodisedValuesLookup[FundModels.FM35] = BuildFm35Dictionary(reportServiceDependentData.Get<FM35Global>());
+            }
+
+            if (fundModels.Contains(FundModels.FM81))
+            {
+                // TODO
             }
 
             return periodisedValuesLookup;
         }
-
-
+        
         public Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm35Dictionary(FM35Global fm35Global)
         {
             return fm35Global?
@@ -55,6 +58,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
-
     }
 }

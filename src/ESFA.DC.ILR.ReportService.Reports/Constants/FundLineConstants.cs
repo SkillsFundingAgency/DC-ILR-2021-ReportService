@@ -22,5 +22,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string Traineeship1924ProcuredFromNov2017 = "19-24 Traineeship (procured from Nov 2017)";
         public const string AebOtherLearningNonProcured = "AEB - Other Learning (non-procured)";
         public const string AebOtherLearningProcuredFromNov2017 = "AEB - Other Learning (procured from Nov 2017)";
+
+        // FM81 FundLines
+        public const string TrailblazerApprenticeship1618 = "16-18 Trailblazer Apprenticeship";
+
+        // FM36 Fundlines
+        public const string NonLevyApprenticeship1618 = "16-18 Apprenticeship(From May 2017) Non-Levy Contract";
+        public const string NonLevyApprenticeship1618NonProcured ="16-18 Apprenticeship(From May 2017) Non-Levy Contract(non-procured)";
     }
 }

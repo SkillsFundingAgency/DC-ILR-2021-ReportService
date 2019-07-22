@@ -17,7 +17,6 @@
         public const string Fm36PriceEpisodeOnProgPaymentAttributeName = "PriceEpisodeOnProgPayment";
         public const string Fm3PriceEpisodeBalancePaymentAttributeName = "PriceEpisodeBalancePayment";
         public const string Fm36PriceEpisodeCompletionPaymentAttributeName = "PriceEpisodeCompletionPayment";
-        public const string Fm36LearnSuppFundCashAttributeName = "LearnSuppFundCash";
         public const string Fm36PriceEpisodeLSFCashAttributeName = "PriceEpisodeLSFCash";
         public const string Fm36MathEngOnProgPaymentAttributeName = "MathEngOnProgPayment";
         public const string Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName = "PriceEpisodeFirstDisadvantagePayment";
