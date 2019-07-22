@@ -64,8 +64,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                         .WithFundLine(@"ILR 16-18 Non-Levy Contracted Apprenticeships Framework Uplift (£)", new [] { AttributeConstants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftOnProgPayment })
                                         .WithFundLine(@"ILR 16-18 Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", new [] { AttributeConstants.Fm36DisadvFirstPayment, AttributeConstants.Fm36DisadvSecondPayment })
                                         .WithFundLine(@"ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Providers(£)", new []{ AttributeConstants.Fm36LearnDelFirstProv1618Pay, AttributeConstants.Fm36LearnDelSecondProv1618Pay })
-                                        .WithFundLine(@"ILR 16 - 18 Non - Levy Contracted Apprenticeships Additional Payments for Employers(£)", new [] { AttributeConstants.Fm36LearnDelFirstEmp1618Pay, AttributeConstants.Fm36LearnDelSecondEmp1618Pay })
-                                        .WithFundLine(@"ILR 16 - 18 Non - Levy Contracted Apprenticeships Learning Support(£)", new [] { AttributeConstants.Fm36LearnSuppFundCash })
+                                        .WithFundLine(@"ILR 16-18 Non-Levy Contracted Apprenticeships Additional Payments for Employers(£)", new [] { AttributeConstants.Fm36LearnDelFirstEmp1618Pay, AttributeConstants.Fm36LearnDelSecondEmp1618Pay })
+                                        .WithFundLine(@"ILR 16-18 Non-Levy Contracted Apprenticeships Learning Support(£)", new [] { AttributeConstants.Fm36LearnSuppFundCash })
                                 })
                         })
                 });
