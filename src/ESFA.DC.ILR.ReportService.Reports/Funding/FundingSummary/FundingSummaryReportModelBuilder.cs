@@ -40,7 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 @"16-18 Apprenticeship Frameworks for starts before 1 May 2017",
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35ApprenticeshipsFundLineGroup("16-18", currentPeriod, new [] { FundLineConstants.Apprenticeship1618 }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("16-18", "Apprenticeship Frameworks", currentPeriod, new [] { FundLineConstants.Apprenticeship1618 }, periodisedValues)
                                 }),
                             new FundingSubCategory(
                                 @"16-18 Trailblazer Apprenticeships for starts before 1 May 2017",
@@ -58,7 +58,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 @"19-23 Apprenticeship Frameworks for starts before 1 May 2017",
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35ApprenticeshipsFundLineGroup("19-23", currentPeriod, new [] { FundLineConstants.Apprenticeship1923 }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("19-23", "Apprenticeship Frameworks", currentPeriod, new [] { FundLineConstants.Apprenticeship1923 }, periodisedValues)
                                 }),
                             new FundingSubCategory(
                                 @"19-23 Trailblazer Apprenticeships for starts before 1 May 2017",
@@ -70,7 +70,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 @"24+ Apprenticeship Frameworks for starts before 1 May 2017",
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35ApprenticeshipsFundLineGroup("24+", currentPeriod, new [] { FundLineConstants.Apprenticeship24Plus }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("24+", "Apprenticeship Frameworks", currentPeriod, new [] { FundLineConstants.Apprenticeship24Plus }, periodisedValues)
                                 }),
                             new FundingSubCategory(
                                 @"24+ Trailblazer Apprenticeships for starts before 1 May 2017",
@@ -124,6 +124,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 {
                                     BuildIlrFm25FundLineGroup(currentPeriod, periodisedValues)
                                 })
+                        }),
+                    new FundingCategory(
+                        "19-24 Traineeships - Non-procured delivery",
+                        new List<IFundingSubCategory>()
+                        {
+                            new FundingSubCategory("19-24 Traineeships",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildIlrFm35FundLineGroup("19-24", "Traineeships", currentPeriod, new [] { FundLineConstants.Traineeship1924, FundLineConstants.Traineeship1924NonProcured }, periodisedValues)
+                                })
                         })
                 });
         }
@@ -135,11 +145,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 .WithFundLine("ILR 19-24 Traineeships (16-19 Model) Programme Funding (£)", new [] { FundLineConstants.TraineeshipsAdultFunded19Plus }, new [] { AttributeConstants.Fm25LrnOnProgPay });
         }
 
-        private IFundLineGroup BuildIlrFm35ApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
+        private IFundLineGroup BuildIlrFm35FundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"ILR Total {ageRange} Apprenticeship Frameworks (£)", currentPeriod, FundModels.FM35, fundLines, periodisedValues)
-                        .WithFundLine($"ILR {ageRange} Apprenticeship Frameworks Programme Funding (£)", new[] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship Frameworks Learning Support (£)", new[] {AttributeConstants.Fm35LearnSuppFundCash});
+            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, FundModels.FM35, fundLines, periodisedValues)
+                        .WithFundLine($"ILR {ageRange} {description} Programme Funding (£)", new[] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment })
+                        .WithFundLine($"ILR {ageRange} {description} Frameworks Learning Support (£)", new[] {AttributeConstants.Fm35LearnSuppFundCash});
         }
 
         private IFundLineGroup BuildTrailblazerApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)

@@ -20,6 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string Apprenticeship1618 = "16-18 Apprenticeship";
         public const string Apprenticeship1923 = "19-23 Apprenticeship";
         public const string Apprenticeship24Plus = "24+ Apprenticeship";
+        public const string Traineeship1924 = "19-24 Traineeship";
         public const string Traineeship1924NonProcured = "19-24 Traineeship (non-procured)";
         public const string Traineeship1924ProcuredFromNov2017 = "19-24 Traineeship (procured from Nov 2017)";
         public const string AebOtherLearningNonProcured = "AEB - Other Learning (non-procured)";
