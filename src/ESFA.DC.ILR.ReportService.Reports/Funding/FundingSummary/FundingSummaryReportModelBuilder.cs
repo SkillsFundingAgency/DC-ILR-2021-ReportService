@@ -182,7 +182,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         {
             return new FundLineGroup("ILR Total Advanced Loans Bursary (£)", currentPeriod, FundModels.FM99, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
                 .WithFundLine("ILR Advanced Loans Bursary Funding (£)", new [] { AttributeConstants.Fm99AlbSupportPayment })
-                .WithFundLine("ILR Advanced Loans Bursary Area Costs (£)", new [] { AttributeConstants.Fm99AreaUpliftBalPayment, AttributeConstants.Fm99AreaUpliftOnProgPayment })
+                .WithFundLine("ILR Advanced Loans Bursary Area Costs (£)", new [] { AttributeConstants.Fm99AreaUpliftBalPayment, AttributeConstants.Fm99AreaUpliftOnProgPayment });
         }
 
         private IFundLineGroup BuildIlrFm25FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)

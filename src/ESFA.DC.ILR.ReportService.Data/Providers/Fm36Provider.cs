@@ -2,20 +2,20 @@
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
+using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Data.Providers
 {
-    public class Fm25Provider : AbstractFileServiceProvider, IExternalDataProvider
+    public class Fm36Provider : AbstractFileServiceProvider, IExternalDataProvider
     {
-        public Fm25Provider(IFileService fileService, IJsonSerializationService serializationService) 
+        public Fm36Provider(IFileService fileService, IJsonSerializationService serializationService) 
             : base(fileService, serializationService)
         {
         }
 
         public Task<object> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
-            => ProvideAsync<FM25Global>(reportServiceContext.FundingFM25OutputKey, reportServiceContext.Container, cancellationToken);
+            => ProvideAsync<FM36Global>(reportServiceContext.FundingFM36OutputKey, reportServiceContext.Container, cancellationToken);
     }
 }
