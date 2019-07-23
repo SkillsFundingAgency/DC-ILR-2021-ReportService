@@ -134,6 +134,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 {
                                     BuildIlrFm35FundLineGroup("19-24", "Traineeships", currentPeriod, new [] { FundLineConstants.Traineeship1924, FundLineConstants.Traineeship1924NonProcured }, periodisedValues)
                                 })
+                        }),
+                    new FundingCategory(
+                        "19-24 Traineeships - Procured delivery from 1 Nov 2017",
+                        new List<IFundingSubCategory>()
+                        {
+                            new FundingSubCategory("19-24 Traineeships",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildIlrFm35FundLineGroup("19-24", "Traineeships", currentPeriod, new [] { FundLineConstants.Traineeship1924ProcuredFromNov2017 }, periodisedValues)
+                                })
                         })
                 });
         }
