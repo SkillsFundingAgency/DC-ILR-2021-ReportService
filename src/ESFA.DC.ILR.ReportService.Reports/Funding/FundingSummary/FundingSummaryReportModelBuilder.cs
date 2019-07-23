@@ -92,12 +92,27 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                             new FundingSubCategory("16-18 Apprenticeship (Employer on App Service)",
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildEmployersOnApprenticeshipServiceFundLineGroup("16-18", currentPeriod, new []{ FundLineConstants.ApprenticeshipEmployerOnAppService1618 }, periodisedValues)
+                                    BuildApprenticeshipsFundLineGroup("16-18", "Apprenticeship (Employer on App Service)", currentPeriod, new []{ FundLineConstants.ApprenticeshipEmployerOnAppService1618 }, periodisedValues)
                                 }),
-                            new FundingSubCategory("Adult Apprenticeship (Employer on App Service) ",
+                            new FundingSubCategory("Adult Apprenticeship (Employer on App Service)",
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildEmployersOnApprenticeshipServiceFundLineGroup("Adult", currentPeriod, new [] { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus }, periodisedValues)
+                                    BuildApprenticeshipsFundLineGroup("Adult", "Apprenticeship (Employer on App Service)", currentPeriod, new [] { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus }, periodisedValues)
+                                })
+                        }),
+                    new FundingCategory(
+                        "Non-Levy Contracted Apprenticeships Budget - Procured delivery",
+                        new List<IFundingSubCategory>()
+                        {
+                            new FundingSubCategory("16-18 Non-Levy Contracted Apprenticeships",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildApprenticeshipsFundLineGroup("16-18", "Non-Levy Contracted Apprenticeships", currentPeriod, new []{ FundLineConstants.NonLevyApprenticeship1618Procured }, periodisedValues)
+                                }),
+                            new FundingSubCategory("Adult Non-Levy Contracted Apprenticeships",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildApprenticeshipsFundLineGroup("Adult", "Non-Levy Contracted Apprenticeships", currentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19PlusProcured }, periodisedValues)
                                 })
                         })
                 });
@@ -131,18 +146,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                         .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Learning Support (£)", new[] {AttributeConstants.Fm36LearnSuppFundCash });
         }
 
-        private IFundLineGroup BuildEmployersOnApprenticeshipServiceFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
+        private IFundLineGroup BuildApprenticeshipsFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"ILR Total {ageRange} Apprenticeship (Employer on App Service) (£)", currentPeriod, FundModels.FM36, fundLines, periodisedValues)
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Programme Aim Indicative Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimOnProgPayment, AttributeConstants.Fm36ProgrammeAimBalPayment, AttributeConstants.Fm36ProgrammeAimCompletionPayment })
+            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, FundModels.FM36, fundLines, periodisedValues)
+                        .WithFundLine($"ILR {ageRange} {description} Programme Aim Indicative Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimOnProgPayment, AttributeConstants.Fm36ProgrammeAimBalPayment, AttributeConstants.Fm36ProgrammeAimCompletionPayment })
                         .WithFundLine($"...of which Indicative Government Co-Investment Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimProgFundIndMinCoInvest })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Maths & English Programme Funding (£)", new[] { AttributeConstants.Fm36MathEngOnProgPayment, AttributeConstants.Fm36MathEngBalPayment })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Framework Uplift (£)", new[] { AttributeConstants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftOnProgPayment })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Disadvantage Payments (£)", new[] { AttributeConstants.Fm36DisadvFirstPayment, AttributeConstants.Fm36DisadvSecondPayment })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Additional Payments for Providers (£)", new[] { AttributeConstants.Fm36LearnDelFirstProv1618Pay, AttributeConstants.Fm36LearnDelSecondProv1618Pay })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Additional Payments for Employers (£)", new[] { AttributeConstants.Fm36LearnDelFirstEmp1618Pay, AttributeConstants.Fm36LearnDelSecondEmp1618Pay })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Additional Payments for Apprentices (£)", new[] { AttributeConstants.Fm36LearnDelLearnAddPayment })
-                        .WithFundLine($"ILR {ageRange} Apprenticeship (Employer on App Service) Learning Support(£)", new[] { AttributeConstants.Fm36LearnSuppFundCash });
+                        .WithFundLine($"ILR {ageRange} {description} Maths & English Programme Funding (£)", new[] { AttributeConstants.Fm36MathEngOnProgPayment, AttributeConstants.Fm36MathEngBalPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Framework Uplift (£)", new[] { AttributeConstants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftOnProgPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Disadvantage Payments (£)", new[] { AttributeConstants.Fm36DisadvFirstPayment, AttributeConstants.Fm36DisadvSecondPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Additional Payments for Providers (£)", new[] { AttributeConstants.Fm36LearnDelFirstProv1618Pay, AttributeConstants.Fm36LearnDelSecondProv1618Pay })
+                        .WithFundLine($"ILR {ageRange} {description} Additional Payments for Employers (£)", new[] { AttributeConstants.Fm36LearnDelFirstEmp1618Pay, AttributeConstants.Fm36LearnDelSecondEmp1618Pay })
+                        .WithFundLine($"ILR {ageRange} {description} Additional Payments for Apprentices (£)", new[] { AttributeConstants.Fm36LearnDelLearnAddPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Learning Support(£)", new[] { AttributeConstants.Fm36LearnSuppFundCash });
         }
     }
 }

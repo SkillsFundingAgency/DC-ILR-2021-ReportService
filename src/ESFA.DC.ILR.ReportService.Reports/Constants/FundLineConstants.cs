@@ -31,8 +31,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         // FM36 Fundlines
         public const string NonLevyApprenticeship1618 = "16-18 Apprenticeship(From May 2017) Non-Levy Contract";
         public const string NonLevyApprenticeship1618NonProcured ="16-18 Apprenticeship(From May 2017) Non-Levy Contract(non-procured)";
+        public const string NonLevyApprenticeship1618Procured = "16-18 Apprenticeship Non-Levy Contract (procured)";
         public const string NonLevyApprenticeship19Plus = "19+ Apprenticeship (From May 2017) Non-Levy Contract";
         public const string NonLevyApprenticeship19PlusNonProcured = "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)";
+        public const string NonLevyApprenticeship19PlusProcured = "19+ Apprenticeship Non-Levy Contract (procured)";
         public const string ApprenticeshipEmployerOnAppService1618 = "16-18 Apprenticeship (Employer on App Service)";
         public const string ApprenticeshipEmployerOnAppService19Plus = "19+ Apprenticeship (Employer on App Service)";
     }
