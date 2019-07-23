@@ -23,6 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string Traineeship1924 = "19-24 Traineeship";
         public const string Traineeship1924NonProcured = "19-24 Traineeship (non-procured)";
         public const string Traineeship1924ProcuredFromNov2017 = "19-24 Traineeship (procured from Nov 2017)";
+        public const string AebOtherLearning = "AEB - Other Learning";
         public const string AebOtherLearningNonProcured = "AEB - Other Learning (non-procured)";
         public const string AebOtherLearningProcuredFromNov2017 = "AEB - Other Learning (procured from Nov 2017)";
 
@@ -31,7 +32,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string TrailblazerApprenticeship1923 = "19-23 Trailblazer Apprenticeship";
         public const string TrailblazerApprenticeship24Plus = "24+ Trailblazer Apprenticeship";
 
-        // FM36 Fundlines
+        // FM36 FundLines
         public const string NonLevyApprenticeship1618 = "16-18 Apprenticeship(From May 2017) Non-Levy Contract";
         public const string NonLevyApprenticeship1618NonProcured ="16-18 Apprenticeship(From May 2017) Non-Levy Contract(non-procured)";
         public const string NonLevyApprenticeship1618Procured = "16-18 Apprenticeship Non-Levy Contract (procured)";
@@ -40,5 +41,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string NonLevyApprenticeship19PlusProcured = "19+ Apprenticeship Non-Levy Contract (procured)";
         public const string ApprenticeshipEmployerOnAppService1618 = "16-18 Apprenticeship (Employer on App Service)";
         public const string ApprenticeshipEmployerOnAppService19Plus = "19+ Apprenticeship (Employer on App Service)";
+
+        // FM99 FundLines
+        public const string AdvancedLearnerLoansBursary = "Advanced Learner Loans Bursary";
     }
 }

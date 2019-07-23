@@ -144,8 +144,45 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 {
                                     BuildIlrFm35FundLineGroup("19-24", "Traineeships", currentPeriod, new [] { FundLineConstants.Traineeship1924ProcuredFromNov2017 }, periodisedValues)
                                 })
+                        }),
+                    new FundingCategory(
+                        "ESFA Adult Education Budget – Non-procured delivery",
+                        new List<IFundingSubCategory>()
+                        {
+                            new FundingSubCategory("ESFA AEB – Adult Skills (non-procured)",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", currentPeriod, new [] { FundLineConstants.AebOtherLearning, FundLineConstants.AebOtherLearningNonProcured }, periodisedValues)
+                                })
+                        }),
+                    new FundingCategory(
+                        "ESFA Adult Education Budget – Procured delivery from 1 Nov 2017 ",
+                        new List<IFundingSubCategory>()
+                        {
+                            new FundingSubCategory("ESFA AEB – Adult Skills (procured from Nov 2017)",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (procured from Nov 2017)", currentPeriod, new [] { FundLineConstants.AebOtherLearningProcuredFromNov2017 }, periodisedValues)
+                                })
+                        }),
+                    new FundingCategory(
+                        "Advanced Loans Bursary Budget",
+                        new List<IFundingSubCategory>()
+                        {
+                            new FundingSubCategory("Advanced Loans Bursary",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildIlrFm99FundLineGroup(currentPeriod, periodisedValues)
+                                })
                         })
                 });
+        }
+
+        private IFundLineGroup BuildIlrFm99FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
+        {
+            return new FundLineGroup("ILR Total Advanced Loans Bursary (£)", currentPeriod, FundModels.FM99, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
+                .WithFundLine("ILR Advanced Loans Bursary Funding (£)", new [] { AttributeConstants.Fm99AlbSupportPayment })
+                .WithFundLine("ILR Advanced Loans Bursary Area Costs (£)", new [] { AttributeConstants.Fm99AreaUpliftBalPayment, AttributeConstants.Fm99AreaUpliftOnProgPayment })
         }
 
         private IFundLineGroup BuildIlrFm25FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
