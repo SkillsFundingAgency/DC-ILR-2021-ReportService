@@ -25,9 +25,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
 
         // FM81 FundLines
         public const string TrailblazerApprenticeship1618 = "16-18 Trailblazer Apprenticeship";
+        public const string TrailblazerApprenticeship1923 = "19-23 Trailblazer Apprenticeship";
+        public const string TrailblazerApprenticeship24Plus = "24+ Trailblazer Apprenticeship";
 
         // FM36 Fundlines
         public const string NonLevyApprenticeship1618 = "16-18 Apprenticeship(From May 2017) Non-Levy Contract";
         public const string NonLevyApprenticeship1618NonProcured ="16-18 Apprenticeship(From May 2017) Non-Levy Contract(non-procured)";
+        public const string NonLevyApprenticeship19Plus = "19+ Apprenticeship (From May 2017) Non-Levy Contract";
+        public const string NonLevyApprenticeship19PlusNonProcured = "19+ Apprenticeship (From May 2017) Non-Levy Contract (non-procured)";
     }
 }

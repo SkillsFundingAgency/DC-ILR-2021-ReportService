@@ -71,9 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
             return this;
         }
 
-        public IFundLine BuildFundLine(
-            string title,
-            IEnumerable<string> attributes)
+        public IFundLine BuildFundLine(string title, IEnumerable<string> attributes)
         {
             var periodisedValuesList = _periodisedValues.GetPeriodisedValues(_fundModel, _fundLines, attributes);
 
