@@ -7,6 +7,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
     public static class FundLineConstants
     {
         // FM25 FundLines
+        public const string TraineeshipsAdultFunded1618 = "16-18 Traineeships (Adult Funded)";
+        public const string TraineeshipsAdultFunded19Plus = "19+ Traineeships (Adult Funded)";
         public const string DirectFundedStudents1416FundLine = "14-16 Direct Funded Students";
         public const string Students1619FundLine = "16-19 Students (excluding High Needs Students)";
         public const string Students1619AllFundLine = "16-19 Students (including High Needs Students)";

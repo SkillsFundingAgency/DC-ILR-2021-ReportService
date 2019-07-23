@@ -62,6 +62,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
         public decimal Total => FundLines.Sum(fl => fl.Total);
 
+        public FundLineGroup WithFundLine(string title, IEnumerable<string> fundLines, IEnumerable<string> attributes)
+        {
+            var fundLine = BuildFundLine(title, attributes, fundLines);
+
+            FundLines.Add(fundLine);
+
+            return this;
+        }
+
         public FundLineGroup WithFundLine(string title, IEnumerable<string> attributes)
         {
             var fundLine = BuildFundLine(title, attributes);
@@ -71,9 +80,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
             return this;
         }
 
-        public IFundLine BuildFundLine(string title, IEnumerable<string> attributes)
+        public IFundLine BuildFundLine(string title, IEnumerable<string> attributes, IEnumerable<string> fundLines = null)
         {
-            var periodisedValuesList = _periodisedValues.GetPeriodisedValues(_fundModel, _fundLines, attributes);
+            var periodisedValuesList = _periodisedValues.GetPeriodisedValues(_fundModel, fundLines ?? _fundLines, attributes);
 
             if (periodisedValuesList != null)
             {

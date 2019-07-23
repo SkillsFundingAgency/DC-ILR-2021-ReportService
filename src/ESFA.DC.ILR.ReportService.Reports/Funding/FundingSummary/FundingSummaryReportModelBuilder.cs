@@ -114,8 +114,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 {
                                     BuildApprenticeshipsFundLineGroup("Adult", "Non-Levy Contracted Apprenticeships", currentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19PlusProcured }, periodisedValues)
                                 })
+                        }),
+                    new FundingCategory(
+                        "16-18 Traineeships Budget",
+                        new List<IFundingSubCategory>()
+                        {
+                            new FundingSubCategory("16-18 Traineeships",
+                                new List<IFundLineGroup>()
+                                {
+                                    BuildIlrFm25FundLineGroup(currentPeriod, periodisedValues)
+                                })
                         })
                 });
+        }
+
+        private IFundLineGroup BuildIlrFm25FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
+        {
+            return new FundLineGroup("ILR Total 16-18 Traineeships (£)", currentPeriod, FundModels.FM25, null, periodisedValues)
+                .WithFundLine("ILR 16-18 Traineeships Programme Funding (£)", new []{ FundLineConstants.TraineeshipsAdultFunded1618 }, new [] { AttributeConstants.Fm25LrnOnProgPay })
+                .WithFundLine("ILR 19-24 Traineeships (16-19 Model) Programme Funding (£)", new [] { FundLineConstants.TraineeshipsAdultFunded19Plus }, new [] { AttributeConstants.Fm25LrnOnProgPay });
         }
 
         private IFundLineGroup BuildIlrFm35ApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)

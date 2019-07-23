@@ -3,7 +3,7 @@
     public static class AttributeConstants
     { 
         // FM25 Attributes
-        public const string Fm25OnProgrammeAttributeName = "LnrOnProgPay";
+        public const string Fm25LrnOnProgPay = "LnrOnProgPay";
 
         // FM35 Attributes
         public const string Fm35OnProgPayment = "OnProgPayment";
