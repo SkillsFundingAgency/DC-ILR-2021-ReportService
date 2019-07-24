@@ -1,29 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundingCategory : IFundingCategory
     {
-        public FundingCategory(string fundingCategoryTitle, string title, string cumulativeFundingCategoryTitle, List<IFundingSubCategory> fundingSubCategories)
+        public FundingCategory(string fundingCategoryTitle, List<IFundingSubCategory> fundingSubCategories)
         {
             FundingCategoryTitle = fundingCategoryTitle;
-            Title = title;
-            CumulativeFundingCategoryTitle = cumulativeFundingCategoryTitle;
 
             FundingSubCategories = fundingSubCategories ?? new List<IFundingSubCategory>();
         }
 
         public List<IFundingSubCategory> FundingSubCategories { get; }
 
-        public string Title { get; }
-
         public string FundingCategoryTitle { get; }
 
-        public string CumulativeFundingCategoryTitle { get; }
+        public string Title => $"Total {FundingCategoryTitle} (£)";
+
+        public string CumulativeFundingCategoryTitle => $"Total {FundingCategoryTitle} Cumulative (£)";
 
         public decimal Period1 => FundingSubCategories.Sum(fsc => fsc.Period1);
 

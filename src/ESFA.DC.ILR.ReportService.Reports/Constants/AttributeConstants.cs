@@ -3,7 +3,7 @@
     public static class AttributeConstants
     { 
         // FM25 Attributes
-        public const string Fm25OnProgrammeAttributeName = "LnrOnProgPay";
+        public const string Fm25LrnOnProgPay = "LnrOnProgPay";
 
         // FM35 Attributes
         public const string Fm35OnProgPayment = "OnProgPayment";
@@ -17,9 +17,7 @@
         public const string Fm36PriceEpisodeOnProgPaymentAttributeName = "PriceEpisodeOnProgPayment";
         public const string Fm3PriceEpisodeBalancePaymentAttributeName = "PriceEpisodeBalancePayment";
         public const string Fm36PriceEpisodeCompletionPaymentAttributeName = "PriceEpisodeCompletionPayment";
-        public const string Fm36LearnSuppFundCashAttributeName = "LearnSuppFundCash";
         public const string Fm36PriceEpisodeLSFCashAttributeName = "PriceEpisodeLSFCash";
-        public const string Fm36MathEngOnProgPaymentAttributeName = "MathEngOnProgPayment";
         public const string Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName = "PriceEpisodeFirstDisadvantagePayment";
         public const string Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName = "PriceEpisodeSecondDisadvantagePayment";
         public const string Fm36PriceEpisodeFirstEmp1618PayAttributeName = "PriceEpisodeFirstEmp1618Pay";
@@ -59,5 +57,10 @@
         public const string Fm81SmallBusPayment = "SmallBusPayment";
         public const string Fm81YoungAppPayment = "YoungAppPayment";
         public const string Fm81LearnSuppFundCash = "LearnSuppFundCash";
+
+        // FM99
+        public const string Fm99AlbSupportPayment = "ALBSupportPayment";
+        public const string Fm99AreaUpliftBalPayment = "AreaUpliftBalPayment";
+        public const string Fm99AreaUpliftOnProgPayment = "AreaUpliftOnProgPayment";
     }
 }

@@ -37,7 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
             Map(m => m.LearningDelivery.OutcomeNullable).Name(@"Outcome").Index(++index);
             Map(m => m.LearningDelivery.AddHoursNullable).Name(@"Additional delivery hours").Index(++index);
             Map(m => m.LearningDelivery.LSDPostcode).Name(@"Learning start date postcode").Index(++index);
-            Map().Name(@"Applicable area from source of funding").Index(++index);      // TODO
+            Map(m => m.McaGlaShortCode).Name(@"Applicable area from source of funding").Index(++index);
             Map(m => m.LearningDeliveryFAMs.SOF).Name(@"Learning delivery funding and monitoring type – source of funding").Index(++index);
             Map(m => m.LearningDeliveryFAMs.FFI).Name(@"Learning delivery funding and monitoring type – full or co funding indicator ").Index(++index);
             Map(m => m.LearningDeliveryFAMs.LSF_Highest).Name(@"Learning delivery funding and monitoring type – learning support funding (highest applicable)").Index(++index);
