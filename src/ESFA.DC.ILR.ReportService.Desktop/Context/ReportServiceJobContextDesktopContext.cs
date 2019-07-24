@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         {
             get
             {
-                var tasks = _desktopContext.KeyValuePairs[ILRContextKeys.ReportTasks].ToString().Split('|').ToList();
+                var tasks = _desktopContext.KeyValuePairs[ILRContextKeys.ReportTasks].ToString().Split(new [] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 return tasks;
             }
         }
