@@ -17,6 +17,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
         }
 
         public async Task<object> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
-            => ProvideAsync<List<ValidationError>>(reportServiceContext.ValidationErrorsKey, reportServiceContext.Container, cancellationToken);
+            => await ProvideAsync<List<ValidationError>>(reportServiceContext.ValidationErrorsKey, reportServiceContext.Container, cancellationToken);
     }
 }
