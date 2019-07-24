@@ -15,7 +15,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
         {
         }
 
-        public Task<object> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
-            => ProvideAsync<FM25Global>(reportServiceContext.FundingFM25OutputKey, reportServiceContext.Container, cancellationToken);
+        public async Task<object> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
+            => await ProvideAsync<FM25Global>(reportServiceContext.FundingFM25OutputKey, reportServiceContext.Container, cancellationToken);
     }
 }

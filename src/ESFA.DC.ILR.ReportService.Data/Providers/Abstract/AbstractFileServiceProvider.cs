@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.Model;
-using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Data.Providers.Abstract
@@ -25,7 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers.Abstract
         {
             using (var fileStream = await _fileService.OpenReadStreamAsync(fileName, container, cancellationToken))
             {
-                return _serializationService.Deserialize<Message>(fileStream);
+                return _serializationService.Deserialize<T>(fileStream);
             }
         }
     }

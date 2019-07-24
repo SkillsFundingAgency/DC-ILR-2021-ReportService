@@ -1,10 +1,11 @@
 ﻿using System.Drawing;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
-    public class FundingSummaryReportRenderService
+    public class FundingSummaryReportRenderService : IRenderService<IFundingSummaryReport>
     {
         private const string NotApplicable = "N/A";
         private const string DecimalFormat = "#,##0.00";

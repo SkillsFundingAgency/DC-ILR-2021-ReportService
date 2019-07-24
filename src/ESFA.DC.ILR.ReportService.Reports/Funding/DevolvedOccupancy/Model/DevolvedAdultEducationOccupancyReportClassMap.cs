@@ -135,7 +135,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
             Map(m => m.PeriodisedValues.EmpOutcomePayTotal).Name(@"Total job outcome earned cash").Index(++index);
             Map(m => m.PeriodisedValues.LearnSuppFundCashTotal).Name(@"Total learning support earned cash").Index(++index);
             Map(m => m.PeriodisedValues.TotalEarned).Name(@"Total earned cash").Index(++index);
-            Map().Name(@"OFFICIAL – SENSITIVE").Constant(@"OFFICIAL – SENSITIVE").Index(++index);
+            Map().Name(@"OFFICIAL - SENSITIVE").Constant(@"OFFICIAL - SENSITIVE").Index(++index);
         }
     }
 }

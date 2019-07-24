@@ -15,7 +15,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         private readonly IEnumerable<FundModels> _fundModels = new[]
         {
+            FundModels.FM25,
             FundModels.FM35,
+            FundModels.FM36,
+            FundModels.FM81,
+            FundModels.FM99,
         };
 
         public FundingSummaryReportModelBuilder(IPeriodisedValuesLookupProvider periodisedValuesLookupProvider )

@@ -34,10 +34,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                         .ToList()))
                     .ToList()))
                 .ToList());
-
+            
             var worksheet = workbook.Worksheets[0];
 
-            worksheet = NewService().Render(fundingSummaryReport, worksheet);
+            NewService().Render(fundingSummaryReport, worksheet);
             
             Directory.CreateDirectory("Output");
             workbook.Save("Output/FundingSummaryReport.xlsx");

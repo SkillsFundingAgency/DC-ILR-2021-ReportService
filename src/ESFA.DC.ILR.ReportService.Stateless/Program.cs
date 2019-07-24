@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -48,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
                 {
                     var legacyEntryPoint = container.Resolve<LegacyEntryPoint>();
                     var entryPoint = container.Resolve<IEntryPoint>();
+                    var reports = container.Resolve<IEnumerable<IReport>>();
 
                     ServiceEventSource.Current.ServiceTypeRegistered(Process.GetCurrentProcess().Id, typeof(ServiceFabric.Common.Stateless).Name);
 
