@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
@@ -18,17 +19,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
         private readonly IValidationSchemaErrorsReportBuilder _validationSchemaErrorsReportBuilder;
         private readonly ICsvService _csvService;
         private readonly IFileNameService _fileNameService;
+        private readonly IFrontEndValidationReport _frontEndValidationReport;
 
 
         public ValidationSchemaErrorsReport(
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
             ICsvService csvService,
-            IFileNameService fileNameService)
+            IFileNameService fileNameService,
+            IFrontEndValidationReport frontEndValidationReport)
         : base(ReportTaskNameConstants.ValidationSchemaErrorReport, "Rule Violation Report")
         {
             _validationSchemaErrorsReportBuilder = validationSchemaErrorsReportBuilder;
             _csvService = csvService;
             _fileNameService = fileNameService;
+            _frontEndValidationReport = frontEndValidationReport;
         }
 
         public IEnumerable<Type> DependsOn => new List<Type>()
@@ -45,6 +49,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
             var validationErrorRows = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
 
             await _csvService.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrorRows, fileName, reportServiceContext.Container, cancellationToken);
+
+            await _frontEndValidationReport.GenerateAsync(reportServiceContext, validationErrorRows, cancellationToken);
 
             return new[] { fileName };
         }

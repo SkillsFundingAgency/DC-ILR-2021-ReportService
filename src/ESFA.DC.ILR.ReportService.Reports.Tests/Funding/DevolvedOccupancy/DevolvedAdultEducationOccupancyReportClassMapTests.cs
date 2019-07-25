@@ -148,7 +148,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Total job outcome earned cash",
                 "Total learning support earned cash",
                 "Total earned cash",
-                "OFFICIAL – SENSITIVE",
+                "OFFICIAL - SENSITIVE",
             };
 
             var input = new List<DevolvedAdultEducationOccupancyReportModel>();
