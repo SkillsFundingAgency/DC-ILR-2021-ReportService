@@ -47,7 +47,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
-            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContext.Object, "Rule Violation Report", OutputTypes.Csv)).Returns(fileName);
+            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContext.Object, "Rule Violation Report", OutputTypes.Csv, true)).Returns(fileName);
 
             var validationErrorBuilder = new Mock<IValidationSchemaErrorsReportBuilder>();
 

@@ -61,7 +61,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             var fileNameServiceMock = new Mock<IFileNameService>();
 
             var fileName = "FileName";
-            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel)).Returns(fileName);
+            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel, true)).Returns(fileName);
 
             var fundingSummaryReportRenderServiceMock = new Mock<IRenderService<IFundingSummaryReport>>();
             
