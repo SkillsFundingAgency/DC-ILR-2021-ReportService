@@ -71,7 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
                     _logger.LogInfo($"Finishing {report.GetType().Name}");
                 }
 
-                await _zipService.CreateZip(reportServiceContext, reportOutputFilenames, reportServiceContext.Container, cancellationToken);
+                await _zipService.CreateZipAsync(reportServiceContext, reportOutputFilenames, reportServiceContext.Container, cancellationToken);
 
                 reportServiceContext.ReportOutputFileNames = string.Join("|", reportOutputFilenames);
                 

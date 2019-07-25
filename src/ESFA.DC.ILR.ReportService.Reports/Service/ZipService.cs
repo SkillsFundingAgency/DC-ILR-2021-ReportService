@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
             _fileService = fileService;
         }
 
-        public async Task CreateZip(IReportServiceContext reportServiceContext, IEnumerable<string> fileNames, string container, CancellationToken cancellationToken)
+        public async Task CreateZipAsync(IReportServiceContext reportServiceContext, IEnumerable<string> fileNames, string container, CancellationToken cancellationToken)
         {
             var zipName = _fileNameService.GetFilename(reportServiceContext, "Reports", OutputTypes.Zip, false);
 
