@@ -7,7 +7,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundLineGroup : IFundLineGroup
     {
-        private readonly int _currentPeriod;
         private readonly FundModels _fundModel;
         private readonly IEnumerable<string> _fundLines;
         private readonly IPeriodisedValuesLookup _periodisedValues;
@@ -19,7 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
             IEnumerable<string> fundLines,
             IPeriodisedValuesLookup periodisedValues)
         {
-            _currentPeriod = currentPeriod;
+            CurrentPeriod = currentPeriod;
             _fundModel = fundModel;
             _fundLines = fundLines;
             _periodisedValues = periodisedValues;
@@ -62,6 +61,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
         public decimal Total => FundLines.Sum(fl => fl.Total);
 
+        public int CurrentPeriod { get; }
+
         public FundLineGroup WithFundLine(string title, IEnumerable<string> fundLines, IEnumerable<string> attributes)
         {
             var fundLine = BuildFundLine(title, attributes, fundLines);
@@ -87,7 +88,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
             if (periodisedValuesList != null)
             {
                 return new FundLine(
-                    _currentPeriod,
+                    CurrentPeriod,
                     title,
                     periodisedValuesList.Where(pv => pv[0].HasValue).Sum(pv => pv[0].Value),
                     periodisedValuesList.Where(pv => pv[1].HasValue).Sum(pv => pv[1].Value),
@@ -109,7 +110,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
         private IFundLine BuildEmptyFundLine(string title)
         {
-            return new FundLine(_currentPeriod, title, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            return new FundLine(CurrentPeriod, title, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
     }
 }

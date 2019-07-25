@@ -31,152 +31,152 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         {
             var periodisedValues = _periodisedValuesLookupProvider.Provide(_fundModels, reportServiceDependentData);
 
-            var currentPeriod = reportServiceContext.ReturnPeriod;
+            var reportCurrentPeriod = reportServiceContext.ReturnPeriod > 12 ? 12 : reportServiceContext.ReturnPeriod;
 
             return new FundingSummaryReportModel(
                 new List<IFundingCategory>()
                 {
                     new FundingCategory(
-                        @"Carry-in Apprenticeships Budget (for starts before 1 May 2017 and non-procured delivery)",
+                        @"Carry-in Apprenticeships Budget (for starts before 1 May 2017 and non-procured delivery)", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
                             new FundingSubCategory(
-                                @"16-18 Apprenticeship Frameworks for starts before 1 May 2017",
+                                @"16-18 Apprenticeship Frameworks for starts before 1 May 2017", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35FundLineGroup("16-18", "Apprenticeship Frameworks", currentPeriod, new [] { FundLineConstants.Apprenticeship1618 }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("16-18", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship1618 }, periodisedValues)
                                 }),
                             new FundingSubCategory(
-                                @"16-18 Trailblazer Apprenticeships for starts before 1 May 2017",
+                                @"16-18 Trailblazer Apprenticeships for starts before 1 May 2017", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildTrailblazerApprenticeshipsFundLineGroup("16-18", currentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1618 }, periodisedValues)
+                                    BuildTrailblazerApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1618 }, periodisedValues)
                                 }),
                             new FundingSubCategory(
-                                @"16-18 Non-Levy Contracted Apprenticeships - Non-procured delivery",
+                                @"16-18 Non-Levy Contracted Apprenticeships - Non-procured delivery", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildNonLevyApprenticeshipsFundLineGroup("16-18", currentPeriod, new [] { FundLineConstants.NonLevyApprenticeship1618, FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues)
+                                    BuildNonLevyApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship1618, FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues)
                                 }),
                             new FundingSubCategory(
-                                @"19-23 Apprenticeship Frameworks for starts before 1 May 2017",
+                                @"19-23 Apprenticeship Frameworks for starts before 1 May 2017", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35FundLineGroup("19-23", "Apprenticeship Frameworks", currentPeriod, new [] { FundLineConstants.Apprenticeship1923 }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("19-23", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship1923 }, periodisedValues)
                                 }),
                             new FundingSubCategory(
-                                @"19-23 Trailblazer Apprenticeships for starts before 1 May 2017",
+                                @"19-23 Trailblazer Apprenticeships for starts before 1 May 2017", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildTrailblazerApprenticeshipsFundLineGroup("19-23", currentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1923 }, periodisedValues)
+                                    BuildTrailblazerApprenticeshipsFundLineGroup("19-23", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1923 }, periodisedValues)
                                 }),
                             new FundingSubCategory(
-                                @"24+ Apprenticeship Frameworks for starts before 1 May 2017",
+                                @"24+ Apprenticeship Frameworks for starts before 1 May 2017", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35FundLineGroup("24+", "Apprenticeship Frameworks", currentPeriod, new [] { FundLineConstants.Apprenticeship24Plus }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("24+", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship24Plus }, periodisedValues)
                                 }),
                             new FundingSubCategory(
-                                @"24+ Trailblazer Apprenticeships for starts before 1 May 2017",
+                                @"24+ Trailblazer Apprenticeships for starts before 1 May 2017", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildTrailblazerApprenticeshipsFundLineGroup("24+", currentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship24Plus }, periodisedValues)
+                                    BuildTrailblazerApprenticeshipsFundLineGroup("24+", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship24Plus }, periodisedValues)
                                 }),
                             new FundingSubCategory(
-                                @"Adult Non-Levy Contracted Apprenticeships - Non-procured delivery",
+                                @"Adult Non-Levy Contracted Apprenticeships - Non-procured delivery", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildNonLevyApprenticeshipsFundLineGroup("Adult", currentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19Plus, FundLineConstants.NonLevyApprenticeship19PlusNonProcured }, periodisedValues)
+                                    BuildNonLevyApprenticeshipsFundLineGroup("Adult", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19Plus, FundLineConstants.NonLevyApprenticeship19PlusNonProcured }, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "Apprenticeships – Employers on Apprenticeship Service",
+                        "Apprenticeships – Employers on Apprenticeship Service", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("16-18 Apprenticeship (Employer on App Service)",
+                            new FundingSubCategory("16-18 Apprenticeship (Employer on App Service)", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildApprenticeshipsFundLineGroup("16-18", "Apprenticeship (Employer on App Service)", currentPeriod, new []{ FundLineConstants.ApprenticeshipEmployerOnAppService1618 }, periodisedValues)
+                                    BuildApprenticeshipsFundLineGroup("16-18", "Apprenticeship (Employer on App Service)", reportCurrentPeriod, new []{ FundLineConstants.ApprenticeshipEmployerOnAppService1618 }, periodisedValues)
                                 }),
-                            new FundingSubCategory("Adult Apprenticeship (Employer on App Service)",
+                            new FundingSubCategory("Adult Apprenticeship (Employer on App Service)", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildApprenticeshipsFundLineGroup("Adult", "Apprenticeship (Employer on App Service)", currentPeriod, new [] { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus }, periodisedValues)
+                                    BuildApprenticeshipsFundLineGroup("Adult", "Apprenticeship (Employer on App Service)", reportCurrentPeriod, new [] { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus }, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "Non-Levy Contracted Apprenticeships Budget - Procured delivery",
+                        "Non-Levy Contracted Apprenticeships Budget - Procured delivery", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("16-18 Non-Levy Contracted Apprenticeships",
+                            new FundingSubCategory("16-18 Non-Levy Contracted Apprenticeships", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildApprenticeshipsFundLineGroup("16-18", "Non-Levy Contracted Apprenticeships", currentPeriod, new []{ FundLineConstants.NonLevyApprenticeship1618Procured }, periodisedValues)
+                                    BuildApprenticeshipsFundLineGroup("16-18", "Non-Levy Contracted Apprenticeships", reportCurrentPeriod, new []{ FundLineConstants.NonLevyApprenticeship1618Procured }, periodisedValues)
                                 }),
-                            new FundingSubCategory("Adult Non-Levy Contracted Apprenticeships",
+                            new FundingSubCategory("Adult Non-Levy Contracted Apprenticeships", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildApprenticeshipsFundLineGroup("Adult", "Non-Levy Contracted Apprenticeships", currentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19PlusProcured }, periodisedValues)
+                                    BuildApprenticeshipsFundLineGroup("Adult", "Non-Levy Contracted Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19PlusProcured }, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "16-18 Traineeships Budget",
+                        "16-18 Traineeships Budget", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("16-18 Traineeships",
+                            new FundingSubCategory("16-18 Traineeships", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm25FundLineGroup(currentPeriod, periodisedValues)
+                                    BuildIlrFm25FundLineGroup(reportCurrentPeriod, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "19-24 Traineeships - Non-procured delivery",
+                        "19-24 Traineeships - Non-procured delivery", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("19-24 Traineeships",
+                            new FundingSubCategory("19-24 Traineeships", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35FundLineGroup("19-24", "Traineeships", currentPeriod, new [] { FundLineConstants.Traineeship1924, FundLineConstants.Traineeship1924NonProcured }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("19-24", "Traineeships", reportCurrentPeriod, new [] { FundLineConstants.Traineeship1924, FundLineConstants.Traineeship1924NonProcured }, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "19-24 Traineeships - Procured delivery from 1 Nov 2017",
+                        "19-24 Traineeships - Procured delivery from 1 Nov 2017", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("19-24 Traineeships",
+                            new FundingSubCategory("19-24 Traineeships", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35FundLineGroup("19-24", "Traineeships", currentPeriod, new [] { FundLineConstants.Traineeship1924ProcuredFromNov2017 }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("19-24", "Traineeships", reportCurrentPeriod, new [] { FundLineConstants.Traineeship1924ProcuredFromNov2017 }, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "ESFA Adult Education Budget – Non-procured delivery",
+                        "ESFA Adult Education Budget – Non-procured delivery", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("ESFA AEB – Adult Skills (non-procured)",
+                            new FundingSubCategory("ESFA AEB – Adult Skills (non-procured)", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", currentPeriod, new [] { FundLineConstants.AebOtherLearning, FundLineConstants.AebOtherLearningNonProcured }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.AebOtherLearning, FundLineConstants.AebOtherLearningNonProcured }, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "ESFA Adult Education Budget – Procured delivery from 1 Nov 2017 ",
+                        "ESFA Adult Education Budget – Procured delivery from 1 Nov 2017 ", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("ESFA AEB – Adult Skills (procured from Nov 2017)",
+                            new FundingSubCategory("ESFA AEB – Adult Skills (procured from Nov 2017)", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (procured from Nov 2017)", currentPeriod, new [] { FundLineConstants.AebOtherLearningProcuredFromNov2017 }, periodisedValues)
+                                    BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (procured from Nov 2017)", reportCurrentPeriod, new [] { FundLineConstants.AebOtherLearningProcuredFromNov2017 }, periodisedValues)
                                 })
                         }),
                     new FundingCategory(
-                        "Advanced Loans Bursary Budget",
+                        "Advanced Loans Bursary Budget", reportCurrentPeriod,
                         new List<IFundingSubCategory>()
                         {
-                            new FundingSubCategory("Advanced Loans Bursary",
+                            new FundingSubCategory("Advanced Loans Bursary", reportCurrentPeriod,
                                 new List<IFundLineGroup>()
                                 {
-                                    BuildIlrFm99FundLineGroup(currentPeriod, periodisedValues)
+                                    BuildIlrFm99FundLineGroup(reportCurrentPeriod, periodisedValues)
                                 })
                         })
                 });
@@ -200,7 +200,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         {
             return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, FundModels.FM35, fundLines, periodisedValues)
                         .WithFundLine($"ILR {ageRange} {description} Programme Funding (£)", new[] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment })
-                        .WithFundLine($"ILR {ageRange} {description} Frameworks Learning Support (£)", new[] {AttributeConstants.Fm35LearnSuppFundCash});
+                        .WithFundLine($"ILR {ageRange} {description} Learning Support (£)", new[] {AttributeConstants.Fm35LearnSuppFundCash});
         }
 
         private IFundLineGroup BuildTrailblazerApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)

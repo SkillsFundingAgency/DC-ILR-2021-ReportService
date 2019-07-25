@@ -35,5 +35,7 @@
         decimal YearToDate { get; }
 
         decimal Total { get; }
+
+        int CurrentPeriod { get; }
     }
 }
