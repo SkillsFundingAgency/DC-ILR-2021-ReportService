@@ -27,7 +27,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
         {
             var stringBuilder = new StringBuilder();
 
-            stringBuilder.Append($"{reportServiceContext.Ukprn}_{reportServiceContext.JobId}_{fileName}");
+            stringBuilder.Append(GetPath(reportServiceContext));
+
+            stringBuilder.Append(fileName);
 
             if (includeDateTime)
             {
@@ -39,9 +41,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
             return stringBuilder.ToString();
         }
 
-        public string GetExtension(OutputTypes outputType)
-        {
-            return _extensionsDictionary[outputType];
-        }
+        protected virtual string GetPath(IReportServiceContext reportServiceContext) => $"{reportServiceContext.Ukprn}/{reportServiceContext.JobId}/";
+
+        public string GetExtension(OutputTypes outputType) => _extensionsDictionary[outputType];
     }
 }

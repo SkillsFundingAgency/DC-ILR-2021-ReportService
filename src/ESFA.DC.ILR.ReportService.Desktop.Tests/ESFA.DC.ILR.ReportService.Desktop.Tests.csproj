@@ -163,6 +163,7 @@
     <Compile Include="ReportServiceJobContextDesktopContextTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ReportServiceContextFactoryTest.cs" />
+    <Compile Include="Service\DesktopFileNameServiceTests.cs" />
     <Compile Include="Stubs\LoggerStub.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -21,8 +21,6 @@ namespace ESFA.DC.ILR.ReportService.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterType<FileNameService>().As<IFileNameService>();
-            
             builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
             builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
