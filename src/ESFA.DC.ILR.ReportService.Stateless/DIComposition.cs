@@ -117,7 +117,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
         public static void RegisterServicesByCollectionName(string collectionName, ContainerBuilder containerBuilder)
         {
-            if (collectionName.Equals("ILR1819", StringComparison.OrdinalIgnoreCase))
+            if (collectionName.Equals("ILR1920", StringComparison.OrdinalIgnoreCase))
             {
                 RegisterILRServices(containerBuilder);
             }
@@ -223,10 +223,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless
                 .InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<MathsAndEnglishReport>().As<ILegacyReport>()
-                .WithAttributeFiltering()
-                .InstancePerLifetimeScope();
-
-            containerBuilder.RegisterType<ValidationErrorsReport>().As<ILegacyReport>()
                 .WithAttributeFiltering()
                 .InstancePerLifetimeScope();
 
