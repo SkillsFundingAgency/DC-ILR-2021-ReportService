@@ -31,7 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
-            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Devolved Adult Education Occupancy Report", OutputTypes.Csv)).Returns(fileName);
+            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Devolved Adult Education Occupancy Report", OutputTypes.Csv, true)).Returns(fileName);
 
             var modelBuilderMock = new Mock<IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>>();
 

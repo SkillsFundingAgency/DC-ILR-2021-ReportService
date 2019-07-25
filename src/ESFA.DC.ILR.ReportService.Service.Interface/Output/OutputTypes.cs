@@ -5,5 +5,6 @@
         Csv,
         Excel,
         Json,
+        Zip,
     }
 }

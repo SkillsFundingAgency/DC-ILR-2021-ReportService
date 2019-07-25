@@ -6,6 +6,7 @@ using Autofac;
 using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Service;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -50,11 +51,16 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
 
-                    //Legacy
-                    var entryPoint = childLifeTimeScope.Resolve<LegacyEntryPoint>();
+                    ////Legacy
+                    //var entryPoint = childLifeTimeScope.Resolve<LegacyEntryPoint>();
+                    //var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
+
+                    var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
+
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
-                    logger.LogDebug($"Completed Report Service with result-{result}");
-                    return result;
+
+                    logger.LogDebug($"Completed Report Service");
+                    return true;
                 }
             }
             catch (OutOfMemoryException oom)

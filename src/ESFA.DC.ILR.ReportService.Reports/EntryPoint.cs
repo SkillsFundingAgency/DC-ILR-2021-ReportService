@@ -14,17 +14,20 @@ namespace ESFA.DC.ILR.ReportService.Reports
         private readonly ILogger _logger;
         private readonly IExcelService _excelService;
         private readonly IReportsDependentDataPopulationService _reportsDependentDataPopulationService;
+        private readonly IZipService _zipService;
         private readonly IList<IReport> _reports;
 
         public EntryPoint(
             ILogger logger,
             IExcelService excelService,
             IReportsDependentDataPopulationService reportsDependentDataPopulationService,
+            IZipService zipService,
             IList<IReport> reports)
         {
             _logger = logger;
             _excelService = excelService;
             _reportsDependentDataPopulationService = reportsDependentDataPopulationService;
+            _zipService = zipService;
             _reports = reports;
         }
         public async Task<List<string>> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
@@ -67,6 +70,8 @@ namespace ESFA.DC.ILR.ReportService.Reports
 
                     _logger.LogInfo($"Finishing {report.GetType().Name}");
                 }
+
+                await _zipService.CreateZipAsync(reportServiceContext, reportOutputFilenames, reportServiceContext.Container, cancellationToken);
 
                 reportServiceContext.ReportOutputFileNames = string.Join("|", reportOutputFilenames);
                 

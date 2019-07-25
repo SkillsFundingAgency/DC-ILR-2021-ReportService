@@ -4,6 +4,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
     public interface IFileNameService
     {
-        string GetFilename(IReportServiceContext reportServiceContext, string fileName, OutputTypes outputType);
+        string GetFilename(IReportServiceContext reportServiceContext, string fileName, OutputTypes outputType, bool includeDateTime = true);
     }
 }
