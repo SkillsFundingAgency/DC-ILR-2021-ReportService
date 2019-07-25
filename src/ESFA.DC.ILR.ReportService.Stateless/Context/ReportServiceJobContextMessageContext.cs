@@ -64,16 +64,12 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public int ReturnPeriod => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
 
-        public string IlrReferenceDataKey
-        {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
-        }
+        public string IlrReferenceDataKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
 
         public string ReportOutputFileNames
         {
-            get => throw new NotImplementedException();
-            set => throw new NotImplementedException();
+            get => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString();
+            set => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
         }
 
         public long JobId => _jobContextMessage.JobId;
