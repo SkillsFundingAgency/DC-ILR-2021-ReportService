@@ -35,8 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
 
                         using (var archiveEntryStream = archiveEntry.Open())
                         {
-                            using (var readStream =
-                                await _fileService.OpenReadStreamAsync(fileName, container, cancellationToken))
+                            using (var readStream = await _fileService.OpenReadStreamAsync(fileName, container, cancellationToken))
                             {
                                 await readStream.CopyToAsync(archiveEntryStream, 8096, cancellationToken);
                             }
