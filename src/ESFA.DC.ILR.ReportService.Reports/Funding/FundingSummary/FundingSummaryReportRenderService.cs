@@ -7,6 +7,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
     public class FundingSummaryReportRenderService : IRenderService<IFundingSummaryReport>
     {
+        private const int StartYear = 18;
+        private const int EndYear = 19;
+
         private const string NotApplicable = "N/A";
         private const string DecimalFormat = "#,##0.00";
 
@@ -14,13 +17,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private const int ColumnCount = 17;
 
         private readonly Style _defaultStyle;
+        private readonly Style _futureMonthStyle;
         private readonly Style _fundingCategoryStyle;
         private readonly Style _fundingSubCategoryStyle;
         private readonly Style _fundLineGroupStyle;
 
         private readonly StyleFlag _styleFlag = new StyleFlag()
         {
-            All = true
+            All = true,
+        };
+
+        private readonly StyleFlag _italicStyleFlag = new StyleFlag()
+        {
+            FontItalic = true
         };
         
         public FundingSummaryReportRenderService()
@@ -28,6 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             var cellsFactory = new CellsFactory();
 
             _defaultStyle = cellsFactory.CreateStyle();
+            _futureMonthStyle = cellsFactory.CreateStyle();
             _fundingCategoryStyle = cellsFactory.CreateStyle();
             _fundingSubCategoryStyle = cellsFactory.CreateStyle();
             _fundLineGroupStyle = cellsFactory.CreateStyle();
@@ -61,9 +71,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 RenderFundingSubCategory(worksheet, fundingSubCategory);
             }
 
-            row = NextRow(worksheet);
+            row = NextRow(worksheet) + 1;
             RenderFundingSummaryReportRow(worksheet, row, fundingCategory);
             ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
+            ApplyFutureMonthStyleToRow(worksheet, row, fundingCategory.CurrentPeriod);
 
             row = NextRow(worksheet);
             worksheet.Cells.ImportObjectArray(
@@ -88,6 +99,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                     NotApplicable,
                 }, row, 0, false);
             ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
+            ApplyFutureMonthStyleToRow(worksheet, row, fundingCategory.CurrentPeriod);
 
             return worksheet;
         }
@@ -125,18 +137,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             worksheet.Cells.ImportObjectArray(new object[]
             {
                 fundingSubCategory.FundingSubCategoryTitle,
-                "Aug-18",
-                "Sep-18",
-                "Oct-18",
-                "Nov-18",
-                "Dec-18",
-                "Jan-19",
-                "Feb-19",
-                "Mar-19",
-                "Apr-19",
-                "May-19",
-                "Jun-19",
-                "Jul-19",
+                $"Aug-{StartYear}",
+                $"Sep-{StartYear}",
+                $"Oct-{StartYear}",
+                $"Nov-{StartYear}",
+                $"Dec-{StartYear}",
+                $"Jan-{EndYear}",
+                $"Feb-{EndYear}",
+                $"Mar-{EndYear}",
+                $"Apr-{EndYear}",
+                $"May-{EndYear}",
+                $"Jun-{EndYear}",
+                $"Jul-{EndYear}",
                 "Aug - Mar",
                 "Apr - Jul",
                 "Year To Date",
@@ -152,6 +164,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             row = NextRow(worksheet);
             RenderFundingSummaryReportRow(worksheet, row, fundingSubCategory);
             ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
+            ApplyFutureMonthStyleToRow(worksheet, row, fundingSubCategory.CurrentPeriod);
 
             return worksheet;
         }
@@ -166,13 +179,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             var row = NextRow(worksheet);
             RenderFundingSummaryReportRow(worksheet, row, fundLineGroup);
             ApplyStyleToRow(worksheet, row, _fundLineGroupStyle);
+            ApplyFutureMonthStyleToRow(worksheet, row, fundLineGroup.CurrentPeriod);
 
             return worksheet;
         }
 
         private Worksheet RenderFundLine(Worksheet worksheet, IFundLine fundLine)
         {
-            RenderFundingSummaryReportRow(worksheet, NextRow(worksheet), fundLine);
+            var row = NextRow(worksheet);
+
+            RenderFundingSummaryReportRow(worksheet, row, fundLine);
+            ApplyFutureMonthStyleToRow(worksheet, row, fundLine.CurrentPeriod);
 
             return worksheet;
         }
@@ -187,21 +204,32 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             worksheet.Cells.CreateRange(row, StartColumn, 1, ColumnCount).ApplyStyle(style, _styleFlag);
         }
 
+        private void ApplyFutureMonthStyleToRow(Worksheet worksheet, int row, int currentPeriod)
+        {
+            var columnCount = 12 - currentPeriod;
+
+            if (columnCount > 0)
+            {
+                worksheet.Cells.CreateRange(row, currentPeriod + 1, 1, 12 - currentPeriod).ApplyStyle(_futureMonthStyle, _italicStyleFlag);
+            }
+        }
+
         private void ConfigureStyles()
         {
             _defaultStyle.Font.Size = 10;
-            _defaultStyle.Font.IsBold = false;
             _defaultStyle.Font.Name = "Arial";
             _defaultStyle.SetCustom(DecimalFormat, false);
 
-            _fundingCategoryStyle.ForegroundColor = System.Drawing.Color.FromArgb(191, 191, 191);
+            _futureMonthStyle.Font.IsItalic = true;
+
+            _fundingCategoryStyle.ForegroundColor = Color.FromArgb(191, 191, 191);
             _fundingCategoryStyle.Pattern = BackgroundType.Solid;
             _fundingCategoryStyle.Font.Size = 13;
             _fundingCategoryStyle.Font.IsBold = true;
             _fundingCategoryStyle.Font.Name = "Arial";
             _fundingCategoryStyle.SetCustom(DecimalFormat, false);
 
-            _fundingSubCategoryStyle.ForegroundColor = System.Drawing.Color.FromArgb(242, 242, 242);
+            _fundingSubCategoryStyle.ForegroundColor = Color.FromArgb(242, 242, 242);
             _fundingSubCategoryStyle.Pattern = BackgroundType.Solid;
             _fundingSubCategoryStyle.Font.Size = 11;
             _fundingSubCategoryStyle.Font.IsBold = true;

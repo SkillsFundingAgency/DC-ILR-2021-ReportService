@@ -5,9 +5,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
     public class FundLine : IFundLine
     {
         private readonly decimal[] _periods;
-        
-        private int _currentPeriod { get; }
 
+        private const int _periodCount = 12;
+        
         public FundLine(
             int currentPeriod,
             string title,
@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
             decimal period11,
             decimal period12)
         {
-            _currentPeriod = currentPeriod;
+            CurrentPeriod = currentPeriod;
             Title = title;
             _periods = new[]
             {
@@ -73,15 +73,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
         public decimal Period9To12 => SumPeriods(9, 12);
 
-        public decimal YearToDate => SumPeriods(1, _currentPeriod);
+        public decimal YearToDate => SumPeriods(1, CurrentPeriod);
 
         public decimal Total => SumPeriods(1, 12);
+
+        public int CurrentPeriod { get; }
 
         private decimal SumPeriods(int start, int end)
         {
             decimal total = 0;
 
-            for (var index = start - 1; index < end; index++)
+            var endIndex = end > _periodCount ? _periodCount : end;
+
+            for (var index = start - 1; index < endIndex; index++)
             {
                 total += _periods[index];
             }

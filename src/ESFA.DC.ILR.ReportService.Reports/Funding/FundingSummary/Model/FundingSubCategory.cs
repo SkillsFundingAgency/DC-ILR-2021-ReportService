@@ -6,10 +6,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundingSubCategory : IFundingSubCategory
     {
-        public FundingSubCategory(string fundingSubCategoryTitle, IList<IFundLineGroup> fundLineGroups)
+        public FundingSubCategory(string fundingSubCategoryTitle, int currentPeriod, IList<IFundLineGroup> fundLineGroups)
         {
             FundingSubCategoryTitle = fundingSubCategoryTitle;
-
+            CurrentPeriod = currentPeriod;
             FundLineGroups = fundLineGroups ?? new List<IFundLineGroup>();
         }
 
@@ -50,5 +50,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
         public decimal YearToDate => FundLineGroups.Sum(flg => flg.YearToDate);
 
         public decimal Total => FundLineGroups.Sum(flg => flg.Total);
+
+        public int CurrentPeriod { get; }
     }
 }
