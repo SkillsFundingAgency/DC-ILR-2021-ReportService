@@ -19,24 +19,39 @@ namespace ESFA.DC.ILR.ReportService.Modules
 {
     public class ReportsModule : Module
     {
-        protected override void Load(ContainerBuilder builder)
+        protected override void Load(ContainerBuilder containerBuilder)
         {
-            builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
-            builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
-            builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
-            builder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>();
-            builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>();
+            RegisterValidationReports(containerBuilder);
+          
+            RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
 
-            builder.RegisterType<DevolvedAdultEducationOccupancyReport>().As<IReport>();
-            builder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>>();
+            RegisterFundingSummaryReport(containerBuilder);
 
-            builder.RegisterType<FundingSummaryReport>().As<IReport>();
-            builder.RegisterType<FundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
-            builder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
-            builder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
+            containerBuilder.RegisterType<CsvService>().As<ICsvService>();
+            containerBuilder.RegisterType<ExcelService>().As<IExcelService>();
+        }
 
-            builder.RegisterType<CsvService>().As<ICsvService>();
-            builder.RegisterType<ExcelService>().As<IExcelService>();
+        private void RegisterValidationReports(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
+            containerBuilder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
+            containerBuilder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
+            containerBuilder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>();
+            containerBuilder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>();
+        }
+
+        private void RegisterDevolvedAdultEducationOccupancyReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReport>().As<IReport>();
+            containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>>();
+        }
+
+        protected virtual void RegisterFundingSummaryReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<FundingSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<FundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
+            containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
+            containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
         }
     }
 }
