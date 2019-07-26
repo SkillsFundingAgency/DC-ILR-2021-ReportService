@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.ReportService.Desktop.Service;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
@@ -11,9 +12,9 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
+namespace ESFA.DC.ILR.ReportService.Desktop.Tests.Service
 {
-    public class FileNameServiceTests
+    public class DesktopFileNameServiceTests
     {
         [InlineData(OutputTypes.Csv, "csv")]
         [InlineData(OutputTypes.Excel, "xlsx")]
@@ -40,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
 
             var result = NewService(dateTimeProvider.Object).GetFilename(reportServiceContextMock.Object, fileName, outputType);
 
-            result.Should().Be($"{ukprn}/{jobId}/{fileName} 20200101-010101.{extension}");
+            result.Should().Be($"{fileName} 20200101-010101.{extension}");
         }
 
         [InlineData(OutputTypes.Csv, "csv")]
@@ -58,15 +59,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
 
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(ukprn);
             reportServiceContextMock.SetupGet(c => c.JobId).Returns(jobId);
-            
+
             var result = NewService(null).GetFilename(reportServiceContextMock.Object, fileName, outputType, false);
 
-            result.Should().Be($"{ukprn}/{jobId}/{fileName}.{extension}");
+            result.Should().Be($"{fileName}.{extension}");
         }
 
-        private FileNameService NewService(IDateTimeProvider dateTimeProvider = null)
+        private DesktopFileNameService NewService(IDateTimeProvider dateTimeProvider = null)
         {
-            return new FileNameService(dateTimeProvider);
+            return new DesktopFileNameService(dateTimeProvider);
         }
     }
 }

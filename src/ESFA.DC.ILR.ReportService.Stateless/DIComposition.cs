@@ -48,6 +48,9 @@ using Microsoft.EntityFrameworkCore;
 using VersionInfo = ESFA.DC.ILR.ReportService.Stateless.Configuration.VersionInfo;
 using ESFA.DC.ILR.ReportService.Desktop.Modules;
 using ESFA.DC.ILR.ReportService.Modules;
+using ESFA.DC.ILR.ReportService.Reports.Service;
+using ESFA.DC.ILR.ReportService.Service.Interface;
+using ZipService = ESFA.DC.ILR.ReportService.Service.Service.ZipService;
 
 namespace ESFA.DC.ILR.ReportService.Stateless
 {
@@ -111,6 +114,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterModule<OrchestrationModule>();
             containerBuilder.RegisterModule<DataModule>();
             containerBuilder.RegisterModule<ReportsModule>();
+
+            containerBuilder.RegisterType<FileNameService>().As<IFileNameService>();
 
             return containerBuilder;
         }
