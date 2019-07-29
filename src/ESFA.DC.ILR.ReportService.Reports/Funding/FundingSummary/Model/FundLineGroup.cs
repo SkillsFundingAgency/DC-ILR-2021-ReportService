@@ -7,14 +7,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundLineGroup : IFundLineGroup
     {
-        private readonly FundModels _fundModel;
+        private readonly FundingDataSources _fundModel;
         private readonly IEnumerable<string> _fundLines;
         private readonly IPeriodisedValuesLookup _periodisedValues;
 
         public FundLineGroup(
             string title,
             int currentPeriod,
-            FundModels fundModel,
+            FundingDataSources fundModel,
             IEnumerable<string> fundLines,
             IPeriodisedValuesLookup periodisedValues)
         {
@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
             return this;
         }
-
+        
         public IFundLine BuildFundLine(string title, IEnumerable<string> attributes, IEnumerable<string> fundLines = null)
         {
             var periodisedValuesList = _periodisedValues.GetPeriodisedValues(_fundModel, fundLines ?? _fundLines, attributes);

@@ -15,6 +15,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string HighNeedsStudents1619FundLine = "16-19 High Needs Students";
         public const string StudentsWithEHCP1924FundLine = "19-24 Students with an EHCP";
         public const string ContinuingStudents19PlusFundLine = "19+ Continuing Students (excluding EHCP)";
+        public const string Traineeships1618 = "16-18 Traineeships";
 
         // FM35 FundLines
         public const string Apprenticeship1618 = "16-18 Apprenticeship";
@@ -22,10 +23,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string Apprenticeship24Plus = "24+ Apprenticeship";
         public const string Traineeship1924 = "19-24 Traineeship";
         public const string Traineeship1924NonProcured = "19-24 Traineeship (non-procured)";
+        public const string EasTraineeships1924NonProcured = "19-24 Traineeships(non-procured)";
         public const string Traineeship1924ProcuredFromNov2017 = "19-24 Traineeship (procured from Nov 2017)";
+        public const string EasTraineeships1924NonProcuredFromNov2017 = "19-24 Traineeships (procured from Nov 2017)";
         public const string AebOtherLearning = "AEB - Other Learning";
         public const string AebOtherLearningNonProcured = "AEB - Other Learning (non-procured)";
         public const string AebOtherLearningProcuredFromNov2017 = "AEB - Other Learning (procured from Nov 2017)";
+        public const string EasAebAdultSkillsNonProcured = "ESFA AEB - Adult Skills (non-procured)";
+        public const string EasAebAdultSkillsProcuredFromNov2017 = "ESFA AEB - Adult Skills (procured from Nov 2017)";
 
         // FM81 FundLines
         public const string TrailblazerApprenticeship1618 = "16-18 Trailblazer Apprenticeship";
@@ -41,6 +46,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string NonLevyApprenticeship19PlusProcured = "19+ Apprenticeship Non-Levy Contract (procured)";
         public const string ApprenticeshipEmployerOnAppService1618 = "16-18 Apprenticeship (Employer on App Service)";
         public const string ApprenticeshipEmployerOnAppService19Plus = "19+ Apprenticeship (Employer on App Service)";
+        public const string EasLevyApprenticeship1618 = "16-18 Apprenticeship (Employer on App Service) Levy funding";
+        public const string EasNonLevyApprenticeshipEmployerOnAppService1618 = "16-18 Apprenticeship (Employer on App Service) Non-Levy funding";
+        public const string EasNonLevyApprenticeshipEmployerOnAppService19Plus = "19+ Apprenticeship(Employer on App Service) Non-Levy funding";
 
         // FM99 FundLines
         public const string AdvancedLearnerLoansBursary = "Advanced Learner Loans Bursary";

@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 
             builder.RegisterModule<OrchestrationModule>();
             builder.RegisterModule<DataModule>();
-            builder.RegisterModule<ReportsModule>();
+            builder.RegisterModule<DesktopReportsModule>();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                             FundLineGroups = Enumerable.Range(1, 3)
                                 .Select(i =>
                                 {
-                                    return (IFundLineGroup) new FundLineGroup("FundLineGroup", currentPeriod, FundModels.FM35,
+                                    return (IFundLineGroup) new FundLineGroup("FundLineGroup", currentPeriod, FundingDataSources.FM35,
                                         new string[] { }, null)
                                     {
                                         FundLines = Enumerable.Range(0, 5)

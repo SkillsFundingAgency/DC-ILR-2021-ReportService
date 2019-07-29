@@ -5,9 +5,9 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Model
 {
-    public class PeriodisedValuesLookup : Dictionary<FundModels, Dictionary<string, Dictionary<string, decimal?[][]>>>, IPeriodisedValuesLookup
+    public class PeriodisedValuesLookup : Dictionary<FundingDataSources, Dictionary<string, Dictionary<string, decimal?[][]>>>, IPeriodisedValuesLookup
     {
-        public IEnumerable<decimal?[]> GetPeriodisedValues(FundModels fundModel, IEnumerable<string> fundLines, IEnumerable<string> attributes)
+        public IEnumerable<decimal?[]> GetPeriodisedValues(FundingDataSources fundModel, IEnumerable<string> fundLines, IEnumerable<string> attributes)
         {
             var periodisedValuesList = new List<decimal?[]>();
 

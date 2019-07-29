@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Desktop
 {
-    public class DesktopFundingSummaryReportModelBuilder
+    public class DesktopFundingSummaryReportModelBuilder : FundingSummaryReportModelBuilder
     {
+        public DesktopFundingSummaryReportModelBuilder(IPeriodisedValuesLookupProvider periodisedValuesLookupProvider)
+            : base(periodisedValuesLookupProvider)
+        {
+        }
     }
 }

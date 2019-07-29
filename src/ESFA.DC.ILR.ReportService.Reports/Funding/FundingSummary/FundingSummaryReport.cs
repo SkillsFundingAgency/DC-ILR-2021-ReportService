@@ -37,6 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 DependentDataCatalog.Fm36,
                 DependentDataCatalog.Fm81,
                 DependentDataCatalog.Fm99,
+                DependentDataCatalog.ReferenceData,
             };
 
         public async Task<IEnumerable<string>> GenerateAsync(

@@ -6,6 +6,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Interface
 {
     public interface IPeriodisedValuesLookupProvider
     {
-        IPeriodisedValuesLookup Provide(IEnumerable<FundModels> fundModels, IReportServiceDependentData reportServiceDependentData);
+        IPeriodisedValuesLookup Provide(IEnumerable<FundingDataSources> fundingDataSources, IReportServiceDependentData reportServiceDependentData);
     }
 }

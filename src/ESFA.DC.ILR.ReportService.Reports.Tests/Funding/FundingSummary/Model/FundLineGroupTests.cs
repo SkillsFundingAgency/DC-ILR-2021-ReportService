@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary.Model
             var title = "title";
             var currentPeriod = 3;
 
-            var fundModel = FundModels.FM35;
+            var fundModel = FundingDataSources.FM35;
             var fundLine = new[] { "fundLine" };
             var attribute1 = "attribute1";
             var attribute2 = "attribute2";
@@ -76,7 +76,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary.Model
             var title = "title";
             var currentPeriod = 3;
 
-            var fundModel = FundModels.FM35;
+            var fundModel = FundingDataSources.FM35;
             var fundLine = new[] { "fundLine" };
             var attribute1 = "attribute1";
 
@@ -109,7 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary.Model
             group.WithFundLine("title", new List<string>()).Should().BeSameAs(group);
         }
 
-        private FundLineGroup NewGroup(string title = "Title", int currentPeriod = 12, FundModels fundModel = FundModels.FM35, IEnumerable<string> fundLines = null, IPeriodisedValuesLookup periodisedValues = null)
+        private FundLineGroup NewGroup(string title = "Title", int currentPeriod = 12, FundingDataSources fundModel = FundingDataSources.FM35, IEnumerable<string> fundLines = null, IPeriodisedValuesLookup periodisedValues = null)
         {
             return new FundLineGroup(title, currentPeriod, fundModel, fundLines ?? new List<string>(), periodisedValues ?? new PeriodisedValuesLookup());
         }
