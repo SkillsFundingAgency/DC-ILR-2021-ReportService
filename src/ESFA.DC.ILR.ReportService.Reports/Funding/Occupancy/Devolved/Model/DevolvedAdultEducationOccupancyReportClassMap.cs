@@ -1,6 +1,6 @@
 ﻿using CsvHelper.Configuration;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model
 {
     public class DevolvedAdultEducationOccupancyReportClassMap : ClassMap<DevolvedAdultEducationOccupancyReportModel>
     {

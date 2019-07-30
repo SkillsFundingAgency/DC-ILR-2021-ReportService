@@ -6,7 +6,7 @@ using CsvHelper;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
 using Moq;

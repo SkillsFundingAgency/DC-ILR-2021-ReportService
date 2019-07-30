@@ -2,7 +2,7 @@
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model
 {
     public class DevolvedAdultEducationOccupancyReportModel
     {
