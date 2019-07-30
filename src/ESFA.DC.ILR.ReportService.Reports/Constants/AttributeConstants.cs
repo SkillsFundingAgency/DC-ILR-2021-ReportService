@@ -62,5 +62,22 @@
         public const string Fm99AlbSupportPayment = "ALBSupportPayment";
         public const string Fm99AreaUpliftBalPayment = "AreaUpliftBalPayment";
         public const string Fm99AreaUpliftOnProgPayment = "AreaUpliftOnProgPayment";
+
+        // EAS
+        public const string EasAllbExcessSupport = "ALLB Excess Support";
+        public const string EasAuthorisedClaims = "Authorised Claims";
+        public const string EasAuthorisedClaimsApprentice = "Authorised Claims - Additional payments for apprentice";
+        public const string EasAuthorisedClaimsEmployer = "Authorised Claims - Additional payments for employer";
+        public const string EasAuthorisedClaimsProvider = "Authorised Claims - Additional payments for provider";
+        public const string EasAuthorisedClaimsTraining = "Authorised Claims - Training costs exc Maths/Eng";
+        public const string EasDiscretionaryBursary = "Discretionary Bursary";
+        public const string EasExcessLearningSupport = "Excess Learning Support";
+        public const string EasFreeMeals = "Free Meals";
+        public const string EasLearnerSupport = "Learner Support";
+        public const string EasPrincesTrust = "Princes Trust";
+        public const string EasVulnerableBursary = "Vulnerable Bursary";
+        public const string EasMcaGlaDefinedAdjustment1 = "MCA/GLA Defined Adjustment 1";
+        public const string EasMcaFlaDefinedAdjustment2 = "MCA/GLA Defined Adjustment 2";
+        public const string EasMcaGlaDefinedAdjustment3 = "MCA/GLA Defined Adjustment 3";
     }
 }

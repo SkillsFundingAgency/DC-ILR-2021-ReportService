@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,9 +31,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
             {
                 using (var zipArchive = new ZipArchive(writeStream, ZipArchiveMode.Create, true))
                 {
-                    foreach (var fileName in fileNames)
+                    foreach (var fileName in fileNames.Where(f => !string.IsNullOrWhiteSpace(f)))
                     {
-                        var archiveEntry = zipArchive.CreateEntry(fileName);
+                        var archiveEntry = zipArchive.CreateEntry(Path.GetFileName(fileName));
 
                         using (var archiveEntryStream = archiveEntry.Open())
                         {

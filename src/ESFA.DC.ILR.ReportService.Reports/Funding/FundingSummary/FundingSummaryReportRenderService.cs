@@ -7,8 +7,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
     public class FundingSummaryReportRenderService : IRenderService<IFundingSummaryReport>
     {
-        private const int StartYear = 18;
-        private const int EndYear = 19;
+        private const int StartYear = 19;
+        private const int EndYear = 20;
 
         private const string NotApplicable = "N/A";
         private const string DecimalFormat = "#,##0.00";
@@ -17,6 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private const int ColumnCount = 17;
 
         private readonly Style _defaultStyle;
+        private readonly Style _textWrappedStyle;
         private readonly Style _futureMonthStyle;
         private readonly Style _fundingCategoryStyle;
         private readonly Style _fundingSubCategoryStyle;
@@ -37,6 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             var cellsFactory = new CellsFactory();
 
             _defaultStyle = cellsFactory.CreateStyle();
+            _textWrappedStyle = cellsFactory.CreateStyle();
             _futureMonthStyle = cellsFactory.CreateStyle();
             _fundingCategoryStyle = cellsFactory.CreateStyle();
             _fundingSubCategoryStyle = cellsFactory.CreateStyle();
@@ -56,6 +58,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 RenderFundingCategory(worksheet, fundingCategory);
             }
             
+            worksheet.AutoFitColumn(0);
+
             return worksheet;
         }
 
@@ -100,6 +104,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 }, row, 0, false);
             ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
             ApplyFutureMonthStyleToRow(worksheet, row, fundingCategory.CurrentPeriod);
+
+            if (!string.IsNullOrWhiteSpace(fundingCategory.Note))
+            {
+                row = NextRow(worksheet);
+                worksheet.Cells[row, 0].PutValue(fundingCategory.Note);
+                ApplyStyleToRow(worksheet, row, _textWrappedStyle);
+            }
 
             return worksheet;
         }
@@ -219,6 +230,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _defaultStyle.Font.Size = 10;
             _defaultStyle.Font.Name = "Arial";
             _defaultStyle.SetCustom(DecimalFormat, false);
+
+            _textWrappedStyle.Font.Size = 10;
+            _textWrappedStyle.Font.Name = "Arial";
+            _textWrappedStyle.IsTextWrapped = true;
 
             _futureMonthStyle.Font.IsItalic = true;
 

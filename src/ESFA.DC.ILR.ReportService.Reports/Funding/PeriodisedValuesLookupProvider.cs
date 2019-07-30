@@ -6,6 +6,7 @@ using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
+using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
@@ -15,33 +16,38 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
 {
     public class PeriodisedValuesLookupProvider : IPeriodisedValuesLookupProvider
     {
-        public IPeriodisedValuesLookup Provide(IEnumerable<FundModels> fundModels, IReportServiceDependentData reportServiceDependentData)
+        public IPeriodisedValuesLookup Provide(IEnumerable<FundingDataSources> fundingDataSources, IReportServiceDependentData reportServiceDependentData)
         {
             var periodisedValuesLookup = new PeriodisedValuesLookup();
 
-            if (fundModels.Contains(FundModels.FM35))
+            if (fundingDataSources.Contains(FundingDataSources.FM35))
             {
-                periodisedValuesLookup[FundModels.FM35] = BuildFm35Dictionary(reportServiceDependentData.Get<FM35Global>());
+                periodisedValuesLookup[FundingDataSources.FM35] = BuildFm35Dictionary(reportServiceDependentData.Get<FM35Global>());
             }
 
-            if (fundModels.Contains(FundModels.FM81))
+            if (fundingDataSources.Contains(FundingDataSources.FM81))
             {
-                periodisedValuesLookup[FundModels.FM81] = BuildFm81Dictionary(reportServiceDependentData.Get<FM81Global>());
+                periodisedValuesLookup[FundingDataSources.FM81] = BuildFm81Dictionary(reportServiceDependentData.Get<FM81Global>());
             }
 
-            if (fundModels.Contains(FundModels.FM25))
+            if (fundingDataSources.Contains(FundingDataSources.FM25))
             {
-                periodisedValuesLookup[FundModels.FM25] = BuildFm25Dictionary(reportServiceDependentData.Get<FM25Global>());
+                periodisedValuesLookup[FundingDataSources.FM25] = BuildFm25Dictionary(reportServiceDependentData.Get<FM25Global>());
             }
 
-            if (fundModels.Contains(FundModels.FM36))
+            if (fundingDataSources.Contains(FundingDataSources.FM36))
             {
-                periodisedValuesLookup[FundModels.FM36] = BuildFm36Dictionary(reportServiceDependentData.Get<FM36Global>());
+                periodisedValuesLookup[FundingDataSources.FM36] = BuildFm36Dictionary(reportServiceDependentData.Get<FM36Global>());
             }
 
-            if (fundModels.Contains(FundModels.FM99))
+            if (fundingDataSources.Contains(FundingDataSources.FM99))
             {
-                periodisedValuesLookup[FundModels.FM99] = BuildFm99Dictionary(reportServiceDependentData.Get<ALBGlobal>());
+                periodisedValuesLookup[FundingDataSources.FM99] = BuildFm99Dictionary(reportServiceDependentData.Get<ALBGlobal>());
+            }
+
+            if (fundingDataSources.Contains(FundingDataSources.EAS))
+            {
+                periodisedValuesLookup[FundingDataSources.EAS] = BuildEASDictionary(reportServiceDependentData.Get<ReferenceDataRoot>());
             }
             
             return periodisedValuesLookup;
@@ -175,6 +181,35 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
                        .ToDictionary(k => k.Key,
                            v => v.SelectMany(ld => ld.LearningDeliveryPeriodisedValues)
                                .GroupBy(ldpv => ldpv.AttributeName, StringComparer.OrdinalIgnoreCase)
+                               .ToDictionary(k => k.Key, value =>
+                                       value.Select(pvGroup => new decimal?[]
+                                       {
+                                           pvGroup.Period1,
+                                           pvGroup.Period2,
+                                           pvGroup.Period3,
+                                           pvGroup.Period4,
+                                           pvGroup.Period5,
+                                           pvGroup.Period6,
+                                           pvGroup.Period7,
+                                           pvGroup.Period8,
+                                           pvGroup.Period9,
+                                           pvGroup.Period10,
+                                           pvGroup.Period11,
+                                           pvGroup.Period12,
+                                       }).ToArray(),
+                                   StringComparer.OrdinalIgnoreCase),
+                           StringComparer.OrdinalIgnoreCase)
+                   ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
+        }
+
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(ReferenceDataRoot referenceDataRoot)
+        {
+            return referenceDataRoot?
+                       .EasFundingLines?
+                       .GroupBy(fl => fl.FundLine, StringComparer.OrdinalIgnoreCase)
+                       .ToDictionary(k => k.Key,
+                           v => v.SelectMany(ld => ld.EasSubmissionValues)
+                               .GroupBy(easv => easv.AdjustmentTypeName, StringComparer.OrdinalIgnoreCase)
                                .ToDictionary(k => k.Key, value =>
                                        value.Select(pvGroup => new decimal?[]
                                        {

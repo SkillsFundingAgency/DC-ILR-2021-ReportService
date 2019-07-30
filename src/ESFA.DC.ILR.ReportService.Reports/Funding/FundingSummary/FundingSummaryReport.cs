@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _fundingSummaryReportRenderService = fundingSummaryReportRenderService;
         }
 
-        public IEnumerable<Type> DependsOn
+        public virtual IEnumerable<Type> DependsOn
             => new[] 
             {
                 DependentDataCatalog.Fm25,
@@ -37,6 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 DependentDataCatalog.Fm36,
                 DependentDataCatalog.Fm81,
                 DependentDataCatalog.Fm99,
+                DependentDataCatalog.ReferenceData,
             };
 
         public async Task<IEnumerable<string>> GenerateAsync(

@@ -5,35 +5,35 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Model
 {
-    public class PeriodisedValuesLookup : Dictionary<FundModels, Dictionary<string, Dictionary<string, decimal?[][]>>>, IPeriodisedValuesLookup
+    public class PeriodisedValuesLookup : Dictionary<FundingDataSources, Dictionary<string, Dictionary<string, decimal?[][]>>>, IPeriodisedValuesLookup
     {
-        public IEnumerable<decimal?[]> GetPeriodisedValues(FundModels fundModel, IEnumerable<string> fundLines, IEnumerable<string> attributes)
+        public IEnumerable<decimal?[]> GetPeriodisedValues(FundingDataSources fundModel, IEnumerable<string> fundLines, IEnumerable<string> attributes)
         {
             var periodisedValuesList = new List<decimal?[]>();
 
-            try
+            if (fundLines == null || attributes == null)
             {
-                var fundLineDictionary = this[fundModel];
+                return null;
+            }
 
+            if (TryGetValue(fundModel, out var fundLineDictionary))
+            {
                 foreach (var fundLine in fundLines)
                 {
-                    foreach (var attribute in attributes)
+                    if (fundLineDictionary.TryGetValue(fundLine, out var attributesDictionary))
                     {
-                        var attributesDictionary = fundLineDictionary[fundLine];
-
-                        try
+                        foreach (var attribute in attributes)
                         {
-                            periodisedValuesList.AddRange(attributesDictionary[attribute]);
-                        }
-                        catch (KeyNotFoundException)
-                        {
+                            if (attributesDictionary.TryGetValue(attribute, out var attributePeriodisedValues))
+                            {
+                                if (attributePeriodisedValues != null)
+                                {
+                                    periodisedValuesList.AddRange(attributePeriodisedValues);
+                                }
+                            }
                         }
                     }
                 }
-            }
-            catch (KeyNotFoundException)
-            {
-                return null;
             }
 
             return periodisedValuesList;
