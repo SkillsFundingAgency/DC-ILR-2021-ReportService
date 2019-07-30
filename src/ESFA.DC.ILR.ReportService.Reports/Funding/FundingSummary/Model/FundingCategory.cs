@@ -6,11 +6,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundingCategory : IFundingCategory
     {
-        public FundingCategory(string fundingCategoryTitle, int currentPeriod, List<IFundingSubCategory> fundingSubCategories)
+        public FundingCategory(string fundingCategoryTitle, int currentPeriod, List<IFundingSubCategory> fundingSubCategories, string note = null)
         {
             FundingCategoryTitle = fundingCategoryTitle;
             CurrentPeriod = currentPeriod;
             FundingSubCategories = fundingSubCategories ?? new List<IFundingSubCategory>();
+            Note = note;
         }
 
         public List<IFundingSubCategory> FundingSubCategories { get; }
@@ -78,5 +79,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
         public decimal CumulativePeriod11 => CumulativePeriod10 + Period11;
 
         public decimal CumulativePeriod12 => CumulativePeriod11 + Period12;
+
+        public string Note { get; }
     }
 }

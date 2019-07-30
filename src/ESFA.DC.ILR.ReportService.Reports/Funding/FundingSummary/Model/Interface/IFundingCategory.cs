@@ -33,5 +33,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interfa
         decimal CumulativePeriod11 { get; }
 
         decimal CumulativePeriod12 { get; }
+
+        string Note { get; }
     }
 }
