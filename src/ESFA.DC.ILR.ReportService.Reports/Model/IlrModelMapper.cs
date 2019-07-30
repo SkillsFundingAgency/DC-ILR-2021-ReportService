@@ -58,7 +58,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
                 DAM2 = damsArray[1]?.LearnDelFAMCode,
                 DAM3 = damsArray[2]?.LearnDelFAMCode,
                 DAM4 = damsArray[3]?.LearnDelFAMCode,
-                RES = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.RES, famDictionary)
+                RES = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.RES, famDictionary),
+                EEF = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EEF, famDictionary),
             };
         }
 

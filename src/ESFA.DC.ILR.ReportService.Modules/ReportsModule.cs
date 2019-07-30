@@ -7,6 +7,8 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Model;
+using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
 using ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd;
@@ -26,6 +28,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
+
+            containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
             containerBuilder.RegisterType<CsvService>().As<ICsvService>();
             containerBuilder.RegisterType<ExcelService>().As<IExcelService>();

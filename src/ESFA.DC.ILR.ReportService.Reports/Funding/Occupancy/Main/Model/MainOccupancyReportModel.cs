@@ -1,12 +1,12 @@
 ﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
 {
-    public class DevolvedAdultEducationOccupancyReportModel : AbstractOccupancyReportModel
+    public class MainOccupancyReportModel : AbstractOccupancyReportModel
     {
         public LearningDeliveryValue Fm35LearningDelivery { get; set; }
 
-        public string McaGlaShortCode { get; set; }
+        public FundModelAgnosticModel FundModelAgnosticModel { get; set; }
     }
 }

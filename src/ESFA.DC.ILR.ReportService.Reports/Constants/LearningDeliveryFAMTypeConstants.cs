@@ -13,5 +13,7 @@
         public const string DAM = "DAM";
 
         public const string RES = "RES";
+
+        public const string EEF = "EEF";
     }
 }
