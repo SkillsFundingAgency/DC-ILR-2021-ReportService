@@ -1,6 +1,5 @@
 ﻿using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using System.Collections.Generic;
-using System.Linq;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
@@ -13,24 +12,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
     {
         private readonly IPeriodisedValuesLookupProvider _periodisedValuesLookupProvider;
 
-        private readonly IEnumerable<FundingDataSources> _fundingDataSources = new[]
-        {
-            FundingDataSources.FM25,
-            FundingDataSources.FM35,
-            FundingDataSources.FM36,
-            FundingDataSources.FM81,
-            FundingDataSources.FM99,
-            FundingDataSources.EAS,
-        };
+        protected IEnumerable<FundingDataSources> FundingDataSources { private get; set; }
 
         public FundingSummaryReportModelBuilder(IPeriodisedValuesLookupProvider periodisedValuesLookupProvider )
         {
             _periodisedValuesLookupProvider = periodisedValuesLookupProvider;
+
+            FundingDataSources = new[]
+            {
+                Funding.FundingDataSources.FM25,
+                Funding.FundingDataSources.FM35,
+                Funding.FundingDataSources.FM36,
+                Funding.FundingDataSources.FM81,
+                Funding.FundingDataSources.FM99,
+                Funding.FundingDataSources.EAS,
+            };
         }
 
         public FundingSummaryReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
-            var periodisedValues = _periodisedValuesLookupProvider.Provide(_fundingDataSources, reportServiceDependentData);
+            var periodisedValues = _periodisedValuesLookupProvider.Provide(FundingDataSources, reportServiceDependentData);
 
             var reportCurrentPeriod = reportServiceContext.ReturnPeriod > 12 ? 12 : reportServiceContext.ReturnPeriod;
 
@@ -118,7 +119,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                         {
                             new FundingSubCategory("ESFA AEB – Adult Skills (non-procured)", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.AebOtherLearning, FundLineConstants.AebOtherLearningNonProcured }, periodisedValues))
-                                .WithFundLineGroup(BuildEasFm35FundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.EasAebAdultSkillsNonProcured }, periodisedValues))
+                                .WithFundLineGroup(BuildEasAebFundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.EasAebAdultSkillsNonProcured }, periodisedValues))
                         }),
                     new FundingCategory(
                         "ESFA Adult Education Budget – Procured delivery from 1 Nov 2017 ", reportCurrentPeriod,
@@ -141,49 +142,55 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         private IFundLineGroup BuildIlrFm99FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup("ILR Total Advanced Loans Bursary (£)", currentPeriod, FundingDataSources.FM99, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
-                .WithFundLine("ILR Advanced Loans Bursary Funding (£)", new [] { AttributeConstants.Fm99AlbSupportPayment })
-                .WithFundLine("ILR Advanced Loans Bursary Area Costs (£)", new [] { AttributeConstants.Fm99AreaUpliftBalPayment, AttributeConstants.Fm99AreaUpliftOnProgPayment });
+            var description = "Advanced Loans Bursary";
+
+            return new FundLineGroup($"ILR Total {description} (£)", currentPeriod, Funding.FundingDataSources.FM99, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
+                .WithFundLine($"ILR {description} Funding (£)", new [] { AttributeConstants.Fm99AlbSupportPayment })
+                .WithFundLine($"ILR {description} Area Costs (£)", new [] { AttributeConstants.Fm99AreaUpliftBalPayment, AttributeConstants.Fm99AreaUpliftOnProgPayment });
         }
 
         private IFundLineGroup BuildIlrFm25FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup("ILR Total 16-18 Traineeships (£)", currentPeriod, FundingDataSources.FM25, null, periodisedValues)
-                .WithFundLine("ILR 16-18 Traineeships Programme Funding (£)", new [] { FundLineConstants.TraineeshipsAdultFunded1618 }, new [] { AttributeConstants.Fm25LrnOnProgPay })
-                .WithFundLine("ILR 19-24 Traineeships (16-19 Model) Programme Funding (£)", new [] { FundLineConstants.TraineeshipsAdultFunded19Plus }, new [] { AttributeConstants.Fm25LrnOnProgPay });
+            return new FundLineGroup($"ILR Total 16-18 Traineeships (£)", currentPeriod, Funding.FundingDataSources.FM25, null, periodisedValues)
+                .WithFundLine($"ILR 16-18 Traineeships Programme Funding (£)", new [] { FundLineConstants.TraineeshipsAdultFunded1618 }, new [] { AttributeConstants.Fm25LrnOnProgPay })
+                .WithFundLine($"ILR 19-24 Traineeships (16-19 Model) Programme Funding (£)", new [] { FundLineConstants.TraineeshipsAdultFunded19Plus }, new [] { AttributeConstants.Fm25LrnOnProgPay });
         }
 
         private IFundLineGroup BuildIlrFm35FundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, FundingDataSources.FM35, fundLines, periodisedValues)
+            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, Funding.FundingDataSources.FM35, fundLines, periodisedValues)
                         .WithFundLine($"ILR {ageRange} {description} Programme Funding (£)", new[] { AttributeConstants.Fm35OnProgPayment, AttributeConstants.Fm35AchievePayment, AttributeConstants.Fm35EmpOutcomePay, AttributeConstants.Fm35BalancePayment })
                         .WithFundLine($"ILR {ageRange} {description} Learning Support (£)", new[] {AttributeConstants.Fm35LearnSuppFundCash});
         }
 
         private IFundLineGroup BuildIlrTrailblazerApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"ILR Total {ageRange} Trailblazer Apprenticeships (£)", currentPeriod, FundingDataSources.FM81, fundLines, periodisedValues)
-                        .WithFundLine($"ILR {ageRange} Trailblazer Apprenticeships Programme Funding (Core Government Contribution, Maths and English) (£)", new [] { AttributeConstants.Fm81CoreGovContPayment, AttributeConstants.Fm81MathEngBalPayment, AttributeConstants.Fm81MathEngOnProgPayment })
-                        .WithFundLine($"ILR {ageRange} Trailblazer Apprenticeships Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", new []{ AttributeConstants.Fm81AchPayment, AttributeConstants.Fm81SmallBusPayment, AttributeConstants.Fm81YoungAppPayment })
-                        .WithFundLine($"ILR {ageRange} Trailblazer Apprenticeships Learning Support (£)", new [] { AttributeConstants.Fm81LearnSuppFundCash });
+            var description = "Trailblazer Apprenticeships";
+
+            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, Funding.FundingDataSources.FM81, fundLines, periodisedValues)
+                        .WithFundLine($"ILR {ageRange} {description} Programme Funding (Core Government Contribution, Maths and English) (£)", new [] { AttributeConstants.Fm81CoreGovContPayment, AttributeConstants.Fm81MathEngBalPayment, AttributeConstants.Fm81MathEngOnProgPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Employer Incentive Payments (Achievement, Small Employer, 16-18) (£)", new []{ AttributeConstants.Fm81AchPayment, AttributeConstants.Fm81SmallBusPayment, AttributeConstants.Fm81YoungAppPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Learning Support (£)", new [] { AttributeConstants.Fm81LearnSuppFundCash });
         }
              
         private IFundLineGroup BuildIlrNonLevyApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"ILR Total {ageRange} Non-Levy Contracted Apprenticeships (£)", currentPeriod, FundingDataSources.FM36, fundLines, periodisedValues)
-                        .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Programme Aim Indicative Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimOnProgPayment, AttributeConstants.Fm36ProgrammeAimBalPayment, AttributeConstants.Fm36ProgrammeAimCompletionPayment })
+            var description = "Non-Levy Contracted Apprenticeships";
+
+            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, Funding.FundingDataSources.FM36, fundLines, periodisedValues)
+                        .WithFundLine($"ILR {ageRange} {description} Programme Aim Indicative Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimOnProgPayment, AttributeConstants.Fm36ProgrammeAimBalPayment, AttributeConstants.Fm36ProgrammeAimCompletionPayment })
                         .WithFundLine($"...of which Indicative Government Co-Investment Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimProgFundIndMinCoInvest})
-                        .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Maths & English Programme Funding (£)", new[]{ AttributeConstants.Fm36MathEngOnProgPayment, AttributeConstants.Fm36MathEngBalPayment })
-                        .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Framework Uplift (£)", new[] { AttributeConstants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftOnProgPayment })
-                        .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Disadvantage Payments (£)", new[] { AttributeConstants.Fm36DisadvFirstPayment, AttributeConstants.Fm36DisadvSecondPayment })
-                        .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Additional Payments for Providers (£)", new[] { AttributeConstants.Fm36LearnDelFirstProv1618Pay, AttributeConstants.Fm36LearnDelSecondProv1618Pay })
-                        .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Additional Payments for Employers (£)", new[] { AttributeConstants.Fm36LearnDelFirstEmp1618Pay, AttributeConstants.Fm36LearnDelSecondEmp1618Pay })
-                        .WithFundLine($"ILR {ageRange} Non-Levy Contracted Apprenticeships Learning Support (£)", new[] {AttributeConstants.Fm36LearnSuppFundCash });
+                        .WithFundLine($"ILR {ageRange} {description} Maths & English Programme Funding (£)", new[]{ AttributeConstants.Fm36MathEngOnProgPayment, AttributeConstants.Fm36MathEngBalPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Framework Uplift (£)", new[] { AttributeConstants.Fm36LDApplic1618FrameworkUpliftBalancingPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftCompletionPayment, AttributeConstants.Fm36LDApplic1618FrameworkUpliftOnProgPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Disadvantage Payments (£)", new[] { AttributeConstants.Fm36DisadvFirstPayment, AttributeConstants.Fm36DisadvSecondPayment })
+                        .WithFundLine($"ILR {ageRange} {description} Additional Payments for Providers (£)", new[] { AttributeConstants.Fm36LearnDelFirstProv1618Pay, AttributeConstants.Fm36LearnDelSecondProv1618Pay })
+                        .WithFundLine($"ILR {ageRange} {description} Additional Payments for Employers (£)", new[] { AttributeConstants.Fm36LearnDelFirstEmp1618Pay, AttributeConstants.Fm36LearnDelSecondEmp1618Pay })
+                        .WithFundLine($"ILR {ageRange} {description} Learning Support (£)", new[] {AttributeConstants.Fm36LearnSuppFundCash });
         }
 
         private IFundLineGroup BuildIlrLevyApprenticeshipsFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, FundingDataSources.FM36, fundLines, periodisedValues)
+            return new FundLineGroup($"ILR Total {ageRange} {description} (£)", currentPeriod, Funding.FundingDataSources.FM36, fundLines, periodisedValues)
                         .WithFundLine($"ILR {ageRange} {description} Programme Aim Indicative Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimOnProgPayment, AttributeConstants.Fm36ProgrammeAimBalPayment, AttributeConstants.Fm36ProgrammeAimCompletionPayment })
                         .WithFundLine($"...of which Indicative Government Co-Investment Earnings (£)", new[] { AttributeConstants.Fm36ProgrammeAimProgFundIndMinCoInvest })
                         .WithFundLine($"ILR {ageRange} {description} Maths & English Programme Funding (£)", new[] { AttributeConstants.Fm36MathEngOnProgPayment, AttributeConstants.Fm36MathEngBalPayment })
@@ -195,26 +202,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                         .WithFundLine($"ILR {ageRange} {description} Learning Support (£)", new[] { AttributeConstants.Fm36LearnSuppFundCash });
         }
 
-        private IFundLineGroup BuildEasFm35FundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
+        protected virtual IFundLineGroup BuildEasFm35FundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, fundLines, periodisedValues)
+            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, fundLines, periodisedValues)
                 .WithFundLine($"EAS {ageRange} {description} Authorised Claims (£)", new [] { AttributeConstants.EasAuthorisedClaims })
                 .WithFundLine($"EAS {ageRange} {description} Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport })
                 .WithFundLine($"EAS {ageRange} {description} Learner Support (£)", new[] { AttributeConstants.EasLearnerSupport });
         }
 
-        private IFundLineGroup BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
+        protected virtual IFundLineGroup BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, fundLines, periodisedValues)
+            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, fundLines, periodisedValues)
                 .WithFundLine($"EAS {ageRange} {description} Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaims })
                 .WithFundLine($"EAS {ageRange} {description} Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport });
         }
 
-        private IFundLineGroup BuildEasNonLevyApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
+        protected virtual IFundLineGroup BuildEasNonLevyApprenticeshipsFundLineGroup(string ageRange, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
             var description = "Non-Levy Contracted Apprenticeships";
 
-            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, new [] { FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues)
+            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, new [] { FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues)
                //TODO Attribute Mismatch with DB .WithFundLine($"EAS {ageRange} Non-Levy Contracted Apprenticeships Training Audit Adjustments (£)", new [] { AttributeConstants.EasT });
                 .WithFundLine($"EAS {ageRange} {description} Training Authorised Claims (£)", new [] { AttributeConstants.EasAuthorisedClaimsTraining })
                 .WithFundLine($"EAS {ageRange} {description} Additional Payments for Providers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsProvider })
@@ -222,21 +229,23 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 .WithFundLine($"EAS {ageRange} {description} Excess Learning Support (£)", new [] { AttributeConstants.EasExcessLearningSupport });
         }
 
-        private IFundLineGroup BuildEasLevyApprenticeshipsFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
-        {
-            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, new[] { FundLineConstants.LevyApprenticeship1618 }, periodisedValues)
-                .WithFundLine($"EAS {ageRange} {description} - Training Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsTraining })
-                .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Providers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsProvider })
-                .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Employers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsEmployer })
-                .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Apprentices Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsApprentice })
-                .WithFundLine($"EAS {ageRange} {description} - Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport });
-        }
 
-        private IFundLineGroup BuildEasFm25FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
+        // TODO Review
+        //private IFundLineGroup BuildEasLevyApprenticeshipsFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
+        //{
+        //    return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, new[] { FundLineConstants.LevyApprenticeship1618 }, periodisedValues)
+        //        .WithFundLine($"EAS {ageRange} {description} - Training Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsTraining })
+        //        .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Providers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsProvider })
+        //        .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Employers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsEmployer })
+        //        .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Apprentices Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsApprentice })
+        //        .WithFundLine($"EAS {ageRange} {description} - Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport });
+        //}
+
+        protected virtual IFundLineGroup BuildEasFm25FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
         {
             var description = "Traineeships";
 
-            return new FundLineGroup($"EAS Total 16-18 {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, new[] { FundLineConstants.Traineeships1618 }, periodisedValues)
+            return new FundLineGroup($"EAS Total 16-18 {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, new[] { FundLineConstants.Traineeships1618 }, periodisedValues)
                 .WithFundLine($"EAS 16-18 {description} Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaims })
                 .WithFundLine($"EAS 16-18 {description} Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport })
                 .WithFundLine($"EAS 16-19 {description} Vulnerable Bursary (£)", new [] { AttributeConstants.EasVulnerableBursary })
@@ -244,19 +253,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 .WithFundLine($"EAS 16-19 {description} Discretionary Bursary (£)", new[] { AttributeConstants.EasDiscretionaryBursary });
         }
 
-        private IFundLineGroup BuildEasAebFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundModels, IPeriodisedValuesLookup periodisedValues)
+        protected virtual IFundLineGroup BuildEasAebFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundModels, IPeriodisedValuesLookup periodisedValues)
         {
-            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, fundModels, periodisedValues)
+            return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, fundModels, periodisedValues)
                 .WithFundLine($"EAS {ageRange} {description} Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaims })
                 .WithFundLine($"EAS {ageRange} {description} Prince's Trust (£)", new[] { AttributeConstants.EasPrincesTrust })
                 .WithFundLine($"EAS {ageRange} {description} Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport });
         }
 
-        private IFundLineGroup BuildEasFm99FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
+        protected virtual IFundLineGroup BuildEasFm99FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
         {
             var description = "Advanced Loans Bursary";
 
-            return new FundLineGroup($"EAS Total {description} Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
+            return new FundLineGroup($"EAS Total {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
                 .WithFundLine($"EAS {description} Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport })
                 .WithFundLine($"EAS {description} Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaims });
         }

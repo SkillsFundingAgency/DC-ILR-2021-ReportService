@@ -150,6 +150,7 @@
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
     <Compile Include="Service\ExcelServiceTests.cs" />
     <Compile Include="Service\FileNameServiceTests.cs" />
+    <Compile Include="Stubs\FileServiceStub.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
   </ItemGroup>
