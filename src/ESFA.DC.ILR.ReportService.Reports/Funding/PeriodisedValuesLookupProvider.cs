@@ -204,8 +204,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
 
         public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(ReferenceDataRoot referenceDataRoot)
         {
-            // TODO when ReferenceDataRoot has EAS Data
-            return new Dictionary<string, Dictionary<string, decimal?[][]>>();
+            return referenceDataRoot?
+                       .EasFundingLines?
+                       .GroupBy(fl => fl.FundLine, StringComparer.OrdinalIgnoreCase)
+                       .ToDictionary(k => k.Key,
+                           v => v.SelectMany(ld => ld.EasSubmissionValues)
+                               .GroupBy(easv => easv.AdjustmentTypeName, StringComparer.OrdinalIgnoreCase)
+                               .ToDictionary(k => k.Key, value =>
+                                       value.Select(pvGroup => new decimal?[]
+                                       {
+                                           pvGroup.Period1,
+                                           pvGroup.Period2,
+                                           pvGroup.Period3,
+                                           pvGroup.Period4,
+                                           pvGroup.Period5,
+                                           pvGroup.Period6,
+                                           pvGroup.Period7,
+                                           pvGroup.Period8,
+                                           pvGroup.Period9,
+                                           pvGroup.Period10,
+                                           pvGroup.Period11,
+                                           pvGroup.Period12,
+                                       }).ToArray(),
+                                   StringComparer.OrdinalIgnoreCase),
+                           StringComparer.OrdinalIgnoreCase)
+                   ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
     }
 }
