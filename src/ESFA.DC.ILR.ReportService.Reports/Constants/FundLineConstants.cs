@@ -31,6 +31,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string AebOtherLearningProcuredFromNov2017 = "AEB - Other Learning (procured from Nov 2017)";
         public const string EasAebAdultSkillsNonProcured = "ESFA AEB - Adult Skills (non-procured)";
         public const string EasAebAdultSkillsProcuredFromNov2017 = "ESFA AEB - Adult Skills (procured from Nov 2017)";
+        public const string AdultEducationEligibleMCAGLANonProcured = "Adult Education - Eligible for MCA/GLA funding (non-procured)";
+        public const string AdultEducationEligibleMCAGLAProcured = "Adult Education - Eligible for MCA/GLA funding (procured)";
 
         // FM81 FundLines
         public const string TrailblazerApprenticeship1618 = "16-18 Trailblazer Apprenticeship";
