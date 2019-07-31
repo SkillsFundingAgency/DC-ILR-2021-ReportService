@@ -2,7 +2,7 @@
 {
     public class LearningDeliveryPeriodisedValuesModel
     {
-        public decimal AchievePayPctMax { get; set; }
+        public decimal? AchievePayPctMax { get; set; }
 
         public LearningDeliveryPeriodisedValuesAttributesModel August { get; set; }
 
@@ -28,16 +28,16 @@
 
         public LearningDeliveryPeriodisedValuesAttributesModel July { get; set; }
 
-        public decimal OnProgPaymentTotal { get; set; }
+        public decimal? OnProgPaymentTotal { get; set; }
 
-        public decimal BalancePaymentTotal { get; set; }
+        public decimal? BalancePaymentTotal { get; set; }
 
-        public decimal AchievePaymentTotal { get; set; }
+        public decimal? AchievePaymentTotal { get; set; }
 
-        public decimal EmpOutcomePayTotal { get; set; }
+        public decimal? EmpOutcomePayTotal { get; set; }
 
-        public decimal LearnSuppFundCashTotal { get; set; }
+        public decimal? LearnSuppFundCashTotal { get; set; }
         
-        public decimal TotalEarned { get; set; }
+        public decimal? TotalEarned { get; set; }
     }
 }

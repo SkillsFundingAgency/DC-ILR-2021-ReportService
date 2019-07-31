@@ -1,5 +1,6 @@
 ﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
 {
@@ -8,5 +9,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
         public LearningDeliveryValue Fm35LearningDelivery { get; set; }
 
         public FundModelAgnosticModel FundModelAgnosticModel { get; set; }
+
+        public string TraineeshipWorkPlacementOrWorkPreparation { get; set; }
+
+        public string HigherApprenticeshipPrescribedHeAim { get; set; }
+
     }
 }

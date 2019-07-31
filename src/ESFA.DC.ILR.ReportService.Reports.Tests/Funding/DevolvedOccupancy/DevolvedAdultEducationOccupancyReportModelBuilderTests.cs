@@ -7,6 +7,8 @@ using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Model;
+using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
@@ -100,131 +102,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             NewBuilder().LearningDeliveryReportFilter(learningDeliveryMock.Object).Should().BeTrue();
         }
 
-        [Fact]
-        public void ProviderSpecLearnMonitoringBuilder_Match()
-        {
-            var aMon = "AMonitoring";
-            var bMon = "BMonitoring";
-
-            var monitorings = new List<IProviderSpecLearnerMonitoring>()
-            {
-                BuildProviderSpecLearnerMonitoring("A", aMon),
-                BuildProviderSpecLearnerMonitoring("B", bMon),
-            };
-
-            var result = NewBuilder().BuildProviderSpecLearnerMonitoring(monitorings);
-
-            result.A.Should().Be(aMon);
-            result.B.Should().Be(bMon);
-        }
-
-        [Fact]
-        public void ProviderSpecLearnMonitoringBuilder_NonMatch()
-        {
-            var aMon = "AMonitoring";
-            var bMon = "BMonitoring";
-
-            var monitorings = new List<IProviderSpecLearnerMonitoring>()
-            {
-                BuildProviderSpecLearnerMonitoring("C", aMon),
-                BuildProviderSpecLearnerMonitoring("D", bMon),
-            };
-
-            var result = NewBuilder().BuildProviderSpecLearnerMonitoring(monitorings);
-
-            result.A.Should().BeNull();
-            result.B.Should().BeNull();
-        }
-
-        [Fact]
-        public void ProviderSpecLearnMonitoringBuilder_MixedCase()
-        {
-            var aMon = "AMonitoring";
-            var bMon = "BMonitoring";
-
-            var monitorings = new List<IProviderSpecLearnerMonitoring>()
-            {
-                BuildProviderSpecLearnerMonitoring("a", aMon),
-                BuildProviderSpecLearnerMonitoring("b", bMon),
-            };
-
-            var result = NewBuilder().BuildProviderSpecLearnerMonitoring(monitorings);
-
-            result.A.Should().Be(aMon);
-            result.B.Should().Be(bMon);
-        }
-
-        [Fact]
-        public void ProviderSpecDeliveryMonitoringBuilder_Match()
-        {
-            var aMon = "AMonitoring";
-            var bMon = "BMonitoring";
-            var cMon = "CMonitoring";
-            var dMon = "DMonitoring";
-
-            var monitorings = new List<IProviderSpecDeliveryMonitoring>()
-            {
-                BuildProviderSpecDeliveryMonitoring("A", aMon),
-                BuildProviderSpecDeliveryMonitoring("B", bMon),
-                BuildProviderSpecDeliveryMonitoring("C", cMon),
-                BuildProviderSpecDeliveryMonitoring("D", dMon),
-            };
-
-            var result = NewBuilder().BuildProviderSpecDeliveryMonitoring(monitorings);
-
-            result.A.Should().Be(aMon);
-            result.B.Should().Be(bMon);
-            result.C.Should().Be(cMon);
-            result.D.Should().Be(dMon);
-        }
-
-        [Fact]
-        public void ProviderSpecDeliveryMonitoringBuilder_NonMatch()
-        {
-            var aMon = "AMonitoring";
-            var bMon = "BMonitoring";
-            var cMon = "CMonitoring";
-            var dMon = "DMonitoring";
-
-            var monitorings = new List<IProviderSpecDeliveryMonitoring>()
-            {
-                BuildProviderSpecDeliveryMonitoring("E", aMon),
-                BuildProviderSpecDeliveryMonitoring("F", bMon),
-                BuildProviderSpecDeliveryMonitoring("G", cMon),
-                BuildProviderSpecDeliveryMonitoring("H", dMon),
-            };
-
-            var result = NewBuilder().BuildProviderSpecDeliveryMonitoring(monitorings);
-
-            result.A.Should().BeNull();
-            result.B.Should().BeNull();
-            result.C.Should().BeNull();
-            result.D.Should().BeNull();
-        }
-
-        [Fact]
-        public void ProviderSpecDeliveryMonitoringBuilder_MixedCase()
-        {
-            var aMon = "AMonitoring";
-            var bMon = "BMonitoring";
-            var cMon = "CMonitoring";
-            var dMon = "DMonitoring";
-
-            var monitorings = new List<IProviderSpecDeliveryMonitoring>()
-            {
-                BuildProviderSpecDeliveryMonitoring("a", aMon),
-                BuildProviderSpecDeliveryMonitoring("b", bMon),
-                BuildProviderSpecDeliveryMonitoring("c", cMon),
-                BuildProviderSpecDeliveryMonitoring("d", dMon),
-            };
-
-            var result = NewBuilder().BuildProviderSpecDeliveryMonitoring(monitorings);
-
-            result.A.Should().Be(aMon);
-            result.B.Should().Be(bMon);
-            result.C.Should().Be(cMon);
-            result.D.Should().Be(dMon);
-        }
+        
 
         [Fact]
         public void OrderBy()
@@ -252,18 +130,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             var reportServiceContext = Mock.Of<IReportServiceContext>();
             var dependentDataMock = new Mock<IReportServiceDependentData>();
 
+            var learningDeliveryFams = new List<ILearningDeliveryFAM>()
+            {
+                new TestLearningDeliveryFAM()
+                {
+                    LearnDelFAMType = "SOF",
+                    LearnDelFAMCode = "110",
+                }
+            };
+
+            var providerSpecDeliveryMonitorings = new List<IProviderSpecDeliveryMonitoring>()
+            {
+                new TestProviderSpecDeliveryMonitoring(),
+            };
+
             var learningDelivery = new TestLearningDelivery()
             {
                 LearnAimRef = "learnAimRef",
                 AimSeqNumber = 1,
-                LearningDeliveryFAMs = new List<ILearningDeliveryFAM>()
-                {
-                    new TestLearningDeliveryFAM()
-                    {
-                        LearnDelFAMType = "SOF",
-                        LearnDelFAMCode = "110",
-                    }
-                }
+                LearningDeliveryFAMs = learningDeliveryFams,
+                ProviderSpecDeliveryMonitorings = providerSpecDeliveryMonitorings
+            };
+
+            var providerSpecLearnerMonitorings = new List<IProviderSpecLearnerMonitoring>()
+            {
+                new TestProviderSpecLearnerMonitoring(),
             };
 
             var learner = new TestLearner()
@@ -272,7 +163,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 LearningDeliveries = new List<ILearningDelivery>()
                 {
                     learningDelivery
-                }
+                },
+                ProviderSpecLearnerMonitorings = providerSpecLearnerMonitorings,
             };
 
             var message = new TestMessage()
@@ -332,7 +224,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
             dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
 
-            var result = NewBuilder().Build(reportServiceContext, dependentDataMock.Object).ToList();   
+            var providerSpecDeliveryMonitoringModel = new ProviderSpecDeliveryMonitoringModel();
+            var providerSpecLearnerMonitoringModel = new ProviderSpecLearnerMonitoringModel();
+            var learningDeliveryFamsModel = new LearningDeliveryFAMsModel()
+            {
+                SOF = "110"
+            };
+
+            var ilrModelMapperMock = new Mock<IIlrModelMapper>();
+
+            ilrModelMapperMock.Setup(m => m.MapLearningDeliveryFAMs(learningDeliveryFams)).Returns(learningDeliveryFamsModel);
+            ilrModelMapperMock.Setup(m => m.MapProviderSpecDeliveryMonitorings(providerSpecDeliveryMonitorings)).Returns(providerSpecDeliveryMonitoringModel);
+            ilrModelMapperMock.Setup(m => m.MapProviderSpecLearnerMonitorings(providerSpecLearnerMonitorings)).Returns(providerSpecLearnerMonitoringModel);
+
+            var result = NewBuilder(ilrModelMapperMock.Object).Build(reportServiceContext, dependentDataMock.Object).ToList();   
 
             result.Should().HaveCount(1);
 
@@ -343,10 +248,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             row.LarsLearningDelivery.Should().Be(larsLearningDelivery);
             row.Fm35LearningDelivery.Should().Be(fm35LearningDeliveryValue);
 
-            row.ProviderSpecDeliveryMonitoring.Should().NotBeNull();
-            row.ProviderSpecDeliveryMonitoring.Should().NotBeNull();
+            row.ProviderSpecDeliveryMonitoring.Should().Be(providerSpecDeliveryMonitoringModel);
+            row.ProviderSpecLearnerMonitoring.Should().Be(providerSpecLearnerMonitoringModel);
             row.PeriodisedValues.Should().NotBeNull();
-            row.LearningDeliveryFAMs.Should().NotBeNull();
+            row.LearningDeliveryFAMs.Should().Be(learningDeliveryFamsModel);
 
             row.McaGlaShortCode.Should().Be("GMCA");
         }
@@ -356,6 +261,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
         {
             var reportServiceContext = Mock.Of<IReportServiceContext>();
             var dependentDataMock = new Mock<IReportServiceDependentData>();
+
+            var ilrModelMapperMock = new Mock<IIlrModelMapper>();
+
+            var providerSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel();
+            var providerSpecLearnMonitoring = new ProviderSpecLearnerMonitoringModel();
+            var famModel = new LearningDeliveryFAMsModel();
+
+            ilrModelMapperMock.Setup(m => m.MapProviderSpecDeliveryMonitorings(It.IsAny<IEnumerable<IProviderSpecDeliveryMonitoring>>())).Returns(providerSpecDeliveryMonitoring);
+            ilrModelMapperMock.Setup(m => m.MapProviderSpecLearnerMonitorings(It.IsAny<IEnumerable<IProviderSpecLearnerMonitoring>>())).Returns(providerSpecLearnMonitoring);
+            ilrModelMapperMock.Setup(m => m.MapLearningDeliveryFAMs(It.IsAny<IEnumerable<ILearningDeliveryFAM>>())).Returns(famModel);
 
             var learnerCount = 50000;
             
@@ -427,32 +342,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
             dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
 
-            var result = NewBuilder().Build(reportServiceContext, dependentDataMock.Object).ToList();
+            var result = NewBuilder(ilrModelMapperMock.Object).Build(reportServiceContext, dependentDataMock.Object).ToList();
 
             result.Should().HaveCount(learnerCount);
         }
 
-        private DevolvedAdultEducationOccupancyReportModelBuilder NewBuilder() => new DevolvedAdultEducationOccupancyReportModelBuilder();
-
-        private IProviderSpecLearnerMonitoring BuildProviderSpecLearnerMonitoring(string occur, string mon)
+        private DevolvedAdultEducationOccupancyReportModelBuilder NewBuilder(IIlrModelMapper ilrModelMapper = null)
         {
-            var monitoringMock = new Mock<IProviderSpecLearnerMonitoring>();
-            
-            monitoringMock.SetupGet(a => a.ProvSpecLearnMonOccur).Returns(occur);
-            monitoringMock.SetupGet(a => a.ProvSpecLearnMon).Returns(mon);
-
-            return monitoringMock.Object;
-        }
-
-        private IProviderSpecDeliveryMonitoring BuildProviderSpecDeliveryMonitoring(string occur, string mon)
-        {
-            var monitoringMock = new Mock<IProviderSpecDeliveryMonitoring>();
-
-            monitoringMock.SetupGet(a => a.ProvSpecDelMonOccur).Returns(occur);
-            monitoringMock.SetupGet(a => a.ProvSpecDelMon).Returns(mon);
-
-            return monitoringMock.Object;
-        }
+            return new DevolvedAdultEducationOccupancyReportModelBuilder(ilrModelMapper);
+        } 
 
         private LearningDeliveryPeriodisedValue BuildPeriodisedValuesForAttribute(string attribute)
         {

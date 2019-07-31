@@ -1,14 +1,16 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.Model
 {
     public class FundModelAgnosticModel
     {
+        public int FundModel { get; set; }
+
         public decimal? ApplicableFundingRate { get; set; }
 
-        public DateTime LearningStartDate { get; set; }
+        public DateTime? LearningStartDate { get; set; }
 
-        public DateTime LearningPlannedEndDate { get; set; }
+        public DateTime? LearningPlannedEndDate { get; set; }
 
         public DateTime? LearningActualEndDate { get; set; }
 

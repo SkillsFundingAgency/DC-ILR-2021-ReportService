@@ -68,10 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                     var providerSpecLearnerMonitoring = _ilrModelMapper.MapProviderSpecLearnerMonitorings(learner.ProviderSpecLearnerMonitorings);
                     var providerSpecDeliveryMonitoring = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings);
                     var learningDeliveryFams = _ilrModelMapper.MapLearningDeliveryFAMs(learningDelivery.LearningDeliveryFAMs);
-
-                    var periodisedValuesDictionary = BuildFm35PeriodisedValuesDictionary(fm35LearningDelivery?.LearningDeliveryPeriodisedValues);
-
-                    var periodisedValues = BuildPeriodisedValuesModel(periodisedValuesDictionary);
+                    var periodisedValues = BuildFm35PeriodisedValuesModel(fm35LearningDelivery?.LearningDeliveryPeriodisedValues);
                     var mcaGlaShortCode = _sofCodesDictionary.GetValueOrDefault(learningDeliveryFams.SOF);
 
                     models.Add(new DevolvedAdultEducationOccupancyReportModel()

@@ -10,6 +10,7 @@ using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
 {
@@ -17,8 +18,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
     {
         private const decimal _defaultDecimal = 0;
 
-        public LearningDeliveryPeriodisedValuesModel BuildPeriodisedValuesModel(IDictionary<string, decimal[]> periodisedValuesDictionary)
+        public LearningDeliveryPeriodisedValuesModel BuildFm35PeriodisedValuesModel(IEnumerable<LearningDeliveryPeriodisedValue> periodisedValues)
         {
+            var periodisedValuesDictionary = BuildFm35PeriodisedValuesDictionary(periodisedValues);
+
             var onProgPaymentTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm35OnProgPayment)?.Sum() ?? _defaultDecimal;
             var balancePaymentTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm35BalancePayment)?.Sum() ?? _defaultDecimal;
             var achievePaymentTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm35AchievePayment)?.Sum() ?? _defaultDecimal;
@@ -30,18 +33,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
             return new LearningDeliveryPeriodisedValuesModel()
             {
                 AchievePayPctMax = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm35AchievePayPct)?.MaxOrDefault() ?? _defaultDecimal,
-                August = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 0),
-                September = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 1),
-                October = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 2),
-                November = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 3),
-                December = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 4),
-                January = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 5),
-                February = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 6),
-                March = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 7),
-                April = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 8),
-                May = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 9),
-                June = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 10),
-                July = BuildPeriodisedValuesAttributes(periodisedValuesDictionary, 11),
+                August = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 0),
+                September = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 1),
+                October = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 2),
+                November = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 3),
+                December = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 4),
+                January = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 5),
+                February = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 6),
+                March = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 7),
+                April = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 8),
+                May = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 9),
+                June = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 10),
+                July = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 11),
                 OnProgPaymentTotal = onProgPaymentTotal,
                 BalancePaymentTotal = balancePaymentTotal,
                 AchievePaymentTotal = achievePaymentTotal,
@@ -51,7 +54,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
             };
         }
 
-        public LearningDeliveryPeriodisedValuesAttributesModel BuildPeriodisedValuesAttributes(IDictionary<string, decimal[]> periodisedValues, int period)
+        public LearningDeliveryPeriodisedValuesAttributesModel BuildFm35PeriodisedValuesAttributes(IDictionary<string, decimal[]> periodisedValues, int period)
         {
             return new LearningDeliveryPeriodisedValuesAttributesModel()
             {
@@ -87,6 +90,41 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                 ?? new Dictionary<string, decimal[]>();
         }
 
+        public LearningDeliveryPeriodisedValuesModel BuildFm25PeriodisedValuesModel(IEnumerable<LearnerPeriodisedValues> periodisedValues)
+        {
+            var periodisedValuesDictionary = BuildFm25PeriodisedValuesDictionary(periodisedValues);
+
+            var onProgPaymentTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm25LrnOnProgPay)?.Sum() ?? _defaultDecimal;
+
+            var totalEarned = onProgPaymentTotal;
+
+            return new LearningDeliveryPeriodisedValuesModel()
+            {
+                August = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 0),
+                September = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 1),
+                October = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 2),
+                November = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 3),
+                December = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 4),
+                January = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 5),
+                February = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 6),
+                March = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 7),
+                April = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 8),
+                May = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 9),
+                June = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 10),
+                July = BuildFm35PeriodisedValuesAttributes(periodisedValuesDictionary, 11),
+                OnProgPaymentTotal = onProgPaymentTotal,
+                TotalEarned = totalEarned,
+            };
+        }
+
+        public LearningDeliveryPeriodisedValuesAttributesModel BuildFm25PeriodisedValuesAttributes(IDictionary<string, decimal[]> periodisedValues, int period)
+        {
+            return new LearningDeliveryPeriodisedValuesAttributesModel()
+            {
+                OnProgPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm35OnProgPayment)?[period] ?? _defaultDecimal,
+            };
+        }
+
         public IDictionary<string, decimal[]> BuildFm25PeriodisedValuesDictionary(IEnumerable<LearnerPeriodisedValues> periodisedValues)
         {
             return periodisedValues?
@@ -111,9 +149,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                    ?? new Dictionary<string, decimal[]>();
         }
 
-        public IEnumerable<DevolvedAdultEducationOccupancyReportModel> Order(IEnumerable<DevolvedAdultEducationOccupancyReportModel> models)
+        public IEnumerable<T> Order<T>(IEnumerable<T> models)
+            where T : IOrderableOccupancyReportModel
         {
-            return models.OrderBy(m => m.Learner.LearnRefNumber).ThenBy(m => m.LearningDelivery.AimSeqNumber);
+            return models.OrderBy(m => m.LearnRefNumber).ThenBy(m => m.AimSeqNumber);
         }
 
         protected IDictionary<string, LARSLearningDelivery> BuildLarsLearningDeliveryDictionary(ReferenceDataRoot referenceDataRoot)
@@ -134,6 +173,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                             ld => ld),
                     StringComparer.OrdinalIgnoreCase)
                 ?? new Dictionary<string, Dictionary<int, LearningDelivery>>();
+        }
+
+        protected IDictionary<string, FM25Learner> BuildFm25LearnerDictionary(FM25Global fm25Global)
+        {
+            return fm25Global?
+                       .Learners?
+                       .ToDictionary(
+                           l => l.LearnRefNumber,
+                           l => l,
+                           StringComparer.OrdinalIgnoreCase)
+                   ?? new Dictionary<string, FM25Learner>();
         }
     }
 }
