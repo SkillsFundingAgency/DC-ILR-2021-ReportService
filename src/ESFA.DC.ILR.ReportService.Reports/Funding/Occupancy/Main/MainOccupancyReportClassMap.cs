@@ -74,8 +74,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             Map(m => m.Fm35LearningDelivery.LargeEmployerID).Name(@"Employer identifier").Index(++index);
             Map(m => m.Fm35LearningDelivery.LargeEmployerFM35Fctr).Name(@"Large employer factor").Index(++index);
             Map(m => m.Fm35LearningDelivery.CapFactor).Name(@"Capping factor").Index(++index);
-            Map(m => m).Name(@"Traineeship work placement or work preparation").Index(++index);  // TODO
-            Map(m => m).Name(@"Higher apprenticeship prescribed HE aim").Index(++index);         // TODO
+            Map(m => m.TraineeshipWorkPlacementOrWorkPreparation).Name(@"Traineeship work placement or work preparation").Index(++index);
+            Map(m => m.HigherApprenticeshipPrescribedHeAim).Name(@"Higher apprenticeship prescribed HE aim").Index(++index);
             Map(m => m.Fm35LearningDelivery.ApplicEmpFactDate).Name(@"Date used for employment factor lookups").Index(++index);
             Map(m => m.Fm35LearningDelivery.ApplicFactDate).Name(@"Date used for other factor lookups").Index(++index);
             Map(m => m.PeriodisedValues.August.OnProgPayment).Name(@"August on programme earned cash").Index(++index);

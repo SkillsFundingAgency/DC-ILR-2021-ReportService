@@ -6,6 +6,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
@@ -26,6 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterValidationReports(containerBuilder);
           
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
+            RegisterMainOccupancyReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
 
@@ -48,6 +50,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReport>().As<IReport>();
             containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>>();
+        }
+
+        private void RegisterMainOccupancyReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<MainOccupancyReport>().As<IReport>();
+            containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<MainOccupancyReportModel>>>();
         }
 
         protected virtual void RegisterFundingSummaryReport(ContainerBuilder containerBuilder)
