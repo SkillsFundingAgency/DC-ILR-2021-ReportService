@@ -8,7 +8,6 @@ using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -17,8 +16,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
 {
     public class DevolvedAdultEducationOccupancyReportModelBuilder : AbstractOccupancyReportModelBuilder, IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>
     {
-        private readonly IIlrModelMapper _ilrModelMapper;
-
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
             LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority,
@@ -44,8 +41,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
         };
 
         public DevolvedAdultEducationOccupancyReportModelBuilder(IIlrModelMapper ilrModelMapper)
+            : base(ilrModelMapper)
         {
-            _ilrModelMapper = ilrModelMapper;
         }
 
         public IEnumerable<DevolvedAdultEducationOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)

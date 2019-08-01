@@ -11,5 +11,9 @@
         public decimal? EmpOutcomePay { get; set; }
 
         public decimal? LearnSuppFundCash { get; set; }
+
+        public decimal? TotalEarned { get; set; }
+
+        public decimal? Code { get; set; }
     }
 }

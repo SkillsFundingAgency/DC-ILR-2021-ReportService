@@ -1,5 +1,4 @@
 ﻿using CsvHelper.Configuration;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
 {
@@ -39,22 +38,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             Map(m => m.LearningDelivery.AddHoursNullable).Name(@"Additional delivery hours").Index(++index);
             Map(m => m.LearningDelivery.LSDPostcode).Name(@"Learning start date postcode").Index(++index);
             Map(m => m.McaGlaShortCode).Name(@"Applicable area from source of funding").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.SOF).Name(@"Learning delivery funding and monitoring type – source of funding").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.FFI).Name(@"Learning delivery funding and monitoring type – full or co funding indicator ").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.LSF_Highest).Name(@"Learning delivery funding and monitoring type – learning support funding (highest applicable)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.SOF).Name(@"Learning delivery funding and monitoring type - source of funding").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.FFI).Name(@"Learning delivery funding and monitoring type - full or co funding indicator ").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LSF_Highest).Name(@"Learning delivery funding and monitoring type - learning support funding (highest applicable)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.LSF_EarliestDateFrom).Name(@"Learning delivery funding and monitoring type - LSF date applies from (earliest)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.LSF_LatestDateTo).Name(@"Learning delivery funding and monitoring type - LSF date applies to (latest)").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.LDM1).Name(@"Learning delivery funding and monitoring type – learning delivery monitoring (A)").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.LDM2).Name(@"Learning delivery funding and monitoring type – learning delivery monitoring (B)").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.LDM3).Name(@"Learning delivery funding and monitoring type – learning delivery monitoring (C)").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.LDM4).Name(@"Learning delivery funding and monitoring type – learning delivery monitoring (D)").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.LDM5).Name(@"Learning delivery funding and monitoring type – learning delivery monitoring (E)").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.LDM6).Name(@"Learning delivery funding and monitoring type – learning delivery monitoring (F)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM1).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (A)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM2).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (B)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM3).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (C)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM4).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (D)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM5).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (E)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM6).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (F)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.DAM1).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (A)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.DAM2).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (B)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.DAM3).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (C)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.DAM4).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (D)").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.RES).Name(@"Learning delivery funding and monitoring type – restart indicator").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.RES).Name(@"Learning delivery funding and monitoring type - restart indicator").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.A).Name(@"Provider specified delivery monitoring (A)").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.B).Name(@"Provider specified delivery monitoring (B)").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.C).Name(@"Provider specified delivery monitoring (C)").Index(++index);

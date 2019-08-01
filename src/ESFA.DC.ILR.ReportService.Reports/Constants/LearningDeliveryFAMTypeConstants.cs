@@ -2,6 +2,10 @@
 {
     public class LearningDeliveryFAMTypeConstants
     {
+        public const string ADL = "ADL";
+
+        public const string ALB = "ALB";
+
         public const string SOF = "SOF";
 
         public const string FFI = "FFI";

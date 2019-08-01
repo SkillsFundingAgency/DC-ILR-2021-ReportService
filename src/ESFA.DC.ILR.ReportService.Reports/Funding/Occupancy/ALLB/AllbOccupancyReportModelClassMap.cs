@@ -1,0 +1,124 @@
+﻿using CsvHelper.Configuration;
+
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB
+{
+    public class AllbOccupancyReportModelClassMap : ClassMap<AllbOccupancyReportModel>
+    {
+        public AllbOccupancyReportModelClassMap()
+        {
+            var index = 0;
+
+            Map(m => m.Learner.LearnRefNumber).Name(@"Learner reference number").Index(++index);
+            Map(m => m.Learner.ULN).Name(@"Unique learner number").Index(++index);
+            Map(m => m.Learner.DateOfBirthNullable).Name(@"Date of birth").Index(++index);
+            Map(m => m.Learner.PMUKPRNNullable).Name(@"Pre-merger UKPRN").Index(++index);
+            Map(m => m.Learner.CampId).Name(@"Campus identifier").Index(++index);
+            Map(m => m.ProviderSpecLearnerMonitoring.A).Name(@"Provider specified learner monitoring (A)").Index(++index);
+            Map(m => m.ProviderSpecLearnerMonitoring.B).Name(@"Provider specified learner monitoring (B)").Index(++index);
+            Map(m => m.LearningDelivery.AimSeqNumber).Name(@"Aim sequence number").Index(++index);
+            Map(m => m.LearningDelivery.LearnAimRef).Name(@"Learning aim reference").Index(++index);
+            Map(m => m.LarsLearningDelivery.LearnAimRefTitle).Name(@"Learning aim title").Index(++index);
+            Map(m => m.LearningDelivery.SWSupAimId).Name(@"Software supplier aim identifier").Index(++index);
+            Map(m => m.Fm99LearningDelivery.WeightedRate).Name(@"Applicable funding rate").Index(++index);
+            Map(m => m.Fm99LearningDelivery.ApplicProgWeightFact).Name(@"Applicable programme weighting").Index(++index);
+            Map(m => m.LarsLearningDelivery.NotionalNVQLevel).Name(@"Notional NVQ level").Index(++index);
+            Map(m => m.LarsLearningDelivery.SectorSubjectAreaTier2).Name(@"Tier 2 sector subject area").Index(++index);
+            Map(m => m.LearningDelivery.AimType).Name(@"Aim type").Index(++index);
+            Map(m => m.LearningDelivery.FundModel).Name(@"Funding model").Index(++index);
+            Map(m => m.LearningDelivery.PriorLearnFundAdjNullable).Name(@"Funding adjustment for prior learning").Index(++index);
+            Map(m => m.LearningDelivery.OtherFundAdjNullable).Name(@"Other funding adjustment").Index(++index);
+            Map(m => m.LearningDelivery.OrigLearnStartDateNullable).Name(@"Original learning start date").Index(++index);
+            Map(m => m.LearningDelivery.LearnStartDate).Name(@"Learning start date").Index(++index);
+            Map(m => m.LearningDelivery.LearnPlanEndDate).Name(@"Learning planned end date").Index(++index);
+            Map(m => m.LearningDelivery.CompStatus).Name(@"Completion status").Index(++index);
+            Map(m => m.LearningDelivery.LearnActEndDateNullable).Name(@"Learning actual end date").Index(++index);
+            Map(m => m.LearningDelivery.OutcomeNullable).Name(@"Outcome").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.ADL).Name(@"Learning delivery funding and monitoring type - Advanced Learner Loans indicator").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.ALB_Highest).Name(@"Learning delivery funding and monitoring type - Advanced Learner Loans Bursary funding").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.ALB_EarliestDateFrom).Name(@"Learning delivery funding and monitoring - ALB date applies from ").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.ALB_LatestDateTo).Name(@"Learning delivery funding and monitoring - ALB date applies to ").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM1).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (A)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM2).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (B)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM3).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (C)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM4).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (D)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM5).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (E)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.LDM6).Name(@"Learning delivery funding and monitoring type - learning delivery monitoring (F)").Index(++index);
+            Map(m => m.ProviderSpecDeliveryMonitoring.A).Name(@"Provider specified delivery monitoring (A)").Index(++index);
+            Map(m => m.ProviderSpecDeliveryMonitoring.B).Name(@"Provider specified delivery monitoring (B)").Index(++index);
+            Map(m => m.ProviderSpecDeliveryMonitoring.C).Name(@"Provider specified delivery monitoring (C)").Index(++index);
+            Map(m => m.ProviderSpecDeliveryMonitoring.D).Name(@"Provider specified delivery monitoring (D)").Index(++index);
+            Map(m => m.LearningDelivery.PartnerUKPRNNullable).Name(@"Sub contracted or partnership UKPRN").Index(++index);
+            Map(m => m.LearningDelivery.DelLocPostCode).Name(@"Delivery location postcode").Index(++index);
+            Map(m => m.Fm99LearningDelivery.AreaCostFactAdj).Name(@"Area uplift").Index(++index);
+            Map(m => m.Fm99LearningDelivery.FundLine).Name(@"Funding line type").Index(++index);
+            Map(m => m.Fm99LearningDelivery.LiabilityDate).Name(@"First liability date").Index(++index);
+            Map(m => m.Fm99LearningDelivery.PlannedNumOnProgInstalm).Name(@"Planned number of instalments").Index(++index);
+            Map(m => m.Fm99LearningDelivery.ApplicFactDate).Name(@"Date used for factor lookups").Index(++index);
+            Map(m => m.PeriodisedValues.August.Code).Name(@"August ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.August.LearnSuppFundCash).Name(@"August ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.August.OnProgPayment).Name(@"August loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.August.BalancePayment).Name(@"August loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.August.TotalEarned).Name(@"August loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.September.Code).Name(@"September ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.September.LearnSuppFundCash).Name(@"September ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.September.OnProgPayment).Name(@"September loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.September.BalancePayment).Name(@"September loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.September.TotalEarned).Name(@"September loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.October.Code).Name(@"October ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.October.LearnSuppFundCash).Name(@"October ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.October.OnProgPayment).Name(@"October loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.October.BalancePayment).Name(@"October loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.October.TotalEarned).Name(@"October loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.November.Code).Name(@"November ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.November.LearnSuppFundCash).Name(@"November ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.November.OnProgPayment).Name(@"November loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.November.BalancePayment).Name(@"November loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.November.TotalEarned).Name(@"November loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.December.Code).Name(@"December ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.December.LearnSuppFundCash).Name(@"December ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.December.OnProgPayment).Name(@"December loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.December.BalancePayment).Name(@"December loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.December.TotalEarned).Name(@"December loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.January.Code).Name(@"January ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.January.LearnSuppFundCash).Name(@"January ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.January.OnProgPayment).Name(@"January loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.January.BalancePayment).Name(@"January loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.January.TotalEarned).Name(@"January loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.February.Code).Name(@"February ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.February.LearnSuppFundCash).Name(@"February ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.February.OnProgPayment).Name(@"February loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.February.BalancePayment).Name(@"February loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.February.TotalEarned).Name(@"February loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.March.Code).Name(@"March ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.March.LearnSuppFundCash).Name(@"March ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.March.OnProgPayment).Name(@"March loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.March.BalancePayment).Name(@"March loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.March.TotalEarned).Name(@"March loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.April.Code).Name(@"April ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.April.LearnSuppFundCash).Name(@"April ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.April.OnProgPayment).Name(@"April loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.April.BalancePayment).Name(@"April loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.April.TotalEarned).Name(@"April loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.May.Code).Name(@"May ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.May.LearnSuppFundCash).Name(@"May ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.May.OnProgPayment).Name(@"May loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.May.BalancePayment).Name(@"May loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.May.TotalEarned).Name(@"May loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.June.Code).Name(@"June ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.June.LearnSuppFundCash).Name(@"June ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.June.OnProgPayment).Name(@"June loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.June.BalancePayment).Name(@"June loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.June.TotalEarned).Name(@"June loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.July.Code).Name(@"July ALB code used ").Index(++index);
+            Map(m => m.PeriodisedValues.July.LearnSuppFundCash).Name(@"July ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.July.OnProgPayment).Name(@"July loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.July.BalancePayment).Name(@"July loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.July.TotalEarned).Name(@"July loans bursary total earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.LearnSuppFundCashTotal).Name(@"Total ALB support payment earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.OnProgPaymentTotal).Name(@"Total loans bursary for area costs on programme earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.BalancePaymentTotal).Name(@"Total loans bursary for area costs balancing earned cash").Index(++index);
+            Map(m => m.PeriodisedValues.TotalEarned).Name(@"Total earned cash").Index(++index);
+            Map().Name(@"OFFICIAL - SENSITIVE").Constant(@"OFFICIAL - SENSITIVE").Index(++index);
+        }
+    }
+}
