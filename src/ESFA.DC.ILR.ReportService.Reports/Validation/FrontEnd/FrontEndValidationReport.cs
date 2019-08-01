@@ -55,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
                 //TotalDataMatchLearners = _validationStageOutputCache.DataMatchProblemLearnersCount
             };
 
-            var fileName = _fileNameService.GetFilename(reportServiceContext, "Validation Error Report", OutputTypes.Json);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, "Rule Violation Report", OutputTypes.Json);
 
             using (var fileStream = await _fileService.OpenWriteStreamAsync(fileName, reportServiceContext.Container, cancellationToken))
             {

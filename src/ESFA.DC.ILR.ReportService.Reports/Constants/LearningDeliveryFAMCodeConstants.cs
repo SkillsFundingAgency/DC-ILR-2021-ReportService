@@ -13,5 +13,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string SOF_TeesValleyCombinedAuthority = "114";
         public const string SOF_CambridgeshireAndPeterboroughCombinedAuthority = "115";
         public const string SOF_GreaterLondonAuthority = "116";
+
+        public const string SOF_ESFA = "105";
     }
 }

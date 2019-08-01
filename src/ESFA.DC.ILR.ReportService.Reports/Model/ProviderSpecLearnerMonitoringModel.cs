@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Model
 {
     public class ProviderSpecLearnerMonitoringModel
     {

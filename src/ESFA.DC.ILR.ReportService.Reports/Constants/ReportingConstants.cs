@@ -4,6 +4,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
 {
     public static class ReportingConstants
     {
+        public const string Yes = "Yes";
+        public const string No = "No";
+
         public const string EmploymentStatusMonitoringTypeSEM = "SEM";
 
         // LearningDelivery FAM Codes
