@@ -55,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public static string DateTimeMin = DateTime.MinValue.ToString("dd/MM/yyyy");
 
         // Dates
-        public static readonly DateTime BeginningOfYear = new DateTime(2018, 8, 1);
-        public static readonly DateTime EndOfYear = new DateTime(2019, 7, 31, 23, 59, 59);
+        public static readonly DateTime BeginningOfYear = new DateTime(2019, 8, 1);
+        public static readonly DateTime EndOfYear = new DateTime(2020, 7, 31, 23, 59, 59);
     }
 }
