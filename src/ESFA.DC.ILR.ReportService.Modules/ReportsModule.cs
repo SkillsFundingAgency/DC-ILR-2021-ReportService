@@ -62,7 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
         protected virtual void RegisterDevolvedAdultEducationFundingSummaryReport(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReport>().As<IReport>();
-            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>>();
+            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReportModelBuilder>().As<IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>>();
             containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReportRenderService>().As<IRenderService<IDevolvedAdultEducationFundingSummaryReport>>();
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
@@ -16,7 +17,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 {
-    public class DevolvedAdultEducationFundingSummaryReportModelBuilder : IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
+    public class DevolvedAdultEducationFundingSummaryReportModelBuilder : IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
     {
         private readonly IOrgProviderService _orgProviderService;
         private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
@@ -40,20 +41,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             _ilrMetadataProviderService = ilrMetadataProviderService;
         }
 
-        public IEnumerable<DevolvedAdultEducationFundingSummaryReportModel> Build(IReportServiceContext reportServiceContext,
-            IReportServiceDependentData reportServiceDependentData)
+        public async Task<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> Build(IReportServiceContext reportServiceContext,
+            IReportServiceDependentData reportServiceDependentData, CancellationToken cancellationToken)
         {
-            var taskFactory = new TaskFactory(CancellationToken.None, TaskCreationOptions.None, TaskContinuationOptions.None, TaskScheduler.Default);
+            var providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
+            var lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
 
-            var providerName = taskFactory.StartNew(() => _orgProviderService.GetProviderName(reportServiceContext, CancellationToken.None))
-                                .Unwrap()
-                                .GetAwaiter()
-                                .GetResult();
-
-            var lastSubmittedIlrFile = taskFactory.StartNew(() => _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, CancellationToken.None))
-                                            .Unwrap()
-                                            .GetAwaiter()
-                                            .GetResult();
+            await Task.WhenAll(providerNameTask, lastSubmittedIlrFileTask);
 
             var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
@@ -76,9 +70,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
                 models.Add(new DevolvedAdultEducationFundingSummaryReportModel(
                     sofCode.Value,
                     reportServiceContext.Ukprn,
-                    providerName,
+                    providerNameTask.Result,
                     reportServiceContext.Filename,
-                    lastSubmittedIlrFile.Filename,
+                    lastSubmittedIlrFileTask.Result.Filename,
                     new List<IDevolvedAdultEducationFundingCategory>
                     {
                         new DevolvedAdultEducationFundingCategory

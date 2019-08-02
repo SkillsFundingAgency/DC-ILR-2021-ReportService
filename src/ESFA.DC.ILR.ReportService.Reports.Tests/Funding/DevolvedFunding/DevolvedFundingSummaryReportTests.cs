@@ -34,7 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
         {
             var container = "Container";
 
-            var devolvedFundingSummaryReportModelBuilderMock = new Mock<IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>>();
+            var devolvedFundingSummaryReportModelBuilderMock = new Mock<IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>>();
 
             var reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.Setup(c => c.Container).Returns(container);
@@ -42,7 +42,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
             var reportServiceDependentData = Mock.Of<IReportServiceDependentData>();
             var devolvedFundingSummaryReportModel = new List<DevolvedAdultEducationFundingSummaryReportModel> { new DevolvedAdultEducationFundingSummaryReportModel("105", 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164917-01.xml", "ILR-10000000-1920-20191204-164916-01.xml", new List<IDevolvedAdultEducationFundingCategory>())};
 
-            devolvedFundingSummaryReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData)).Returns(devolvedFundingSummaryReportModel);
+            devolvedFundingSummaryReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData, CancellationToken.None))
+                .ReturnsAsync(devolvedFundingSummaryReportModel);
 
             Workbook workbook = null;
             Worksheet worksheet = null;
@@ -71,7 +72,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
 
         private DevolvedAdultEducationFundingSummaryReport NewReport(
             IFileNameService fileNameService = null,
-            IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder = null,
+            IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder = null,
             IExcelService excelService = null,
             IRenderService<IDevolvedAdultEducationFundingSummaryReport> devolvedFundingSummaryReportRenderService = null)
         {

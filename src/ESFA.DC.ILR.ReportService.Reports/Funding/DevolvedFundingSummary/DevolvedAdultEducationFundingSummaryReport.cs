@@ -14,13 +14,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
     public class DevolvedAdultEducationFundingSummaryReport : AbstractReport, IReport
     {
         private readonly IFileNameService _fileNameService;
-        private readonly IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> _devolvedFundingSummaryReportBuilder;
+        private readonly IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> _devolvedFundingSummaryReportBuilder;
         private readonly IExcelService _excelService;
         private readonly IRenderService<IDevolvedAdultEducationFundingSummaryReport> _devolvedFundingSummaryReportRenderService;
 
         public DevolvedAdultEducationFundingSummaryReport(
             IFileNameService fileNameService,
-            IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder,
+            IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder,
             IExcelService excelService,
             IRenderService<IDevolvedAdultEducationFundingSummaryReport> devolvedFundingSummaryReportRenderService) 
             : base(ReportTaskNameConstants.DevolvedAdultEducationFundingSummaryReport, "Devolved Adult Education Funding Summary Report")
@@ -42,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             IReportServiceDependentData reportsDependentData,
             CancellationToken cancellationToken)
         {
-            var fundingSummaryReportModel = _devolvedFundingSummaryReportBuilder.Build(reportServiceContext, reportsDependentData);
+            var fundingSummaryReportModel = await _devolvedFundingSummaryReportBuilder.Build(reportServiceContext, reportsDependentData, cancellationToken);
 
             var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
 
