@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
+namespace ESFA.DC.ILR.ReportService.Reports.Model
 {
     public class LearningDeliveryFAMsModel
     {
@@ -35,5 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model
         public string DAM4 { get; set; }
 
         public string RES { get; set; }
+
+        public string EEF { get; set; }
     }
 }

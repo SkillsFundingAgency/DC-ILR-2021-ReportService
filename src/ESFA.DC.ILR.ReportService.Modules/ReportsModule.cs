@@ -4,12 +4,16 @@ using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model;
+
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Model;
+using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
 using ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd;
@@ -27,10 +31,13 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterValidationReports(containerBuilder);
           
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
+            RegisterMainOccupancyReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
 
             RegisterDevolvedAdultEducationFundingSummaryReport(containerBuilder);
+
+            containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
             containerBuilder.RegisterType<CsvService>().As<ICsvService>();
             containerBuilder.RegisterType<ExcelService>().As<IExcelService>();
@@ -49,6 +56,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReport>().As<IReport>();
             containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>>();
+        }
+
+        private void RegisterMainOccupancyReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<MainOccupancyReport>().As<IReport>();
+            containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<MainOccupancyReportModel>>>();
         }
 
         protected virtual void RegisterFundingSummaryReport(ContainerBuilder containerBuilder)
