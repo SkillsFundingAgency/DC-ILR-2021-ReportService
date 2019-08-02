@@ -2,9 +2,9 @@
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB
 {
-    public class AllbOccupancyReportModelClassMap : ClassMap<AllbOccupancyReportModel>
+    public class AllbOccupancyReportClassMap : ClassMap<AllbOccupancyReportModel>
     {
-        public AllbOccupancyReportModelClassMap()
+        public AllbOccupancyReportClassMap()
         {
             var index = 0;
 
@@ -118,7 +118,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB
             Map(m => m.PeriodisedValues.OnProgPaymentTotal).Name(@"Total loans bursary for area costs on programme earned cash").Index(++index);
             Map(m => m.PeriodisedValues.BalancePaymentTotal).Name(@"Total loans bursary for area costs balancing earned cash").Index(++index);
             Map(m => m.PeriodisedValues.TotalEarned).Name(@"Total earned cash").Index(++index);
-            Map().Name(@"OFFICIAL - SENSITIVE").Constant(@"OFFICIAL - SENSITIVE").Index(++index);
+            Map().Name(@"OFFICIAL - SENSITIVE").Constant(string.Empty).Index(++index);
         }
     }
 }

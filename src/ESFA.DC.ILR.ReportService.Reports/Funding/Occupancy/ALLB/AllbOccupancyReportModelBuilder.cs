@@ -66,13 +66,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB
 
         public bool Filter(ILearningDelivery learningDelivery, LearningDelivery albLearningDelivery)
         {
-            return learningDelivery.FundModel == FundModelConstants.FM99
+            if (learningDelivery?.LearningDeliveryFAMs != null && albLearningDelivery?.LearningDeliveryValue != null)
+            {
+                return learningDelivery.FundModel == FundModelConstants.FM99
                    && (learningDelivery.LearningDeliveryFAMs.Any(fam =>
                        fam.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ADL) &&
-                       fam.LearnDelFAMCode == "1"))
-                   && (albLearningDelivery?.LearningDeliveryValue?.AreaCostFactAdj > 0
+                       fam.LearnDelFAMCode == "1") == true)
+                   && (albLearningDelivery.LearningDeliveryValue.AreaCostFactAdj > 0
                         || learningDelivery.LearningDeliveryFAMs.Any(fam =>
-                           fam.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ALB)));
+                           fam.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ALB)) == true);
+            }
+
+            return false;
         }
 
         private Dictionary<string, Dictionary<int, LearningDelivery>> BuildFm99LearningDeliveryDictionary(ALBGlobal albGlobal)
@@ -88,7 +93,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, Dictionary<int, LearningDelivery>>();
         }
-
-
     }
 }
