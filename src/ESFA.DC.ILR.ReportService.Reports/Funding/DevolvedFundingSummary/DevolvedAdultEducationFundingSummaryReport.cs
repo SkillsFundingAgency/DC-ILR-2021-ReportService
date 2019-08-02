@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
@@ -13,13 +14,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
     public class DevolvedAdultEducationFundingSummaryReport : AbstractReport, IReport
     {
         private readonly IFileNameService _fileNameService;
-        private readonly IModelBuilder<IDevolvedAdultEducationFundingSummaryReport> _devolvedFundingSummaryReportBuilder;
+        private readonly IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> _devolvedFundingSummaryReportBuilder;
         private readonly IExcelService _excelService;
         private readonly IRenderService<IDevolvedAdultEducationFundingSummaryReport> _devolvedFundingSummaryReportRenderService;
 
         public DevolvedAdultEducationFundingSummaryReport(
             IFileNameService fileNameService,
-            IModelBuilder<IDevolvedAdultEducationFundingSummaryReport> devolvedFundingSummaryReportBuilder,
+            IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder,
             IExcelService excelService,
             IRenderService<IDevolvedAdultEducationFundingSummaryReport> devolvedFundingSummaryReportRenderService) 
             : base(ReportTaskNameConstants.DevolvedAdultEducationFundingSummaryReport, "Devolved Adult Education Funding Summary Report")
@@ -49,11 +50,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             {
                 var workbookIndex = 0;
 
-                foreach (var fundingArea in fundingSummaryReportModel.DevolvedFundingAreas)
+                foreach (var reportModel in fundingSummaryReportModel)
                 {
                     var worksheet = _excelService.GetWorksheetFromWorkbook(workbook, workbookIndex++);
 
-                    _devolvedFundingSummaryReportRenderService.Render(fundingSummaryReportModel, worksheet);
+                    _devolvedFundingSummaryReportRenderService.Render(reportModel, worksheet);
                 }
 
                 await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);

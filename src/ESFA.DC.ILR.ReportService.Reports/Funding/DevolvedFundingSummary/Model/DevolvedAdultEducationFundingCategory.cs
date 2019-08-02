@@ -16,7 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model
 
         public IList<IDevolvedAdultEducationFundLineGroup> FundLineGroups { get; }
 
-        public string CumulativeFundingCategoryTitle { get; }
+        public string CumulativeFundingCategoryTitle => $"Total {FundingCategoryTitle} Cumulative (£)";
 
         public string Title => $"Total {FundingCategoryTitle} (£)";
 

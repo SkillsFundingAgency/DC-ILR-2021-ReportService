@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using Aspose.Cells;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -11,6 +12,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 {
     public class DevolvedFundingSummaryReportRenderService : IRenderService<IDevolvedAdultEducationFundingSummaryReport>
     {
+        private const string ProviderName = "Provider Name:";
+        private const string UKPRN = "UKPRN:";
+        private const string ILRFile = "ILR File:";
+        private const string LastILRFileUpdate = "Last ILR File Update:";
+        private const string LastEASUpdate = "Last EAS Update:";
+        private const string SourceOfFunding = "Source of Funding:";
+        private const string SecurityClassification = "Security Classification:";
+
         private const int StartYear = 18;
         private const int EndYear = 19;
 
@@ -25,6 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
         private readonly Style _fundingCategoryStyle;
         private readonly Style _fundingSubCategoryStyle;
         private readonly Style _fundLineGroupStyle;
+        private readonly Style _headerStyle;
 
         private readonly StyleFlag _styleFlag = new StyleFlag()
         {
@@ -45,17 +55,21 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             _fundingCategoryStyle = cellsFactory.CreateStyle();
             _fundingSubCategoryStyle = cellsFactory.CreateStyle();
             _fundLineGroupStyle = cellsFactory.CreateStyle();
+            _headerStyle = cellsFactory.CreateStyle();
 
             ConfigureStyles();
         }
 
         public Worksheet Render(IDevolvedAdultEducationFundingSummaryReport fundingSummaryReport, Worksheet worksheet)
         {
+            worksheet.Name = fundingSummaryReport.SofCode;
             worksheet.Workbook.DefaultStyle = _defaultStyle;
             worksheet.Cells.StandardWidth = 20;
             worksheet.Cells.Columns[0].Width = 65;
 
-            foreach (var fundingCategory in fundingSummaryReport.DevolvedFundingAreas[0]?.FundingCategories)
+            RenderHeader(worksheet, NextRow(worksheet), fundingSummaryReport);
+
+            foreach (var fundingCategory in fundingSummaryReport.FundingCategories)
             {
                 RenderFundingCategory(worksheet, fundingCategory);
             }
@@ -63,50 +77,23 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             return worksheet;
         }
 
-        //private Worksheet RenderFundingCategory(Worksheet worksheet, IDevolvedAdultEducationFundingCategory fundingCategory)
-        //{
-        //    var row = NextRow(worksheet) + 1;
+        private Worksheet RenderHeader(Worksheet worksheet, int row, IDevolvedAdultEducationFundingSummaryReport fundingSummaryReport)
+        {
+            worksheet.Cells.ImportTwoDimensionArray(new object[,]
+            {
+                { ProviderName, fundingSummaryReport.ProviderName },
+                { UKPRN, fundingSummaryReport.Ukprn.ToString() },
+                { ILRFile, fundingSummaryReport.IlrFile },
+                { LastILRFileUpdate, fundingSummaryReport.LastSubmittedIlrFileName },
+                { LastEASUpdate, "" },
+                { SourceOfFunding, fundingSummaryReport.SofCode },
+                { SecurityClassification, ReportingConstants.OfficialSensitive }
+            },row,0 );
 
-        //    worksheet.Cells.ImportObjectArray(new object[] { fundingCategory.FundingCategoryTitle }, row, 0, false);
-        //    ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
+            ApplyStyleToRows(worksheet, row, 7, _headerStyle);
 
-        //    foreach (var fundingSubCategory in fundingCategory.)
-        //    {
-        //        RenderFundingSubCategory(worksheet, fundingSubCategory);
-        //    }
-
-        //    row = NextRow(worksheet) + 1;
-        //    RenderFundingSummaryReportRow(worksheet, row, fundingCategory);
-        //    ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
-        //    ApplyFutureMonthStyleToRow(worksheet, row, fundingCategory.CurrentPeriod);
-
-        //    row = NextRow(worksheet);
-        //    worksheet.Cells.ImportObjectArray(
-        //        new object[]
-        //        {
-        //            fundingCategory.CumulativeFundingCategoryTitle,
-        //            fundingCategory.CumulativePeriod1,
-        //            fundingCategory.CumulativePeriod2,
-        //            fundingCategory.CumulativePeriod3,
-        //            fundingCategory.CumulativePeriod4,
-        //            fundingCategory.CumulativePeriod5,
-        //            fundingCategory.CumulativePeriod6,
-        //            fundingCategory.CumulativePeriod7,
-        //            fundingCategory.CumulativePeriod8,
-        //            fundingCategory.CumulativePeriod9,
-        //            fundingCategory.CumulativePeriod10,
-        //            fundingCategory.CumulativePeriod11,
-        //            fundingCategory.CumulativePeriod12,
-        //            NotApplicable,
-        //            NotApplicable,
-        //            NotApplicable,
-        //            NotApplicable,
-        //        }, row, 0, false);
-        //    ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
-        //    ApplyFutureMonthStyleToRow(worksheet, row, fundingCategory.CurrentPeriod);
-
-        //    return worksheet;
-        //}
+            return worksheet;
+        }
 
         private Worksheet RenderFundingSummaryReportRow(Worksheet worksheet, int row, IDevolvedAdultEducationFundingSummaryReportRow fundingSummaryReportRow)
         {
@@ -130,6 +117,33 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
                 fundingSummaryReportRow.YearToDate,
                 fundingSummaryReportRow.Total,
             }, row, 0, false);
+
+            return worksheet;
+        }
+
+        private Worksheet RenderFundingSummaryCumulativeReportRow(Worksheet worksheet, int row, IDevolvedAdultEducationFundingCategory fundingCategory)
+        {
+            worksheet.Cells.ImportObjectArray(
+                new object[]
+                {
+                    fundingCategory.CumulativeFundingCategoryTitle,
+                    fundingCategory.CumulativePeriod1,
+                    fundingCategory.CumulativePeriod2,
+                    fundingCategory.CumulativePeriod3,
+                    fundingCategory.CumulativePeriod4,
+                    fundingCategory.CumulativePeriod5,
+                    fundingCategory.CumulativePeriod6,
+                    fundingCategory.CumulativePeriod7,
+                    fundingCategory.CumulativePeriod8,
+                    fundingCategory.CumulativePeriod9,
+                    fundingCategory.CumulativePeriod10,
+                    fundingCategory.CumulativePeriod11,
+                    fundingCategory.CumulativePeriod12,
+                    NotApplicable,
+                    NotApplicable,
+                    NotApplicable,
+                    NotApplicable,
+                }, row, 0, false);
 
             return worksheet;
         }
@@ -167,6 +181,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 
             row = NextRow(worksheet);
             RenderFundingSummaryReportRow(worksheet, row, fundingSubCategory);
+            ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
+            ApplyFutureMonthStyleToRow(worksheet, row, fundingSubCategory.CurrentPeriod);
+
+            row = NextRow(worksheet);
+            RenderFundingSummaryCumulativeReportRow(worksheet, row, fundingSubCategory);
             ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
             ApplyFutureMonthStyleToRow(worksheet, row, fundingSubCategory.CurrentPeriod);
 
@@ -208,6 +227,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             worksheet.Cells.CreateRange(row, StartColumn, 1, ColumnCount).ApplyStyle(style, _styleFlag);
         }
 
+        private void ApplyStyleToRows(Worksheet worksheet, int startRow, int rowCount, Style style)
+        {
+            worksheet.Cells.CreateRange(startRow, StartColumn, rowCount, ColumnCount).ApplyStyle(style, _styleFlag);
+        }
+
         private void ApplyFutureMonthStyleToRow(Worksheet worksheet, int row, int currentPeriod)
         {
             var columnCount = 12 - currentPeriod;
@@ -244,6 +268,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             _fundLineGroupStyle.Font.IsBold = true;
             _fundLineGroupStyle.Font.Name = "Arial";
             _fundLineGroupStyle.SetCustom(DecimalFormat, false);
+
+            _headerStyle.Font.Size = 10;
+            _headerStyle.Font.Name = "Arial";
+            _headerStyle.Font.IsBold = true;
         }
     }
 }

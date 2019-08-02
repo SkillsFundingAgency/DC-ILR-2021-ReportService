@@ -4,6 +4,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model
 {
     public interface IDevolvedAdultEducationFundingSummaryReport
     {
-        List<IDevolvedAdultEducationFundingArea> DevolvedFundingAreas { get; }
+        string SofCode { get; }
+
+        int Ukprn { get; }
+
+        string ProviderName { get; }
+
+        string IlrFile { get; }
+
+        string LastSubmittedIlrFileName { get; }
+
+        List<IDevolvedAdultEducationFundingCategory> FundingCategories { get; }
     }
 }

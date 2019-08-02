@@ -4,6 +4,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
 {
     public static class ReportingConstants
     {
+        public const string OfficialSensitive = "OFFICIAL-SENSITIVE";
         public const string EmploymentStatusMonitoringTypeSEM = "SEM";
 
         // LearningDelivery FAM Codes

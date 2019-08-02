@@ -7,14 +7,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model
 {
     public class DevolvedAdultEducationFundLineGroup : IDevolvedAdultEducationFundLineGroup
     {
-        private readonly FundModels _fundModel;
+        private readonly FundingDataSources _fundModel;
         private readonly IEnumerable<string> _fundLines;
         private readonly IPeriodisedValuesLookup _periodisedValues;
 
         public DevolvedAdultEducationFundLineGroup(
             string title,
             int currentPeriod,
-            FundModels fundModel,
+            FundingDataSources fundModel,
             IEnumerable<string> fundLines,
             IPeriodisedValuesLookup periodisedValues)
         {
