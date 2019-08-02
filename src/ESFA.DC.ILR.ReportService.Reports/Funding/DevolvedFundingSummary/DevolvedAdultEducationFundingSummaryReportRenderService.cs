@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
+﻿using System.Drawing;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 {
-    public class DevolvedFundingSummaryReportRenderService : IRenderService<IDevolvedAdultEducationFundingSummaryReport>
+    public class DevolvedAdultEducationFundingSummaryReportRenderService : IRenderService<IDevolvedAdultEducationFundingSummaryReport>
     {
         private const string ProviderName = "Provider Name:";
         private const string UKPRN = "UKPRN:";
@@ -46,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             FontItalic = true
         };
 
-        public DevolvedFundingSummaryReportRenderService()
+        public DevolvedAdultEducationFundingSummaryReportRenderService()
         {
             var cellsFactory = new CellsFactory();
 

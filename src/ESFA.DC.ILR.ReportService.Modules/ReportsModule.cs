@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
+using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary;
+using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedOccupancy.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
@@ -27,6 +30,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
 
             RegisterFundingSummaryReport(containerBuilder);
 
+            RegisterDevolvedAdultEducationFundingSummaryReport(containerBuilder);
+
             containerBuilder.RegisterType<CsvService>().As<ICsvService>();
             containerBuilder.RegisterType<ExcelService>().As<IExcelService>();
         }
@@ -52,6 +57,13 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
+        }
+
+        protected virtual void RegisterDevolvedAdultEducationFundingSummaryReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>>();
+            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReportRenderService>().As<IRenderService<IDevolvedAdultEducationFundingSummaryReport>>();
         }
     }
 }

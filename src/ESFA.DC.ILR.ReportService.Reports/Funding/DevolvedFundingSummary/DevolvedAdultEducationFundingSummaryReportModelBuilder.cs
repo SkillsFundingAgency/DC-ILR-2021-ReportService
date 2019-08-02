@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
@@ -11,11 +10,9 @@ using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using Microsoft.EntityFrameworkCore.Query.ExpressionVisitors.Internal;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 {
