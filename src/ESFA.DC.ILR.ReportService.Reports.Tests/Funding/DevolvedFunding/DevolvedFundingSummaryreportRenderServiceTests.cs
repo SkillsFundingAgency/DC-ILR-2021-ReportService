@@ -39,9 +39,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
             workbook.Save("Output/DevolvedFundingSummaryReport.xlsx");
         }
 
-        private DevolvedFundingSummaryReportRenderService NewService()
+        private DevolvedAdultEducationFundingSummaryReportRenderService NewService()
         {
-            return new DevolvedFundingSummaryReportRenderService();
+            return new DevolvedAdultEducationFundingSummaryReportRenderService();
         }
     }
 }

@@ -16,7 +16,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 {
-    public class DevolvedFundingSummaryReportModelBuilder : IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
+    public class DevolvedAdultEducationFundingSummaryReportModelBuilder : IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
     {
         private readonly IOrgProviderService _orgProviderService;
         private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             [LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority] = "London",
         };
 
-        public DevolvedFundingSummaryReportModelBuilder(
+        public DevolvedAdultEducationFundingSummaryReportModelBuilder(
             IOrgProviderService orgProviderService,
             IIlrMetadataProviderService ilrMetadataProviderService)
         {
