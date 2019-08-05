@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
@@ -15,15 +16,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
 
         public IEnumerable<ValidationErrorRow> Build(
             IEnumerable<ValidationError> ilrValidationErrors,
-            IMessage message,
+            ILooseMessage message,
             IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
         {
             List<ValidationErrorRow> validationErrorModels = new List<ValidationErrorRow>();
 
             foreach (ValidationError validationError in ilrValidationErrors)
             {
-                ILearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationError.LearnerReferenceNumber);
-                ILearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == validationError.AimSequenceNumber);
+                ILooseLearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationError.LearnerReferenceNumber);
+                ILooseLearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumberNullable == validationError.AimSequenceNumber);
 
                 validationErrorModels.Add(new ValidationErrorRow()
                 {
@@ -32,7 +33,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
                     FieldValues = validationError.ValidationErrorParameters == null
                         ? string.Empty
                         : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
-                    FundModel = learningDelivery?.FundModel,
+                    FundModel = learningDelivery?.FundModelNullable,
                     LearnAimRef = learningDelivery?.LearnAimRef,
                     LearnerReferenceNumber = validationError.LearnerReferenceNumber,
                     PartnerUKPRN = learningDelivery?.PartnerUKPRNNullable,

@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.Model;
-using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Validation;
+using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
-using ESFA.DC.ILR.Tests.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using FluentAssertions;
+using Moq;
 using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
@@ -89,70 +84,56 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
             return validationErrorsMetadata;
         }
 
-        private IMessage BuildIlrMessage()
+        private ILooseMessage BuildIlrMessage()
         {
-            IMessage message = new TestMessage()
-            {
-                
-                Learners = new List<ILearner>()
-                {
-                    new TestLearner()
+            return MockExtensions.NewMock<ILooseMessage>()
+                .With(m => m.Learners,
+                    new List<ILooseLearner>()
                     {
-                        LearnRefNumber = "0AchDt03",
-                       LearningDeliveries = new List<ILearningDelivery>()
-                       {
-                           new TestLearningDelivery()
-                           {
-                               AimSeqNumber = 1,
-                               LearnAimRef = "60133533",
-                               SWSupAimId = "01035bef-5316-4e83-9f5d-53536ac97bb2",
-                               FundModel = 82,
-                               ProviderSpecDeliveryMonitorings = new List<IProviderSpecDeliveryMonitoring>()
-                               {
-                                   new TestProviderSpecDeliveryMonitoring()
-                                   {
-                                       ProvSpecDelMon = "1",
-                                       ProvSpecDelMonOccur ="A"
-                                   },
-                                   new TestProviderSpecDeliveryMonitoring()
-                                   {
-                                       ProvSpecDelMon = "2",
-                                       ProvSpecDelMonOccur ="B"
-                                   },
-                                   new TestProviderSpecDeliveryMonitoring()
-                                   {
-                                       ProvSpecDelMon = "3",
-                                       ProvSpecDelMonOccur ="C"
-                                   },
-                                   new TestProviderSpecDeliveryMonitoring()
-                                   {
-                                       ProvSpecDelMon = "4",
-                                       ProvSpecDelMonOccur ="D"
-                                   }
-
-                               }
-                           }
-                       }
-                    },
-                    new TestLearner()
-                    {
-                        LearnRefNumber = "0AchDt08",
-                        LearningDeliveries = new List<ILearningDelivery>()
-                        {
-                            new TestLearningDelivery()
-                            {
-                                AimSeqNumber = 1,
-                                LearnAimRef = "ZPROG001",
-                                SWSupAimId = "6406d4f6-f38a-45a9-9b9a-f956728ce540",
-                                FundModel = 81
-                            }
-                        }
-                    }
-                }
-            };
-           
-         
-            return message;
+                        MockExtensions.NewMock<ILooseLearner>()
+                            .With(l => l.LearnRefNumber, "0AchDt03")
+                            .With(l => l.LearningDeliveries,
+                                new List<ILooseLearningDelivery>()
+                                {
+                                    MockExtensions.NewMock<ILooseLearningDelivery>()
+                                        .With(ld => ld.AimSeqNumberNullable, 1)
+                                        .With(ld => ld.LearnAimRef, "60133533")
+                                        .With(ld => ld.SWSupAimId, "01035bef-5316-4e83-9f5d-53536ac97bb2")
+                                        .With(ld => ld.FundModelNullable, 82)
+                                        .With(ld => ld.ProviderSpecDeliveryMonitorings,
+                                            new List<ILooseProviderSpecDeliveryMonitoring>()
+                                            {
+                                                MockExtensions.NewMock<ILooseProviderSpecDeliveryMonitoring>()
+                                                    .With(m => m.ProvSpecDelMon, "1")
+                                                    .With(m => m.ProvSpecDelMonOccur, "A")
+                                                    .Build(),
+                                                MockExtensions.NewMock<ILooseProviderSpecDeliveryMonitoring>()
+                                                    .With(m => m.ProvSpecDelMon, "2")
+                                                    .With(m => m.ProvSpecDelMonOccur, "B")
+                                                    .Build(),
+                                                MockExtensions.NewMock<ILooseProviderSpecDeliveryMonitoring>()
+                                                    .With(m => m.ProvSpecDelMon, "3")
+                                                    .With(m => m.ProvSpecDelMonOccur, "C")
+                                                    .Build(),
+                                                MockExtensions.NewMock<ILooseProviderSpecDeliveryMonitoring>()
+                                                    .With(m => m.ProvSpecDelMon, "4")
+                                                    .With(m => m.ProvSpecDelMonOccur, "D")
+                                                    .Build(),
+                                            }).Build()
+                                }).Build(),
+                        MockExtensions.NewMock<ILooseLearner>()
+                            .With(l => l.LearnRefNumber, "0AchDt08")
+                            .With(l => l.LearningDeliveries,
+                                new List<ILooseLearningDelivery>()
+                                {
+                                    MockExtensions.NewMock<ILooseLearningDelivery>()
+                                        .With(ld => ld.AimSeqNumberNullable, 1)
+                                        .With(ld => ld.LearnAimRef, "ZPROG001")
+                                        .With(ld => ld.SWSupAimId, "6406d4f6-f38a-45a9-9b9a-f956728ce540")
+                                        .With(ld => ld.FundModelNullable, 81)
+                                        .Build()
+                                }).Build()
+                    }).Build();
         }
 
         private List<ValidationError> BuildIlrValidationErrors()
