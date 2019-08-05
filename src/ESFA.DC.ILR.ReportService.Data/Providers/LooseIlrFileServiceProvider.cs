@@ -10,9 +10,9 @@ using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Data.Providers
 {
-    public class LooseIlrFileServiceProvider : AbstractFileServiceProvider, IExternalDataProvider
+    public class InvalidIlrFileServiceProvider : AbstractFileServiceProvider, IExternalDataProvider
     {
-        public LooseIlrFileServiceProvider(IFileService fileService, IXmlSerializationService xmlSerializationService)
+        public InvalidIlrFileServiceProvider(IFileService fileService, IXmlSerializationService xmlSerializationService)
         : base(fileService, xmlSerializationService)
         {
         }

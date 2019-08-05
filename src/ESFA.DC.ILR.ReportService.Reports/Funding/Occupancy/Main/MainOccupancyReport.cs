@@ -10,7 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
     {
         public IEnumerable<Type> DependsOn => new[]
         {
-            DependentDataCatalog.Ilr,
+            DependentDataCatalog.ValidIlr,
             DependentDataCatalog.ReferenceData,
             DependentDataCatalog.Fm35,
             DependentDataCatalog.Fm25,

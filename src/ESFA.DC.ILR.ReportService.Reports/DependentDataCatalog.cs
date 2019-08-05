@@ -14,9 +14,9 @@ namespace ESFA.DC.ILR.ReportService.Reports
 {
     public static class DependentDataCatalog
     {
-        public static readonly Type Ilr = typeof(IMessage);
+        public static readonly Type ValidIlr = typeof(IMessage);
 
-        public static readonly Type LooseIlr = typeof(ILooseMessage);
+        public static readonly Type InvalidIlr = typeof(ILooseMessage);
 
         public static readonly Type ValidationErrors = typeof(List<ValidationError>);
 
