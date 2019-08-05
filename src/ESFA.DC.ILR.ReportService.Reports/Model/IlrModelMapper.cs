@@ -40,9 +40,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
             var damsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.DAM).ToFixedLengthArray(4);
 
             var lsf = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.LSF);
+            var alb = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.ALB);
 
             return new LearningDeliveryFAMsModel()
             {
+                ADL = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.ADL, famDictionary),
+                ALB_Highest = alb?.MaxOrDefault(f => f.LearnDelFAMCode),
+                ALB_EarliestDateFrom = alb?.MinOrDefault(f => f.LearnDelFAMDateFromNullable),
+                ALB_LatestDateTo = alb?.MaxOrDefault(f => f.LearnDelFAMDateToNullable),
                 SOF = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.SOF, famDictionary),
                 FFI = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.FFI, famDictionary),
                 LSF_Highest = lsf?.MaxOrDefault(f => f.LearnDelFAMCode),

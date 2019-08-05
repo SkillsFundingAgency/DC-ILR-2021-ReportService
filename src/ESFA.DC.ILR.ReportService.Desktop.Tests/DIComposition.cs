@@ -40,7 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 .Keyed<IExternalDataProvider>(typeof(ReferenceDataRoot))
                 .InstancePerLifetimeScope();
 
-            builder.RegisterType<IlrFileServiceProvider>()
+            builder.RegisterType<ValidIlrFileServiceProvider>()
                 .Keyed<IExternalDataProvider>(typeof(IMessage))
                 .InstancePerLifetimeScope();
 

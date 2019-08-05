@@ -1,5 +1,4 @@
 ﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,12 +10,20 @@ using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
 {
     public abstract class AbstractOccupancyReportModelBuilder
     {
+        protected IIlrModelMapper _ilrModelMapper;
+
         private const decimal _defaultDecimal = 0;
+
+        protected AbstractOccupancyReportModelBuilder(IIlrModelMapper ilrModelMapper)
+        {
+            _ilrModelMapper = ilrModelMapper;
+        }
 
         public LearningDeliveryPeriodisedValuesModel BuildFm35PeriodisedValuesModel(IEnumerable<LearningDeliveryPeriodisedValue> periodisedValues)
         {
@@ -184,6 +191,79 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                            l => l,
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, FM25Learner>();
+        }
+
+        public LearningDeliveryPeriodisedValuesModel BuildFm99PeriodisedValuesModel(IEnumerable<FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        {
+            var periodisedValuesDictionary = BuildFm99PeriodisedValuesDictionary(periodisedValues);
+
+            var supportPaymentCashTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm99AlbSupportPayment)?.Sum() ?? _defaultDecimal;
+            var onProgPaymentTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm99AreaUpliftOnProgPayment)?.Sum() ?? _defaultDecimal;
+            var balancingPaymentTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm99AreaUpliftBalPayment)?.Sum() ?? _defaultDecimal;
+
+            var totalEarned = onProgPaymentTotal + supportPaymentCashTotal + balancingPaymentTotal;
+
+            return new LearningDeliveryPeriodisedValuesModel()
+            {
+                August = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 0),
+                September = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 1),
+                October = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 2),
+                November = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 3),
+                December = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 4),
+                January = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 5),
+                February = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 6),
+                March = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 7),
+                April = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 8),
+                May = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 9),
+                June = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 10),
+                July = BuildFm99PeriodisedValuesAttributes(periodisedValuesDictionary, 11),
+                LearnSuppFundCashTotal = supportPaymentCashTotal,
+                OnProgPaymentTotal = onProgPaymentTotal,
+                BalancePaymentTotal = balancingPaymentTotal,
+                TotalEarned = totalEarned,
+            };
+        }
+
+        public LearningDeliveryPeriodisedValuesAttributesModel BuildFm99PeriodisedValuesAttributes(IDictionary<string, decimal[]> periodisedValues, int period)
+        {
+            var learnSuppFundCash = periodisedValues.GetValueOrDefault(AttributeConstants.Fm99AlbSupportPayment)?[period] ?? _defaultDecimal;
+            var balancePayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm99AreaUpliftBalPayment)?[period] ??_defaultDecimal;
+            var onProgPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm99AreaUpliftOnProgPayment)?[period] ?? _defaultDecimal;
+
+            var totalEarned = learnSuppFundCash + balancePayment + onProgPayment;
+
+            return new LearningDeliveryPeriodisedValuesAttributesModel()
+            {
+                Code = periodisedValues.GetValueOrDefault(AttributeConstants.Fm99ALBCode)?[period],
+                LearnSuppFundCash = learnSuppFundCash,
+                BalancePayment = balancePayment,
+                OnProgPayment = onProgPayment,
+                TotalEarned = totalEarned,
+            };
+        }
+
+        public IDictionary<string, decimal[]> BuildFm99PeriodisedValuesDictionary(IEnumerable<FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        {
+            return periodisedValues?
+                       .ToDictionary(
+                           pv => pv.AttributeName,
+                           pv => new decimal[]
+                           {
+                               pv.Period1 ?? 0,
+                               pv.Period2 ?? 0,
+                               pv.Period3 ?? 0,
+                               pv.Period4 ?? 0,
+                               pv.Period5 ?? 0,
+                               pv.Period6 ?? 0,
+                               pv.Period7 ?? 0,
+                               pv.Period8 ?? 0,
+                               pv.Period9 ?? 0,
+                               pv.Period10 ?? 0,
+                               pv.Period11 ?? 0,
+                               pv.Period12 ?? 0,
+                           },
+                           StringComparer.OrdinalIgnoreCase)
+                   ?? new Dictionary<string, decimal[]>();
         }
     }
 }

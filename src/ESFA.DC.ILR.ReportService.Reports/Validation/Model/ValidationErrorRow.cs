@@ -49,9 +49,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Model
 
         public string SWSupAimId { get; set; }
 
-        public int? FundModel { get; set; }
+        public long? FundModel { get; set; }
 
-        public int? PartnerUKPRN { get; set; }
+        public long? PartnerUKPRN { get; set; }
 
         public string ProviderSpecLearnOccurA { get; set; }
 
