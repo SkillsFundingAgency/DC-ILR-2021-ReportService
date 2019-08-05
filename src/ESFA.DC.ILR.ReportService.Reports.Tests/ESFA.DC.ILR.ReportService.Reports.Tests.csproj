@@ -79,6 +79,9 @@
     <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Loose.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.0.164.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.0.164\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
     </Reference>
@@ -146,6 +149,7 @@
     <Compile Include="Funding\FundingSummary\Model\FundLineTests.cs" />
     <Compile Include="Funding\MainOccupancy\MainOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\PeriodisedValuesLookupProviderTests.cs" />
+    <Compile Include="MockExtensions.cs" />
     <Compile Include="Model\IlrModelMapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
