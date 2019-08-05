@@ -4,18 +4,17 @@ using System.Linq;
 using System.Text;
 using CsvHelper;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
+namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
 {
-    public class DevolvedAdultEducationOccupancyReportClassMapTests
+    public class MainOccupancyReportClassMapTests
     {
         [Fact]
         public void Map_Columns()
@@ -40,6 +39,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Aim value",
                 "Notional NVQ level",
                 "Tier 2 sector subject area",
+                "Programme type",
+                "Framework code",
+                "Apprenticeship pathway",
+                "Aim type",
+                "Framework component type code",
                 "Funding model",
                 "Funding adjustment for prior learning",
                 "Other funding adjustment",
@@ -49,11 +53,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Completion status",
                 "Learning actual end date",
                 "Outcome",
+                "Achievement date",
                 "Additional delivery hours",
                 "Learning start date postcode",
-                "Applicable area from source of funding",
                 "Learning delivery funding and monitoring type - source of funding",
-                "Learning delivery funding and monitoring type - full or co funding indicator ",
+                "Learning delivery funding and monitoring type - full or co funding indicator",
+                "Learning delivery funding and monitoring type - eligibility for enhanced apprenticeship funding",
                 "Learning delivery funding and monitoring type - learning support funding (highest applicable)",
                 "Learning delivery funding and monitoring type - LSF date applies from (earliest)",
                 "Learning delivery funding and monitoring type - LSF date applies to (latest)",
@@ -63,10 +68,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Learning delivery funding and monitoring type - learning delivery monitoring (D)",
                 "Learning delivery funding and monitoring type - learning delivery monitoring (E)",
                 "Learning delivery funding and monitoring type - learning delivery monitoring (F)",
-                "Learning delivery funding and monitoring type - devolved area monitoring (A)",
-                "Learning delivery funding and monitoring type - devolved area monitoring (B)",
-                "Learning delivery funding and monitoring type - devolved area monitoring (C)",
-                "Learning delivery funding and monitoring type - devolved area monitoring (D)",
                 "Learning delivery funding and monitoring type - restart indicator",
                 "Provider specified delivery monitoring (A)",
                 "Provider specified delivery monitoring (B)",
@@ -74,15 +75,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Provider specified delivery monitoring (D)",
                 "Funding line type",
                 "Planned number of on programme instalments",
+                "Transitional planned number of programme instalments from 1 August 2013",
+                "Transitional start proportion",
                 "Achievement element (potential or actual earned cash)",
                 "Achievement percentage (aggregated maximum value)",
-                "Non-public-funded contribution",
-                "Capping factor",
+                "Non-Govt contribution",
                 "Sub contracted or partnership UKPRN",
                 "Delivery location postcode",
                 "Area uplift",
                 "Disadvantage uplift",
-                "Date used for uplifts and other lookups",
+                "Employer identifier",
+                "Large employer factor",
+                "Capping factor",
+                "Traineeship work placement or work preparation",
+                "Higher apprenticeship prescribed HE aim",
+                "Date used for employment factor lookups",
+                "Date used for other factor lookups",
                 "August on programme earned cash",
                 "August balancing payment earned cash",
                 "August aim achievement earned cash",
@@ -152,7 +160,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "OFFICIAL - SENSITIVE",
             };
 
-            var input = new List<DevolvedAdultEducationOccupancyReportModel>();
+            var input = new List<MainOccupancyReportModel>();
 
             using (var stream = new MemoryStream())
             {
@@ -160,7 +168,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 {
                     using (var csvWriter = new CsvWriter(streamWriter))
                     {
-                        csvWriter.Configuration.RegisterClassMap<DevolvedAdultEducationOccupancyReportClassMap>();
+                        csvWriter.Configuration.RegisterClassMap<MainOccupancyReportClassMap>();
 
                         csvWriter.WriteRecords(input);
                     }
@@ -178,7 +186,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(128);
+                        header.Should().HaveCount(137);
                     }
                 }
             }
@@ -187,9 +195,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
         [Fact]
         public void ClassMap_Model()
         {
-            var input = new List<DevolvedAdultEducationOccupancyReportModel>()
+            var input = new List<MainOccupancyReportModel>()
             {
-                new DevolvedAdultEducationOccupancyReportModel()
+                new MainOccupancyReportModel()
                 {
                     Learner = new TestLearner()
                     {
@@ -209,7 +217,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 {
                     using (var csvWriter = new CsvWriter(streamWriter))
                     {
-                        csvWriter.Configuration.RegisterClassMap<DevolvedAdultEducationOccupancyReportClassMap>();
+                        csvWriter.Configuration.RegisterClassMap<MainOccupancyReportClassMap>();
 
                         csvWriter.WriteRecords(input);
                     }

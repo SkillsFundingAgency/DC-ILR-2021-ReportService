@@ -134,6 +134,9 @@
     <Compile Include="Extensions\IEnumerableExtensionsTests.cs" />
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
+    <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportTests.cs" />
@@ -144,6 +147,7 @@
     <Compile Include="Funding\FundingSummary\Model\FundingSubCategoryTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineGroupTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineTests.cs" />
+    <Compile Include="Funding\MainOccupancy\MainOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\MainOccupancy\MainOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\PeriodisedValuesLookupProviderTests.cs" />
     <Compile Include="Model\IlrModelMapperTests.cs" />
