@@ -14,13 +14,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
     public class DevolvedAdultEducationFundingSummaryReport : AbstractReport, IReport
     {
         private readonly IFileNameService _fileNameService;
-        private readonly IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> _devolvedFundingSummaryReportBuilder;
+        private readonly IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> _devolvedFundingSummaryReportBuilder;
         private readonly IExcelService _excelService;
         private readonly IRenderService<IDevolvedAdultEducationFundingSummaryReport> _devolvedFundingSummaryReportRenderService;
 
         public DevolvedAdultEducationFundingSummaryReport(
             IFileNameService fileNameService,
-            IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder,
+            IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder,
             IExcelService excelService,
             IRenderService<IDevolvedAdultEducationFundingSummaryReport> devolvedFundingSummaryReportRenderService) 
             : base(ReportTaskNameConstants.DevolvedAdultEducationFundingSummaryReport, "Devolved Adult Education Funding Summary Report")
@@ -34,7 +34,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
         public IEnumerable<Type> DependsOn
             => new[]
             {
-                DependentDataCatalog.Fm35
+                DependentDataCatalog.Fm35,
+                DependentDataCatalog.Ilr,
+                DependentDataCatalog.ReferenceData
             };
 
         public async Task<IEnumerable<string>> GenerateAsync(
@@ -42,7 +44,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             IReportServiceDependentData reportsDependentData,
             CancellationToken cancellationToken)
         {
-            var fundingSummaryReportModel = await _devolvedFundingSummaryReportBuilder.Build(reportServiceContext, reportsDependentData, cancellationToken);
+            var fundingSummaryReportModel = _devolvedFundingSummaryReportBuilder.Build(reportServiceContext, reportsDependentData);
 
             var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
 

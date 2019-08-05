@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
-using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReportService.Interface.Provider;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
@@ -17,11 +13,8 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 {
-    public class DevolvedAdultEducationFundingSummaryReportModelBuilder : IAsyncModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
+    public class DevolvedAdultEducationFundingSummaryReportModelBuilder : IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
     {
-        private readonly IOrgProviderService _orgProviderService;
-        private readonly IIlrMetadataProviderService _ilrMetadataProviderService;
-
         private IDictionary<string, string> _sofCodesDictionary = new Dictionary<string, string>()
         {
             [LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority] = "GMCA",
@@ -33,25 +26,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             [LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority] = "London",
         };
 
-        public DevolvedAdultEducationFundingSummaryReportModelBuilder(
-            IOrgProviderService orgProviderService,
-            IIlrMetadataProviderService ilrMetadataProviderService)
+        public IEnumerable<DevolvedAdultEducationFundingSummaryReportModel> Build(IReportServiceContext reportServiceContext,
+            IReportServiceDependentData reportServiceDependentData)
         {
-            _orgProviderService = orgProviderService;
-            _ilrMetadataProviderService = ilrMetadataProviderService;
-        }
-
-        public async Task<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> Build(IReportServiceContext reportServiceContext,
-            IReportServiceDependentData reportServiceDependentData, CancellationToken cancellationToken)
-        {
-            var providerNameTask = _orgProviderService.GetProviderName(reportServiceContext, cancellationToken);
-            var lastSubmittedIlrFileTask = _ilrMetadataProviderService.GetLastSubmittedIlrFile(reportServiceContext, cancellationToken);
-
-            await Task.WhenAll(providerNameTask, lastSubmittedIlrFileTask);
-
             var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+            var organisationName = string.Empty; //referenceDataRoot.Organisations.First(x => x.UKPRN == reportServiceContext.Ukprn).
 
             var reportCurrentPeriod = reportServiceContext.ReturnPeriod > 12 ? 12 : reportServiceContext.ReturnPeriod;
 
@@ -70,9 +51,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
                 models.Add(new DevolvedAdultEducationFundingSummaryReportModel(
                     sofCode.Value,
                     reportServiceContext.Ukprn,
-                    providerNameTask.Result,
+                    organisationName,
                     reportServiceContext.Filename,
-                    lastSubmittedIlrFileTask.Result.Filename,
+                    reportServiceContext.Filename,
                     new List<IDevolvedAdultEducationFundingCategory>
                     {
                         new DevolvedAdultEducationFundingCategory
@@ -80,8 +61,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
                             new List<IDevolvedAdultEducationFundLineGroup>
                             {
                                 BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues),
-                                BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured,  }, periodisedValues)
-                            } ),
+                                BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues)
+                            }),
                         new DevolvedAdultEducationFundingCategory
                         (@"Adult Education Budget - Eligible for MCA/GLA funding (procured)", reportCurrentPeriod,
                             new List<IDevolvedAdultEducationFundLineGroup>
