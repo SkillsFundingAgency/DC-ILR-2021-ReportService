@@ -136,17 +136,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
                     }).Build();
         }
 
-        private ILooseProviderSpecDeliveryMonitoring BuildProviderSpecDeliveryMonitoring(string mon, string monOccur)
-        {
-            var providerSpecDeliveryMonitoringMock = new Mock<ILooseProviderSpecDeliveryMonitoring>();
-
-            providerSpecDeliveryMonitoringMock.SetupGet(m => m.ProvSpecDelMon).Returns(mon);
-            providerSpecDeliveryMonitoringMock.SetupGet(m => m.ProvSpecDelMonOccur).Returns(monOccur);
-
-            return providerSpecDeliveryMonitoringMock.Object;
-
-        }
-
         private List<ValidationError> BuildIlrValidationErrors()
         {
             List<ValidationError> ilrValidationErrors = new List<ValidationError>()
