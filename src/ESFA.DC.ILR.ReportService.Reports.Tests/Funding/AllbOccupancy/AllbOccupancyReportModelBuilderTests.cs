@@ -6,8 +6,6 @@ using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -16,7 +14,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
+namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AllbOccupancy
 {
     public class AllbOccupancyReportModelBuilderTests
     {
@@ -377,22 +375,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             row.PeriodisedValues.Should().NotBeNull();
             row.LearningDeliveryFAMs.Should().Be(learningDeliveryFamsModel);
         }
-
-        //public bool Filter(ILearningDelivery learningDelivery, LearningDelivery albLearningDelivery)
-        //{
-        //    if (learningDelivery?.LearningDeliveryFAMs != null && albLearningDelivery?.LearningDeliveryValue != null)
-        //    {
-        //        return learningDelivery.FundModel == FundModelConstants.FM99
-        //               && (learningDelivery.LearningDeliveryFAMs.Any(fam =>
-        //                       fam.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ADL) &&
-        //                       fam.LearnDelFAMCode == "1") == true)
-        //               && (albLearningDelivery.LearningDeliveryValue.AreaCostFactAdj > 0
-        //                   || learningDelivery.LearningDeliveryFAMs.Any(fam =>
-        //                       fam.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ALB)) == true);
-        //    }
-
-        //    return false;
-        //}
 
         [Fact]
         public void Build_FiftyThousandLearners()
