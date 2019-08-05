@@ -211,69 +211,65 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 
             var isMathsEngLearningDelivery = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false;
 
-            LearningDeliveryPeriodisedValuesModel fm36PeriodisedValuesModel = BuildFm36PeriodisedValuesModel(fm36DeliveryAttribute?.LearningDeliveryPeriodisedValues);
-
-            PriceEpisodePeriodisedValuesModel priceEpisodePeriodisedValuesModel = BuildPriceEpisodePeriodisedValuesModel(fm36EpisodeAttribute?.PriceEpisodePeriodisedValues);
-
-            // LearnSupportEarnings
-
-         
-
-
-
-            //foreach (var command in _commands)
-                //{
-                //    command.Execute(model, fm36DeliveryAttribute, fm36EpisodeAttribute);
-                //}
-
-            //GetTotals(model);
+            var periodisedValuesModel = BuildPeriodisedValuesModel(fm36EpisodeAttribute?.PriceEpisodePeriodisedValues,
+                fm36DeliveryAttribute?.LearningDeliveryPeriodisedValues, isMathsEngLearningDelivery);
 
             return model;
         }
 
-
-        public PriceEpisodePeriodisedValuesModel BuildPriceEpisodePeriodisedValuesModel(IEnumerable<PriceEpisodePeriodisedValues> periodisedValues)
+        public PeriodisedValuesModel BuildPeriodisedValuesModel(IEnumerable<PriceEpisodePeriodisedValues> priceEpisodePeriodisedValues,
+                                                                IEnumerable<LearningDeliveryPeriodisedValues> learningDelieryPeriodisedValues,
+                                                                bool isMathsEngLearningDelivery)
         {
-            var periodisedValuesDictionary = BuildPriceEpisodePeriodisedValuesDictionary(periodisedValues);
+            var priceEpisodePeriodisedValuesDictionary = BuildPriceEpisodePeriodisedValuesDictionary(priceEpisodePeriodisedValues);
+            var learningDeliveryPeriodisedValuesDictionary = BuildFm36PeriodisedValuesDictionary(learningDelieryPeriodisedValues);
 
-            var onProgrammeEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName)?.Sum() ?? _defaultDecimal;
-            var balancingPaymentEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm3PriceEpisodeBalancePaymentAttributeName)?.Sum() ?? _defaultDecimal;
-            var aimCompletionEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeCompletionPaymentAttributeName)?.Sum() ?? _defaultDecimal;
-            var learningSupportEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLSFCashAttributeName)?.Sum() ?? _defaultDecimal;
+            
+            var onProgrammeEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName)?.Sum() ?? _defaultDecimal;
+            var balancingPaymentEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm3PriceEpisodeBalancePaymentAttributeName)?.Sum() ?? _defaultDecimal;
+            var aimCompletionEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeCompletionPaymentAttributeName)?.Sum() ?? _defaultDecimal;
+            var learningSupportEarningsTotal = isMathsEngLearningDelivery ? learningDeliveryPeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36LearnSuppFundCash)?.Sum() ?? _defaultDecimal :
+                                                            priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLSFCashAttributeName)?.Sum() ?? _defaultDecimal;
 
-            var disadvantageEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal + 
-                                                periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal  ;
+            var disadvantageEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal +
+                                            priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal;
 
-            var additionalPaymentForEmployers1618Total = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal +
-                                            periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal;
+            var additionalPaymentForEmployers1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal +
+                                                         priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal;
 
-            var additionalPaymentForProviders1618Total = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?.Sum() ?? _defaultDecimal +
-                                                         periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?.Sum() ?? _defaultDecimal;
+            var additionalPaymentForProviders1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?.Sum() ?? _defaultDecimal +
+                                                         priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?.Sum() ?? _defaultDecimal;
 
-            var additionalPaymentsForApprenticesTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?.Sum() ?? _defaultDecimal;
-            var frameworkUpliftOnProgrammePayment1618Total = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName)?.Sum() ?? _defaultDecimal;
-            var frameworkUpliftBalancingPayment1618Total = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName)?.Sum() ?? _defaultDecimal;
-            var frameworkUpliftCompletionPayment1618Total = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName)?.Sum() ?? _defaultDecimal;
+            var additionalPaymentsForApprenticesTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?.Sum() ?? _defaultDecimal;
+            var frameworkUpliftOnProgrammePayment1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName)?.Sum() ?? _defaultDecimal;
+            var frameworkUpliftBalancingPayment1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName)?.Sum() ?? _defaultDecimal;
+            var frameworkUpliftCompletionPayment1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName)?.Sum() ?? _defaultDecimal;
+
+
+            
+            var englishMathsOnProgrammeEarningsTotal = learningDeliveryPeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36MathEngOnProgPayment)?.Sum() ?? _defaultDecimal;
+            var englishMathsBalancingPaymentEarningsTotal = learningDeliveryPeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36MathEngBalPayment)?.Sum() ?? _defaultDecimal;
 
 
             var totalEarned = onProgrammeEarningsTotal + balancingPaymentEarningsTotal + aimCompletionEarningsTotal + learningSupportEarningsTotal + disadvantageEarningsTotal +
                               additionalPaymentForEmployers1618Total + additionalPaymentForProviders1618Total + additionalPaymentsForApprenticesTotal +
-                              frameworkUpliftOnProgrammePayment1618Total + frameworkUpliftBalancingPayment1618Total + frameworkUpliftCompletionPayment1618Total;
+                              frameworkUpliftOnProgrammePayment1618Total + frameworkUpliftBalancingPayment1618Total + frameworkUpliftCompletionPayment1618Total +
+                              englishMathsOnProgrammeEarningsTotal + englishMathsBalancingPaymentEarningsTotal;
 
-            return new PriceEpisodePeriodisedValuesModel()
+            return new PeriodisedValuesModel()
             {
-                August = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 0),
-                September = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 1),
-                October = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 2),
-                November = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 3),
-                December = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 4),
-                January = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 5),
-                February = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 6),
-                March = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 7),
-                April = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 8),
-                May = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 9),
-                June = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 10),
-                July = BuildPriceEpisodePeriodisedValuesAttributes(periodisedValuesDictionary, 11),
+                August = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 0),
+                September = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 1),
+                October = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 2),
+                November = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 3),
+                December = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 4),
+                January = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 5),
+                February = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 6),
+                March = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 7),
+                April = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 8),
+                May = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 9),
+                June = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 10),
+                July = BuildPeriodisedValuesAttributes(priceEpisodePeriodisedValuesDictionary, learningDeliveryPeriodisedValuesDictionary, isMathsEngLearningDelivery, 11),
                 OnProgrammeEarningsTotal = onProgrammeEarningsTotal,
                 BalancingPaymentEarningsTotal = balancingPaymentEarningsTotal,
                 AimCompletionEarningsTotal = aimCompletionEarningsTotal,
@@ -285,9 +281,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                 FrameworkUpliftOnProgrammePayment1618Total = frameworkUpliftOnProgrammePayment1618Total,
                 FrameworkUpliftBalancingPayment1618Total = frameworkUpliftBalancingPayment1618Total,
                 FrameworkUpliftCompletionPayment1618Total = frameworkUpliftCompletionPayment1618Total,
+                EnglishMathsOnProgrammeEarningsTotal = englishMathsOnProgrammeEarningsTotal,
+                EnglishMathsBalancingPaymentEarningsTotal = englishMathsBalancingPaymentEarningsTotal,
                 TotalEarned = totalEarned,
             };
         }
+
 
         public IDictionary<string, decimal[]> BuildPriceEpisodePeriodisedValuesDictionary(IEnumerable<PriceEpisodePeriodisedValues> periodisedValues)
         {
@@ -311,72 +310,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                            },
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, decimal[]>();
-        }
-
-
-        public PriceEpisodePeriodisedValuesAttributesModel BuildPriceEpisodePeriodisedValuesAttributes(IDictionary<string, decimal[]> periodisedValues, int period)
-        {
-            return new PriceEpisodePeriodisedValuesAttributesModel()
-            {
-                OnProgrammeEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName)?[period] ?? _defaultDecimal,
-                BalancingPaymentEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm3PriceEpisodeBalancePaymentAttributeName)?[period] ?? _defaultDecimal,
-                AimCompletionEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeCompletionPaymentAttributeName)?[period] ?? _defaultDecimal,
-                LearningSupportEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLSFCashAttributeName)?[period] ?? _defaultDecimal,
-
-                DisadvantageEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal +
-                                       periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal ,
-
-                AdditionalPaymentForEmployers1618 = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?[period] ?? _defaultDecimal +
-                                       periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?[period] ?? _defaultDecimal,
-
-                AdditionalPaymentForProviders1618 = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?[period] ?? _defaultDecimal +
-                                                    periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?[period] ?? _defaultDecimal,
-
-                AdditionalPaymentsForApprentices = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?[period] ?? _defaultDecimal,
-
-                FrameworkUpliftOnProgrammePayment1618 = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName)?[period] ?? _defaultDecimal,
-
-                FrameworkUpliftBalancingPayment1618 = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName)?[period] ?? _defaultDecimal,
-
-                FrameworkUpliftCompletionPayment1618 = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName)?[period] ?? _defaultDecimal
-
-            };
-        }
-
-
-
-
-        public LearningDeliveryPeriodisedValuesModel BuildFm36PeriodisedValuesModel(IEnumerable<LearningDeliveryPeriodisedValues> periodisedValues)
-        {
-            var periodisedValuesDictionary = BuildFm36PeriodisedValuesDictionary(periodisedValues);
-
-            var learningSupportEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36LearnSuppFundCash)?.Sum() ?? _defaultDecimal;
-            var englishMathsOnProgrammeEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36MathEngOnProgPayment)?.Sum() ?? _defaultDecimal;
-            var englishMathsBalancingPaymentEarningsTotal = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36MathEngBalPayment)?.Sum() ?? _defaultDecimal;
-           
-
-            var totalEarned = learningSupportEarningsTotal + englishMathsOnProgrammeEarningsTotal + englishMathsBalancingPaymentEarningsTotal;
-
-            return new LearningDeliveryPeriodisedValuesModel()
-            {
-                AchievePayPctMax = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm35AchievePayPct)?.MaxOrDefault() ?? _defaultDecimal,
-                August = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 0),
-                September = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 1),
-                October = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 2),
-                November = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 3),
-                December = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 4),
-                January = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 5),
-                February = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 6),
-                March = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 7),
-                April = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 8),
-                May = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 9),
-                June = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 10),
-                July = BuildFm36PeriodisedValuesAttributes(periodisedValuesDictionary, 11),
-                LearningSupportEarningsTotal = learningSupportEarningsTotal,
-                EnglishMathsOnProgrammeEarningsTotal = englishMathsOnProgrammeEarningsTotal,
-                EnglishMathsBalancingPaymentEarningsTotal = englishMathsBalancingPaymentEarningsTotal,
-                TotalEarned = totalEarned,
-            };
         }
 
         public IDictionary<string, decimal[]> BuildFm36PeriodisedValuesDictionary(IEnumerable<LearningDeliveryPeriodisedValues> periodisedValues)
@@ -403,15 +336,42 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                    ?? new Dictionary<string, decimal[]>();
         }
 
-        public LearningDeliveryPeriodisedValuesAttributesModel BuildFm36PeriodisedValuesAttributes(IDictionary<string, decimal[]> periodisedValues, int period)
+        public PeriodisedValuesAttributesModel BuildPeriodisedValuesAttributes(IDictionary<string, decimal[]> priceEpisodePeriodisedValues,
+                                                                                IDictionary<string, decimal[]> learningDeliveryPeriodisedValues,
+                                                                                bool isMathsEngLearningDelivery,
+                                                                                int period)
         {
-            return new LearningDeliveryPeriodisedValuesAttributesModel()
+            return new PeriodisedValuesAttributesModel()
             {
-                LearningSupportEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36LearnSuppFundCash)?[period] ?? _defaultDecimal,
-                EnglishMathsOnProgrammeEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36MathEngOnProgPayment)?[period] ?? _defaultDecimal,
-                EnglishMathsBalancingPaymentEarnings = periodisedValues.GetValueOrDefault(AttributeConstants.Fm36MathEngBalPayment)?[period] ?? _defaultDecimal
+                OnProgrammeEarnings = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName)?[period] ?? _defaultDecimal,
+                BalancingPaymentEarnings = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm3PriceEpisodeBalancePaymentAttributeName)?[period] ?? _defaultDecimal,
+                AimCompletionEarnings = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeCompletionPaymentAttributeName)?[period] ?? _defaultDecimal,
+                LearningSupportEarnings = isMathsEngLearningDelivery ? learningDeliveryPeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36LearnSuppFundCash)?[period] ?? _defaultDecimal :
+                                                priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLSFCashAttributeName)?[period] ?? _defaultDecimal,
+
+                DisadvantageEarnings = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal +
+                                       priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal,
+
+                AdditionalPaymentForEmployers1618 = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?[period] ?? _defaultDecimal +
+                                                    priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?[period] ?? _defaultDecimal,
+
+                AdditionalPaymentForProviders1618 = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?[period] ?? _defaultDecimal +
+                                                    priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?[period] ?? _defaultDecimal,
+
+                AdditionalPaymentsForApprentices = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?[period] ?? _defaultDecimal,
+
+                FrameworkUpliftOnProgrammePayment1618 = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName)?[period] ?? _defaultDecimal,
+
+                FrameworkUpliftBalancingPayment1618 = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName)?[period] ?? _defaultDecimal,
+
+                FrameworkUpliftCompletionPayment1618 = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName)?[period] ?? _defaultDecimal,
+
+                EnglishMathsOnProgrammeEarnings = learningDeliveryPeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36MathEngOnProgPayment)?[period] ?? _defaultDecimal,
+                EnglishMathsBalancingPaymentEarnings = learningDeliveryPeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36MathEngBalPayment)?[period] ?? _defaultDecimal
+
             };
         }
+
 
         private string GetFundingType(
             LearningDeliveryValues learningDeliveryValues,
@@ -542,203 +502,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                 currentYearData.Where(x => x.AFinCode == 1 || x.AFinCode == 2).Sum(x => x.AFinAmount) -
                 currentYearData.Where(x => x.AFinCode == 3).Sum(x => x.AFinAmount);
         }
-
-        //private void GetTotals(AppsIndicativeEarningsReportModel model)
-        //{
-        //    model.TotalOnProgrammeEarnings =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustOnProgrammeEarnings,
-        //            model.SeptemberOnProgrammeEarnings,
-        //            model.OctoberOnProgrammeEarnings,
-        //            model.NovemberOnProgrammeEarnings,
-        //            model.DecemberOnProgrammeEarnings,
-        //            model.JanuaryOnProgrammeEarnings,
-        //            model.FebruaryOnProgrammeEarnings,
-        //            model.MarchOnProgrammeEarnings,
-        //            model.AprilOnProgrammeEarnings,
-        //            model.MayOnProgrammeEarnings,
-        //            model.JuneOnProgrammeEarnings,
-        //            model.JulyOnProgrammeEarnings);
-
-        //    model.TotalBalancingPaymentEarnings =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustBalancingPaymentEarnings,
-        //            model.SeptemberBalancingPaymentEarnings,
-        //            model.OctoberBalancingPaymentEarnings,
-        //            model.NovemberBalancingPaymentEarnings,
-        //            model.DecemberBalancingPaymentEarnings,
-        //            model.JanuaryBalancingPaymentEarnings,
-        //            model.FebruaryBalancingPaymentEarnings,
-        //            model.MarchBalancingPaymentEarnings,
-        //            model.AprilBalancingPaymentEarnings,
-        //            model.MayBalancingPaymentEarnings,
-        //            model.JuneBalancingPaymentEarnings,
-        //            model.JulyBalancingPaymentEarnings);
-
-        //    model.TotalAimCompletionEarnings =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustAimCompletionEarnings,
-        //            model.SeptemberAimCompletionEarnings,
-        //            model.OctoberAimCompletionEarnings,
-        //            model.NovemberAimCompletionEarnings,
-        //            model.DecemberAimCompletionEarnings,
-        //            model.JanuaryAimCompletionEarnings,
-        //            model.FebruaryAimCompletionEarnings,
-        //            model.MarchAimCompletionEarnings,
-        //            model.AprilAimCompletionEarnings,
-        //            model.MayAimCompletionEarnings,
-        //            model.JuneAimCompletionEarnings,
-        //            model.JulyAimCompletionEarnings);
-
-        //    model.TotalLearningSupportEarnings =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustLearningSupportEarnings,
-        //            model.SeptemberLearningSupportEarnings,
-        //            model.OctoberLearningSupportEarnings,
-        //            model.NovemberLearningSupportEarnings,
-        //            model.DecemberLearningSupportEarnings,
-        //            model.JanuaryLearningSupportEarnings,
-        //            model.FebruaryLearningSupportEarnings,
-        //            model.MarchLearningSupportEarnings,
-        //            model.AprilLearningSupportEarnings,
-        //            model.MayLearningSupportEarnings,
-        //            model.JuneLearningSupportEarnings,
-        //            model.JulyLearningSupportEarnings);
-
-        //    model.TotalEnglishMathsOnProgrammeEarnings =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustEnglishMathsOnProgrammeEarnings,
-        //            model.SeptemberEnglishMathsOnProgrammeEarnings,
-        //            model.OctoberEnglishMathsOnProgrammeEarnings,
-        //            model.NovemberEnglishMathsOnProgrammeEarnings,
-        //            model.DecemberEnglishMathsOnProgrammeEarnings,
-        //            model.JanuaryEnglishMathsOnProgrammeEarnings,
-        //            model.FebruaryEnglishMathsOnProgrammeEarnings,
-        //            model.MarchEnglishMathsOnProgrammeEarnings,
-        //            model.AprilEnglishMathsOnProgrammeEarnings,
-        //            model.MayEnglishMathsOnProgrammeEarnings,
-        //            model.JuneEnglishMathsOnProgrammeEarnings,
-        //            model.JulyEnglishMathsOnProgrammeEarnings);
-
-        //    model.TotalEnglishMathsBalancingPaymentEarnings =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustEnglishMathsBalancingPaymentEarnings,
-        //            model.SeptemberEnglishMathsBalancingPaymentEarnings,
-        //            model.OctoberEnglishMathsBalancingPaymentEarnings,
-        //            model.NovemberEnglishMathsBalancingPaymentEarnings,
-        //            model.DecemberEnglishMathsBalancingPaymentEarnings,
-        //            model.JanuaryEnglishMathsBalancingPaymentEarnings,
-        //            model.FebruaryEnglishMathsBalancingPaymentEarnings,
-        //            model.MarchEnglishMathsBalancingPaymentEarnings,
-        //            model.AprilEnglishMathsBalancingPaymentEarnings,
-        //            model.MayEnglishMathsBalancingPaymentEarnings,
-        //            model.JuneEnglishMathsBalancingPaymentEarnings,
-        //            model.JulyEnglishMathsBalancingPaymentEarnings);
-
-        //    model.TotalDisadvantageEarnings =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustDisadvantageEarnings,
-        //            model.SeptemberDisadvantageEarnings,
-        //            model.OctoberDisadvantageEarnings,
-        //            model.NovemberDisadvantageEarnings,
-        //            model.DecemberDisadvantageEarnings,
-        //            model.JanuaryDisadvantageEarnings,
-        //            model.FebruaryDisadvantageEarnings,
-        //            model.MarchDisadvantageEarnings,
-        //            model.AprilDisadvantageEarnings,
-        //            model.MayDisadvantageEarnings,
-        //            model.JuneDisadvantageEarnings,
-        //            model.JulyDisadvantageEarnings);
-
-        //    model.Total1618AdditionalPaymentForEmployers =
-        //        _totalBuilder.TotalRecords(
-        //            model.August1618AdditionalPaymentForEmployers,
-        //            model.September1618AdditionalPaymentForEmployers,
-        //            model.October1618AdditionalPaymentForEmployers,
-        //            model.November1618AdditionalPaymentForEmployers,
-        //            model.December1618AdditionalPaymentForEmployers,
-        //            model.January1618AdditionalPaymentForEmployers,
-        //            model.February1618AdditionalPaymentForEmployers,
-        //            model.March1618AdditionalPaymentForEmployers,
-        //            model.April1618AdditionalPaymentForEmployers,
-        //            model.May1618AdditionalPaymentForEmployers,
-        //            model.June1618AdditionalPaymentForEmployers,
-        //            model.July1618AdditionalPaymentForEmployers);
-
-        //    model.Total1618AdditionalPaymentForProviders =
-        //        _totalBuilder.TotalRecords(
-        //            model.August1618AdditionalPaymentForProviders,
-        //            model.September1618AdditionalPaymentForProviders,
-        //            model.October1618AdditionalPaymentForProviders,
-        //            model.November1618AdditionalPaymentForProviders,
-        //            model.December1618AdditionalPaymentForProviders,
-        //            model.January1618AdditionalPaymentForProviders,
-        //            model.February1618AdditionalPaymentForProviders,
-        //            model.March1618AdditionalPaymentForProviders,
-        //            model.April1618AdditionalPaymentForProviders,
-        //            model.May1618AdditionalPaymentForProviders,
-        //            model.June1618AdditionalPaymentForProviders,
-        //            model.July1618AdditionalPaymentForProviders);
-
-        //    model.TotalAdditionalPaymentsForApprentices =
-        //        _totalBuilder.TotalRecords(
-        //            model.AugustAdditionalPaymentsForApprentices,
-        //            model.SeptemberAdditionalPaymentsForApprentices,
-        //            model.OctoberAdditionalPaymentsForApprentices,
-        //            model.NovemberAdditionalPaymentsForApprentices,
-        //            model.DecemberAdditionalPaymentsForApprentices,
-        //            model.JanuaryAdditionalPaymentsForApprentices,
-        //            model.FebruaryAdditionalPaymentsForApprentices,
-        //            model.MarchAdditionalPaymentsForApprentices,
-        //            model.AprilAdditionalPaymentsForApprentices,
-        //            model.MayAdditionalPaymentsForApprentices,
-        //            model.JuneAdditionalPaymentsForApprentices,
-        //            model.JulyAdditionalPaymentsForApprentices);
-
-        //    model.Total1618FrameworkUpliftOnProgrammePayment =
-        //        _totalBuilder.TotalRecords(
-        //            model.August1618FrameworkUpliftOnProgrammePayment,
-        //            model.September1618FrameworkUpliftOnProgrammePayment,
-        //            model.October1618FrameworkUpliftOnProgrammePayment,
-        //            model.November1618FrameworkUpliftOnProgrammePayment,
-        //            model.December1618FrameworkUpliftOnProgrammePayment,
-        //            model.January1618FrameworkUpliftOnProgrammePayment,
-        //            model.February1618FrameworkUpliftOnProgrammePayment,
-        //            model.March1618FrameworkUpliftOnProgrammePayment,
-        //            model.April1618FrameworkUpliftOnProgrammePayment,
-        //            model.May1618FrameworkUpliftOnProgrammePayment,
-        //            model.June1618FrameworkUpliftOnProgrammePayment,
-        //            model.July1618FrameworkUpliftOnProgrammePayment);
-
-        //    model.Total1618FrameworkUpliftBalancingPayment =
-        //        _totalBuilder.TotalRecords(
-        //            model.August1618FrameworkUpliftBalancingPayment,
-        //            model.September1618FrameworkUpliftBalancingPayment,
-        //            model.October1618FrameworkUpliftBalancingPayment,
-        //            model.November1618FrameworkUpliftBalancingPayment,
-        //            model.December1618FrameworkUpliftBalancingPayment,
-        //            model.January1618FrameworkUpliftBalancingPayment,
-        //            model.February1618FrameworkUpliftBalancingPayment,
-        //            model.March1618FrameworkUpliftBalancingPayment,
-        //            model.April1618FrameworkUpliftBalancingPayment,
-        //            model.May1618FrameworkUpliftBalancingPayment,
-        //            model.June1618FrameworkUpliftBalancingPayment,
-        //            model.July1618FrameworkUpliftBalancingPayment);
-
-        //    model.Total1618FrameworkUpliftCompletionPayment =
-        //        _totalBuilder.TotalRecords(
-        //            model.August1618FrameworkUpliftCompletionPayment,
-        //            model.September1618FrameworkUpliftCompletionPayment,
-        //            model.October1618FrameworkUpliftCompletionPayment,
-        //            model.November1618FrameworkUpliftCompletionPayment,
-        //            model.December1618FrameworkUpliftCompletionPayment,
-        //            model.January1618FrameworkUpliftCompletionPayment,
-        //            model.February1618FrameworkUpliftCompletionPayment,
-        //            model.March1618FrameworkUpliftCompletionPayment,
-        //            model.April1618FrameworkUpliftCompletionPayment,
-        //            model.May1618FrameworkUpliftCompletionPayment,
-        //            model.June1618FrameworkUpliftCompletionPayment,
-        //            model.July1618FrameworkUpliftCompletionPayment);
-        //}
+       
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Model
 {
-    public class PriceEpisodePeriodisedValuesAttributesModel
+    public class PeriodisedValuesAttributesModel
     {
         public decimal? OnProgrammeEarnings { get; set; }
 
@@ -23,6 +23,9 @@
         public decimal? FrameworkUpliftBalancingPayment1618 { get; set; }
 
         public decimal? FrameworkUpliftCompletionPayment1618 { get; set; }
-       
+
+        public decimal? EnglishMathsOnProgrammeEarnings { get; set; }
+
+        public decimal? EnglishMathsBalancingPaymentEarnings { get; set; }
     }
 }

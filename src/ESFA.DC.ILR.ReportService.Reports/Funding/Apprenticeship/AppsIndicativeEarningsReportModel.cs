@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 {
@@ -133,6 +134,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
         public string LearningDeliveryFAMTypeACTDateAppliesFrom { get; set; }
 
         public string LearningDeliveryFAMTypeACTDateAppliesTo { get; set; }
+
+        public PeriodisedValuesModel PeriodisedValues { get; set; }
 
         public decimal? AugustOnProgrammeEarnings { get; set; }
 
