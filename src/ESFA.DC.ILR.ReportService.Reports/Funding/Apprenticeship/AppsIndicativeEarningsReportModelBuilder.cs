@@ -354,24 +354,24 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                 return;
             }
 
-            DateTime contractAppliesFrom = acts.Where(x =>
-                (useDeliveryAttributeDate && learningDelivery.LearnStartDate >= x.LearnDelFAMDateFromNullable) ||
-                (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate >= x.LearnDelFAMDateFromNullable))
-                .Select(x => x.LearnDelFAMDateFromNullable ?? DateTime.MinValue)
-                .DefaultIfEmpty(DateTime.MinValue)
-                .Max();
 
-            DateTime contractAppliesTo = acts.Where(x =>
-                (useDeliveryAttributeDate && learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
-                (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate <= x.LearnDelFAMDateToNullable))
-                .Select(x => x.LearnDelFAMDateToNullable ?? DateTime.MinValue)
-                .DefaultIfEmpty(DateTime.MinValue)
-                .Min();
+            DateTime? contractAppliesFrom = acts.Where(x =>
+                    (useDeliveryAttributeDate && learningDelivery.LearnStartDate >= x.LearnDelFAMDateFromNullable) ||
+                    (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate >=
+                     x.LearnDelFAMDateFromNullable))
+                .Select(x => x.LearnDelFAMDateFromNullable)
+                .MaxOrDefault();
 
-            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom == DateTime.MinValue ? $"" : contractAppliesFrom.ToString("dd/MM/yyyy");
-            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo == DateTime.MinValue ? $"" : contractAppliesTo.ToString("dd/MM/yyyy");
+            DateTime? contractAppliesTo = acts.Where(x =>
+                    (useDeliveryAttributeDate && learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
+                    (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate <= x.LearnDelFAMDateToNullable))
+                .Select(x => x.LearnDelFAMDateToNullable)
+                .MaxOrDefault();
 
-            if (contractAppliesTo == DateTime.MinValue)
+            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom == null ? $"" : contractAppliesFrom.Value.ToString("dd/MM/yyyy");
+            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo == null ? $"" : contractAppliesTo.Value.ToString("dd/MM/yyyy");
+
+            if (contractAppliesTo == null)
             {
                 model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x => x.LearnDelFAMDateToNullable == null)?.LearnDelFAMCode;
             }
