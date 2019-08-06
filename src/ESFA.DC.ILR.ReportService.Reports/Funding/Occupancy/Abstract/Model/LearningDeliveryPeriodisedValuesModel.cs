@@ -37,7 +37,17 @@
         public decimal? EmpOutcomePayTotal { get; set; }
 
         public decimal? LearnSuppFundCashTotal { get; set; }
-        
+
+        public decimal? CoreGovContPaymentTotal { get; set; }
+
+        public decimal? MathEngOnProgPaymentTotal { get; set; }
+
+        public decimal? MathEngBalPaymentTotal { get; set; }
+
+        public decimal? SmallBusPaymentTotal { get; set; }
+
+        public decimal? YoungAppPaymentTotal { get; set; }
+
         public decimal? TotalEarned { get; set; }
     }
 }

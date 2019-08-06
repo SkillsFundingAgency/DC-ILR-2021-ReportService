@@ -150,6 +150,9 @@
     <Compile Include="Funding\MainOccupancy\MainOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\MainOccupancy\MainOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\PeriodisedValuesLookupProviderTests.cs" />
+    <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportTests.cs" />
     <Compile Include="Model\IlrModelMapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />

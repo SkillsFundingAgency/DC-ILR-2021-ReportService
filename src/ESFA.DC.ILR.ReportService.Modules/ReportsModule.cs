@@ -7,6 +7,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
@@ -63,6 +64,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<AllbOccupancyReport>().As<IReport>();
             containerBuilder.RegisterType<AllbOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<AllbOccupancyReportModel>>>();
+        }
+
+        private void RegisterTrailblazerOccupancyReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<TrailblazerOccupancyReport>().As<IReport>();
+            containerBuilder.RegisterType<TrailblazerOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<TrailblazerOccupancyReportModel>>>();
         }
 
         protected virtual void RegisterFundingSummaryReport(ContainerBuilder containerBuilder)
