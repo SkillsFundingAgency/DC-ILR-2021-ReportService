@@ -31,5 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Desktop
         protected override IFundLineGroup BuildEasAebFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundModels, IPeriodisedValuesLookup periodisedValues) => null;
         
         protected override IFundLineGroup BuildEasFm99FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues) => null;
+
+        protected override IFundLineGroup BuildEasLevyApprenticeshipsFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues) => null;
     }
 }
