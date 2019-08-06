@@ -141,6 +141,7 @@
     <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportTests.cs" />
     <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportClassMapTests.cs" />
+    <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportModelBuilderTests.cs" />
     <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />

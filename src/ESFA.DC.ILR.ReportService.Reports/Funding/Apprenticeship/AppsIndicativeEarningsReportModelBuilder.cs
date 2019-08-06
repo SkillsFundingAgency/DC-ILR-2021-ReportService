@@ -10,6 +10,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Service.Extensions;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 {
@@ -31,11 +32,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             var appsIndicativeEarningsModels = new List<AppsIndicativeEarningsReportModel>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
             IDictionary<string, LARSLearningDelivery> larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
-
+            IDictionary<int, LARSStandard> larsStandards = BuildLarsStandardDictionary(referenceData);
+            IDictionary<string, FM36Learner> fm36Learners = BuildFm36LearnerDeliveryDictionary(fm36Data);
 
             foreach (var learner in message?.Learners?.Where(l => l != null) ?? Enumerable.Empty<ILearner>())
             {
-                FM36Learner fm36Learner = fm36Data?.Learners?.SingleOrDefault(x => string.Equals(x.LearnRefNumber, learner.LearnRefNumber, StringComparison.OrdinalIgnoreCase));
+                FM36Learner fm36Learner = fm36Learners.GetValueOrDefault(learner.LearnRefNumber);
 
                 foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
                 {
@@ -44,12 +46,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                         continue;
                     }
                     LARSLearningDelivery larsDelivery = larsLearningDeliveries.GetValueOrDefault(learningDelivery.LearnAimRef);
-                    LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
+                    LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
                     string larsStandard = null;
 
                     if (learningDelivery.StdCodeNullable != null)
                     {
-                        larsStandard = referenceData.LARSStandards.SingleOrDefault(l => l.StandardCode == learningDelivery.StdCodeNullable.Value)?.NotionalEndLevel ?? "NA";
+                        larsStandard = larsStandards.GetValueOrDefault(learningDelivery.StdCodeNullable.Value)?.NotionalEndLevel ??"NA";
                     }
                     if (fm36Learner?.PriceEpisodes.Any() ?? false)
                     {
@@ -103,6 +105,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             return referenceDataRoot?.LARSLearningDeliveries?.ToDictionary(ld => ld.LearnAimRef, ld => ld, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, LARSLearningDelivery>();
         }
 
+        public IDictionary<int, LARSStandard> BuildLarsStandardDictionary(ReferenceDataRoot referenceDataRoot)
+        {
+            return referenceDataRoot?.LARSStandards?.ToDictionary(ld => ld.StandardCode, ld => ld) ?? new Dictionary<int, LARSStandard>();
+        }
+
+        public IDictionary<string, FM36Learner> BuildFm36LearnerDeliveryDictionary(FM36Global fm36Global)
+        {
+            return fm36Global?.Learners?.ToDictionary(ld => ld.LearnRefNumber, ld => ld, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, FM36Learner>();
+        }
+
         public AppsIndicativeEarningsReportModel BuildLineModel(
            ILearner learner,
            ILearningDelivery learningDelivery,
@@ -134,7 +146,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                 StandardNotionalEndLevel = notionalEndLevel
             };
             model.EmpStatusMonitoringSmallEmployer = model.EmploymentStatus?.EmploymentStatusMonitorings
-                ?.SingleOrDefault(x => string.Equals(x.ESMType, ReportingConstants.EmploymentStatusMonitoringTypeSEM,
+                ?.FirstOrDefault(x => string.Equals(x.ESMType, ReportingConstants.EmploymentStatusMonitoringTypeSEM,
                     StringComparison.OrdinalIgnoreCase))?.ESMCode;
             model.FundingLineType = GetFundingType(fm36DeliveryAttribute?.LearningDeliveryValues, fm36EpisodeAttribute?.PriceEpisodeValues);
             model.Fm36LearningDelivery = fm36DeliveryAttribute?.LearningDeliveryValues;
@@ -335,8 +347,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
         {
             bool learnDelMathEng = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false;
             bool useDeliveryAttributeDate = learnDelMathEng || !hasPriceEpisodes;
-            ILearningDeliveryFAM[] acts = learningDelivery.LearningDeliveryFAMs.Where(x =>
-                string.Equals(x.LearnDelFAMType, ReportingConstants.LearningDeliveryFAMCodeACT, StringComparison.OrdinalIgnoreCase)).ToArray();
+            ILearningDeliveryFAM[] acts = learningDelivery.LearningDeliveryFAMs.Where(x => x.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ACT)).ToArray();
 
             if (acts.All(x => x.LearnDelFAMDateFromNullable == null))
             {

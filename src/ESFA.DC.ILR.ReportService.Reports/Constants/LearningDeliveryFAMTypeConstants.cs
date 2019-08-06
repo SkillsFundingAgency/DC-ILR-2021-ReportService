@@ -19,5 +19,7 @@
         public const string RES = "RES";
 
         public const string EEF = "EEF";
+
+        public const string ACT = "ACT";
     }
 }
