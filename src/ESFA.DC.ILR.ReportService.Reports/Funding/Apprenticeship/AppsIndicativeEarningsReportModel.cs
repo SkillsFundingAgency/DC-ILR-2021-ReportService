@@ -49,9 +49,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 
         public string LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
 
-        public string LearningDeliveryFAMTypeACTDateAppliesFrom { get; set; }
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesFrom { get; set; }
 
-        public string LearningDeliveryFAMTypeACTDateAppliesTo { get; set; }
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesTo { get; set; }
 
         public string OfficialSensitive { get; }
     }

@@ -355,31 +355,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             }
 
 
-            DateTime? contractAppliesFrom = acts.Where(x =>
+            model.LearningDeliveryFAMTypeACTDateAppliesFrom = acts.Where(x =>
                     (useDeliveryAttributeDate && learningDelivery.LearnStartDate >= x.LearnDelFAMDateFromNullable) ||
                     (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate >=
                      x.LearnDelFAMDateFromNullable))
                 .Select(x => x.LearnDelFAMDateFromNullable)
                 .MaxOrDefault();
 
-            DateTime? contractAppliesTo = acts.Where(x =>
+            model.LearningDeliveryFAMTypeACTDateAppliesTo = acts.Where(x =>
                     (useDeliveryAttributeDate && learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
                     (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate <= x.LearnDelFAMDateToNullable))
                 .Select(x => x.LearnDelFAMDateToNullable)
                 .MaxOrDefault();
 
-            model.LearningDeliveryFAMTypeACTDateAppliesFrom = contractAppliesFrom == null ? $"" : contractAppliesFrom.Value.ToString("dd/MM/yyyy");
-            model.LearningDeliveryFAMTypeACTDateAppliesTo = contractAppliesTo == null ? $"" : contractAppliesTo.Value.ToString("dd/MM/yyyy");
-
-            if (contractAppliesTo == null)
+            if (model.LearningDeliveryFAMTypeACTDateAppliesTo == null)
             {
                 model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x => x.LearnDelFAMDateToNullable == null)?.LearnDelFAMCode;
             }
             else
             {
                 model.LearningDeliveryFAMTypeApprenticeshipContractType = acts.FirstOrDefault(x =>
-                    x.LearnDelFAMDateFromNullable == contractAppliesFrom &&
-                    x.LearnDelFAMDateToNullable == contractAppliesTo)?.LearnDelFAMCode;
+                    x.LearnDelFAMDateFromNullable == model.LearningDeliveryFAMTypeACTDateAppliesFrom &&
+                    x.LearnDelFAMDateToNullable == model.LearningDeliveryFAMTypeACTDateAppliesTo)?.LearnDelFAMCode;
             }
         }
 

@@ -80,8 +80,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             Map(m => m.TotalPRMThisFundingYear).Index(i++).Name("Total employer contribution collected (PMR) in this funding year").TypeConverterOption.Format(DecimalFormat);
 
             Map(m => m.LearningDeliveryFAMTypeApprenticeshipContractType).Index(i++).Name("Learning delivery funding and monitoring type - apprenticeship contract type");
-            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesFrom).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies from");
-            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesTo).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies to");
+            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesFrom).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies from").TypeConverterOption.Format(DateFormat);
+            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesTo).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies to").TypeConverterOption.Format(DateFormat);
 
             Map(m => m.PeriodisedValues.August.OnProgrammeEarnings).Index(i++).Name(@"August on programme earnings").TypeConverterOption.Format(DecimalFormat);
             Map(m => m.PeriodisedValues.August.BalancingPaymentEarnings).Index(i++).Name(@"August balancing payment earnings").TypeConverterOption.Format(DecimalFormat);
