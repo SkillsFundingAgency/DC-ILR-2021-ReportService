@@ -1,28 +1,34 @@
-﻿using System;
-using ESFA.DC.ILR.ReportService.Service.Interface;
-using System.Collections.Generic;
-using System.Linq;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Model;
+using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 {
     public class AppsIndicativeEarningsReportModelBuilder : IModelBuilder<IEnumerable<AppsIndicativeEarningsReportModel>>
     {
+        private readonly IIlrModelMapper _ilrModelMapper;
         private const decimal _defaultDecimal = 0;
+        private static readonly AppsIndicativeEarningsModelComparer AppsIndicativeEarningsModelComparer = new AppsIndicativeEarningsModelComparer();
 
+        public AppsIndicativeEarningsReportModelBuilder(IIlrModelMapper ilrModelMapper)
+        {
+            _ilrModelMapper = ilrModelMapper;
+        }
         public IEnumerable<AppsIndicativeEarningsReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
 
             var message = reportServiceDependentData.Get<IMessage>();
-            var fm36Data = reportServiceDependentData.Get<FM36Global>();    
+            var fm36Data = reportServiceDependentData.Get<FM36Global>();
             var appsIndicativeEarningsModels = new List<AppsIndicativeEarningsReportModel>();
-
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
             IDictionary<string, LARSLearningDelivery> larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
 
@@ -37,17 +43,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                     {
                         continue;
                     }
-
+                    LARSLearningDelivery larsDelivery = larsLearningDeliveries.GetValueOrDefault(learningDelivery.LearnAimRef);
+                    LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
                     string larsStandard = null;
+
                     if (learningDelivery.StdCodeNullable != null)
                     {
-                        larsStandard = referenceData.LARSStandards.SingleOrDefault(l => l.StandardCode == learningDelivery.StdCodeNullable.Value)?.NotionalEndLevel??"NA";
+                        larsStandard = referenceData.LARSStandards.SingleOrDefault(l => l.StandardCode == learningDelivery.StdCodeNullable.Value)?.NotionalEndLevel ?? "NA";
                     }
-
-                    LARSLearningDelivery larsDelivery = larsLearningDeliveries.SingleOrDefault(x => string.Equals(x.Key, learningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)).Value;
-                    LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries
-                        ?.SingleOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
-
                     if (fm36Learner?.PriceEpisodes.Any() ?? false)
                     {
                         List<PriceEpisode> episodesInRange = fm36Learner.PriceEpisodes
@@ -65,37 +68,34 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                                 {
                                     earliestEpisode = true;
                                 }
-                                appsIndicativeEarningsModels.Add(
-                                    BuildLineModel(
-                                        learner,
-                                        learningDelivery,
-                                        fm36LearningDelivery,
-                                        episodeAttribute,
-                                        larsDelivery,
-                                        larsStandard,
-                                        earliestEpisode,
-                                        true));
+                                appsIndicativeEarningsModels.Add(BuildLineModel(learner,
+                                                                                learningDelivery,
+                                                                                fm36LearningDelivery,
+                                                                                episodeAttribute,
+                                                                                larsDelivery,
+                                                                                larsStandard,
+                                                                                earliestEpisode,
+                                                                                true));
 
                                 earliestEpisode = false;
 
                             }
                             continue;
                         }
-
                     }
-
                 }
             }
 
-            return new List<AppsIndicativeEarningsReportModel>();
+            appsIndicativeEarningsModels.Sort(AppsIndicativeEarningsModelComparer);
+            return appsIndicativeEarningsModels;
         }
 
-        private IDictionary<string, LARSLearningDelivery> BuildLarsLearningDeliveryDictionary(ReferenceDataRoot referenceDataRoot)
+        public IDictionary<string, LARSLearningDelivery> BuildLarsLearningDeliveryDictionary(ReferenceDataRoot referenceDataRoot)
         {
             return referenceDataRoot?.LARSLearningDeliveries?.ToDictionary(ld => ld.LearnAimRef, ld => ld, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, LARSLearningDelivery>();
         }
 
-        private AppsIndicativeEarningsReportModel BuildLineModel(
+        public AppsIndicativeEarningsReportModel BuildLineModel(
            ILearner learner,
            ILearningDelivery learningDelivery,
            LearningDelivery fm36DeliveryAttribute,
@@ -108,91 +108,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             DateTime employmentStatusDate = learner.LearnerEmploymentStatuses?
                 .Where(x => x.DateEmpStatApp <= learningDelivery.LearnStartDate).Select(x => x.DateEmpStatApp)
                 .DefaultIfEmpty(DateTime.MinValue).Max() ?? DateTime.MinValue;
-            ILearnerEmploymentStatus employmentStatus =
-                learner.LearnerEmploymentStatuses?.SingleOrDefault(x => x.DateEmpStatApp == employmentStatusDate);
-            LearningDeliveryFamSimple[] learningDeliveryFams = GetLearningDeliveryFams(learningDelivery);
-            string fundingLineType = GetFundingType(fm36DeliveryAttribute?.LearningDeliveryValues, fm36EpisodeAttribute?.PriceEpisodeValues);
-            var ldms = GetArrayEntries(learningDelivery.LearningDeliveryFAMs?.Where(x => string.Equals(x.LearnDelFAMType, ReportingConstants.LearningDeliveryFAMCodeLDM, StringComparison.OrdinalIgnoreCase)), 4);
 
             var model = new AppsIndicativeEarningsReportModel
             {
-                LearnRefNumber = learner.LearnRefNumber,
-                UniqueLearnerNumber = learner.ULN,
-                DateOfBirth = learner.DateOfBirthNullable?.ToString("dd/MM/yyyy"),
-                PostcodePriorToEnrollment = learner.PostcodePrior,
-                CampusIdentifier = learner.CampId,
-                ProviderSpecifiedLearnerMonitoringA = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                ProviderSpecifiedLearnerMonitoringB = learner.ProviderSpecLearnerMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                AimSeqNumber = learningDelivery.AimSeqNumber,
-                LearningAimReference = learningDelivery.LearnAimRef,
-                LearningAimTitle = larsLearningDelivery?.LearnAimRefTitle,
-                SoftwareSupplierAimIdentifier = learningDelivery.SWSupAimId,
-                LARS1618FrameworkUplift = fm36DeliveryAttribute?.LearningDeliveryValues
-                    ?.LearnDelApplicProv1618FrameworkUplift,
-                NotionalNVQLevel = larsLearningDelivery?.NotionalNVQLevel,
-                StandardNotionalEndLevel = notionalEndLevel,
-                Tier2SectorSubjectArea = larsLearningDelivery?.SectorSubjectAreaTier2,
-                ProgrammeType = learningDelivery.ProgTypeNullable,
-                StandardCode = learningDelivery.StdCodeNullable,
-                FrameworkCode = learningDelivery.FworkCodeNullable,
-                ApprenticeshipPathway = learningDelivery.PwayCodeNullable,
-                AimType = learningDelivery.AimType,
-                CommonComponentCode = larsLearningDelivery?.FrameworkCommonComponent,
-                FundingModel = learningDelivery.FundModel,
-                OriginalLearningStartDate = learningDelivery.OrigLearnStartDateNullable?.ToString("dd/MM/yyyy"),
-                LearningStartDate = learningDelivery.LearnStartDate.ToString("dd/MM/yyyy"),
-                LearningPlannedEndDate = learningDelivery.LearnPlanEndDate.ToString("dd/MM/yyyy"),
-                CompletionStatus = learningDelivery.CompStatus,
-                LearningActualEndDate = learningDelivery.LearnActEndDateNullable?.ToString("dd/MM/yyyy"),
-                Outcome = learningDelivery.OutcomeNullable,
-                FundingAdjustmentForPriorLearning = learningDelivery.PriorLearnFundAdjNullable,
-                OtherFundingAdjustment = learningDelivery.OtherFundAdjNullable,
-                LearningDeliveryFAMTypeLearningSupportFunding = learningDeliveryFams.Select(x => x.Code).Max(),
-                LearningDeliveryFAMTypeLSFDateAppliesFrom =
-                    learningDeliveryFams.Select(x => x.From).Min() == DateTime.MinValue ? string.Empty : learningDeliveryFams.Select(x => x.From).Min().ToString("dd/MM/yyyy"),
-                LearningDeliveryFAMTypeLSFDateAppliesTo =
-                learningDeliveryFams.Select(x => x.To).Max() == DateTime.MinValue ? string.Empty : learningDeliveryFams.Select(x => x.To).Max().ToString("dd/MM/yyyy"),
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringA = ldms[0],
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringB = ldms[1],
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringC = ldms[2],
-                LearningDeliveryFAMTypeLearningDeliveryMonitoringD = ldms[3],
-                LearningDeliveryFAMRestartIndicator = learningDelivery.LearningDeliveryFAMs
-                    ?.SingleOrDefault(x => string.Equals(x.LearnDelFAMType, ReportingConstants.LearningDeliveryFAMCodeRES, StringComparison.OrdinalIgnoreCase))?.LearnDelFAMCode,
-                ProviderSpecifiedDeliveryMonitoringA = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                ProviderSpecifiedDeliveryMonitoringB = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                ProviderSpecifiedDeliveryMonitoringC = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                ProviderSpecifiedDeliveryMonitoringD = learningDelivery.ProviderSpecDeliveryMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                EndPointAssessmentOrganisation = learningDelivery.EPAOrgID,
-                PlannedNoOfOnProgrammeInstallmentsForAim =
-                    fm36DeliveryAttribute?.LearningDeliveryValues?.PlannedNumOnProgInstalm,
-                SubContractedOrPartnershipUKPRN = learningDelivery.PartnerUKPRNNullable,
-                DeliveryLocationPostcode = learningDelivery.DelLocPostCode,
-                EmployerIdentifier = employmentStatus?.EmpIdNullable,
-                AgreementIdentifier = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeAgreeId,
-                EmploymentStatus = employmentStatus?.EmpStat,
-                EmploymentStatusDate = employmentStatus?.DateEmpStatApp.ToString("dd/MM/yyyy"),
-                EmpStatusMonitoringSmallEmployer = employmentStatus?.EmploymentStatusMonitorings
-                    ?.SingleOrDefault(x => string.Equals(x.ESMType, ReportingConstants.EmploymentStatusMonitoringTypeSEM, StringComparison.OrdinalIgnoreCase))?.ESMCode,
-                PriceEpisodeStartDate =
-                    fm36EpisodeAttribute?.PriceEpisodeValues?.EpisodeStartDate,
-                PriceEpisodeActualEndDate =
-                    fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeActualEndDate?.ToString("dd/MM/yyyy"),
-                FundingLineType = fundingLineType,
-                TotalPriceApplicableToThisEpisode =
-                    fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeTotalTNPPrice,
-                FundingBandUpperLimit = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeUpperBandLimit,
-                PriceAmountAboveFundingBandLimit =
-                    fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeUpperLimitAdjustment,
-                PriceAmountRemainingStartOfEpisode = fm36EpisodeAttribute?.PriceEpisodeValues
-                    ?.PriceEpisodeCappedRemainingTNPAmount,
-                CompletionElement = fm36EpisodeAttribute?.PriceEpisodeValues?.PriceEpisodeCompletionElement
+                Learner = learner,
+                ProviderSpecLearnerMonitoring =
+                    _ilrModelMapper.MapProviderSpecLearnerMonitorings(learner.ProviderSpecLearnerMonitorings),
+                ProviderSpecDeliveryMonitoring =
+                    _ilrModelMapper.MapProviderSpecDeliveryMonitorings(learningDelivery
+                        .ProviderSpecDeliveryMonitorings),
+                LearningDeliveryFAMs = _ilrModelMapper.MapLearningDeliveryFAMs(learningDelivery.LearningDeliveryFAMs),
+                LearningDelivery = learningDelivery,
+                LarsLearningDelivery = larsLearningDelivery,
+                EmploymentStatus =
+                    learner.LearnerEmploymentStatuses?.SingleOrDefault(x => x.DateEmpStatApp == employmentStatusDate),
+                PriceEpisodeValues = fm36EpisodeAttribute?.PriceEpisodeValues,
+                StandardNotionalEndLevel = notionalEndLevel
             };
+            model.EmpStatusMonitoringSmallEmployer = model.EmploymentStatus?.EmploymentStatusMonitorings
+                ?.SingleOrDefault(x => string.Equals(x.ESMType, ReportingConstants.EmploymentStatusMonitoringTypeSEM,
+                    StringComparison.OrdinalIgnoreCase))?.ESMCode;
+            model.FundingLineType = GetFundingType(fm36DeliveryAttribute?.LearningDeliveryValues, fm36EpisodeAttribute?.PriceEpisodeValues);
+            model.Fm36LearningDelivery = fm36DeliveryAttribute?.LearningDeliveryValues;
 
             if (learningDelivery?.LearningDeliveryFAMs != null)
             {
@@ -211,9 +148,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 
             var isMathsEngLearningDelivery = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false;
 
-            var periodisedValuesModel = BuildPeriodisedValuesModel(fm36EpisodeAttribute?.PriceEpisodePeriodisedValues,
+            model.PeriodisedValues = BuildPeriodisedValuesModel(fm36EpisodeAttribute?.PriceEpisodePeriodisedValues,
                 fm36DeliveryAttribute?.LearningDeliveryPeriodisedValues, isMathsEngLearningDelivery);
-
             return model;
         }
 
@@ -224,7 +160,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             var priceEpisodePeriodisedValuesDictionary = BuildPriceEpisodePeriodisedValuesDictionary(priceEpisodePeriodisedValues);
             var learningDeliveryPeriodisedValuesDictionary = BuildFm36PeriodisedValuesDictionary(learningDelieryPeriodisedValues);
 
-            
+
             var onProgrammeEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName)?.Sum() ?? _defaultDecimal;
             var balancingPaymentEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm3PriceEpisodeBalancePaymentAttributeName)?.Sum() ?? _defaultDecimal;
             var aimCompletionEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeCompletionPaymentAttributeName)?.Sum() ?? _defaultDecimal;
@@ -246,15 +182,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             var frameworkUpliftCompletionPayment1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName)?.Sum() ?? _defaultDecimal;
 
 
-            
+
             var englishMathsOnProgrammeEarningsTotal = learningDeliveryPeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36MathEngOnProgPayment)?.Sum() ?? _defaultDecimal;
             var englishMathsBalancingPaymentEarningsTotal = learningDeliveryPeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36MathEngBalPayment)?.Sum() ?? _defaultDecimal;
 
-
-            var totalEarned = onProgrammeEarningsTotal + balancingPaymentEarningsTotal + aimCompletionEarningsTotal + learningSupportEarningsTotal + disadvantageEarningsTotal +
-                              additionalPaymentForEmployers1618Total + additionalPaymentForProviders1618Total + additionalPaymentsForApprenticesTotal +
-                              frameworkUpliftOnProgrammePayment1618Total + frameworkUpliftBalancingPayment1618Total + frameworkUpliftCompletionPayment1618Total +
-                              englishMathsOnProgrammeEarningsTotal + englishMathsBalancingPaymentEarningsTotal;
 
             return new PeriodisedValuesModel()
             {
@@ -283,7 +214,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                 FrameworkUpliftCompletionPayment1618Total = frameworkUpliftCompletionPayment1618Total,
                 EnglishMathsOnProgrammeEarningsTotal = englishMathsOnProgrammeEarningsTotal,
                 EnglishMathsBalancingPaymentEarningsTotal = englishMathsBalancingPaymentEarningsTotal,
-                TotalEarned = totalEarned,
             };
         }
 
@@ -371,11 +301,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 
             };
         }
-
-
-        private string GetFundingType(
-            LearningDeliveryValues learningDeliveryValues,
-            PriceEpisodeValues priceEpisodeValues)
+        public string GetFundingType(
+             LearningDeliveryValues learningDeliveryValues,
+             PriceEpisodeValues priceEpisodeValues)
         {
             if (learningDeliveryValues != null && learningDeliveryValues.LearnDelMathEng.GetValueOrDefault(false))
             {
@@ -390,56 +318,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             return string.Empty;
         }
 
-        public string[] GetArrayEntries(IEnumerable<ILearningDeliveryFAM> availableValues, int size)
-        {
-            if (size < 1)
-            {
-                throw new ArgumentOutOfRangeException(nameof(size), $"{nameof(size)} should be greater than 0");
-            }
-
-            string[] values = new string[size];
-            int pointer = 0;
-            foreach (ILearningDeliveryFAM learningDeliveryFam in availableValues ?? Enumerable.Empty<ILearningDeliveryFAM>())
-            {
-                values[pointer++] = learningDeliveryFam.LearnDelFAMCode;
-                if (pointer == size)
-                {
-                    break;
-                }
-            }
-
-            return values;
-        }
-
-        private LearningDeliveryFamSimple[] GetLearningDeliveryFams(ILearningDelivery learningDelivery)
-        {
-            List<LearningDeliveryFamSimple> ret = new List<LearningDeliveryFamSimple>();
-
-            ILearningDeliveryFAM[] lsfs = learningDelivery.LearningDeliveryFAMs
-                ?.Where(x =>
-                    string.Equals(x.LearnDelFAMType, ReportingConstants.LearningDeliveryFAMCodeLSF, StringComparison.OrdinalIgnoreCase))
-                .ToArray();
-            if (lsfs == null || !lsfs.Any())
-            {
-                ret.Add(new LearningDeliveryFamSimple(string.Empty, DateTime.MinValue, DateTime.MinValue));
-            }
-            else
-            {
-                foreach (ILearningDeliveryFAM learningDeliveryFam in lsfs)
-                {
-                    ret.Add(new LearningDeliveryFamSimple(learningDeliveryFam.LearnDelFAMCode, learningDeliveryFam.LearnDelFAMDateFromNullable.GetValueOrDefault(DateTime.MinValue), learningDeliveryFam.LearnDelFAMDateToNullable.GetValueOrDefault(DateTime.MinValue)));
-                }
-            }
-
-            return ret.ToArray();
-        }
-
-        private void CalculateApprenticeshipContractTypeFields(
-          ILearningDelivery learningDelivery,
-          AppsIndicativeEarningsReportModel model,
-          LearningDelivery fm36DeliveryAttribute,
-          PriceEpisode fm36PriceEpisodeAttribute,
-          bool hasPriceEpisodes)
+        public void CalculateApprenticeshipContractTypeFields(
+           ILearningDelivery learningDelivery,
+           AppsIndicativeEarningsReportModel model,
+           LearningDelivery fm36DeliveryAttribute,
+           PriceEpisode fm36PriceEpisodeAttribute,
+           bool hasPriceEpisodes)
         {
             bool learnDelMathEng = fm36DeliveryAttribute?.LearningDeliveryValues?.LearnDelMathEng ?? false;
             bool useDeliveryAttributeDate = learnDelMathEng || !hasPriceEpisodes;
@@ -480,7 +364,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             }
         }
 
-        private void CalculateAppFinTotals(AppsIndicativeEarningsReportModel model, ILearningDelivery learningDelivery)
+        public void CalculateAppFinTotals(AppsIndicativeEarningsReportModel model, ILearningDelivery learningDelivery)
         {
             if (learningDelivery.AppFinRecords == null)
             {
@@ -502,6 +386,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                 currentYearData.Where(x => x.AFinCode == 1 || x.AFinCode == 2).Sum(x => x.AFinAmount) -
                 currentYearData.Where(x => x.AFinCode == 3).Sum(x => x.AFinAmount);
         }
-       
+
     }
 }

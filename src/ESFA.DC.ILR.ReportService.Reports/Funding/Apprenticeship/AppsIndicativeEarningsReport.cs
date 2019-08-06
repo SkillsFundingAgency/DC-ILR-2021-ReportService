@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 {
-    public class AppsIndicativeEarningsReport : AbstractCsvReport<AppsIndicativeEarningsReportModel, AppsIndicativeEarningsReportMapper>, IReport
+    public class AppsIndicativeEarningsReport : AbstractCsvReport<AppsIndicativeEarningsReportModel, AppsIndicativeEarningsReportClassMap>, IReport
     {
         public AppsIndicativeEarningsReport(
             IFileNameService fileNameService,
@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             => new[]
             {
                 DependentDataCatalog.Fm36,
-                DependentDataCatalog.Ilr,
+                DependentDataCatalog.ValidIlr,
                 DependentDataCatalog.ReferenceData
             };
     }

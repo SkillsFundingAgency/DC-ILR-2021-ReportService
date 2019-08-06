@@ -53,6 +53,5 @@
 
         public decimal? EnglishMathsBalancingPaymentEarningsTotal { get; set; }
 
-        public decimal? TotalEarned { get; set; }
     }
 }
