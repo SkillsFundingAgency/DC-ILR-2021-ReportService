@@ -82,6 +82,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                             }
                             continue;
                         }
+                        appsIndicativeEarningsModels.Add(BuildLineModel(learner,
+                                                            learningDelivery,
+                                                            fm36LearningDelivery,
+                                                            null,
+                                                            larsDelivery,
+                                                            larsStandard,
+                                                            false,
+                                                            false));
                     }
                 }
             }
