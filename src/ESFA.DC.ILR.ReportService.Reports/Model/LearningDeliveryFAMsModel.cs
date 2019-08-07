@@ -4,6 +4,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
 {
     public class LearningDeliveryFAMsModel
     {
+        public string ADL { get; set; }
+
+        public string ALB_Highest { get; set; }
+
+        public DateTime? ALB_EarliestDateFrom { get; set; }
+
+        public DateTime? ALB_LatestDateTo { get; set; }
+
         public string SOF { get; set; }
 
         public string FFI { get; set; }

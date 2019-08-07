@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
@@ -36,14 +36,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
 
         public IEnumerable<Type> DependsOn => new List<Type>()
         {
-            DependentDataCatalog.Ilr,
+            DependentDataCatalog.InvalidIlr,
             DependentDataCatalog.ReferenceData,
             DependentDataCatalog.ValidationErrors,
         };
 
         public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
-            IMessage ilrMessage =  reportsDependentData.Get<IMessage>();
+            ILooseMessage ilrMessage =  reportsDependentData.Get<ILooseMessage>();
             ReferenceDataRoot ilrReferenceData = reportsDependentData.Get<ReferenceDataRoot>();
             List<ValidationError> ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
             

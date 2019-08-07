@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
@@ -9,7 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Interface
     {
         IEnumerable<ValidationErrorRow> Build(
             IEnumerable<ValidationError> ilrValidationErrors,
-            IMessage message,
+            ILooseMessage message,
             IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata);
     }
 }

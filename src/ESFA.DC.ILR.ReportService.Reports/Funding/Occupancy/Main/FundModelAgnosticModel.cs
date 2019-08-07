@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.Model
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
 {
     public class FundModelAgnosticModel
     {

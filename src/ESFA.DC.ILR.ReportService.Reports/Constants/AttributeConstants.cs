@@ -59,6 +59,7 @@
         public const string Fm81LearnSuppFundCash = "LearnSuppFundCash";
 
         // FM99
+        public const string Fm99ALBCode = "ALBCode";
         public const string Fm99AlbSupportPayment = "ALBSupportPayment";
         public const string Fm99AreaUpliftBalPayment = "AreaUpliftBalPayment";
         public const string Fm99AreaUpliftOnProgPayment = "AreaUpliftOnProgPayment";

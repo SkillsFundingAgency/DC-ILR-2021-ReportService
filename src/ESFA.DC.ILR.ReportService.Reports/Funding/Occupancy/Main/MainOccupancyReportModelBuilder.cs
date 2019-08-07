@@ -7,7 +7,6 @@ using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -15,11 +14,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
 {
     public class MainOccupancyReportModelBuilder : AbstractOccupancyReportModelBuilder, IModelBuilder<IEnumerable<MainOccupancyReportModel>>
     {
-        private readonly IIlrModelMapper _ilrModelMapper;
-
         public MainOccupancyReportModelBuilder(IIlrModelMapper ilrModelMapper)
+            : base(ilrModelMapper)
         {
-            _ilrModelMapper = ilrModelMapper;
         }
 
         public IEnumerable<MainOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)

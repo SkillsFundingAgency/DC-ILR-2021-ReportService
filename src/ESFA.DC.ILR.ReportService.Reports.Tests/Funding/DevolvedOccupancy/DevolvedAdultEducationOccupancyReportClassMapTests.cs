@@ -7,7 +7,6 @@ using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
@@ -53,22 +52,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Additional delivery hours",
                 "Learning start date postcode",
                 "Applicable area from source of funding",
-                "Learning delivery funding and monitoring type – source of funding",
-                "Learning delivery funding and monitoring type – full or co funding indicator ",
-                "Learning delivery funding and monitoring type – learning support funding (highest applicable)",
+                "Learning delivery funding and monitoring type - source of funding",
+                "Learning delivery funding and monitoring type - full or co funding indicator ",
+                "Learning delivery funding and monitoring type - learning support funding (highest applicable)",
                 "Learning delivery funding and monitoring type - LSF date applies from (earliest)",
                 "Learning delivery funding and monitoring type - LSF date applies to (latest)",
-                "Learning delivery funding and monitoring type – learning delivery monitoring (A)",
-                "Learning delivery funding and monitoring type – learning delivery monitoring (B)",
-                "Learning delivery funding and monitoring type – learning delivery monitoring (C)",
-                "Learning delivery funding and monitoring type – learning delivery monitoring (D)",
-                "Learning delivery funding and monitoring type – learning delivery monitoring (E)",
-                "Learning delivery funding and monitoring type – learning delivery monitoring (F)",
+                "Learning delivery funding and monitoring type - learning delivery monitoring (A)",
+                "Learning delivery funding and monitoring type - learning delivery monitoring (B)",
+                "Learning delivery funding and monitoring type - learning delivery monitoring (C)",
+                "Learning delivery funding and monitoring type - learning delivery monitoring (D)",
+                "Learning delivery funding and monitoring type - learning delivery monitoring (E)",
+                "Learning delivery funding and monitoring type - learning delivery monitoring (F)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (A)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (B)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (C)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (D)",
-                "Learning delivery funding and monitoring type – restart indicator",
+                "Learning delivery funding and monitoring type - restart indicator",
                 "Provider specified delivery monitoring (A)",
                 "Provider specified delivery monitoring (B)",
                 "Provider specified delivery monitoring (C)",

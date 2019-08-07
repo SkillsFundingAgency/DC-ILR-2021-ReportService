@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
 using ESFA.DC.ILR.ReportService.Reports.Interface;
@@ -31,7 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
             
             var cancellationToken = CancellationToken.None;
 
-            var message = Mock.Of<IMessage>();
+            var message = Mock.Of<ILooseMessage>();
 
             var validationErrorsMetadata = new List<ReferenceDataService.Model.MetaData.ValidationError>();
 
@@ -47,7 +47,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
                 
             var dependentData = new Mock<IReportServiceDependentData>();
 
-            dependentData.Setup(d => d.Get<IMessage>()).Returns(message);
+            dependentData.Setup(d => d.Get<ILooseMessage>()).Returns(message);
             dependentData.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
             dependentData.Setup(d => d.Get<List<ValidationError>>()).Returns(validationErrors);
 

@@ -49,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string ApprenticeshipEmployerOnAppService1618 = "16-18 Apprenticeship (Employer on App Service)";
         public const string ApprenticeshipEmployerOnAppService19Plus = "19+ Apprenticeship (Employer on App Service)";
         public const string EasLevyApprenticeship1618 = "16-18 Apprenticeship (Employer on App Service) Levy funding";
+        public const string EasLevyApprenticeship19Plus = "19+ Apprenticeship (Employer on App Service) Levy funding";
         public const string EasNonLevyApprenticeshipEmployerOnAppService1618 = "16-18 Apprenticeship (Employer on App Service) Non-Levy funding";
         public const string EasNonLevyApprenticeshipEmployerOnAppService19Plus = "19+ Apprenticeship(Employer on App Service) Non-Levy funding";
 
