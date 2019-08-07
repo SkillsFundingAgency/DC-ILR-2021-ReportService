@@ -1,15 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 {
     public class DevolvedAdultEducationFundingSummaryReport : AbstractReport, IReport
     {
@@ -35,7 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             => new[]
             {
                 DependentDataCatalog.Fm35,
-                DependentDataCatalog.Ilr,
+                DependentDataCatalog.ValidIlr,
                 DependentDataCatalog.ReferenceData
             };
 
@@ -50,10 +49,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
 
             using (var workbook = _excelService.NewWorkbook())
             {
+                workbook.Worksheets.Clear();
                 var workbookIndex = 0;
 
                 foreach (var reportModel in fundingSummaryReportModel)
                 {
+                    _excelService.NewWorksheet(workbook, reportModel.SofCode);
                     var worksheet = _excelService.GetWorksheetFromWorkbook(workbook, workbookIndex++);
 
                     _devolvedFundingSummaryReportRenderService.Render(reportModel, worksheet);

@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
             var invalidLearnRefNumbers = await ProvideJsonAsync<List<string>>(reportServiceContext.InvalidLearnRefNumbersKey, reportServiceContext.Container, cancellationToken) as List<string>;
 
             message.Learner = message.Learner.Where(l => invalidLearnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
-            message.LearnerDestinationandProgression = message.LearnerDestinationandProgression.Where(l => invalidLearnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
+            message.LearnerDestinationandProgression = message.LearnerDestinationandProgression?.Where(l => invalidLearnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
 
             return message;
         }

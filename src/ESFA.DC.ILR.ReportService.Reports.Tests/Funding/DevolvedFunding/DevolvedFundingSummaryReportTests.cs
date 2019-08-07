@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using FluentAssertions;
@@ -40,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
             reportServiceContextMock.Setup(c => c.Container).Returns(container);
 
             var reportServiceDependentData = Mock.Of<IReportServiceDependentData>();
-            var devolvedFundingSummaryReportModel = new List<DevolvedAdultEducationFundingSummaryReportModel> { new DevolvedAdultEducationFundingSummaryReportModel("105", 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164917-01.xml", "ILR-10000000-1920-20191204-164916-01.xml", new List<IDevolvedAdultEducationFundingCategory>())};
+            var devolvedFundingSummaryReportModel = new List<DevolvedAdultEducationFundingSummaryReportModel> { new DevolvedAdultEducationFundingSummaryReportModel("105", 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164917-01.xml", "ILR-10000000-1920-20191204-164916-01.xml", DateTime.Now, "OrgVersion", "LarsVersion", "PostcodeVersion", "EmployersVersion", "ApplicationVersion", "ReportGeneratedAt", new List<IDevolvedAdultEducationFundingCategory>())};
 
             devolvedFundingSummaryReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData))
                 .Returns(devolvedFundingSummaryReportModel);

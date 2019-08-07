@@ -24,6 +24,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
 
         public Workbook NewWorkbook() => new Workbook();
 
+        public void NewWorksheet(Workbook workbook, string sheetName) => workbook.Worksheets.Add(sheetName);
+
         public Worksheet GetWorksheetFromWorkbook(Workbook workbook, int index) => workbook.Worksheets[index];
 
         public async Task SaveWorkbookAsync(Workbook workbook, string fileName, string container, CancellationToken cancellationToken)

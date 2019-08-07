@@ -9,7 +9,10 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface.Output
         Workbook NewWorkbook();
 
         Worksheet GetWorksheetFromWorkbook(Workbook workbook, int index);
-        
+
+        void NewWorksheet(Workbook workbook, string sheetName);
+
+
         Task SaveWorkbookAsync(Workbook workbook, string fileName, string container, CancellationToken cancellationToken);
 
         void ApplyLicense();

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Constants;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.JobContextManager.Model;
 
@@ -10,10 +11,12 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
     public sealed class ReportServiceJobContextMessageContext : IReportServiceContext
     {
         private readonly JobContextMessage _jobContextMessage;
+        private readonly IVersionInfo _versionInfo;
 
-        public ReportServiceJobContextMessageContext(JobContextMessage jobContextMessage)
+        public ReportServiceJobContextMessageContext(JobContextMessage jobContextMessage, IVersionInfo versionInfo)
         {
             _jobContextMessage = jobContextMessage;
+            _versionInfo = versionInfo;
         }
 
         public int Ukprn => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
@@ -73,5 +76,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
         }
 
         public long JobId => _jobContextMessage.JobId;
+
+        public string ServiceReleaseVersion => _versionInfo.ServiceReleaseVersion;
     }
 }

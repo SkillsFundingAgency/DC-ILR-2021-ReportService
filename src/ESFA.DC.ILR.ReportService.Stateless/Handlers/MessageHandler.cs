@@ -47,6 +47,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                 using (var childLifeTimeScope = GetChildLifeTimeScope(jobContextMessage))
                 {
                     var executionContext = (ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
+                    var versionInfo = childLifeTimeScope.Resolve<IVersionInfo>();
+
                     executionContext.JobId = jobContextMessage.JobId.ToString();
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
@@ -57,7 +59,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 
                     var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
 
-                    var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
+                    var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
 
                     logger.LogDebug($"Completed Report Service");
                     return true;

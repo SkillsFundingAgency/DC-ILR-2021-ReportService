@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB;

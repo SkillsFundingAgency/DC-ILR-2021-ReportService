@@ -1,10 +1,11 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Linq;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
@@ -19,7 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
             var currentPeriod = 12;
 
             var fundingSummaryReport =
-                new DevolvedAdultEducationFundingSummaryReportModel("105", 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164917-01.xml", "ILR-10000000-1920-20191204-164916-01.xml", Enumerable.Range(1, 2)
+                new DevolvedAdultEducationFundingSummaryReportModel("105", 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164917-01.xml", "ILR-10000000-1920-20191204-164916-01.xml",DateTime.Now, "OrgVersion","LarsVersion", "PostcodeVersion", "EmployersVersion", "ApplicationVersion", "ReportGeneratedAt",  Enumerable.Range(1, 2)
                     .Select(l => (IDevolvedAdultEducationFundingCategory)new DevolvedAdultEducationFundingCategory("Funding Category Title", currentPeriod, Enumerable.Range(1, 5)
                         .Select(k => (IDevolvedAdultEducationFundLineGroup)new DevolvedAdultEducationFundLineGroup("Funding Sub Category Title", currentPeriod, FundingDataSources.FM35, new string[] { }, null)
                         {

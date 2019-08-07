@@ -58,5 +58,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string ReportOutputFileNames { get; set; }
 
+        string ServiceReleaseVersion { get; }
     }
 }

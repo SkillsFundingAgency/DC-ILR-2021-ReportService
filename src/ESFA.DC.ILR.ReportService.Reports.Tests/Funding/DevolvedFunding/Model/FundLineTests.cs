@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
+﻿using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using FluentAssertions;
 using Xunit;
 

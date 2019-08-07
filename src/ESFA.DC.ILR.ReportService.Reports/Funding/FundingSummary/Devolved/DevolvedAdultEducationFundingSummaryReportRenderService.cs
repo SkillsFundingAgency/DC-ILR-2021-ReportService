@@ -1,10 +1,10 @@
 ﻿using System.Drawing;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 {
     public class DevolvedAdultEducationFundingSummaryReportRenderService : IRenderService<IDevolvedAdultEducationFundingSummaryReport>
     {
@@ -16,11 +16,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
         private const string SourceOfFunding = "Source of Funding:";
         private const string SecurityClassification = "Security Classification:";
 
+        private const string ApplicationVersion = "Application Version";
+        private const string FilePreparationDate = "File Preparation Date";
+        private const string LARSVersion = "LARS Data";
+        private const string PostcodeVersion = "Postcode Data";
+        private const string OrganisationVersion = "Organisation Data";
+        private const string LargeEmployersVersion = "Large Employers Data";
+        private const string ReportGeneratedAt = "Report Generated at";
+
         private const int StartYear = 18;
         private const int EndYear = 19;
 
         private const string NotApplicable = "N/A";
         private const string DecimalFormat = "#,##0.00";
+        private const string DateFormat = "d";
 
         private const int StartColumn = 0;
         private const int ColumnCount = 17;
@@ -31,6 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
         private readonly Style _fundingSubCategoryStyle;
         private readonly Style _fundLineGroupStyle;
         private readonly Style _headerStyle;
+        private readonly Style _footerStyle;
 
         private readonly StyleFlag _styleFlag = new StyleFlag()
         {
@@ -52,6 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             _fundingSubCategoryStyle = cellsFactory.CreateStyle();
             _fundLineGroupStyle = cellsFactory.CreateStyle();
             _headerStyle = cellsFactory.CreateStyle();
+            _footerStyle = cellsFactory.CreateStyle();
 
             ConfigureStyles();
         }
@@ -70,6 +81,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
                 RenderFundingCategory(worksheet, fundingCategory);
             }
 
+            RenderFooter(worksheet, NextRow(worksheet), fundingSummaryReport);
+
             return worksheet;
         }
 
@@ -81,12 +94,30 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
                 { UKPRN, fundingSummaryReport.Ukprn.ToString() },
                 { ILRFile, fundingSummaryReport.IlrFile },
                 { LastILRFileUpdate, fundingSummaryReport.LastSubmittedIlrFileName },
-                { LastEASUpdate, "" },
+                { LastEASUpdate, "" }, // TODO Need Reference Data Update
                 { SourceOfFunding, fundingSummaryReport.SofCode },
                 { SecurityClassification, ReportingConstants.OfficialSensitive }
             },row,0 );
 
             ApplyStyleToRows(worksheet, row, 7, _headerStyle);
+
+            return worksheet;
+        }
+
+        private Worksheet RenderFooter(Worksheet worksheet, int row, IDevolvedAdultEducationFundingSummaryReport fundingSummaryReport)
+        {
+            worksheet.Cells.ImportTwoDimensionArray(new object[,]
+            {
+                { ApplicationVersion, fundingSummaryReport.ApplicationVersion },
+                { FilePreparationDate, fundingSummaryReport.FilePreparationDate.ToString(DateFormat) },
+                { LARSVersion, fundingSummaryReport.LARSVersion },
+                { PostcodeVersion, fundingSummaryReport.PostcodeVersion },
+                { OrganisationVersion, fundingSummaryReport.OrganisationVersion },
+                { LargeEmployersVersion, fundingSummaryReport.EmployersVersion },
+                { ReportGeneratedAt, fundingSummaryReport.ReportGeneratedAt }
+            }, ++row, 0);
+
+            ApplyStyleToRows(worksheet, row, 7, _footerStyle);
 
             return worksheet;
         }
@@ -268,6 +299,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary
             _headerStyle.Font.Size = 10;
             _headerStyle.Font.Name = "Arial";
             _headerStyle.Font.IsBold = true;
+
+            _footerStyle.Font.Size = 10;
+            _footerStyle.Font.Name = "Arial";
+            _footerStyle.Font.IsBold = true;
         }
     }
 }

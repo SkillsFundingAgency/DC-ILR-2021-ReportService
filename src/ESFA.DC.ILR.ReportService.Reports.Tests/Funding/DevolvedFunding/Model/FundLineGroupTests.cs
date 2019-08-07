@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
-using ESFA.DC.ILR.ReportService.Reports.Funding.DevolvedFundingSummary.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 using FluentAssertions;
