@@ -265,5 +265,93 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, decimal[]>();
         }
+
+        public LearningDeliveryPeriodisedValuesModel BuildFm81PeriodisedValuesModel(IEnumerable<FundingService.FM81.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        {
+            var periodisedValuesDictionary = BuildFm81PeriodisedValuesDictionary(periodisedValues);
+
+            var coreGovContPayment = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm81CoreGovContPayment)?.Sum() ?? _defaultDecimal;
+            var mathEngOnProgPayment = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm81MathEngOnProgPayment)?.Sum() ?? _defaultDecimal;
+            var mathEngBalPayment = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm81MathEngBalPayment)?.Sum() ?? _defaultDecimal;
+            var learnSuppFundCash = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm81LearnSuppFundCash)?.Sum() ?? _defaultDecimal;
+            var smallBusPayment = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm81SmallBusPayment)?.Sum() ?? _defaultDecimal;
+            var youngAppPayment = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm81YoungAppPayment)?.Sum() ?? _defaultDecimal;
+            var achPayment = periodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm81AchPayment)?.Sum() ?? _defaultDecimal;
+
+            var totalEarned = coreGovContPayment + mathEngOnProgPayment + mathEngBalPayment + learnSuppFundCash + smallBusPayment + youngAppPayment + achPayment;
+
+            return new LearningDeliveryPeriodisedValuesModel()
+            {
+                August = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 0),
+                September = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 1),
+                October = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 2),
+                November = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 3),
+                December = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 4),
+                January = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 5),
+                February = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 6),
+                March = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 7),
+                April = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 8),
+                May = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 9),
+                June = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 10),
+                July = BuildFm81PeriodisedValuesAttributes(periodisedValuesDictionary, 11),
+                CoreGovContPaymentTotal = coreGovContPayment,
+                MathEngOnProgPaymentTotal = mathEngOnProgPayment,
+                MathEngBalPaymentTotal = mathEngBalPayment,
+                LearnSuppFundCashTotal = learnSuppFundCash,
+                SmallBusPaymentTotal = smallBusPayment,
+                YoungAppPaymentTotal = youngAppPayment,
+                AchievePaymentTotal = achPayment,
+                TotalEarned = totalEarned,
+            };
+        }
+
+        public LearningDeliveryPeriodisedValuesAttributesModel BuildFm81PeriodisedValuesAttributes(IDictionary<string, decimal[]> periodisedValues, int period)
+        {
+            var coreGovContPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm81CoreGovContPayment)?[period] ?? _defaultDecimal;
+            var mathEngOnProgPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm81MathEngOnProgPayment)?[period] ?? _defaultDecimal;
+            var mathEngBalPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm81MathEngBalPayment)?[period] ?? _defaultDecimal;
+            var learnSuppFundCash = periodisedValues.GetValueOrDefault(AttributeConstants.Fm81LearnSuppFundCash)?[period] ?? _defaultDecimal;
+            var smallBusPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm81SmallBusPayment)?[period] ?? _defaultDecimal;
+            var youngAppPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm81YoungAppPayment)?[period] ?? _defaultDecimal;
+            var achPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm81AchPayment)?[period] ?? _defaultDecimal;
+
+            var totalEarned = coreGovContPayment + mathEngOnProgPayment + mathEngBalPayment + learnSuppFundCash + smallBusPayment + youngAppPayment + achPayment;
+
+            return new LearningDeliveryPeriodisedValuesAttributesModel()
+            {
+                CoreGovContPayment = coreGovContPayment,
+                MathEngOnProgPayment = mathEngOnProgPayment,
+                MathEngBalPayment = mathEngBalPayment,
+                LearnSuppFundCash = learnSuppFundCash,
+                SmallBusPayment = smallBusPayment,
+                YoungAppPayment = youngAppPayment,
+                AchievePayment = achPayment,
+                TotalEarned = totalEarned,
+            };
+        }
+
+        public IDictionary<string, decimal[]> BuildFm81PeriodisedValuesDictionary(IEnumerable<FundingService.FM81.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        {
+            return periodisedValues?
+                       .ToDictionary(
+                           pv => pv.AttributeName,
+                           pv => new decimal[]
+                           {
+                               pv.Period1 ?? 0,
+                               pv.Period2 ?? 0,
+                               pv.Period3 ?? 0,
+                               pv.Period4 ?? 0,
+                               pv.Period5 ?? 0,
+                               pv.Period6 ?? 0,
+                               pv.Period7 ?? 0,
+                               pv.Period8 ?? 0,
+                               pv.Period9 ?? 0,
+                               pv.Period10 ?? 0,
+                               pv.Period11 ?? 0,
+                               pv.Period12 ?? 0,
+                           },
+                           StringComparer.OrdinalIgnoreCase)
+                   ?? new Dictionary<string, decimal[]>();
+        }
     }
 }

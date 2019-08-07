@@ -15,5 +15,15 @@
         public decimal? TotalEarned { get; set; }
 
         public decimal? Code { get; set; }
+
+        public decimal? CoreGovContPayment { get; set; }
+
+        public decimal? MathEngOnProgPayment { get; set; }
+
+        public decimal? MathEngBalPayment { get; set; }
+
+        public decimal? SmallBusPayment { get; set; }
+
+        public decimal? YoungAppPayment { get; set; }
     }
 }
