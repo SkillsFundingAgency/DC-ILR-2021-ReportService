@@ -43,6 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer
                         var providerSpecDeliveryMonitoring = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings);
                         var learningDeliveryFams = _ilrModelMapper.MapLearningDeliveryFAMs(learningDelivery.LearningDeliveryFAMs);
                         var fm81LearningDelivery = fm81LearningDeliveryDictionary.GetValueOrDefault(learner.LearnRefNumber).GetValueOrDefault(learningDelivery.AimSeqNumber);
+                        var appFinRecord = BuildAppFinRecordModel(learningDelivery);
                         var periodisedValues = BuildFm81PeriodisedValuesModel(fm81LearningDelivery?.LearningDeliveryPeriodisedValues);
 
                         models.Add(new TrailblazerOccupancyReportModel()
@@ -54,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer
                             ProviderSpecDeliveryMonitoring = providerSpecDeliveryMonitoring,
                             LearningDeliveryFAMs = learningDeliveryFams,
                             Fm81LearningDelivery = fm81LearningDelivery?.LearningDeliveryValues,
-                            AppFinRecord = BuildAppFinRecordModel(learningDelivery),
+                            AppFinRecord = appFinRecord,
                             PeriodisedValues = periodisedValues,
                         });
                     }
@@ -89,7 +90,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer
                    ?? new Dictionary<string, Dictionary<int?, LearningDelivery>>();
         }
 
-        private AppFinRecordModel BuildAppFinRecordModel(ILearningDelivery learningDelivery)
+        public AppFinRecordModel BuildAppFinRecordModel(ILearningDelivery learningDelivery)
         {
             var appFinRecords = learningDelivery?.AppFinRecords;
 
