@@ -54,7 +54,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
                 foreach (var reportModel in fundingSummaryReportModel)
                 {
-                    _excelService.NewWorksheet(workbook, reportModel.SofCode);
+                    _excelService.GetWorksheetFromWorkbook(workbook, reportModel.SofCode);
                     var worksheet = _excelService.GetWorksheetFromWorkbook(workbook, workbookIndex++);
 
                     _devolvedFundingSummaryReportRenderService.Render(reportModel, worksheet);
