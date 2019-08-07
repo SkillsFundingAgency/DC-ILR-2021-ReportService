@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
         [Fact]
         public void Ilr()
         {
-            DependentDataCatalog.Ilr.Should().Be<IMessage>();
+            DependentDataCatalog.ValidIlr.Should().Be<IMessage>();
         }
 
         [Fact]

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
@@ -30,6 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
             RegisterMainOccupancyReport(containerBuilder);
             RegisterAllbOccupancyReport(containerBuilder);
+            RegisterAppsIndicativeEarningsReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
 
@@ -78,6 +80,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
+        }
+
+        private void RegisterAppsIndicativeEarningsReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>();
+            containerBuilder.RegisterType<AppsIndicativeEarningsReportModelBuilder>().As<IModelBuilder<IEnumerable<AppsIndicativeEarningsReportModel>>>();
         }
     }
 }
