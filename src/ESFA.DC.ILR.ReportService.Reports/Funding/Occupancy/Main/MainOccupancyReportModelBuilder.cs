@@ -78,31 +78,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
                             HigherApprenticeshipPrescribedHeAim = higherApprenticeshipPrescribedHeAim
                         });
                     }
+                }
 
-                    if (FundModelLearningDeliveryFilter(learningDelivery, FundModelConstants.FM25))
+                if (learner.LearningDeliveries?.Any(ld => FundModelLearningDeliveryFilter(ld, FundModelConstants.FM25)) == true)
+                {
+                    var fm25Learner = fm25Learners.GetValueOrDefault(learner.LearnRefNumber);
+                    var providerSpecLearnerMonitoring = _ilrModelMapper.MapProviderSpecLearnerMonitorings(learner.ProviderSpecLearnerMonitorings);
+                    var periodisedValues = BuildFm25PeriodisedValuesModel(fm25Learner?.LearnerPeriodisedValues);
+
+                    var fundModelAgnosticModel = new FundModelAgnosticModel()
                     {
-                        var fm25Learner = fm25Learners.GetValueOrDefault(learner.LearnRefNumber);
-                        var providerSpecLearnerMonitoring = _ilrModelMapper.MapProviderSpecLearnerMonitorings(learner.ProviderSpecLearnerMonitorings);
-                        var periodisedValues = BuildFm25PeriodisedValuesModel(fm25Learner?.LearnerPeriodisedValues);
+                        FundModel = FundModelConstants.FM25,
+                        ApplicableFundingRate = fm25Learner?.NatRate,
+                        FundLine = fm25Learner?.FundLine,
+                        LearningActualEndDate = fm25Learner?.LearnerActEndDate,
+                        LearningPlannedEndDate = fm25Learner?.LearnerPlanEndDate,
+                        LearningStartDate = fm25Learner?.LearnerStartDate,
+                    };
 
-                        var fundModelAgnosticModel = new FundModelAgnosticModel()
-                        {
-                            FundModel = learningDelivery.FundModel,
-                            ApplicableFundingRate = fm25Learner?.NatRate,
-                            FundLine = fm25Learner?.FundLine,
-                            LearningActualEndDate = fm25Learner?.LearnerActEndDate,
-                            LearningPlannedEndDate = fm25Learner?.LearnerPlanEndDate,
-                            LearningStartDate = fm25Learner?.LearnerStartDate,
-                        };
-
-                        models.Add(new MainOccupancyReportModel()
-                        {
-                            Learner = learner,
-                            ProviderSpecLearnerMonitoring = providerSpecLearnerMonitoring,
-                            PeriodisedValues = periodisedValues,
-                            FundModelAgnosticModel = fundModelAgnosticModel,
-                        });
-                    }
+                    models.Add(new MainOccupancyReportModel()
+                    {
+                        Learner = learner,
+                        ProviderSpecLearnerMonitoring = providerSpecLearnerMonitoring,
+                        PeriodisedValues = periodisedValues,
+                        FundModelAgnosticModel = fundModelAgnosticModel,
+                    });
                 }
             }
 
