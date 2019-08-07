@@ -78,7 +78,7 @@
         public const string EasPrincesTrust = "Princes Trust";
         public const string EasVulnerableBursary = "Vulnerable Bursary";
         public const string EasMcaGlaDefinedAdjustment1 = "MCA/GLA Defined Adjustment 1";
-        public const string EasMcaFlaDefinedAdjustment2 = "MCA/GLA Defined Adjustment 2";
+        public const string EasMcaGlaDefinedAdjustment2 = "MCA/GLA Defined Adjustment 2";
         public const string EasMcaGlaDefinedAdjustment3 = "MCA/GLA Defined Adjustment 3";
     }
 }

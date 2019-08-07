@@ -143,6 +143,10 @@
     <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportClassMapTests.cs" />
     <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportModelBuilderTests.cs" />
     <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\DevolvedFundingSummaryreportRenderServiceTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\DevolvedFundingSummaryReportTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\Model\FundLineGroupTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\Model\FundLineTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportTests.cs" />

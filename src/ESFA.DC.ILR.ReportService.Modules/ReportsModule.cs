@@ -3,6 +3,9 @@ using Autofac;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB;
@@ -34,6 +37,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterAppsIndicativeEarningsReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
+
+            RegisterDevolvedAdultEducationFundingSummaryReport(containerBuilder);
 
             containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
@@ -80,6 +85,13 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
+        }
+
+        protected virtual void RegisterDevolvedAdultEducationFundingSummaryReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>>();
+            containerBuilder.RegisterType<DevolvedAdultEducationFundingSummaryReportRenderService>().As<IRenderService<IDevolvedAdultEducationFundingSummaryReport>>();
         }
 
         private void RegisterAppsIndicativeEarningsReport(ContainerBuilder containerBuilder)
