@@ -6,14 +6,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
     public sealed class AppsIndicativeEarningsReportClassMap : ClassMap<AppsIndicativeEarningsReportModel>
     {
         private const string DecimalFormat = "0.00000";
-        private const string DateFormat = "dd/MM/yyyy"; 
 
         public AppsIndicativeEarningsReportClassMap()
         {
             int i = 0;
             Map(m => m.LearnRefNumber).Index(i++).Name("Learner reference number");
             Map(m => m.Learner.ULN).Index(i++).Name("Unique learner number");
-            Map(m => m.Learner.DateOfBirthNullable).Index(i++).Name("Date of birth").TypeConverterOption.Format(DateFormat);
+            Map(m => m.Learner.DateOfBirthNullable).Index(i++).Name("Date of birth");
             Map(m => m.Learner.PostcodePrior).Index(i++).Name("Postcode prior to enrolment");
             Map(m => m.Learner.CampId).Index(i++).Name("Campus identifier");
             Map(m => m.ProviderSpecLearnerMonitoring.A).Index(i++).Name("Provider specified learner monitoring (A)");
@@ -34,17 +33,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             Map(m => m.LearningDelivery.AimType).Index(i++).Name("Aim type");
             Map(m => m.LarsLearningDelivery.FrameworkCommonComponent).Index(i++).Name("Common component code");
             Map(m => m.LearningDelivery.FundModel).Index(i++).Name("Funding model");
-            Map(m => m.LearningDelivery.OrigLearnStartDateNullable).Index(i++).Name("Original learning start date").TypeConverterOption.Format(DateFormat);
-            Map(m => m.LearningDelivery.LearnStartDate).Index(i++).Name("Learning start date").TypeConverterOption.Format(DateFormat);
-            Map(m => m.LearningDelivery.LearnPlanEndDate).Index(i++).Name("Learning planned end date").TypeConverterOption.Format(DateFormat);
+            Map(m => m.LearningDelivery.OrigLearnStartDateNullable).Index(i++).Name("Original learning start date");
+            Map(m => m.LearningDelivery.LearnStartDate).Index(i++).Name("Learning start date");
+            Map(m => m.LearningDelivery.LearnPlanEndDate).Index(i++).Name("Learning planned end date");
             Map(m => m.LearningDelivery.CompStatus).Index(i++).Name("Completion status");
-            Map(m => m.LearningDelivery.LearnActEndDateNullable).Index(i++).Name("Learning actual end date").TypeConverterOption.Format(DateFormat);
-            Map(m => m.LearningDelivery.AchDateNullable).Index(i++).Name("Achievement date").TypeConverterOption.Format(DateFormat);
+            Map(m => m.LearningDelivery.LearnActEndDateNullable).Index(i++).Name("Learning actual end date");
+            Map(m => m.LearningDelivery.AchDateNullable).Index(i++).Name("Achievement date");
             Map(m => m.LearningDelivery.OutcomeNullable).Index(i++).Name("Outcome");
             Map(m => m.LearningDelivery.PriorLearnFundAdjNullable).Index(i++).Name("Funding adjustment for prior learning");
             Map(m => m.LearningDelivery.OtherFundAdjNullable).Index(i++).Name("Other funding adjustment");
-            Map(m => m.LearningDeliveryFAMs.LSF_Highest).Index(i++).Name("Learning delivery funding and monitoring type - learning support funding (if applicable)").TypeConverterOption.Format(DateFormat);
-            Map(m => m.LearningDeliveryFAMs.LSF_EarliestDateFrom).Index(i++).Name("Learning delivery funding and monitoring type - LSF date applies from (earliest)").TypeConverterOption.Format(DateFormat);
+            Map(m => m.LearningDeliveryFAMs.LSF_Highest).Index(i++).Name("Learning delivery funding and monitoring type - learning support funding (if applicable)");
+            Map(m => m.LearningDeliveryFAMs.LSF_EarliestDateFrom).Index(i++).Name("Learning delivery funding and monitoring type - LSF date applies from (earliest)");
             Map(m => m.LearningDeliveryFAMs.LSF_LatestDateTo).Index(i++).Name("Learning delivery funding and monitoring type - LSF date applies to (latest)");
             Map(m => m.LearningDeliveryFAMs.LDM1).Index(i++).Name("Learning delivery funding and monitoring type - learning delivery monitoring (A)");
             Map(m => m.LearningDeliveryFAMs.LDM2).Index(i++).Name("Learning delivery funding and monitoring type - learning delivery monitoring (B)");
@@ -65,9 +64,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             Map(m => m.EmploymentStatus.EmpIdNullable).Index(i++).Name("Employer identifier on employment status date");
             Map(m => m.PriceEpisodeValues.PriceEpisodeAgreeId).Index(i++).Name("Agreement identifier");
             Map(m => m.EmploymentStatus.EmpStat).Index(i++).Name("Employment status");
-            Map(m => m.EmploymentStatus.DateEmpStatApp).Index(i++).Name("Employment status date").TypeConverterOption.Format(DateFormat);
+            Map(m => m.EmploymentStatus.DateEmpStatApp).Index(i++).Name("Employment status date");
             Map(m => m.EmpStatusMonitoringSmallEmployer).Index(i++).Name("Employment status monitoring - small employer");
-            Map(m => m.PriceEpisodeValues.EpisodeStartDate).Index(i++).Name("Price episode start date").TypeConverterOption.Format(DateFormat);
+            Map(m => m.PriceEpisodeValues.EpisodeStartDate).Index(i++).Name("Price episode start date");
             Map(m => m.PriceEpisodeValues.PriceEpisodeActualEndDate).Index(i++).Name("Price episode actual end date");
 
             Map(m => m.FundingLineType).Index(i++).Name("Funding line type");
@@ -80,8 +79,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             Map(m => m.TotalPRMThisFundingYear).Index(i++).Name("Total employer contribution collected (PMR) in this funding year").TypeConverterOption.Format(DecimalFormat);
 
             Map(m => m.LearningDeliveryFAMTypeApprenticeshipContractType).Index(i++).Name("Learning delivery funding and monitoring type - apprenticeship contract type");
-            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesFrom).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies from").TypeConverterOption.Format(DateFormat);
-            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesTo).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies to").TypeConverterOption.Format(DateFormat);
+            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesFrom).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies from");
+            Map(m => m.LearningDeliveryFAMTypeACTDateAppliesTo).Index(i++).Name("Learning delivery funding and monitoring type - ACT date applies to");
 
             Map(m => m.PeriodisedValues.August.OnProgrammeEarnings).Index(i++).Name(@"August on programme earnings").TypeConverterOption.Format(DecimalFormat);
             Map(m => m.PeriodisedValues.August.BalancingPaymentEarnings).Index(i++).Name(@"August balancing payment earnings").TypeConverterOption.Format(DecimalFormat);

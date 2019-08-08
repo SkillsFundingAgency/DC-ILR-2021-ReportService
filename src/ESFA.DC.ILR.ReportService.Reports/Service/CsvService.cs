@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading;
@@ -28,9 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
             {
                 using (TextWriter textWriter = new StreamWriter(stream, _encoding))
                 {
-                    var configuration = new Configuration();
-
-                    configuration.RegisterClassMap<TClassMap>();
+                    var configuration = BuildConfiguration<T, TClassMap>();
 
                     using (CsvWriter csvWriter = new CsvWriter(textWriter, configuration))
                     {
@@ -38,6 +37,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
                     }
                 }
             }
+        }
+
+        private static Configuration BuildConfiguration<T, TClassMap>() where TClassMap : ClassMap<T>
+        {
+            var configuration = new Configuration();
+
+            configuration.RegisterClassMap<TClassMap>();
+            configuration.TypeConverterOptionsCache.GetOptions<DateTime>().Formats = new[] {"dd/MM/yyyy"};
+            configuration.TypeConverterOptionsCache.GetOptions<DateTime?>().Formats = new[] { "dd/MM/yyyy" };
+            return configuration;
         }
     }
 }

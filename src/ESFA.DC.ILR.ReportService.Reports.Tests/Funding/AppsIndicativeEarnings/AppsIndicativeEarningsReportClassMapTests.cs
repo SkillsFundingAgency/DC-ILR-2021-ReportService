@@ -344,6 +344,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
                     using (var csvWriter = new CsvWriter(streamWriter))
                     {
                         csvWriter.Configuration.RegisterClassMap<AppsIndicativeEarningsReportClassMap>();
+                        csvWriter.Configuration.TypeConverterOptionsCache.GetOptions<DateTime?>().Formats = new[] { "dd/MM/yyyy" };
 
                         csvWriter.WriteRecords(input);
                     }
