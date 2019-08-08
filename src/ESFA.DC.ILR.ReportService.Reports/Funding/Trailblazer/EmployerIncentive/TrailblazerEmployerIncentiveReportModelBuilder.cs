@@ -108,7 +108,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
         {
             var employerIdHashSet = new HashSet<int>();
 
-            foreach (var learner in fm81Global.Learners)
+            foreach (var learner in fm81Global?.Learners ?? new List<FM81Learner>())
             {
                 if (!learner.LearningDeliveries.Any())
                 {
@@ -117,22 +117,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
 
                 foreach (var learningDelivery in learner.LearningDeliveries)
                 {
-                    if (learningDelivery.LearningDeliveryValues.EmpIdSmallBusDate.HasValue)
+                    if (learningDelivery?.LearningDeliveryValues.EmpIdSmallBusDate.HasValue ?? false)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdSmallBusDate.Value);
                     }
 
-                    if (learningDelivery.LearningDeliveryValues.EmpIdFirstYoungAppDate.HasValue)
+                    if (learningDelivery?.LearningDeliveryValues.EmpIdFirstYoungAppDate.HasValue ?? false)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdFirstYoungAppDate.Value);
                     }
 
-                    if (learningDelivery.LearningDeliveryValues.EmpIdSecondYoungAppDate.HasValue)
+                    if (learningDelivery?.LearningDeliveryValues.EmpIdSecondYoungAppDate.HasValue ?? false)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdSecondYoungAppDate.Value);
                     }
 
-                    if (learningDelivery.LearningDeliveryValues.EmpIdAchDate.HasValue)
+                    if (learningDelivery?.LearningDeliveryValues.EmpIdAchDate.HasValue ?? false)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdAchDate.Value);
                     }

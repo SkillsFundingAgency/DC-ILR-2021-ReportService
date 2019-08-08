@@ -53,7 +53,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 @"April small employer incentive (£)",
                 @"April 16-18 year-old apprentice incentive (£)",
                 @"April achievement incentive (£)",
-                @"April tTotal (£)",
+                @"April total (£)",
                 @"May small employer incentive (£)",
                 @"May 16-18 year-old apprentice incentive (£)",
                 @"May achievement incentive (£)",

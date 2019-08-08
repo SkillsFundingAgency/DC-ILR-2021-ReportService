@@ -57,7 +57,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
             Map(m => m.AprilSmallEmployerIncentive).Name(@"April small employer incentive (£)").Index(++index);
             Map(m => m.April1618ApprenticeIncentive).Name(@"April 16-18 year-old apprentice incentive (£)").Index(++index);
             Map(m => m.AprilAchievementPayment).Name(@"April achievement incentive (£)").Index(++index);
-            Map(m => m.AprilTotal).Name(@"April tTotal (£)").Index(++index);
+            Map(m => m.AprilTotal).Name(@"April total (£)").Index(++index);
 
             Map(m => m.MaySmallEmployerIncentive).Name(@"May small employer incentive (£)").Index(++index);
             Map(m => m.May1618ApprenticeIncentive).Name(@"May 16-18 year-old apprentice incentive (£)").Index(++index);
