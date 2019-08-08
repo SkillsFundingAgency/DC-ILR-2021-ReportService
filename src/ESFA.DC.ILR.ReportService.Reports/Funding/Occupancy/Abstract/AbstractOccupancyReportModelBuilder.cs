@@ -128,7 +128,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
         {
             return new LearningDeliveryPeriodisedValuesAttributesModel()
             {
-                OnProgPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm35OnProgPayment)?[period] ?? _defaultDecimal,
+                OnProgPayment = periodisedValues.GetValueOrDefault(AttributeConstants.Fm25LrnOnProgPay)?[period] ?? _defaultDecimal,
             };
         }
 
