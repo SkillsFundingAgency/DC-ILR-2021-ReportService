@@ -57,6 +57,8 @@
         public const string Fm81SmallBusPayment = "SmallBusPayment";
         public const string Fm81YoungAppPayment = "YoungAppPayment";
         public const string Fm81LearnSuppFundCash = "LearnSuppFundCash";
+        public const string Fm81YoungAppFirstPayment = "YoungAppFirstPayment";
+        public const string Fm81YoungAppSecondPayment = "YoungAppSecondPayment";
 
         // FM99
         public const string Fm99ALBCode = "ALBCode";

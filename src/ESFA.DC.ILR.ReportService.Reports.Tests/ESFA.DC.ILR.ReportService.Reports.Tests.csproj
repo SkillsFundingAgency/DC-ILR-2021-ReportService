@@ -157,6 +157,8 @@
     <Compile Include="Funding\FundingSummary\Model\FundingSubCategoryTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineGroupTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineTests.cs" />
+    <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportTests.cs" />
+    <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportClassMapTests.cs" />
     <Compile Include="Funding\MainOccupancy\MainOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\MainOccupancy\MainOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\PeriodisedValuesLookupProviderTests.cs" />
@@ -164,6 +166,7 @@
     <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportTests.cs" />
     <Compile Include="MockExtensions.cs" />
+    <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportModelBuilderTests.cs" />
     <Compile Include="Model\IlrModelMapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
