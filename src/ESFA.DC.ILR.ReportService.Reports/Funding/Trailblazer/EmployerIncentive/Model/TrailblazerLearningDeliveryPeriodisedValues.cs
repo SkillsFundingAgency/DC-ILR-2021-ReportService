@@ -9,9 +9,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
     {
         public Dictionary<string, int?> EmployerIds { get; set; }
 
-        public LearningDeliveryPeriodisedValue Values { get; set; }
-
         public string AttributeName { get; set; }
+
         public Dictionary<string, decimal?> ValuesDictionary { get; set; }
     }
 }
