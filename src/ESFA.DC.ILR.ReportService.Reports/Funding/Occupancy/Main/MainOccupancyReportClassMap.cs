@@ -16,7 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             Map(m => m.Learner.CampId).Name(@"Campus identifier").Index(++index);
             Map(m => m.ProviderSpecLearnerMonitoring.A).Name(@"Provider specified learner monitoring (A)").Index(++index);
             Map(m => m.ProviderSpecLearnerMonitoring.B).Name(@"Provider specified learner monitoring (B)").Index(++index);
-            Map(m => m.LearningDelivery.AimSeqNumber).Name(@"Aim sequence number").Index(++index);
+            Map(m => m.FundModelAgnosticModel.AimSequenceNumber).Name(@"Aim sequence number").Index(++index);
             Map(m => m.LearningDelivery.LearnAimRef).Name(@"Learning aim reference").Index(++index);
             Map(m => m.LarsLearningDelivery.LearnAimRefTitle).Name(@"Learning aim title").Index(++index);
             Map(m => m.LearningDelivery.SWSupAimId).Name(@"Software supplier aim identifier").Index(++index);
@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             Map(m => m.LearningDelivery.ProgTypeNullable).Name(@"Programme type").Index(++index);
             Map(m => m.LearningDelivery.FworkCodeNullable).Name(@"Framework code").Index(++index);
             Map(m => m.LearningDelivery.PwayCodeNullable).Name(@"Apprenticeship pathway").Index(++index);
-            Map(m => m.LearningDelivery.AimType).Name(@"Aim type").Index(++index);
+            Map(m => m.FundModelAgnosticModel.AimType).Name(@"Aim type").Index(++index);
             Map(m => m.LarsLearningDelivery.FrameworkCommonComponent).Name(@"Framework component type code").Index(++index);
             Map(m => m.FundModelAgnosticModel.FundModel).Name(@"Funding model").Index(++index);
             Map(m => m.LearningDelivery.PriorLearnFundAdjNullable).Name(@"Funding adjustment for prior learning").Index(++index);
@@ -37,7 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             Map(m => m.LearningDelivery.OrigLearnStartDateNullable).Name(@"Original learning start date").Index(++index);
             Map(m => m.FundModelAgnosticModel.LearningStartDate).Name(@"Learning start date").Index(++index);
             Map(m => m.FundModelAgnosticModel.LearningPlannedEndDate).Name(@"Learning planned end date").Index(++index);
-            Map(m => m.LearningDelivery.CompStatus).Name(@"Completion status").Index(++index);
+            Map(m => m.FundModelAgnosticModel.CompStatus).Name(@"Completion status").Index(++index);
             Map(m => m.FundModelAgnosticModel.LearningActualEndDate).Name(@"Learning actual end date").Index(++index);
             Map(m => m.LearningDelivery.OutcomeNullable).Name(@"Outcome").Index(++index);
             Map(m => m.LearningDelivery.AchDateNullable).Name(@"Achievement date").Index(++index);
