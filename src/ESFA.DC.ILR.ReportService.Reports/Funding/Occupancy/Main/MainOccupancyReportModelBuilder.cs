@@ -55,6 +55,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
 
                         var fundModelAgnosticModel = new FundModelAgnosticModel()
                         {
+                            AimSequenceNumber = learningDelivery.AimSeqNumber,
+                            AimType = learningDelivery.AimType,
+                            CompStatus = learningDelivery.CompStatus,
                             FundModel = learningDelivery.FundModel,
                             ApplicableFundingRate = fm35LearningDelivery?.LearningDeliveryValue?.ApplicWeightFundRate,
                             FundLine = fm35LearningDelivery?.LearningDeliveryValue?.FundLine,
