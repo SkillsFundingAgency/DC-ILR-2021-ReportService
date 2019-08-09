@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
             foreach (var sofCode in _sofLearnDelFamCodes)
             {
-                var mgaClaSof = sofCodesLookups.FirstOrDefault(s => s.SofCode == sofCode);
+                var mgaClaSof = sofCodesLookups.FirstOrDefault(s => s.SofCode == sofCode, StringComparison.OrdinalIgnoreCase);
                 var learningDeliveries = BuildLearningDeliveryDictionary(message, mgaClaSof?.SofCode);
 
                 var periodisedValues = new PeriodisedValuesLookup
