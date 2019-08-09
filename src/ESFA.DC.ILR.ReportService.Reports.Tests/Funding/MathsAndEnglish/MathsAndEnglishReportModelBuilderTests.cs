@@ -181,13 +181,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
         {
             var count = 50000;
             
-            var fm25Learner = new FM25Learner()
-            {
-                LearnRefNumber = "LearnRefNumber",
-                StartFund = true,
-                FundLine = "14-16 Direct Funded Students",
-            };
-
             var message = new TestMessage()
             {
                 Learners = Enumerable.Range(0, count)
@@ -232,7 +225,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
             models.Should().HaveCount(count);
         }
 
-        private AbstractSixteenToNineteenModel BuildModelFor(string fundLine, string learnRefNumber)
+        private MathsAndEnglishReportModel BuildModelFor(string fundLine, string learnRefNumber)
         {
             return new MathsAndEnglishReportModel()
             {
