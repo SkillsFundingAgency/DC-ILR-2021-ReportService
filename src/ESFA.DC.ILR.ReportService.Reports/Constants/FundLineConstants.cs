@@ -9,12 +9,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         // FM25 FundLines
         public const string TraineeshipsAdultFunded1618 = "16-18 Traineeships (Adult Funded)";
         public const string TraineeshipsAdultFunded19Plus = "19+ Traineeships (Adult Funded)";
-        public const string DirectFundedStudents1416FundLine = "14-16 Direct Funded Students";
-        public const string Students1619FundLine = "16-19 Students (excluding High Needs Students)";
-        public const string Students1619AllFundLine = "16-19 Students (including High Needs Students)";
-        public const string HighNeedsStudents1619FundLine = "16-19 High Needs Students";
-        public const string StudentsWithEHCP1924FundLine = "19-24 Students with an EHCP";
-        public const string ContinuingStudents19PlusFundLine = "19+ Continuing Students (excluding EHCP)";
+        public const string DirectFundedStudents1416 = "14-16 Direct Funded Students";
+        public const string StudentsExcludingHighNeeds1619 = "16-19 Students (excluding High Needs Students)";
+        public const string StudentsIncludingHighNeeds1619 = "16-19 Students (including High Needs Students)";
+        public const string HighNeedsStudents1619 = "16-19 High Needs Students";
+        public const string StudentsWithEHCP1924 = "19-24 Students with an EHCP";
+        public const string ContinuingStudents19Plus = "19+ Continuing Students (excluding EHCP)";
         public const string Traineeships1618 = "16-18 Traineeships";
 
         // FM35 FundLines

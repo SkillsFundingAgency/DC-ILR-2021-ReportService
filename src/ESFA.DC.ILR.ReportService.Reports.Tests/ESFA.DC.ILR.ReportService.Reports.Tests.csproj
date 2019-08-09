@@ -131,6 +131,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\AbstractCsvClassMapTests.cs" />
     <Compile Include="Builders\ValidationSchemaErrorsReportBuilderTests.cs" />
     <Compile Include="DependentDataCatalogTests.cs" />
     <Compile Include="Extensions\IDictionaryExtensionsTests.cs" />
@@ -157,6 +158,8 @@
     <Compile Include="Funding\FundingSummary\Model\FundingSubCategoryTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineGroupTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineTests.cs" />
+    <Compile Include="Funding\MathsAndEnglish\MathsAndEnglishReportClassMapTests.cs" />
+    <Compile Include="Funding\MathsAndEnglish\MathsAndEnglishReportModelBuilderTests.cs" />
     <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportTests.cs" />
     <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportClassMapTests.cs" />
     <Compile Include="Funding\MainOccupancy\MainOccupancyReportClassMapTests.cs" />

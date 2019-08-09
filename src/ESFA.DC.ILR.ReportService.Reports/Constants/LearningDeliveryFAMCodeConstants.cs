@@ -15,5 +15,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string SOF_GreaterLondonAuthority = "116";
 
         public const string SOF_ESFA = "105";
+        public const string SOF_ESFA_1619 = "107";
     }
 }
