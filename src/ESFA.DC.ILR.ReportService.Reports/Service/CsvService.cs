@@ -13,7 +13,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
 {
     public class CsvService : ICsvService
     {
-        private readonly UTF8Encoding _encoding = new UTF8Encoding(false, true);
+        private readonly UTF8Encoding _encoding = new UTF8Encoding(true, true);
 
         private readonly IFileService _fileService;
 
