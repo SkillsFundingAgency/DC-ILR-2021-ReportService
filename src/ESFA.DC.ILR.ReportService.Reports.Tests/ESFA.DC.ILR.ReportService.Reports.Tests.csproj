@@ -158,6 +158,8 @@
     <Compile Include="Funding\FundingSummary\Model\FundingSubCategoryTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineGroupTests.cs" />
     <Compile Include="Funding\FundingSummary\Model\FundLineTests.cs" />
+    <Compile Include="Funding\HighNeedsStudentDetail\HighNeedsStudentDetailReportClassMapTests.cs" />
+    <Compile Include="Funding\HighNeedsStudentDetail\HighNeedsStudentDetailReportModelBuilderTests.cs" />
     <Compile Include="Funding\MathsAndEnglish\MathsAndEnglishReportClassMapTests.cs" />
     <Compile Include="Funding\MathsAndEnglish\MathsAndEnglishReportModelBuilderTests.cs" />
     <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportTests.cs" />
@@ -174,6 +176,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
+    <Compile Include="Service\Converters\IlrBooleanConverterTests.cs" />
     <Compile Include="Service\CsvServiceTests.cs" />
     <Compile Include="Service\ExcelServiceTests.cs" />
     <Compile Include="Service\FileNameServiceTests.cs" />
