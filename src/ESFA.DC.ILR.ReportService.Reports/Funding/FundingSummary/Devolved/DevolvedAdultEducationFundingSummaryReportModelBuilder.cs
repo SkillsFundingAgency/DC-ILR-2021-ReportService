@@ -136,9 +136,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                        .ToDictionary(
                            l => l.LearnRefNumber,
                            l => l.LearningDeliveries
-                               .Where(ld => ld.LearningDeliveryFAMs.Any(ldf =>
+                               .Where(ld => ld.LearningDeliveryFAMs?.Any(ldf =>
                                    ldf.LearnDelFAMType == LearningDeliveryFAMTypeConstants.SOF &&
-                                   ldf.LearnDelFAMCode == sofFamCode))
+                                   ldf.LearnDelFAMCode == sofFamCode) ?? false)
                                .ToDictionary(
                                    ld => ld.AimSeqNumber,
                                    ld => ld),
