@@ -41,6 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterFundingSummaryReport(containerBuilder);
 
             RegisterTrailblazerEmployerIncentivesReport(containerBuilder);
+            RegisterTrailblazerOccupancyReport(containerBuilder);
 
             RegisterDevolvedAdultEducationFundingSummaryReport(containerBuilder);
 
