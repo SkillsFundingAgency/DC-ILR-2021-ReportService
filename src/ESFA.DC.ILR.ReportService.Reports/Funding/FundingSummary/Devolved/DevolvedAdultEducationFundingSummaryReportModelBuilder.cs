@@ -19,21 +19,21 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string reportGeneratedTimeStringFormat = "HH:mm:ss on MM/dd/yyyy";
 
+        private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
+        {
+            LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_LiverpoolCityRegionCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_WestMidlandsCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_WestOfEnglandCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority,
+        };
+
         public DevolvedAdultEducationFundingSummaryReportModelBuilder(IDateTimeProvider dateTimeProvider)
         {
             _dateTimeProvider = dateTimeProvider;
         }
-
-        private IDictionary<string, string> _sofCodesDictionary = new Dictionary<string, string>
-        {
-            [LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority] = "GMCA",
-            [LearningDeliveryFAMCodeConstants.SOF_LiverpoolCityRegionCombinedAuthority] = "LCRCA",
-            [LearningDeliveryFAMCodeConstants.SOF_WestMidlandsCombinedAuthority] = "WMCA",
-            [LearningDeliveryFAMCodeConstants.SOF_WestOfEnglandCombinedAuthority] = "WECA",
-            [LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority] = "TVCA",
-            [LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority] = "CPCA",
-            [LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority] = "London",
-        };
 
         public IEnumerable<DevolvedAdultEducationFundingSummaryReportModel> Build(IReportServiceContext reportServiceContext,
             IReportServiceDependentData reportServiceDependentData)
@@ -41,12 +41,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+
+            var sofCodesLookups = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups;
+
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
 
             var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
+            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime.ToString();
 
             var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate;
 
@@ -59,23 +63,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
             var models = new List<DevolvedAdultEducationFundingSummaryReportModel>();
 
-            foreach (var sofCode in _sofCodesDictionary)
+            foreach (var sofCode in _sofLearnDelFamCodes)
             {
-                var learningDeliveries = BuildLearningDeliveryDictionary(message, sofCode.Key);
+                var mgaClaSof = sofCodesLookups.FirstOrDefault(s => String.Equals(s.SofCode, sofCode, StringComparison.OrdinalIgnoreCase));
+                var learningDeliveries = BuildLearningDeliveryDictionary(message, mgaClaSof?.SofCode);
 
                 var periodisedValues = new PeriodisedValuesLookup
                 {
                     [FundingDataSources.FM35] = BuildPeriodisedValuesDictionary(fm35, learningDeliveries),
-                    [FundingDataSources.EAS] = BuildEASDictionary(referenceDataRoot, sofCode.Key)
+                    [FundingDataSources.EAS] = BuildEASDictionary(referenceDataRoot, mgaClaSof?.SofCode)
                 };
 
                 models.Add(new DevolvedAdultEducationFundingSummaryReportModel(
-                    sofCode.Value,
+                    mgaClaSof,
                     reportServiceContext.Ukprn,
                     organisationName,
                     reportServiceContext.OriginalFilename,
                     reportServiceContext.OriginalFilename,
                     filePreparationDate,
+                    easLastUpdate,
                     orgVersion,
                     larsVersion,
                     postcodesVersion,

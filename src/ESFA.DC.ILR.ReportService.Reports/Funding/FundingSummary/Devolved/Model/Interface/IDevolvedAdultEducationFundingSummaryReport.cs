@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using ESFA.DC.ILR.ReferenceDataService.Model.PostcodesDevolution;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface
 {
     public interface IDevolvedAdultEducationFundingSummaryReport
     {
-        string SofCode { get; }
+        McaGlaSofLookup SofLookup { get; }
 
         int Ukprn { get; }
 
@@ -14,6 +15,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
         string IlrFile { get; }
 
         string LastSubmittedIlrFileName { get; }
+
+        string EasLastUpdated { get; }
 
         DateTime FilePreparationDate { get; }
 
