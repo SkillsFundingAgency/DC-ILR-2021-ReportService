@@ -10,7 +10,7 @@ using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
 {
-    public class MathsAndEnglishReportClassMapTests : AbstractCsvClassMapTests<AbstractSixteenToNineteenModel, MathsAndEnglishReportClassMap>
+    public class MathsAndEnglishReportClassMapTests : AbstractCsvClassMapTests<MathsAndEnglishReportModel, MathsAndEnglishReportClassMap>
     {
         protected override IEnumerable<string> OrderedColumns => new[]
         {
@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
         [Fact]
         public void ClassMap_Model()
         {
-            var input = new List<AbstractSixteenToNineteenModel>()
+            var input = new List<MathsAndEnglishReportModel>()
             {
                 new MathsAndEnglishReportModel()
                 {
