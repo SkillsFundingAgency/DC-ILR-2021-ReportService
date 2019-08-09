@@ -42,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var sofCodesLookups = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups;
+            var sofCodeDictionary = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups.Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)).ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
 
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
 
@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
             foreach (var sofCode in _sofLearnDelFamCodes)
             {
-                var mgaClaSof = sofCodesLookups.FirstOrDefault(s => String.Equals(s.SofCode, sofCode, StringComparison.OrdinalIgnoreCase));
+                var mgaClaSof = sofCodeDictionary[sofCode];
                 var learningDeliveries = BuildLearningDeliveryDictionary(message, mgaClaSof?.SofCode);
 
                 var periodisedValues = new PeriodisedValuesLookup
