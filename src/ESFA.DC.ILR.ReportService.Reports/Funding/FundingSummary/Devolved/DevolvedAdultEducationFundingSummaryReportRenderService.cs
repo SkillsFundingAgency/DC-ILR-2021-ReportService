@@ -69,7 +69,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
         public Worksheet Render(IDevolvedAdultEducationFundingSummaryReport fundingSummaryReport, Worksheet worksheet)
         {
-            worksheet.Name = fundingSummaryReport.SofCode;
+            worksheet.Name = fundingSummaryReport.SofLookup.McaGlaShortCode;
             worksheet.Workbook.DefaultStyle = _defaultStyle;
             worksheet.Cells.StandardWidth = 20;
             worksheet.Cells.Columns[0].Width = 65;
@@ -95,7 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 { ILRFile, fundingSummaryReport.IlrFile },
                 { LastILRFileUpdate, fundingSummaryReport.LastSubmittedIlrFileName },
                 { LastEASUpdate, "" }, // TODO Need Reference Data Update
-                { SourceOfFunding, fundingSummaryReport.SofCode },
+                { SourceOfFunding, fundingSummaryReport.SofLookup.McaGlaFullName },
                 { SecurityClassification, ReportingConstants.OfficialSensitive }
             },row,0 );
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ESFA.DC.ILR.ReferenceDataService.Model.PostcodesDevolution;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model
@@ -7,12 +8,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
     public class DevolvedAdultEducationFundingSummaryReportModel : IDevolvedAdultEducationFundingSummaryReport
     {
         public DevolvedAdultEducationFundingSummaryReportModel(
-            string sofCode, 
+            McaGlaSofLookup sofLookup, 
             int ukprn, 
             string providerName, 
             string ilrFile, 
             string lastSubmittedIlrFileName, 
             DateTime filePreparationDate,
+            string easLastUpdated,
             string organisationVersion,
             string larsVersion,
             string postcodeVersion,
@@ -21,11 +23,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
             string reportGeneratedAt,
             List<IDevolvedAdultEducationFundingCategory> fundingCategories)
         {
-            SofCode = sofCode;
+            SofLookup = sofLookup;
             Ukprn = ukprn;
             ProviderName = providerName;
             IlrFile = ilrFile;
             LastSubmittedIlrFileName = lastSubmittedIlrFileName;
+            EasLastUpdated = easLastUpdated;
             FilePreparationDate = filePreparationDate;
             OrganisationVersion = organisationVersion;
             LARSVersion = larsVersion;
@@ -36,7 +39,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
             FundingCategories = fundingCategories ?? new List<IDevolvedAdultEducationFundingCategory>();
         }
 
-        public string SofCode { get; }
+        public McaGlaSofLookup SofLookup { get; }
 
         public int Ukprn { get; }
 
@@ -45,6 +48,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
         public string IlrFile { get; }
 
         public string LastSubmittedIlrFileName { get; }
+
+        public string EasLastUpdated { get; }
 
         public DateTime FilePreparationDate { get; }
 

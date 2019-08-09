@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract;
@@ -28,17 +26,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
         };
         
         private const decimal _defaultDecimal = 0;
-
-        private IDictionary<string, string> _sofCodesDictionary = new Dictionary<string, string>()
-        {
-            [LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority] = "GMCA",
-            [LearningDeliveryFAMCodeConstants.SOF_LiverpoolCityRegionCombinedAuthority] = "LCRCA",
-            [LearningDeliveryFAMCodeConstants.SOF_WestMidlandsCombinedAuthority] = "WMCA",
-            [LearningDeliveryFAMCodeConstants.SOF_WestOfEnglandCombinedAuthority] = "WECA",
-            [LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority] = "TVCA",
-            [LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority] = "CPCA",
-            [LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority] = "London",
-        };
 
         public DevolvedAdultEducationOccupancyReportModelBuilder(IIlrModelMapper ilrModelMapper)
             : base(ilrModelMapper)
@@ -66,7 +53,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                     var providerSpecDeliveryMonitoring = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings);
                     var learningDeliveryFams = _ilrModelMapper.MapLearningDeliveryFAMs(learningDelivery.LearningDeliveryFAMs);
                     var periodisedValues = BuildFm35PeriodisedValuesModel(fm35LearningDelivery?.LearningDeliveryPeriodisedValues);
-                    var mcaGlaShortCode = _sofCodesDictionary.GetValueOrDefault(learningDeliveryFams.SOF);
+                    var mcaGlaShortCode =  referenceData.DevolvedPostocdes.McaGlaSofLookups.FirstOrDefault(x => x.SofCode == learningDeliveryFams.SOF)?.McaGlaShortCode ?? string.Empty;
 
                     models.Add(new DevolvedAdultEducationOccupancyReportModel()
                     {
