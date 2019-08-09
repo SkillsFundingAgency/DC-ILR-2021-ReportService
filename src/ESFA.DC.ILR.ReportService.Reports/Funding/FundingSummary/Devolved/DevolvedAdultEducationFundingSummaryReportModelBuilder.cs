@@ -42,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var sofCodeDictionary = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups.Where(s => s.SofCode != LearningDeliveryFAMCodeConstants.SOF_ESFA).ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
+            var sofCodeDictionary = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups.Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)).ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
 
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
 
