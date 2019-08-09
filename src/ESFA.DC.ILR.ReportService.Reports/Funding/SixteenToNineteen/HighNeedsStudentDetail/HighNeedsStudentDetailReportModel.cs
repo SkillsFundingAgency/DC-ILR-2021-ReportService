@@ -1,4 +1,6 @@
-﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentDetail
+﻿using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
+
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentDetail
 {
     public class HighNeedsStudentDetailReportModel : AbstractSixteenToNineteenModel
     {

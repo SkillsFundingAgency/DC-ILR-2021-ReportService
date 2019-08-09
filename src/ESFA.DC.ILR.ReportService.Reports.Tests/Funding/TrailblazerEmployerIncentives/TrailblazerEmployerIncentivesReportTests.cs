@@ -10,7 +10,7 @@ using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
+namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerIncentives
 {
     public class TrailblazerEmployerIncentivesReportTests
     {

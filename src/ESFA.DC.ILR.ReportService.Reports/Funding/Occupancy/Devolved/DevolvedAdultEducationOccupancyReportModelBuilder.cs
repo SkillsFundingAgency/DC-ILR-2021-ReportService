@@ -8,7 +8,6 @@ using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
-using ESFA.DC.ILR.ReportService.Service.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved

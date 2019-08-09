@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Interface
+namespace ESFA.DC.ILR.ReportService.Reports.Validation.Interface
 {
     public interface IValidationErrorsReportBuilder
     {

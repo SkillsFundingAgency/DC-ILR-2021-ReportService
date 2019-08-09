@@ -16,7 +16,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive.Mo
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentDetail;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish;
-using ESFA.DC.ILR.ReportService.Reports.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfFundingByStudent;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
@@ -49,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
 
             RegisterMathsAndEnglishReport(containerBuilder);
             RegisterHighNeedsStudentReport(containerBuilder);
+            RegisterSummaryOfFundingByStudentReport(containerBuilder);
 
             containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
@@ -126,6 +127,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<HighNeedsStudentDetailReport>().As<IReport>();
             containerBuilder.RegisterType<HighNeedsStudentDetailReportModelBuilder>().As<IModelBuilder<IEnumerable<HighNeedsStudentDetailReportModel>>>();
+        }
+
+        private void RegisterSummaryOfFundingByStudentReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<SummaryOfFundingByStudentReport>().As<IReport>();
+            containerBuilder.RegisterType<HighNeedsStudentDetailReportModelBuilder>().As<IModelBuilder<IEnumerable<SummaryOfFundingByStudentReportModel>>>();
         }
     }
 }

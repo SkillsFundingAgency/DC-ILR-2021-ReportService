@@ -10,7 +10,6 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.ReportService.Service.Extensions;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
 {

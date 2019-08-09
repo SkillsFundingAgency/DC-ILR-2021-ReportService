@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR.ReportService.Service.Extensions
+namespace ESFA.DC.ILR.ReportService.Reports.Extensions
 {
     public static class StringExtensions
     {

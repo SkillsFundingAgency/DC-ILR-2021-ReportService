@@ -3,18 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CsvHelper;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
-using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
+namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AllbOccupancy
 {
     public class AllbOccupancyReportClassMapTests
     {

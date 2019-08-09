@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 

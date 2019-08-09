@@ -7,7 +7,7 @@ using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
+namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
 {
     public class HighNeedsStudentDetailReportClassMapTests : AbstractCsvClassMapTests<HighNeedsStudentDetailReportModel, HighNeedsStudentDetailReportClassMap>
     {

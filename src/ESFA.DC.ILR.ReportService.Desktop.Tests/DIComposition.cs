@@ -10,7 +10,6 @@ using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Tests.Stubs;
 using ESFA.DC.ILR.ReportService.Reports;
-using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Reports.Validation;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
