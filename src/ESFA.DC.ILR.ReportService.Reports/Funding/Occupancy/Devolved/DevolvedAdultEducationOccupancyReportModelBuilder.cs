@@ -39,7 +39,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var sofCodesDictionary = referenceData.DevolvedPostocdes.McaGlaSofLookups.ToDictionary(s => s.SofCode, s => s.McaGlaShortCode, StringComparer.OrdinalIgnoreCase);
+            var sofCodesDictionary = referenceData.DevolvedPostocdes.McaGlaSofLookups.Where(s => s.SofCode != LearningDeliveryFAMCodeConstants.SOF_ESFA).ToDictionary(s => s.SofCode, s => s.McaGlaShortCode, StringComparer.OrdinalIgnoreCase);
 
             var larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
             var fm35LearningDeliveries = BuildFm35LearningDeliveryDictionary(fm35);
