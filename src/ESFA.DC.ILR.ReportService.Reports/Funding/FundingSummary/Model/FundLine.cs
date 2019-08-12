@@ -22,7 +22,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
             decimal period9,
             decimal period10,
             decimal period11,
-            decimal period12)
+            decimal period12,
+            bool includeInTotals = true)
         {
             CurrentPeriod = currentPeriod;
             Title = title;
@@ -41,6 +42,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
                 period11,
                 period12,
             };
+
+            IncludeInTotals = includeInTotals;
         }
 
         public string Title { get; }
@@ -92,5 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
             return total;
         }
+
+        public bool IncludeInTotals { get; }
     }
 }

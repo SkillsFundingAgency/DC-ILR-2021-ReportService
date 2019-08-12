@@ -100,6 +100,72 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary.Model
             result.Period1.Should().Be(1000000);
             result.Period2.Should().Be(0);
         }
+        
+        [Fact]
+        public void BuildFundLine_NotIncludedInTotals_Zero()
+        {
+            var title = "title";
+            var currentPeriod = 3;
+
+            var fundModel = FundingDataSources.FM35;
+            var fundLine = new[] { "fundLine" };
+            var attribute1 = "attribute1";
+
+            var attributes = new[] { attribute1, };
+
+            var dictionary = new PeriodisedValuesLookup()
+            {
+                [fundModel] = new Dictionary<string, Dictionary<string, decimal?[][]>>()
+                {
+                    [fundLine[0]] = new Dictionary<string, decimal?[][]>()
+                    {
+                        [attribute1] = Enumerable.Range(0, 100)
+                            .Select(i => new decimal?[] { 1, null, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 })
+                            .ToArray()
+                    }
+                }
+            };
+
+            var result = NewGroup("FundGroupTitle", currentPeriod, fundModel, fundLine, dictionary).WithFundLine(title, attributes, false);
+
+            result.Period1.Should().Be(0);
+            result.Period2.Should().Be(0);
+            result.Total.Should().Be(0);
+        }
+
+        [Fact]
+        public void BuildFundLine_NotIncludedInTotals_Mix()
+        {
+            var title = "title";
+            var currentPeriod = 3;
+
+            var fundModel = FundingDataSources.FM35;
+            var fundLine = new[] { "fundLine" };
+            var attribute1 = "attribute1";
+
+            var attributes = new[] { attribute1, };
+
+            var dictionary = new PeriodisedValuesLookup()
+            {
+                [fundModel] = new Dictionary<string, Dictionary<string, decimal?[][]>>()
+                {
+                    [fundLine[0]] = new Dictionary<string, decimal?[][]>()
+                    {
+                        [attribute1] = Enumerable.Range(0, 100)
+                            .Select(i => new decimal?[] { 1, null, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 })
+                            .ToArray()
+                    }
+                }
+            };
+
+            var result = NewGroup("FundGroupTitle", currentPeriod, fundModel, fundLine, dictionary)
+                .WithFundLine(title, attributes, false)
+                .WithFundLine(title, attributes, true);
+
+            result.Period1.Should().Be(100);
+            result.Period2.Should().Be(0);
+            result.Total.Should().Be(1100);
+        }
 
         [Fact]
         public void WithFundLine_Instance()

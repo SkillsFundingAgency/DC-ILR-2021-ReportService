@@ -2,5 +2,6 @@
 {
     public interface IFundLine : IFundingSummaryReportRow
     {
+        bool IncludeInTotals { get; }
     }
 }
