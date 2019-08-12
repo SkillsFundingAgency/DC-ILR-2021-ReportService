@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ESFA.DC.ILR.ReportService.Reports.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 

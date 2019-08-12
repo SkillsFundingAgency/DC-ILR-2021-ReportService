@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.ReportService.Service.Extensions;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using FluentAssertions;
 using Xunit;
 

@@ -1,7 +1,7 @@
 ﻿using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
 {
     public abstract class AbstractSixteenToNineteenModel
     {

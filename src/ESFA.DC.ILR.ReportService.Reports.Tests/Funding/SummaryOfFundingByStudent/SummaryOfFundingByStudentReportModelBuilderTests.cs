@@ -1,22 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfFundingByStudent;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
 using Moq;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
+namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStudent
 {
-    public class MathsAndEnglishReportModelBuilderTests
+    public class SummaryOfFundingByStudentReportModelBuilderTests
     {
         [Fact]
         public void FilterStartFund_True()
@@ -226,9 +224,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
             models.Should().HaveCount(count);
         }
 
-        private MathsAndEnglishReportModel BuildModelFor(string fundLine, string learnRefNumber)
+        private SummaryOfFundingByStudentReportModel BuildModelFor(string fundLine, string learnRefNumber)
         {
-            return new MathsAndEnglishReportModel()
+            return new SummaryOfFundingByStudentReportModel()
             {
                 Learner = new TestLearner()
                 {
@@ -241,6 +239,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
             };
         }
 
-        private MathsAndEnglishReportModelBuilder NewBuilder() => new MathsAndEnglishReportModelBuilder();
+        private SummaryOfFundingByStudentModelBuilder NewBuilder() => new SummaryOfFundingByStudentModelBuilder();
     }
 }

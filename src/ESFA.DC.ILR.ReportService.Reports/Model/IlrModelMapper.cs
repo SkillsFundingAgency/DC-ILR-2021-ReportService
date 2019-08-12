@@ -6,7 +6,6 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
-using ESFA.DC.ILR.ReportService.Service.Extensions;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Model
 {

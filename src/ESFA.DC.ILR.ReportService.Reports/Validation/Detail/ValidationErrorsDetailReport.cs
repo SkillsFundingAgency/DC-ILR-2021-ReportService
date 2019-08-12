@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
-using ESFA.DC.ILR.ReportService.Reports.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;

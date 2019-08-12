@@ -31,5 +31,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
         public const string HNSSummaryReport = "TaskGenerateHNSSummaryReport";
         public const string DevolvedAdultEducationOccupancyReport = "TaskGenerateDevolvedAdultEducationOccupancyReport";
         public const string DevolvedAdultEducationFundingSummaryReport ="TaskGenerateDevolvedAdultEducationFundingSummaryReport";
+        public const string SummaryOfFundingByStudentReport = "TaskGenerateSummaryOfFundingByStudentReport";
     }
 }

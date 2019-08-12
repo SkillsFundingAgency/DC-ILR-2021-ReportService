@@ -8,7 +8,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive.Mo
 using FluentAssertions;
 using Xunit;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
+namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerIncentives
 {
     public class TrailblazerEmployerIncentivesReportClassMapTests
     {
