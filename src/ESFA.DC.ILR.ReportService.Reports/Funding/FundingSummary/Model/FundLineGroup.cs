@@ -29,59 +29,59 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 
         public string Title { get; }
 
-        public decimal Period1 => FundLines.Sum(fl => fl.Period1);
+        public decimal Period1 => FundLinesForTotal.Sum(fl => fl.Period1);
 
-        public decimal Period2 => FundLines.Sum(fl => fl.Period2);
+        public decimal Period2 => FundLinesForTotal.Sum(fl => fl.Period2);
 
-        public decimal Period3 => FundLines.Sum(fl => fl.Period3);
+        public decimal Period3 => FundLinesForTotal.Sum(fl => fl.Period3);
 
-        public decimal Period4 => FundLines.Sum(fl => fl.Period4);
+        public decimal Period4 => FundLinesForTotal.Sum(fl => fl.Period4);
 
-        public decimal Period5 => FundLines.Sum(fl => fl.Period5);
+        public decimal Period5 => FundLinesForTotal.Sum(fl => fl.Period5);
 
-        public decimal Period6 => FundLines.Sum(fl => fl.Period6);
+        public decimal Period6 => FundLinesForTotal.Sum(fl => fl.Period6);
 
-        public decimal Period7 => FundLines.Sum(fl => fl.Period7);
+        public decimal Period7 => FundLinesForTotal.Sum(fl => fl.Period7);
 
-        public decimal Period8 => FundLines.Sum(fl => fl.Period8);
+        public decimal Period8 => FundLinesForTotal.Sum(fl => fl.Period8);
 
-        public decimal Period9 => FundLines.Sum(fl => fl.Period9);
+        public decimal Period9 => FundLinesForTotal.Sum(fl => fl.Period9);
 
-        public decimal Period10 => FundLines.Sum(fl => fl.Period10);
+        public decimal Period10 => FundLinesForTotal.Sum(fl => fl.Period10);
 
-        public decimal Period11 => FundLines.Sum(fl => fl.Period11);
+        public decimal Period11 => FundLinesForTotal.Sum(fl => fl.Period11);
 
-        public decimal Period12 => FundLines.Sum(fl => fl.Period12);
+        public decimal Period12 => FundLinesForTotal.Sum(fl => fl.Period12);
 
-        public decimal Period1To8 => FundLines.Sum(fl => fl.Period1To8);
+        public decimal Period1To8 => FundLinesForTotal.Sum(fl => fl.Period1To8);
 
-        public decimal Period9To12 => FundLines.Sum(fl => fl.Period9To12);
+        public decimal Period9To12 => FundLinesForTotal.Sum(fl => fl.Period9To12);
 
-        public decimal YearToDate => FundLines.Sum(fl => fl.YearToDate);
+        public decimal YearToDate => FundLinesForTotal.Sum(fl => fl.YearToDate);
 
-        public decimal Total => FundLines.Sum(fl => fl.Total);
+        public decimal Total => FundLinesForTotal.Sum(fl => fl.Total);
 
         public int CurrentPeriod { get; }
 
-        public FundLineGroup WithFundLine(string title, IEnumerable<string> fundLines, IEnumerable<string> attributes)
+        public FundLineGroup WithFundLine(string title, IEnumerable<string> fundLines, IEnumerable<string> attributes, bool includeInTotals = true)
         {
-            var fundLine = BuildFundLine(title, attributes, fundLines);
+            var fundLine = BuildFundLine(title, attributes, fundLines, includeInTotals);
 
             FundLines.Add(fundLine);
 
             return this;
         }
 
-        public FundLineGroup WithFundLine(string title, IEnumerable<string> attributes)
+        public FundLineGroup WithFundLine(string title, IEnumerable<string> attributes, bool includeInTotals = true)
         {
-            var fundLine = BuildFundLine(title, attributes);
+            var fundLine = BuildFundLine(title, attributes, includeInTotals: includeInTotals);
 
             FundLines.Add(fundLine);
 
             return this;
         }
-        
-        public IFundLine BuildFundLine(string title, IEnumerable<string> attributes, IEnumerable<string> fundLines = null)
+
+        public IFundLine BuildFundLine(string title, IEnumerable<string> attributes, IEnumerable<string> fundLines = null, bool includeInTotals = true)
         {
             var periodisedValuesList = _periodisedValues.GetPeriodisedValues(_fundModel, fundLines ?? _fundLines, attributes);
 
@@ -101,7 +101,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
                     periodisedValuesList.Where(pv => pv[8].HasValue).Sum(pv => pv[8].Value),
                     periodisedValuesList.Where(pv => pv[9].HasValue).Sum(pv => pv[9].Value),
                     periodisedValuesList.Where(pv => pv[10].HasValue).Sum(pv => pv[10].Value),
-                    periodisedValuesList.Where(pv => pv[11].HasValue).Sum(pv => pv[11].Value)
+                    periodisedValuesList.Where(pv => pv[11].HasValue).Sum(pv => pv[11].Value),
+                    includeInTotals
                 );
             }
 
@@ -112,5 +113,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
         {
             return new FundLine(CurrentPeriod, title, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
         }
+
+        private IEnumerable<IFundLine> FundLinesForTotal => FundLines.Where(fl => fl.IncludeInTotals);
     }
 }
