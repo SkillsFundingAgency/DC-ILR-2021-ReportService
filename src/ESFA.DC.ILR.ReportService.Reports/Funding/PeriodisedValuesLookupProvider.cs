@@ -7,10 +7,13 @@ using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
 using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
+using LearningDelivery = ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output.LearningDelivery;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding
 {
@@ -112,34 +115,63 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm36Dictionary(FM36Global fm35Global)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm36Dictionary(FM36Global fm36Global)
         {
-            return fm35Global?
-                       .Learners?
-                       .SelectMany(l => l.LearningDeliveries)
-                       .GroupBy(ld => ld.LearningDeliveryValues.LearnDelInitialFundLineType, StringComparer.OrdinalIgnoreCase)
-                       .ToDictionary(k => k.Key,
-                           v => v.SelectMany(ld => ld.LearningDeliveryPeriodisedValues)
-                               .GroupBy(ldpv => ldpv.AttributeName, StringComparer.OrdinalIgnoreCase)
-                               .ToDictionary(k => k.Key, value =>
-                                       value.Select(pvGroup => new decimal?[]
-                                       {
-                                           pvGroup.Period1,
-                                           pvGroup.Period2,
-                                           pvGroup.Period3,
-                                           pvGroup.Period4,
-                                           pvGroup.Period5,
-                                           pvGroup.Period6,
-                                           pvGroup.Period7,
-                                           pvGroup.Period8,
-                                           pvGroup.Period9,
-                                           pvGroup.Period10,
-                                           pvGroup.Period11,
-                                           pvGroup.Period12,
-                                       }).ToArray(),
-                                   StringComparer.OrdinalIgnoreCase),
-                           StringComparer.OrdinalIgnoreCase)
-                   ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
+            var learningDeliveriesByPeriod = fm36Global?
+                .Learners?
+                .SelectMany(
+                    l => 
+                    l.LearningDeliveries?
+                    .SelectMany(ld =>
+                {
+                    // Get Fund Line By Period
+                    var fundLinePeriodisedValues = ld.LearningDeliveryPeriodisedTextValues?.FirstOrDefault(t => t.AttributeName.CaseInsensitiveEquals(AttributeConstants.Fm36FundLineType));
+
+                    if (fundLinePeriodisedValues != null)
+                    {
+                        // Flatten
+                        return ld.LearningDeliveryPeriodisedValues.SelectMany(pv => new[]
+                        {
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 0, fundLinePeriodisedValues.Period1, pv.AttributeName, pv.Period1),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 1, fundLinePeriodisedValues.Period2, pv.AttributeName, pv.Period2),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 2, fundLinePeriodisedValues.Period3, pv.AttributeName, pv.Period3),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 3, fundLinePeriodisedValues.Period4, pv.AttributeName, pv.Period4),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 4, fundLinePeriodisedValues.Period5, pv.AttributeName, pv.Period5),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 5, fundLinePeriodisedValues.Period6, pv.AttributeName, pv.Period6),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 6, fundLinePeriodisedValues.Period7, pv.AttributeName, pv.Period7),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 7, fundLinePeriodisedValues.Period8, pv.AttributeName, pv.Period8),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 8, fundLinePeriodisedValues.Period9, pv.AttributeName, pv.Period9),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 9, fundLinePeriodisedValues.Period10, pv.AttributeName, pv.Period10),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 10, fundLinePeriodisedValues.Period11, pv.AttributeName, pv.Period11),
+                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 11, fundLinePeriodisedValues.Period12, pv.AttributeName, pv.Period12),
+                        });
+                    }
+
+                    return Enumerable.Empty<FlattenedPeriodisedValue>();
+                }));
+            
+            return learningDeliveriesByPeriod?
+                .GroupBy(p => p.FundLine, StringComparer.OrdinalIgnoreCase) // Fund Lines
+                .ToDictionary(k => k.Key,
+                    v => v.GroupBy(a => a.Attribute, StringComparer.OrdinalIgnoreCase) // Attributes
+                        .ToDictionary(k => k.Key, 
+                            flattenedValuesSet => flattenedValuesSet
+                                .GroupBy(fv => new { fv.LearnRefNumber, fv.AimSeqNumber }) // Learning Deliveries
+                                .Select(ld => 
+                                {
+
+
+                                    var array = new decimal?[12];
+
+                                    foreach (var periodisedValue in ld)
+                                    {
+                                        array[periodisedValue.PeriodIndex] = periodisedValue.Value;  // Periods
+                                    }
+
+                                    return array;
+                                }).ToArray(),
+                        StringComparer.OrdinalIgnoreCase),
+                    StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
         public Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm81Dictionary(FM81Global fm81Global)
@@ -229,6 +261,46 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
                                    StringComparer.OrdinalIgnoreCase),
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
+        }
+
+        private struct FlattenedPeriodisedValue
+        {
+            public FlattenedPeriodisedValue(
+                string learnRefNumber,
+                int aimSeqNumber,
+                int periodIndex,
+                string fundLine,
+                string attribute,
+                decimal? value)
+            {
+                LearnRefNumber = learnRefNumber;
+                AimSeqNumber = aimSeqNumber;
+                PeriodIndex = periodIndex;
+                FundLine = fundLine;
+                Attribute = attribute;
+                Value = value;
+            }
+
+            public string LearnRefNumber { get; }
+
+            public int AimSeqNumber { get; }
+
+            public int PeriodIndex { get; }
+
+            public string FundLine { get; }
+
+            public string Attribute { get; }
+
+            public decimal? Value { get; }
+        }
+
+        private struct FundLineAttributeValue
+        {
+            public string FundLine { get; }
+
+            public string Attribute { get; }
+
+            public decimal? Value { get; }
         }
     }
 }
