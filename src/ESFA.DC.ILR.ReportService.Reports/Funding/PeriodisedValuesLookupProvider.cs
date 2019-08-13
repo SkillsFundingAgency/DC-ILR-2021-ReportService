@@ -129,50 +129,34 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
 
                     if (fundLinePeriodisedValues != null)
                     {
-                       // var learningDeliveryKey = new LearningDeliveryKey(l.LearnRefNumber, ld.AimSeqNumber);
-                    
                         // Flatten
                         return ld.LearningDeliveryPeriodisedValues.SelectMany(pv => new[]
                         {
-                            //new FundLineAttributeValue(learningDeliveryKey, 0, fundLinePeriodisedValues.Period1, pv.AttributeName, pv.Period1),
-                            //new FundLineAttributeValue(learningDeliveryKey, 1, fundLinePeriodisedValues.Period2, pv.AttributeName, pv.Period2),
-                            //new FundLineAttributeValue(learningDeliveryKey, 2, fundLinePeriodisedValues.Period3, pv.AttributeName, pv.Period3),
-                            //new FundLineAttributeValue(learningDeliveryKey, 3, fundLinePeriodisedValues.Period4, pv.AttributeName, pv.Period4),
-                            //new FundLineAttributeValue(learningDeliveryKey, 4, fundLinePeriodisedValues.Period5, pv.AttributeName, pv.Period5),
-                            //new FundLineAttributeValue(learningDeliveryKey, 5, fundLinePeriodisedValues.Period6, pv.AttributeName, pv.Period6),
-                            //new FundLineAttributeValue(learningDeliveryKey, 6, fundLinePeriodisedValues.Period7, pv.AttributeName, pv.Period7),
-                            //new FundLineAttributeValue(learningDeliveryKey, 7, fundLinePeriodisedValues.Period8, pv.AttributeName, pv.Period8),
-                            //new FundLineAttributeValue(learningDeliveryKey, 8, fundLinePeriodisedValues.Period9, pv.AttributeName, pv.Period9),
-                            //new FundLineAttributeValue(learningDeliveryKey, 9, fundLinePeriodisedValues.Period10, pv.AttributeName, pv.Period10),
-                            //new FundLineAttributeValue(learningDeliveryKey, 10, fundLinePeriodisedValues.Period11, pv.AttributeName, pv.Period11),
-                            //new FundLineAttributeValue(learningDeliveryKey, 11, fundLinePeriodisedValues.Period12, pv.AttributeName, pv.Period12),
-
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 0, fundLinePeriodisedValues.Period1, pv.AttributeName, pv.Period1),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 1, fundLinePeriodisedValues.Period2, pv.AttributeName, pv.Period2),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 2, fundLinePeriodisedValues.Period3, pv.AttributeName, pv.Period3),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 3, fundLinePeriodisedValues.Period4, pv.AttributeName, pv.Period4),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 4, fundLinePeriodisedValues.Period5, pv.AttributeName, pv.Period5),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 5, fundLinePeriodisedValues.Period6, pv.AttributeName, pv.Period6),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 6, fundLinePeriodisedValues.Period7, pv.AttributeName, pv.Period7),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 7, fundLinePeriodisedValues.Period8, pv.AttributeName, pv.Period8),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 8, fundLinePeriodisedValues.Period9, pv.AttributeName, pv.Period9),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 9, fundLinePeriodisedValues.Period10, pv.AttributeName, pv.Period10),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 10, fundLinePeriodisedValues.Period11, pv.AttributeName, pv.Period11),
-                            new FlattenedPeriodisedValue(l.LearnRefNumber, ld.AimSeqNumber, 11, fundLinePeriodisedValues.Period12, pv.AttributeName, pv.Period12),
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 0, FundLine = fundLinePeriodisedValues.Period1, pv.AttributeName, Value = pv.Period1 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 1, FundLine = fundLinePeriodisedValues.Period2, pv.AttributeName, Value = pv.Period2 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 2, FundLine = fundLinePeriodisedValues.Period3, pv.AttributeName, Value = pv.Period3 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 3, FundLine = fundLinePeriodisedValues.Period4, pv.AttributeName, Value = pv.Period4 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 4, FundLine = fundLinePeriodisedValues.Period5, pv.AttributeName, Value = pv.Period5 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 5, FundLine = fundLinePeriodisedValues.Period6, pv.AttributeName, Value = pv.Period6 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 6, FundLine = fundLinePeriodisedValues.Period7, pv.AttributeName, Value = pv.Period7 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 7, FundLine = fundLinePeriodisedValues.Period8, pv.AttributeName, Value = pv.Period8 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 8, FundLine = fundLinePeriodisedValues.Period9, pv.AttributeName, Value = pv.Period9 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 9, FundLine = fundLinePeriodisedValues.Period10, pv.AttributeName, Value = pv.Period10 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 10, FundLine =  fundLinePeriodisedValues.Period11, pv.AttributeName, Value = pv.Period11 },
+                            new { l.LearnRefNumber, ld.AimSeqNumber, PeriodIndex = 11, FundLine =  fundLinePeriodisedValues.Period12, pv.AttributeName, Value = pv.Period12 },
                         });
                     }
 
-                    return Enumerable.Empty<FlattenedPeriodisedValue>();
-                   // return Enumerable.Empty<FundLineAttributeValue>();
+                    return null;
                 }));
             
             return learningDeliveriesByPeriod?
+                .Where(p => p != null)
                 .GroupBy(p => p.FundLine, StringComparer.OrdinalIgnoreCase) // Fund Lines
                 .ToDictionary(k => k.Key,
-                    v => v.GroupBy(a => a.Attribute, StringComparer.OrdinalIgnoreCase) // Attributes
+                    v => v.GroupBy(a => a.AttributeName, StringComparer.OrdinalIgnoreCase) // Attributes
                         .ToDictionary(k => k.Key, 
                             flattenedValuesSet => flattenedValuesSet
-                                //.GroupBy(fv => fv.LearningDeliveryKey) // Learning Deliveries
                                 .GroupBy(fv => new { fv.LearnRefNumber, fv.AimSeqNumber }) // Learning Deliveries
                                 .Select(ld => 
                                 {
