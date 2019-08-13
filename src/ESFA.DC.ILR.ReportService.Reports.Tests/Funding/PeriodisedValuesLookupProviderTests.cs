@@ -108,7 +108,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
             
             var global = new FM36Global()
             {
-                Learners = Enumerable.Range(0, 1000)
+                Learners = Enumerable.Range(0, 10000)
                     .Select(i => new FM36Learner()
                     {
                         LearnRefNumber = i.ToString(),
