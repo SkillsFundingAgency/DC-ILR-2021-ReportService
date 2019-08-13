@@ -186,14 +186,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
             var learningSupportEarningsTotal = isMathsEngLearningDelivery ? learningDeliveryPeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36LearnSuppFundCash)?.Sum() ?? _defaultDecimal :
                                                             priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLSFCashAttributeName)?.Sum() ?? _defaultDecimal;
 
-            var disadvantageEarningsTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal +
-                                            priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal;
+            var disadvantageEarningsTotal = (priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal) +
+                                            (priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?.Sum() ?? _defaultDecimal);
 
-            var additionalPaymentForEmployers1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal +
-                                                         priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal;
+            var additionalPaymentForEmployers1618Total = (priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal) +
+                                                         (priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?.Sum() ?? _defaultDecimal);
 
-            var additionalPaymentForProviders1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?.Sum() ?? _defaultDecimal +
-                                                         priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?.Sum() ?? _defaultDecimal;
+            var additionalPaymentForProviders1618Total = (priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?.Sum() ?? _defaultDecimal) +
+                                                         (priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?.Sum() ?? _defaultDecimal);
 
             var additionalPaymentsForApprenticesTotal = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?.Sum() ?? _defaultDecimal;
             var frameworkUpliftOnProgrammePayment1618Total = priceEpisodePeriodisedValuesDictionary.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName)?.Sum() ?? _defaultDecimal;
@@ -298,14 +298,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
                 LearningSupportEarnings = isMathsEngLearningDelivery ? learningDeliveryPeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36LearnSuppFundCash)?[period] ?? _defaultDecimal :
                                                 priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLSFCashAttributeName)?[period] ?? _defaultDecimal,
 
-                DisadvantageEarnings = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal +
-                                       priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal,
+                DisadvantageEarnings = (priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal) +
+                                       (priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName)?[period] ?? _defaultDecimal),
 
-                AdditionalPaymentForEmployers1618 = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?[period] ?? _defaultDecimal +
-                                                    priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?[period] ?? _defaultDecimal,
+                AdditionalPaymentForEmployers1618 = (priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName)?[period] ?? _defaultDecimal) +
+                                                    (priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName)?[period] ?? _defaultDecimal),
 
-                AdditionalPaymentForProviders1618 = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?[period] ?? _defaultDecimal +
-                                                    priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?[period] ?? _defaultDecimal,
+                AdditionalPaymentForProviders1618 = (priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName)?[period] ?? _defaultDecimal) +
+                                                    (priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName)?[period] ?? _defaultDecimal),
 
                 AdditionalPaymentsForApprentices = priceEpisodePeriodisedValues.GetValueOrDefault(AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName)?[period] ?? _defaultDecimal,
 

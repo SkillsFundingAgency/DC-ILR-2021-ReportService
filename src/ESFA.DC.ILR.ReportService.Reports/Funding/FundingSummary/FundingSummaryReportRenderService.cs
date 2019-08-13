@@ -167,9 +167,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             }, row, 0, false);
             ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
 
+            var renderFundLineGroupTotals = fundingSubCategory.FundLineGroups.Count > 1;
+
             foreach (var fundLineGroup in fundingSubCategory.FundLineGroups)
             {
-                RenderFundLineGroup(worksheet, fundLineGroup);
+                RenderFundLineGroup(worksheet, fundLineGroup, renderFundLineGroupTotals);
             }
 
             row = NextRow(worksheet);
@@ -180,17 +182,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             return worksheet;
         }
 
-        private Worksheet RenderFundLineGroup(Worksheet worksheet, IFundLineGroup fundLineGroup)
+        private Worksheet RenderFundLineGroup(Worksheet worksheet, IFundLineGroup fundLineGroup, bool renderFundLineGroupTotal)
         {
             foreach (var fundLine in fundLineGroup.FundLines)
             {
                 RenderFundLine(worksheet, fundLine);
             }
 
-            var row = NextRow(worksheet);
-            RenderFundingSummaryReportRow(worksheet, row, fundLineGroup);
-            ApplyStyleToRow(worksheet, row, _fundLineGroupStyle);
-            ApplyFutureMonthStyleToRow(worksheet, row, fundLineGroup.CurrentPeriod);
+            if (renderFundLineGroupTotal)
+            {
+                var row = NextRow(worksheet);
+                RenderFundingSummaryReportRow(worksheet, row, fundLineGroup);
+                ApplyStyleToRow(worksheet, row, _fundLineGroupStyle);
+                ApplyFutureMonthStyleToRow(worksheet, row, fundLineGroup.CurrentPeriod);
+            }
 
             return worksheet;
         }
