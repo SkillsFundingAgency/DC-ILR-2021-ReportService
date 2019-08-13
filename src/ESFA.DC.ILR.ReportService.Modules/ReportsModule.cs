@@ -132,7 +132,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
         private void RegisterSummaryOfFundingByStudentReport(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<SummaryOfFundingByStudentReport>().As<IReport>();
-            containerBuilder.RegisterType<HighNeedsStudentDetailReportModelBuilder>().As<IModelBuilder<IEnumerable<SummaryOfFundingByStudentReportModel>>>();
+            containerBuilder.RegisterType<SummaryOfFundingByStudentModelBuilder>().As<IModelBuilder<IEnumerable<SummaryOfFundingByStudentReportModel>>>();
         }
     }
 }

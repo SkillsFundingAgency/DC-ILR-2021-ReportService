@@ -196,6 +196,27 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
             row.PeriodisedValues.Should().NotBeNull();
             row.LearningDeliveryFAMs.Should().Be(learningDeliveryFamsModel);
 
+            
+            row.PeriodisedValues.August.AdditionalPaymentsForApprentices.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.AimCompletionEarnings.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.BalancingPaymentEarnings.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.EnglishMathsBalancingPaymentEarnings.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.EnglishMathsOnProgrammeEarnings.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.FrameworkUpliftBalancingPayment1618.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.FrameworkUpliftCompletionPayment1618.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.FrameworkUpliftOnProgrammePayment1618.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.LearningSupportEarnings.Should().Be((decimal) 1.111);
+            row.PeriodisedValues.August.OnProgrammeEarnings.Should().Be((decimal) 1.111);
+
+            row.PeriodisedValues.August.DisadvantageEarnings.Should().Be((decimal)2.222);
+            row.PeriodisedValues.May.DisadvantageEarnings.Should().Be((decimal) 20.2020);
+
+            row.PeriodisedValues.August.AdditionalPaymentForEmployers1618.Should().Be((decimal)2.222);
+            row.PeriodisedValues.May.AdditionalPaymentForEmployers1618.Should().Be((decimal)20.2020);
+
+            row.PeriodisedValues.August.AdditionalPaymentForProviders1618.Should().Be((decimal)2.222);
+            row.PeriodisedValues.May.AdditionalPaymentForProviders1618.Should().Be((decimal)20.2020);
+
             //var csvService = new CsvService(new FileServiceStub());
             //csvService.WriteAsync<AppsIndicativeEarningsReportModel, AppsIndicativeEarningsReportClassMap>(result, "AppsIndicativeEarningsReport.csv", "", CancellationToken.None).ConfigureAwait(false);
         }
