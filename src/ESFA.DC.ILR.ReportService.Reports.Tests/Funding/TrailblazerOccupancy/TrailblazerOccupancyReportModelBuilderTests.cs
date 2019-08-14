@@ -200,7 +200,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerOccupancy
 
             result.LatestTotalNegotiatedPrice1.Should().Be(300);
             result.LatestTotalNegotiatedPrice2.Should().Be(500);
-            result.SumOfPmrsBeforeFundingYear.Should().Be(150);
+            result.SumOfPmrsBeforeFundingYear.Should().Be(50);
             result.SumOfAugustPmrs.Should().Be(100);
             result.SumOfJulyPmrs.Should().Be(100);
             result.PmrsTotal.Should().Be(200);

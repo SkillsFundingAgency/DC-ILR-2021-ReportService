@@ -94,7 +94,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer
             var appFinRecords = learningDelivery?.AppFinRecords;
 
             IEnumerable<IAppFinRecord> previousYearPmrData = appFinRecords?
-                .Where(x => x.AFinDate <= ReportingConstants.BeginningOfYear &&
+                .Where(x => x.AFinDate < ReportingConstants.BeginningOfYear &&
                             x.AFinType.CaseInsensitiveEquals(AppFinRecordConstants.Types.PaymentRecord));
 
             IEnumerable<IAppFinRecord> currentYearPmrData = appFinRecords?

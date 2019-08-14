@@ -105,26 +105,34 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
         {
             var fundLine1 = "FundLine1";
             var fundLine2 = "FundLine2";
-
-            var attribute1 = "Attribute1";
-            var attribute2 = "Attribute2";
-
+            
             var global = new FM36Global()
             {
                 Learners = Enumerable.Range(0, 1000)
                     .Select(i => new FM36Learner()
                     {
+                        LearnRefNumber = i.ToString(),
                         LearningDeliveries = Enumerable.Range(0, 3)
                             .Select(j => new FundingService.FM36.FundingOutput.Model.Output.LearningDelivery()
                             {
+                                AimSeqNumber = j,
                                 LearningDeliveryValues = new FundingService.FM36.FundingOutput.Model.Output.LearningDeliveryValues()
                                 {
                                     LearnDelInitialFundLineType = j % 2 == 0 ? fundLine1 : fundLine2
                                 },
+                                LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>()
+                                {
+                                    new LearningDeliveryPeriodisedTextValues()
+                                    {
+                                        AttributeName = "FundLineType", Period1 =  fundLine1, Period2 = fundLine2, Period3 = fundLine1, Period4 = fundLine2, Period5 = fundLine1, Period6 = fundLine2, Period7 = fundLine1, Period8 = fundLine2, Period9 = fundLine1, Period10 = fundLine2, Period11 = fundLine1, Period12 =  fundLine2
+                                    }
+                                },
                                 LearningDeliveryPeriodisedValues = Enumerable.Range(0, 16)
                                     .Select(k => new FundingService.FM36.FundingOutput.Model.Output.LearningDeliveryPeriodisedValues()
                                     {
-                                        AttributeName = k % 2 == 0 ? attribute1 : attribute2
+                                        AttributeName = k.ToString(),
+                                        Period1 = 1,
+                                        Period2 = 2,
                                     }).ToList(),
                             }).ToList(),
                     }).ToList()
@@ -134,14 +142,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
 
             mapped.Should().HaveCount(2);
 
-            mapped[fundLine1].Should().HaveCount(2);
-            mapped[fundLine2].Should().HaveCount(2);
+            mapped[fundLine1].Should().HaveCount(16);
+            mapped[fundLine2].Should().HaveCount(16);
 
-            mapped[fundLine1][attribute1].Should().HaveCount(16000);
-            mapped[fundLine1][attribute2].Should().HaveCount(16000);
+            mapped[fundLine1]["1"].Should().HaveCount(3000);
+            mapped[fundLine1]["2"].Should().HaveCount(3000);
 
-            mapped[fundLine2][attribute1].Should().HaveCount(8000);
-            mapped[fundLine2][attribute2].Should().HaveCount(8000);
+            mapped[fundLine2]["1"].Should().HaveCount(3000);
+            mapped[fundLine2]["2"].Should().HaveCount(3000);
+
+            mapped[fundLine1]["1"][0][0].Should().Be(1);
+            mapped[fundLine1]["1"][0][1].Should().BeNull();
+            
+            mapped[fundLine2]["1"][0][0].Should().BeNull();
+            mapped[fundLine2]["1"][0][1].Should().Be(2);
         }
 
         [Fact]

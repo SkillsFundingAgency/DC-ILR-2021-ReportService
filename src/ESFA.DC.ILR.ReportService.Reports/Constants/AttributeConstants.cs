@@ -48,6 +48,7 @@
         public const string Fm36PriceEpisodeContractTypeLevyContract = "Levy Contract";
         public const string Fm36LearnDelFAMTypeAct = "ACT";
         public const string Fm36LearnDelFAMCodeOne = "1";
+        public const string Fm36FundLineType = "FundLineType";
 
         // FM81
         public const string Fm81CoreGovContPayment = "CoreGovContPayment";
