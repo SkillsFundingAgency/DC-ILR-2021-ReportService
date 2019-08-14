@@ -81,7 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
                 });
             }
 
-            return reportModelList;
+            return Order(reportModelList);
         }
 
         public decimal CalculatePaymentValue(IEnumerable<TrailblazerLearningDeliveryPeriodisedValues> periodisedValues, string[] attributeConstants, string period, int empId)
@@ -176,6 +176,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
                                 }
                             })
                     ));
+        }
+
+        public IEnumerable<TrailblazerEmployerIncentivesReportModel> Order(IEnumerable<TrailblazerEmployerIncentivesReportModel> models)
+        {
+            return models.OrderBy(m => m.EmployerIdentifier);
         }
     }
 }
