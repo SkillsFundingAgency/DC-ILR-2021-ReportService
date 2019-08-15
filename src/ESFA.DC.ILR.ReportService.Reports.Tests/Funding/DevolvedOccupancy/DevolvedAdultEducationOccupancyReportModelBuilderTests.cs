@@ -4,6 +4,7 @@ using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
+using ESFA.DC.ILR.ReferenceDataService.Model.PostcodesDevolution;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Model;
@@ -101,8 +102,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             NewBuilder().LearningDeliveryReportFilter(learningDeliveryMock.Object).Should().BeTrue();
         }
 
-        
-
         [Fact]
         public void OrderBy()
         {
@@ -179,11 +178,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 LearnAimRef = "learnAimRef"
             };
 
+            var mcaGlaSofLookup = new McaGlaSofLookup()
+            {
+                SofCode = "110",
+                McaGlaShortCode = "GMCA",
+                McaGlaFullName = "GMCA Full",
+            };
+
             var referenceDataRoot = new ReferenceDataRoot()
             {
                 LARSLearningDeliveries = new List<LARSLearningDelivery>()
                 {
                     larsLearningDelivery
+                },
+                DevolvedPostocdes = new DevolvedPostcodes()
+                {
+                    McaGlaSofLookups = new List<McaGlaSofLookup>()
+                    {
+                        mcaGlaSofLookup
+                    }
                 }
             };
 

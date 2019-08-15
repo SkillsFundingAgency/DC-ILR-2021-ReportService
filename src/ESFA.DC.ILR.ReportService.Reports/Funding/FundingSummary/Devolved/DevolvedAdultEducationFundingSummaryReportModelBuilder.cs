@@ -90,20 +90,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     reportGeneratedAt,
                     new List<IDevolvedAdultEducationFundingCategory>
                     {
-                        new DevolvedAdultEducationFundingCategory
-                        (@"Adult Education Budget - Eligible for MCA/GLA funding (non-procured)", reportCurrentPeriod,
-                            new List<IDevolvedAdultEducationFundLineGroup>
-                            {
-                                BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues),
-                                BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues)
-                            }),
-                        new DevolvedAdultEducationFundingCategory
-                        (@"Adult Education Budget - Eligible for MCA/GLA funding (procured)", reportCurrentPeriod,
-                            new List<IDevolvedAdultEducationFundLineGroup>
-                            {
-                                BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues),
-                                BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues)
-                            })
+                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (non-procured)")
+                            .WithFundLineGroup(BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues))
+                            .WithFundLineGroup(BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues)),
+                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (procured)")
+                            .WithFundLineGroup(BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues))
+                            .WithFundLineGroup(BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues))
                     }
                 ));
             }
@@ -118,7 +110,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 .WithFundLine($"ILR Learning Support (£)", new[] { AttributeConstants.Fm35LearnSuppFundCash });
         }
 
-        private IDevolvedAdultEducationFundLineGroup BuildEasFm35FundLineGroup(int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
+        protected virtual IDevolvedAdultEducationFundLineGroup BuildEasFm35FundLineGroup(int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
             return new DevolvedAdultEducationFundLineGroup("EAS Total Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, fundLines, periodisedValues)
                 .WithFundLine("EAS Authorised Claims (£)", new [] { AttributeConstants.EasAuthorisedClaims })
