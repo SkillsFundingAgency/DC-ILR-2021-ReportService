@@ -127,7 +127,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                         new List<IFundingSubCategory>()
                         {
                             new FundingSubCategory("ESFA AEB – Adult Skills (non-procured)", reportCurrentPeriod)
-                                .WithFundLineGroup(BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.AebOtherLearning, FundLineConstants.AebOtherLearningNonProcured }, periodisedValues))
+                                .WithFundLineGroup(BuildIlrFm35FundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.AebOtherLearningNonProcured }, periodisedValues))
                                 .WithFundLineGroup(BuildEasAebFundLineGroup("ESFA", "AEB - Adult Skills (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.EasAebAdultSkillsNonProcured }, periodisedValues))
                         },
                         AdultEducationBudgetNote),
