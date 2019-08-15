@@ -1,20 +1,20 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model
 {
     public class DevolvedAdultEducationFundingCategory : IDevolvedAdultEducationFundingCategory
     {
-        public DevolvedAdultEducationFundingCategory(string fundingCategoryTitle, int currentPeriod, IList<IDevolvedAdultEducationFundLineGroup> fundLineGroups)
+        public DevolvedAdultEducationFundingCategory(string fundingCategoryTitle)
         {
             FundingCategoryTitle = fundingCategoryTitle;
-            FundLineGroups = fundLineGroups ?? new List<IDevolvedAdultEducationFundLineGroup>();
         }
 
         public string FundingCategoryTitle { get; }
 
-        public IList<IDevolvedAdultEducationFundLineGroup> FundLineGroups { get; }
+        public IList<IDevolvedAdultEducationFundLineGroup> FundLineGroups { get; set; } = new List<IDevolvedAdultEducationFundLineGroup>();
 
         public string CumulativeFundingCategoryTitle => $"Total {FundingCategoryTitle} Cumulative (£)";
 
@@ -77,5 +77,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
         public decimal CumulativePeriod11 => CumulativePeriod10 + Period11;
 
         public decimal CumulativePeriod12 => CumulativePeriod11 + Period12;
+
+        public DevolvedAdultEducationFundingCategory WithFundLineGroup(IDevolvedAdultEducationFundLineGroup fundLineGroup)
+        {
+            if (fundLineGroup != null)
+            {
+                FundLineGroups.Add(fundLineGroup);
+            }
+
+            return this;
+        }
     }
 }

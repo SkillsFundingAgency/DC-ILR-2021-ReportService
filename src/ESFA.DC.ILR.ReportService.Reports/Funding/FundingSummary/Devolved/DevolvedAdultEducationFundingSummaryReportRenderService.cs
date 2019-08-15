@@ -24,8 +24,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
         private const string LargeEmployersVersion = "Large Employers Data";
         private const string ReportGeneratedAt = "Report Generated at";
 
-        private const int StartYear = 18;
-        private const int EndYear = 19;
+        private const int StartYear = 2019;
+        private const int EndYear = 2020;
 
         private const string NotApplicable = "N/A";
         private const string DecimalFormat = "#,##0.00";
@@ -182,18 +182,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             worksheet.Cells.ImportObjectArray(new object[]
             {
                 fundingSubCategory.FundingCategoryTitle,
-                $"Aug-{StartYear}",
-                $"Sep-{StartYear}",
-                $"Oct-{StartYear}",
-                $"Nov-{StartYear}",
-                $"Dec-{StartYear}",
-                $"Jan-{EndYear}",
-                $"Feb-{EndYear}",
-                $"Mar-{EndYear}",
-                $"Apr-{EndYear}",
-                $"May-{EndYear}",
-                $"Jun-{EndYear}",
-                $"Jul-{EndYear}",
+                $"Aug {StartYear}",
+                $"Sep {StartYear}",
+                $"Oct {StartYear}",
+                $"Nov {StartYear}",
+                $"Dec {StartYear}",
+                $"Jan {EndYear}",
+                $"Feb {EndYear}",
+                $"Mar {EndYear}",
+                $"Apr {EndYear}",
+                $"May {EndYear}",
+                $"Jun {EndYear}",
+                $"Jul {EndYear}",
                 "Aug - Mar",
                 "Apr - Jul",
                 "Year To Date",
