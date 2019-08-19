@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Model.Loose;
 using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using ESFA.DC.Serialization.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Data.Providers
@@ -25,10 +26,12 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
         public async Task<object> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             var message = await ProvideXmlAsync<Message>(reportServiceContext.OriginalFilename, reportServiceContext.Container, cancellationToken) as Message;
-            var invalidLearnRefNumbers = await ProvideJsonAsync<List<string>>(reportServiceContext.InvalidLearnRefNumbersKey, reportServiceContext.Container, cancellationToken) as List<string>;
+            var validationErrors = await ProvideJsonAsync<List<ValidationError>>(reportServiceContext.ValidationErrorsKey, reportServiceContext.Container, cancellationToken) as List<ValidationError>;
 
-            message.Learner = message.Learner.Where(l => invalidLearnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
-            message.LearnerDestinationandProgression = message.LearnerDestinationandProgression?.Where(l => invalidLearnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
+            var learnRefNumbers = validationErrors.Select(x => x.LearnerReferenceNumber);
+
+            message.Learner = message.Learner.Where(l => learnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
+            message.LearnerDestinationandProgression = message.LearnerDestinationandProgression?.Where(l => learnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
 
             return message;
         }
