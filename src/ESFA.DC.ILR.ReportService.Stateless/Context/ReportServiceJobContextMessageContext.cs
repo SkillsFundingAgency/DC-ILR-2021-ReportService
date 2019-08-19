@@ -61,7 +61,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public IEnumerable<string> Tasks => _jobContextMessage.Topics[_jobContextMessage.TopicPointer].Tasks.SelectMany(x => x.Tasks);
 
-        public string InvalidLearnRefNumbersKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.ValidLearnRefNumbers].ToString();
+        public string InvalidLearnRefNumbersKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.InvalidLearnRefNumbers].ToString();
 
         public string CollectionName => _jobContextMessage.KeyValuePairs["CollectionName"].ToString();
 
