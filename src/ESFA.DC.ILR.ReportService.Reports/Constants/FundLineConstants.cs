@@ -26,7 +26,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string EasTraineeships1924NonProcured = "19-24 Traineeships (non-procured)";
         public const string Traineeship1924ProcuredFromNov2017 = "19-24 Traineeship (procured from Nov 2017)";
         public const string EasTraineeships1924ProcuredFromNov2017 = "19-24 Traineeships (procured from Nov 2017)";
-        public const string EasTraineeships1924NonProcuredFromNov2017 = "19-24 Traineeships (procured from Nov 2017)";
         public const string AebOtherLearningNonProcured = "ESFA AEB - Adult Skills (non-procured)";
         public const string AebOtherLearningProcuredFromNov2017 = "ESFA AEB - Adult Skills (procured from Nov 2017)";
         public const string EasAebAdultSkillsNonProcured = "ESFA AEB - Adult Skills (non-procured)";
