@@ -48,25 +48,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                         {
                             new FundingSubCategory(@"16-18 Apprenticeship Frameworks for starts before 1 May 2017", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("16-18", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship1618 }, periodisedValues))
-                                .WithFundLineGroup(BuildEasFm35FundLineGroup("16-18", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship1618 }, periodisedValues)),
+                                .WithFundLineGroup(BuildEasFm35FundLineGroup("16-18", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.EasApprenticeship1618 }, periodisedValues)),
                             new FundingSubCategory(@"16-18 Trailblazer Apprenticeships for starts before 1 May 2017", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrTrailblazerApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1618 }, periodisedValues))
-                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("16-18", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1618 }, periodisedValues)),
+                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("16-18", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.EasTrailblazerApprenticeship1618 }, periodisedValues)),
                             new FundingSubCategory(@"16-18 Non-Levy Contracted Apprenticeships - Non-procured delivery", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrNonLevyApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship1618, FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues))
                                 .WithFundLineGroup(BuildEasNonLevyApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues)),
                             new FundingSubCategory(@"19-23 Apprenticeship Frameworks for starts before 1 May 2017", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("19-23", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship1923 }, periodisedValues))
-                                .WithFundLineGroup(BuildEasFm35FundLineGroup("19-23", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship1923 }, periodisedValues)),
+                                .WithFundLineGroup(BuildEasFm35FundLineGroup("19-23", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.EasApprenticeship1923 }, periodisedValues)),
                             new FundingSubCategory(@"19-23 Trailblazer Apprenticeships for starts before 1 May 2017", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrTrailblazerApprenticeshipsFundLineGroup("19-23", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1923 }, periodisedValues))
-                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("19-23", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1923 }, periodisedValues)),
+                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("19-23", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.EasTrailblazerApprenticeship1923 }, periodisedValues)),
                             new FundingSubCategory(@"24+ Apprenticeship Frameworks for starts before 1 May 2017", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("24+", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship24Plus }, periodisedValues))
-                                .WithFundLineGroup(BuildEasFm35FundLineGroup("24+", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship24Plus }, periodisedValues)),
+                                .WithFundLineGroup(BuildEasFm35FundLineGroup("24+", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.EasApprenticeship24Plus }, periodisedValues)),
                             new FundingSubCategory(@"24+ Trailblazer Apprenticeships for starts before 1 May 2017", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrTrailblazerApprenticeshipsFundLineGroup("24+", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship24Plus }, periodisedValues))
-                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("24+", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship24Plus }, periodisedValues)),
+                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("24+", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.EasTrailblazerApprenticeship24Plus }, periodisedValues)),
                             new FundingSubCategory(@"Adult Non-Levy Contracted Apprenticeships - Non-procured delivery", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrNonLevyApprenticeshipsFundLineGroup("Adult", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19Plus, FundLineConstants.NonLevyApprenticeship19PlusNonProcured }, periodisedValues))
                                 .WithFundLineGroup(BuildEasNonLevyApprenticeshipsFundLineGroup("Adult", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19PlusNonProcured }, periodisedValues))
@@ -120,7 +120,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                         {
                             new FundingSubCategory("19-24 Traineeships", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("19-24", "Traineeships", reportCurrentPeriod, new [] { FundLineConstants.Traineeship1924ProcuredFromNov2017 }, periodisedValues))
-                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("19-24", "Traineeships", reportCurrentPeriod, new [] { FundLineConstants.EasTraineeships1924NonProcured }, periodisedValues)),
+                                .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("19-24", "Traineeships", reportCurrentPeriod, new [] { FundLineConstants.EasTraineeships1924ProcuredFromNov2017 }, periodisedValues)),
                         }),
                     new FundingCategory(
                         "ESFA Adult Education Budget – Non-procured delivery", reportCurrentPeriod,
