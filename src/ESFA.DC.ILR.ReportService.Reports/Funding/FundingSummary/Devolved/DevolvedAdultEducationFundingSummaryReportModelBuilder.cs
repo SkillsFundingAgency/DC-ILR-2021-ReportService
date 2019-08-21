@@ -5,6 +5,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
@@ -181,24 +182,34 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                            v => v.SelectMany(ld => ld.EasSubmissionValues)
                                .GroupBy(easv => easv.AdjustmentTypeName, StringComparer.OrdinalIgnoreCase)
                                .ToDictionary(k => k.Key, value =>
-                                       value.Select(pvGroup => new decimal?[]
+                                       value?.Select(pvGroup => new decimal?[]
                                        {
-                                           pvGroup.Period1.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period1.PaymentValue : 0.0m,
-                                           pvGroup.Period2.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period2.PaymentValue : 0.0m,
-                                           pvGroup.Period3.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period3.PaymentValue : 0.0m,
-                                           pvGroup.Period4.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period4.PaymentValue : 0.0m,
-                                           pvGroup.Period5.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period5.PaymentValue : 0.0m,
-                                           pvGroup.Period6.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period6.PaymentValue : 0.0m,
-                                           pvGroup.Period7.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period7.PaymentValue : 0.0m,
-                                           pvGroup.Period8.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period8.PaymentValue : 0.0m,
-                                           pvGroup.Period9.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period9.PaymentValue : 0.0m,
-                                           pvGroup.Period10.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period10.PaymentValue : 0.0m,
-                                           pvGroup.Period11.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period11.PaymentValue : 0.0m,
-                                           pvGroup.Period12.DevolvedAreaSofs.Contains(sofCodeInt) ? pvGroup.Period12.PaymentValue : 0.0m,
-                                       }).ToArray(),
+                                           GetPeriodValue(pvGroup.Period1, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period2, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period3, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period4, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period5, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period6, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period7, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period8, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period9, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period10, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period11, sofCodeInt),
+                                           GetPeriodValue(pvGroup.Period12, sofCodeInt),
+                                       }).ToArray() ?? Array.Empty<decimal?[]>(),
                                    StringComparer.OrdinalIgnoreCase),
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
+        }
+
+        private decimal? GetPeriodValue(EasPaymentValue easPaymentValue, int sofCode)
+        {
+            if (easPaymentValue.DevolvedAreaSofs == null)
+            {
+                return 0.0m;
+            }
+
+            return easPaymentValue.DevolvedAreaSofs.Contains(sofCode) ? easPaymentValue.PaymentValue : 0.0m;
         }
     }
 }
