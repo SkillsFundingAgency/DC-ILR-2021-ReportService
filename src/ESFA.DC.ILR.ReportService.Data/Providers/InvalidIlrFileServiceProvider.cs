@@ -28,12 +28,15 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
             var message = await ProvideXmlAsync<Message>(reportServiceContext.OriginalFilename, reportServiceContext.Container, cancellationToken) as Message;
             var validationErrors = await ProvideJsonAsync<List<ValidationError>>(reportServiceContext.ValidationErrorsKey, reportServiceContext.Container, cancellationToken) as List<ValidationError>;
 
-            var learnRefNumbers = validationErrors.Select(x => x.LearnerReferenceNumber);
+            if (message == null) { return message; }
 
-            message.Learner = message.Learner.Where(l => learnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
+            var learnRefNumbers = validationErrors?.Select(x => x.LearnerReferenceNumber) ?? Enumerable.Empty<string>();
+
+            message.Learner = message.Learner?.Where(l => learnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
             message.LearnerDestinationandProgression = message.LearnerDestinationandProgression?.Where(l => learnRefNumbers.Contains(l.LearnRefNumber)).ToArray();
 
             return message;
+
         }
 
         private async Task<object> ProvideXmlAsync<T>(string fileName, string container, CancellationToken cancellationToken)
