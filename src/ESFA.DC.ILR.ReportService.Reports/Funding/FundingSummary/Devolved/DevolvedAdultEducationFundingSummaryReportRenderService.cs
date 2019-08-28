@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
         private const string NotApplicable = "N/A";
         private const string DecimalFormat = "#,##0.00";
-        private const string DateFormat = "d";
+        private const string DateFormat = "dd/MM/yyyy";
 
         private const int StartColumn = 0;
         private const int ColumnCount = 17;

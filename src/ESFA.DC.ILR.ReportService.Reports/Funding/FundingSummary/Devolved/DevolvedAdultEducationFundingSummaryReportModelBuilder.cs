@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     public class DevolvedAdultEducationFundingSummaryReportModelBuilder : IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private const string reportGeneratedTimeStringFormat = "HH:mm:ss on MM/dd/yyyy";
+        private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
 
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
