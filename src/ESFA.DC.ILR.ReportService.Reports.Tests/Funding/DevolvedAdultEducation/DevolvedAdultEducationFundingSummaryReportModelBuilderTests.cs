@@ -57,19 +57,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedAdultEducation
                             {
                                 AdjustmentTypeName = "AdjustmentTypeName1",
                                 PaymentName = "PaymentName1",
-                                Period1 = new EasPaymentValue()
+                                Period1 = new List<EasPaymentValue>()
                             },
                             new EasSubmissionValue
                             {
                                 AdjustmentTypeName = "AdjustmentTypeName2",
                                 PaymentName = "PaymentName2",
-                                Period1 = new EasPaymentValue(1m, new List<int>{ 101 })
+                                Period1 = new List<EasPaymentValue>
+                                {
+                                    new EasPaymentValue(1m, 101)
+                                }
                             },
                             new EasSubmissionValue
                             {
                                 AdjustmentTypeName = "AdjustmentTypeName3",
                                 PaymentName = "PaymentName3",
-                                Period1 = new EasPaymentValue(1m, new List<int>{ 101, 105 })
+                               Period1 = new List<EasPaymentValue>
+                                {
+                                    new EasPaymentValue(1m, 101),
+                                    new EasPaymentValue(1m, 105),
+                                }
                             }
                         }
                     }

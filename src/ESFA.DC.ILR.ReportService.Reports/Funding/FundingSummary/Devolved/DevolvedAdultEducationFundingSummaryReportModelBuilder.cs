@@ -202,14 +202,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        private decimal? GetPeriodValue(EasPaymentValue easPaymentValue, int sofCode)
+        private decimal? GetPeriodValue(List<EasPaymentValue> easPaymentValues, int sofCode)
         {
-            if (easPaymentValue.DevolvedAreaSofs == null)
-            {
-                return 0.0m;
-            }
-
-            return easPaymentValue.DevolvedAreaSofs.Contains(sofCode) ? easPaymentValue.PaymentValue : 0.0m;
+            return easPaymentValues?.Where(sof => sof.DevolvedAreaSofs == sofCode).Select(pv => pv.PaymentValue).FirstOrDefault() ?? 0m;
         }
     }
 }
