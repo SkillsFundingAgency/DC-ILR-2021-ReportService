@@ -8,6 +8,8 @@ using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
+using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using FluentAssertions;
 using Xunit;
@@ -245,6 +247,152 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
             mapped[fundLine2][attribute1].Should().HaveCount(8000);
             mapped[fundLine2][attribute2].Should().HaveCount(8000);
         }
+
+        [Fact]
+        public void MapEAS()
+        {
+            var fundLine1 = "FundLine1";
+            var fundLine2 = "FundLine2";
+
+            var adjustment1 = "Adjustment1";
+            var adjustment2 = "Adjustment2";
+
+            var payment1 = "Payment1";
+            var payment2 = "Payment2";
+            var payment3 = "Payment3";
+
+            var referenceDataRoot = new ReferenceDataRoot()
+            {
+                EasFundingLines = new List<EasFundingLine>
+                {
+                    new EasFundingLine
+                    {
+                        FundLine =  fundLine1,
+                        EasSubmissionValues = new List<EasSubmissionValue>
+                        {
+                            new EasSubmissionValue
+                            {
+                                AdjustmentTypeName = adjustment1,
+                                PaymentName =  payment1,
+                                Period1 = null,
+                                Period2 = null,
+                                Period3 = null,
+                                Period4 = null,
+                                Period5 = null,
+                                Period6 = null,
+                                Period7 = null,
+                                Period8 = null,
+                                Period9 = null,
+                                Period10 = null,
+                                Period11 = null,
+                                Period12 = null
+                            },
+                            new EasSubmissionValue
+                            {
+                                AdjustmentTypeName = adjustment2,
+                                PaymentName = payment2,
+                                Period1 = new List<EasPaymentValue>(),
+                                Period2 = new List<EasPaymentValue>(),
+                                Period3 = new List<EasPaymentValue>(),
+                                Period4 = new List<EasPaymentValue>(),
+                                Period5 = new List<EasPaymentValue>(),
+                                Period6 = new List<EasPaymentValue>(),
+                                Period7 = new List<EasPaymentValue>(),
+                                Period8 = new List<EasPaymentValue>(),
+                                Period9 = new List<EasPaymentValue>(),
+                                Period10 = new List<EasPaymentValue>(),
+                                Period11 = new List<EasPaymentValue>(),
+                                Period12 = new List<EasPaymentValue>()
+                            }
+                        },                    
+                    },
+                    new EasFundingLine
+                    {
+                        FundLine = fundLine2,
+                        EasSubmissionValues = new List<EasSubmissionValue>
+                        {
+                            new EasSubmissionValue
+                            {
+                                AdjustmentTypeName = adjustment1,
+                                PaymentName =  payment1,
+                                Period1 = null,
+                                Period2 = null,
+                                Period3 = null,
+                                Period4 = null,
+                                Period5 = null,
+                                Period6 = null,
+                                Period7 = null,
+                                Period8 = null,
+                                Period9 = null,
+                                Period10 = null,
+                                Period11 = null,
+                                Period12 = null
+                            },
+                            new EasSubmissionValue
+                            {
+                                AdjustmentTypeName = adjustment2,
+                                PaymentName = payment2,
+                                Period1 = new List<EasPaymentValue>
+                                {
+                                    new EasPaymentValue(1m, null),
+                                    new EasPaymentValue(2m, null),
+                                },
+                                Period2 = new List<EasPaymentValue>
+                                {
+                                    new EasPaymentValue(1m, 105),
+                                    new EasPaymentValue(2m, 115),
+                                },
+                                Period3 = new List<EasPaymentValue>
+                                {
+                                    new EasPaymentValue(1m, 110),
+                                    new EasPaymentValue(2m, null),
+                                },
+                                Period4 = new List<EasPaymentValue>(),
+                                Period5 = new List<EasPaymentValue>(),
+                                Period6 = new List<EasPaymentValue>(),
+                                Period7 = new List<EasPaymentValue>(),
+                                Period8 = new List<EasPaymentValue>(),
+                                Period9 = new List<EasPaymentValue>(),
+                                Period10 = new List<EasPaymentValue>(),
+                                Period11 = new List<EasPaymentValue>(),
+                                Period12 = new List<EasPaymentValue>()
+                            },
+                            new EasSubmissionValue
+                            {
+                                AdjustmentTypeName = adjustment2,
+                                PaymentName = payment3,
+                                Period1 = null,
+                                Period2 = null,
+                                Period3 = null,
+                                Period4 = null,
+                                Period5 = null,
+                                Period6 = null,
+                                Period7 = null,
+                                Period8 = new List<EasPaymentValue>(),
+                                Period9 = new List<EasPaymentValue>(),
+                                Period10 = new List<EasPaymentValue>(),
+                                Period11 = new List<EasPaymentValue>(),
+                                Period12 = new List<EasPaymentValue>()
+                            }
+                        }
+                    }
+                }
+            };
+
+            var mapped = NewProvider().BuildEASDictionary(referenceDataRoot);
+
+            mapped.Should().HaveCount(2);
+
+            mapped[fundLine1].Should().HaveCount(2);
+            mapped[fundLine2].Should().HaveCount(2);
+
+            mapped[fundLine1][adjustment1].Should().HaveCount(1);
+            mapped[fundLine1][adjustment2].Should().HaveCount(1);
+
+            mapped[fundLine2][adjustment1].Should().HaveCount(1);
+            mapped[fundLine2][adjustment2].Should().HaveCount(2);
+        }
+
 
         private PeriodisedValuesLookupProvider NewProvider()
         {
