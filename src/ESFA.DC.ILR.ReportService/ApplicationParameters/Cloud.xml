@@ -27,7 +27,7 @@
     <!-- EAS -->
     <Parameter Name="EasConnectionString" Value="__Eas1819DbConnectionStringRO__" />
     <!-- Postcode -->
-    <Parameter Name="PostcodeConnectionString" Value="__PostcodeConnectionStringRO__" />
+    <Parameter Name="PostcodeConnectionString" Value="__PostcodesConnectionStringRO__" />
     <!-- Large Employer -->
     <Parameter Name="LargeEmployerConnectionString" Value="__EmployersDbConnectionStringRO__" />
     <!-- Collections Management -->
