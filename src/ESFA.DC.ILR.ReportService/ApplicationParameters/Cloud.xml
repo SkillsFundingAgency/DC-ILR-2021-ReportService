@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Application xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="fabric:/ESFA.DC.ILR1920.ReportService" xmlns="http://schemas.microsoft.com/2011/01/fabric">
   <Parameters>
-    <Parameter Name="ILRDataStoreConnectionString" Value="__ILR1819DataStoreConnectionStringRO__" />
-    <Parameter Name="ILRDataStoreValidConnectionString" Value="__ILR1819DataStoreConnectionStringRO__" />
+    <Parameter Name="ILRDataStoreConnectionString" Value="__ILR1920DataStoreConnectionStringRO__" />
+    <Parameter Name="ILRDataStoreValidConnectionString" Value="__ILR1920DataStoreConnectionStringRO__" />
     <Parameter Name="AuditQueueName" Value="__AuditQueueName__" />
     <Parameter Name="TopicName" Value="__TopicName__" />
     <Parameter Name="ServiceBusConnectionString" Value="__ServiceBusConnectionStringServiceFabric__" />
@@ -15,25 +15,25 @@
     <Parameter Name="ServiceReleaseVersion" Value="__ServiceReleaseVersion__" />
     <Parameter Name="ReportingSubscriptionName" Value="__ReportingSubscriptionName__" />
     <!-- LARS -->
-    <Parameter Name="LarsConnectionString" Value="__LARSConnectionString__" />
+    <Parameter Name="LarsConnectionString" Value="__LARSConnectionStringRO__" />
     <!-- DASPayments -->
     <Parameter Name="DASPaymentsConnectionString" Value="__DASPaymentsConnectionStringRO__" />
     <!-- FCS -->
     <Parameter Name="FCSConnectionString" Value="__FCSConnectionString__" />
     <!-- Org -->
-    <Parameter Name="OrgConnectionString" Value="__OrganisationsDbConnectionStringReadOnly__" />
+    <Parameter Name="OrgConnectionString" Value="__OrganisationsConnectionStringRO__" />
     <!-- DAS Commitments -->
     <Parameter Name="DasCommitmentsConnectionString" Value="__DasCommitmentConnectionStringRO__" />
     <!-- EAS -->
-    <Parameter Name="EasConnectionString" Value="__EasConnectionStringRO__" />
+    <Parameter Name="EasConnectionString" Value="__Eas1819DbConnectionStringRO__" />
     <!-- Postcode -->
     <Parameter Name="PostcodeConnectionString" Value="__PostcodeConnectionStringRO__" />
     <!-- Large Employer -->
-    <Parameter Name="LargeEmployerConnectionString" Value="__LargeEmployerConnectionStringRO__" />
+    <Parameter Name="LargeEmployerConnectionString" Value="__EmployersDbConnectionStringRO__" />
     <!-- Collections Management -->
     <Parameter Name="CollectionsManagementConnectionString" Value="__JobManagementDbConnectionStringRO__" />
     <!-- ILR Validation Errors -->
-    <Parameter Name="IlrValidationErrorsConnectionString" Value="__ValidationErrorsConnectionString__" />
+    <Parameter Name="IlrValidationErrorsConnectionString" Value="__ILR1920ReferenceDataConnectionStringRO__" />
     <Parameter Name="ProcessingServicePlacementConstraints" Value="__ProcessingServicePlacementConstraints__" />
   </Parameters>
 </Application>
