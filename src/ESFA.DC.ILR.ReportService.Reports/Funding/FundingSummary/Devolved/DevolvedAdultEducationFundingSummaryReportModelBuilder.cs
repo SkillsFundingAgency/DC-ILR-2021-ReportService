@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
@@ -19,6 +20,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
+        private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
+        private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
 
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
@@ -80,7 +83,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     reportServiceContext.Ukprn,
                     organisationName,
                     reportServiceContext.OriginalFilename,
-                    reportServiceContext.OriginalFilename,
+                    ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
                     filePreparationDate,
                     easLastUpdate,
                     orgVersion,
@@ -205,6 +208,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
         private decimal? GetPeriodValue(List<EasPaymentValue> easPaymentValues, int sofCode)
         {
             return easPaymentValues?.Where(sof => sof.DevolvedAreaSofs == sofCode).Select(pv => pv.PaymentValue).FirstOrDefault() ?? 0m;
+        }
+
+        private string ExtractDisplayDateTimeFromFileName(string ilrFileName)
+        {
+            return DateTime.ParseExact(ilrFileName.Substring(18, 15), ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture)
+                .ToString(lastSubmittedIlrFileDateStringFormat);
         }
     }
 }
