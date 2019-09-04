@@ -212,8 +212,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
         private string ExtractDisplayDateTimeFromFileName(string ilrFileName)
         {
-            return DateTime.ParseExact(ilrFileName.Substring(18, 15), ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture)
-                .ToString(lastSubmittedIlrFileDateStringFormat);
+            var parts = ilrFileName.Split('/');
+            var ilrFilenameDateTime = parts[parts.Length - 1].Substring(18, 15);
+
+            DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime);
+
+            return parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat);
         }
     }
 }
