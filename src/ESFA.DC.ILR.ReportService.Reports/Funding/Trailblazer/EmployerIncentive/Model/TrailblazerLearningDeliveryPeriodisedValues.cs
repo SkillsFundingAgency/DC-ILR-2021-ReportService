@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
+﻿using System.Collections.Generic;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive.Model
 {
@@ -11,6 +8,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
 
         public string AttributeName { get; set; }
 
-        public Dictionary<string, decimal?> ValuesDictionary { get; set; }
+        public decimal?[] Values { get; set; }
     }
 }

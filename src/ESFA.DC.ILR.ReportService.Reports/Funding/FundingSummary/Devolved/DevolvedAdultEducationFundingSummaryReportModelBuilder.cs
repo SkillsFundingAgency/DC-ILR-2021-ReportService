@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
@@ -19,6 +20,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
+        private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
+        private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
 
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
@@ -80,7 +83,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     reportServiceContext.Ukprn,
                     organisationName,
                     reportServiceContext.OriginalFilename,
-                    reportServiceContext.OriginalFilename,
+                    ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
                     filePreparationDate,
                     easLastUpdate,
                     orgVersion,
@@ -91,10 +94,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     reportGeneratedAt,
                     new List<IDevolvedAdultEducationFundingCategory>
                     {
-                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (non-procured)")
+                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (non-procured)", reportCurrentPeriod)
                             .WithFundLineGroup(BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues))
                             .WithFundLineGroup(BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues)),
-                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (procured)")
+                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (procured)", reportCurrentPeriod)
                             .WithFundLineGroup(BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues))
                             .WithFundLineGroup(BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues))
                     }
@@ -205,6 +208,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
         private decimal? GetPeriodValue(List<EasPaymentValue> easPaymentValues, int sofCode)
         {
             return easPaymentValues?.Where(sof => sof.DevolvedAreaSofs == sofCode).Select(pv => pv.PaymentValue).FirstOrDefault() ?? 0m;
+        }
+
+        private string ExtractDisplayDateTimeFromFileName(string ilrFileName)
+        {
+            var parts = ilrFileName.Split('/');
+            var ilrFilenameDateTime = parts[parts.Length - 1].Substring(18, 15);
+
+            DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime);
+
+            return parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat);
         }
     }
 }
