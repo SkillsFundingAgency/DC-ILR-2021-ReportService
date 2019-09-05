@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
+﻿using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
 using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.ReferenceDataVersions;
 using ESFA.DC.ILR.ReferenceDataService.Model.Organisations;
@@ -18,6 +10,9 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStude
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.Tests.Model;
 using Moq;
+using System;
+using System.Collections.Generic;
+using FluentAssertions;
 using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummary
@@ -54,51 +49,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
                 StdCodeNullable = 1
             };
 
-            var learner1 = new TestLearner()
-            {
-                LearnRefNumber = "LearnRefNumber",
-                LearningDeliveries = new List<ILearningDelivery>()
-                {
-                    learningDelivery
-                },
-                LearnerFAMs = new ILearnerFAM[]
-                {
-                    new TestLearnerFAM()
-                    {
-                        LearnFAMType = "EHC",
-                        LearnFAMCode = 1
-                    },
-                    new TestLearnerFAM()
-                    {
-                        LearnFAMType = "HNS",
-                        LearnFAMCode = 1
-                    }
-                }
-            };
-
-            var learner2 = new TestLearner()
-            {
-                LearnRefNumber = "LearnRefNumber2",
-                LearningDeliveries = new List<ILearningDelivery>()
-                {
-                    learningDelivery
-                },
-                LearnerFAMs = new ILearnerFAM[]
-                {
-                    new TestLearnerFAM()
-                    {
-                        LearnFAMType = "EHC",
-                        LearnFAMCode = 1
-                    }
-                }
-            };
-
             var message = new TestMessage()
             {
-                Learners = new List<ILearner>()
-                {
-                    learner1, learner2
-                },
+                Learners = BuildLearners(learningDelivery),
                 HeaderEntity = new TestHeader()
                 {
                     CollectionDetailsEntity = new MessageHeaderCollectionDetails()
@@ -122,39 +75,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
                 {
                     ReferenceDataVersions = new ReferenceDataVersion()
                     {
-                        OrganisationsVersion =new OrganisationsVersion("1.1.1.1"),
+                        OrganisationsVersion = new OrganisationsVersion("1.1.1.1"),
                         Employers = new EmployersVersion("2.2.2.2"),
                         LarsVersion = new LarsVersion("3.3.3.3"),
                         PostcodesVersion = new PostcodesVersion("4.4.4.4")
                     }
                 }
-                //LARSLearningDeliveries = new List<LARSLearningDelivery>()
-                //{
-                //    larsLearningDelivery
-                //},
-                //LARSStandards = new List<LARSStandard>()
-                //{
-                //    larsStandard
-                //}
             };
 
             var fm25Global = new FM25Global()
             {
-                Learners = new List<FM25Learner>()
-                {
-                    new FM25Learner()
-                    {
-                        LearnRefNumber = "LearnRefNumber",
-                        StartFund = true,
-                        FundLine = "14-16 Direct Funded Students"
-                    },
-                    new FM25Learner()
-                    {
-                        LearnRefNumber = "LearnRefNumber2",
-                        StartFund = true,
-                        FundLine = "14-16 Direct Funded Students"
-                    }
-                }
+                Learners = BuildFm25Learners()
             };
 
             dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
@@ -176,9 +107,271 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
 
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 
+            result.ApplicationVersion.Should().Be("11.22.3300.4321");
+            result.ComponentSetVersion.Should().Be("NA");
+            result.FilePreparationDate.Should().Be("06/11/2019");
+            result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
+            result.LargeEmployerData.Should().Be("2.2.2.2");
+            result.LarsData.Should().Be("3.3.3.3");
+            result.OrganisationData.Should().Be("1.1.1.1");
+            result.PostcodeData.Should().Be("4.4.4.4");
+            result.ProviderName.Should().Be("Provider XYZ");
+            result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
+            result.TotalDirectFunded1416_WithEHCP.Should().Be(2);
+            result.TotalDirectFunded1416_WithoutEHCP.Should().Be(0);
+            result.TotalDirectFunded1416_HNSWithoutEHCP.Should().Be(0);
+            result.TotalDirectFunded1416_HNSWithEHCP.Should().Be(1);
+            result.TotalDirectFunded1416_EHCPWithoutHNS.Should().Be(1);
+
+            result.Total1619IncludingHNS_WithEHCP.Should().Be(2);
+            result.Total1619IncludingHNS_WithoutEHCP.Should().Be(0);
+            result.Total1619IncludingHNS_HNSWithoutEHCP.Should().Be(0);
+            result.Total1619IncludingHNS_HNSWithEHCP.Should().Be(1);
+            result.Total1619IncludingHNS_EHCPWithoutHNS.Should().Be(1);
+
+            result.Total1924WithEHCP_WithEHCP.Should().Be(2);
+            result.Total1924WithEHCP_WithoutEHCP.Should().Be(0);
+            result.Total1924WithEHCP_HNSWithoutEHCP.Should().Be(0);
+            result.Total1924WithEHCP_HNSWithEHCP.Should().Be(1);
+            result.Total1924WithEHCP_EHCPWithoutHNS.Should().Be(1);
+
+            result.Total19PlusWithoutEHCP_WithEHCP.Should().Be(2);
+            result.Total19PlusWithoutEHCP_WithoutEHCP.Should().Be(0);
+            result.Total19PlusWithoutEHCP_HNSWithoutEHCP.Should().Be(0);
+            result.Total19PlusWithoutEHCP_HNSWithEHCP.Should().Be(1);
+            result.Total19PlusWithoutEHCP_EHCPWithoutHNS.Should().Be(1);
+
+            result.Ukprn.Should().Be(987654321);
+            result.Year.Should().Be("2019/20");
         }
 
-        private HighNeedsStudentSummaryReportModelBuilder NewBuilder(IDateTimeProvider dateTimeProvider= null)
+        private List<ILearner> BuildLearners(TestLearningDelivery learningDelivery)
+        {
+            var directFundedLearnRef1 = new TestLearner()
+            {
+                LearnRefNumber = "DirectFundedLearnRef1",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    },
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "HNS",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+
+            var directFundedLearnRef2 = new TestLearner()
+            {
+                LearnRefNumber = "DirectFundedLearnRef2",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+
+            var fundingLineBLearnRef1 = new TestLearner()
+            {
+                LearnRefNumber = "FundingLineBLearnRef1",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    },
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "HNS",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+
+            var fundingLineBLearnRef2 = new TestLearner()
+            {
+                LearnRefNumber = "FundingLineBLearnRef2",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+
+            var fundingLineCLearnRef1 = new TestLearner()
+            {
+                LearnRefNumber = "FundingLineCLearnRef1",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    },
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "HNS",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+
+            var fundingLineCLearnRef2 = new TestLearner()
+            {
+                LearnRefNumber = "FundingLineCLearnRef2",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+
+            var fundingLineDLearnRef1 = new TestLearner()
+            {
+                LearnRefNumber = "FundingLineDLearnRef1",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    },
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "HNS",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+
+            var fundingLineDLearnRef2 = new TestLearner()
+            {
+                LearnRefNumber = "FundingLineDLearnRef2",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    learningDelivery
+                },
+                LearnerFAMs = new ILearnerFAM[]
+                {
+                    new TestLearnerFAM()
+                    {
+                        LearnFAMType = "EHC",
+                        LearnFAMCode = 1
+                    }
+                }
+            };
+            return new List<ILearner>()
+            {
+                directFundedLearnRef1,
+                directFundedLearnRef2,
+                fundingLineBLearnRef1,
+                fundingLineBLearnRef2,
+                fundingLineCLearnRef1,
+                fundingLineCLearnRef2,
+                fundingLineDLearnRef1,
+                fundingLineDLearnRef2,
+
+            };
+        }
+
+        private static List<FM25Learner> BuildFm25Learners()
+        {
+            return new List<FM25Learner>()
+            {
+                new FM25Learner()
+                {
+                    LearnRefNumber = "DirectFundedLearnRef1",
+                    StartFund = true,
+                    FundLine = "14-16 Direct Funded Students"
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "DirectFundedLearnRef2",
+                    StartFund = true,
+                    FundLine = "14-16 Direct Funded Students"
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineBLearnRef1",
+                    StartFund = true,
+                    FundLine = "16-19 Students (including High Needs Students)"
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineBLearnRef2",
+                    StartFund = true,
+                    FundLine = "16-19 Students (including High Needs Students)"
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineCLearnRef1",
+                    StartFund = true,
+                    FundLine = "19-24 Students with an EHCP"
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineCLearnRef2",
+                    StartFund = true,
+                    FundLine = "19-24 Students with an EHCP"
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineDLearnRef1",
+                    StartFund = true,
+                    FundLine = "19+ Continuing Students (excluding EHCP)"
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineDLearnRef2",
+                    StartFund = true,
+                    FundLine = "19+ Continuing Students (excluding EHCP)"
+                }
+            };
+        }
+
+        private HighNeedsStudentSummaryReportModelBuilder NewBuilder(IDateTimeProvider dateTimeProvider = null)
         {
             return new HighNeedsStudentSummaryReportModelBuilder(dateTimeProvider);
         }

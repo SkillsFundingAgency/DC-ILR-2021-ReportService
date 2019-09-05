@@ -92,47 +92,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                             validLearnersForFundlineA.Contains(x.LearnRefNumber) && x.LearnerFAMs != null)
                         .ToList();
 
-                model.TotalDirectFunded1416_WithEHCP =
-                    validApplicableLearners1416FundLine.Count(x => x.LearnerFAMs.Any(y =>
-                        y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) && y.LearnFAMCode == 1));
+                model.TotalDirectFunded1416_WithEHCP = validApplicableLearners1416FundLine.Count(WithEHCP());
 
-                model.TotalDirectFunded1416_WithoutEHCP = validApplicableLearners1416FundLine.Count(x =>
-                    x.LearnerFAMs.Any(y =>!y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC)));
+                model.TotalDirectFunded1416_WithoutEHCP = validApplicableLearners1416FundLine.Count(WithoutEhcp());
 
-                model.TotalDirectFunded1416_HNSWithoutEHCP = validApplicableLearners1416FundLine.Count(x =>
-                    x.LearnerFAMs.Any(y =>
-                        !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                        (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) &&
-                         y.LearnFAMCode == 1)));
+                model.TotalDirectFunded1416_HNSWithoutEHCP = validApplicableLearners1416FundLine.Count(HNSWithoutEHCP());
 
-                model.TotalDirectFunded1416_HNSWithEHCP = validApplicableLearners1416FundLine.Count(x =>
-                    x.LearnerFAMs.Any(y =>
-                        (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) ||
-                         y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC)) && y.LearnFAMCode == 1));
+                model.TotalDirectFunded1416_HNSWithEHCP = validApplicableLearners1416FundLine.Count(HNSWithEHCP());
 
-                model.TotalDirectFunded1416_EHCPWithoutHNS = validApplicableLearners1416FundLine.Count(x =>
-                    x.LearnerFAMs.Any(y =>
-                        !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) &&
-                        (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) && y.LearnFAMCode == 1)));
-
-
-
-                var TotalDirectFunded1416_WithEHCP = validApplicableLearners1416FundLine.Where(x => x.LearnerFAMs.Any(y => string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.EHC, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                                             y.LearnFAMCode == 1))?.Count();
-
-                var TotalDirectFunded1416_WithoutEHCP = validApplicableLearners1416FundLine.Where(x => x.LearnerFAMs.Any(y => !string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.EHC, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                                           y.LearnFAMCode == 1))?.Count();
-                 
-                var TotalDirectFunded1416_HNSWithoutEHCP = validApplicableLearners1416FundLine.Where(x => x.LearnerFAMs.Any(y => !string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.EHC, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                                              (string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.HNS, StringComparison.OrdinalIgnoreCase) && y.LearnFAMCode == 1)))?.Count();
-                 
-                var TotalDirectFunded1416_HNSWithEHCP = validApplicableLearners1416FundLine.Where(x => x.LearnerFAMs.Any(y => (string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.HNS, StringComparison.OrdinalIgnoreCase) ||
-                                                                                                                            string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.EHC, StringComparison.OrdinalIgnoreCase)) && y.LearnFAMCode == 1))?.Count();
-                 
-                var TotalDirectFunded1416_EHCPWithoutHNS = validApplicableLearners1416FundLine.Where(x => x.LearnerFAMs.Any(y => !string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.HNS, StringComparison.OrdinalIgnoreCase) &&
-                                                                                                                                   (string.Equals(y.LearnFAMType, LearnerFAMTypeConstants.EHC, StringComparison.OrdinalIgnoreCase) && y.LearnFAMCode == 1)))?.Count();
-
-
+                model.TotalDirectFunded1416_EHCPWithoutHNS = validApplicableLearners1416FundLine.Count(EHCPWithoutHNS());
             }
         }
         
@@ -145,27 +113,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                     applicableLearners.Where(x => validLearnersForFundlineB.Contains(x.LearnRefNumber) && x.LearnerFAMs != null)
                         .ToList();
 
-                model.Total1619IncludingHNS_WithEHCP = validApplicableLearners1619FundLine.Count(x =>
-                    x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                                           y.LearnFAMCode == 1));
+                model.Total1619IncludingHNS_WithEHCP = validApplicableLearners1619FundLine.Count(WithEHCP());
 
-                model.Total1619IncludingHNS_WithoutEHCP = validApplicableLearners1619FundLine.Count(x => x.LearnerFAMs.Any(y =>
-                    !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                    y.LearnFAMCode == 1));
+                model.Total1619IncludingHNS_WithoutEHCP = validApplicableLearners1619FundLine.Count(WithoutEhcp());
 
-                model.Total1619IncludingHNS_HNSWithoutEHCP = validApplicableLearners1619FundLine.Count(x =>
-                    x.LearnerFAMs.Any(y => !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                                           (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) &&
-                                            y.LearnFAMCode == 1)));
+                model.Total1619IncludingHNS_HNSWithoutEHCP = validApplicableLearners1619FundLine.Count(HNSWithoutEHCP());
 
-                model.Total1619IncludingHNS_HNSWithEHCP = validApplicableLearners1619FundLine.Count(x => x.LearnerFAMs.Any(y =>
-                    (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) ||
-                     y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC)) && y.LearnFAMCode == 1));
+                model.Total1619IncludingHNS_HNSWithEHCP = validApplicableLearners1619FundLine.Count(HNSWithEHCP());
 
-                model.Total1619IncludingHNS_EHCPWithoutHNS = validApplicableLearners1619FundLine.Count(x =>
-                    x.LearnerFAMs.Any(y => !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) &&
-                                           (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                                            y.LearnFAMCode == 1)));
+                model.Total1619IncludingHNS_EHCPWithoutHNS = validApplicableLearners1619FundLine.Count(EHCPWithoutHNS());
             }
         }
 
@@ -178,25 +134,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                     applicableLearners.Where(x => validLearnersForFundlineC.Contains(x.LearnRefNumber) && x.LearnerFAMs != null)
                         .ToList();
 
-                model.Total1924WithEHCP_WithEHCP = validApplicableLearners1924Fundline.Count(x => x.LearnerFAMs.Any(y =>
-                    y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                    y.LearnFAMCode == 1));
+                model.Total1924WithEHCP_WithEHCP = validApplicableLearners1924Fundline.Count(WithEHCP());
 
-                model.Total1924WithEHCP_WithoutEHCP = validApplicableLearners1924Fundline.Count(x => x.LearnerFAMs.Any(y =>
-                    !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                    y.LearnFAMCode == 1));
+                model.Total1924WithEHCP_WithoutEHCP = validApplicableLearners1924Fundline.Count(WithoutEhcp());
 
-                model.Total1924WithEHCP_HNSWithoutEHCP = validApplicableLearners1924Fundline.Count(x => x.LearnerFAMs.Any(y =>
-                    !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                    (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) && y.LearnFAMCode == 1)));
+                model.Total1924WithEHCP_HNSWithoutEHCP = validApplicableLearners1924Fundline.Count(HNSWithoutEHCP());
 
-                model.Total1924WithEHCP_HNSWithEHCP = validApplicableLearners1924Fundline.Count(x => x.LearnerFAMs.Any(y =>
-                    (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) ||
-                     y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC)) && y.LearnFAMCode == 1));
+                model.Total1924WithEHCP_HNSWithEHCP = validApplicableLearners1924Fundline.Count(HNSWithEHCP());
 
-                model.Total1924WithEHCP_EHCPWithoutHNS = validApplicableLearners1924Fundline.Count(x => x.LearnerFAMs.Any(y =>
-                    !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) &&
-                    (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) && y.LearnFAMCode == 1)));
+                model.Total1924WithEHCP_EHCPWithoutHNS = validApplicableLearners1924Fundline.Count(EHCPWithoutHNS());
             }
         }
 
@@ -205,36 +151,53 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
         {
             if (validLearnersForFundlineD != null)
             {
-                var validApplicableLearners19PlusFundline =
-                    applicableLearners.Where(x => validLearnersForFundlineD.Contains(x.LearnRefNumber) && x.LearnerFAMs != null)
-                        .ToList();
+                var validApplicableLearners19PlusFundline = applicableLearners.Where(x => validLearnersForFundlineD.Contains(x.LearnRefNumber) && x.LearnerFAMs != null).ToList();
 
-                model.Total19PlusWithoutEHCP_WithEHCP = validApplicableLearners19PlusFundline.Count(x => x.LearnerFAMs.Any(y =>
-                    y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                    y.LearnFAMCode == 1));
+                model.Total19PlusWithoutEHCP_WithEHCP = validApplicableLearners19PlusFundline.Count(WithEHCP());
 
-                model.Total19PlusWithoutEHCP_WithoutEHCP = validApplicableLearners19PlusFundline.Count(x =>
-                    x.LearnerFAMs.Any(y => !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                                           y.LearnFAMCode == 1));
+                model.Total19PlusWithoutEHCP_WithoutEHCP = validApplicableLearners19PlusFundline.Count(WithoutEhcp());
 
-                model.Total19PlusWithoutEHCP_HNSWithoutEHCP = validApplicableLearners19PlusFundline.Count(x =>
-                    x.LearnerFAMs.Any(y => !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                                           (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) &&
-                                            y.LearnFAMCode == 1)));
+                model.Total19PlusWithoutEHCP_HNSWithoutEHCP = validApplicableLearners19PlusFundline.Count(HNSWithoutEHCP());
 
-                model.Total19PlusWithoutEHCP_HNSWithEHCP = validApplicableLearners19PlusFundline.Count(x =>
-                    x.LearnerFAMs.Any(y => (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) ||
-                                            y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC)) &&
-                                           y.LearnFAMCode == 1));
+                model.Total19PlusWithoutEHCP_HNSWithEHCP = validApplicableLearners19PlusFundline.Count(HNSWithEHCP());
 
-                model.Total19PlusWithoutEHCP_EHCPWithoutHNS = validApplicableLearners19PlusFundline.Count(x =>
-                    x.LearnerFAMs.Any(y => !y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) &&
-                                           (y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) &&
-                                            y.LearnFAMCode == 1)));
+                model.Total19PlusWithoutEHCP_EHCPWithoutHNS = validApplicableLearners19PlusFundline.Count(EHCPWithoutHNS());
             }
         }
 
-       
+        private static Func<ILearner, bool> WithEHCP()
+        {
+            return x => x.LearnerFAMs.Any(y =>
+                y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) && y.LearnFAMCode == 1);
+        }
 
+        private static Func<ILearner, bool> WithoutEhcp()
+        {
+            return x =>
+                !x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC));
+        }
+
+        private static Func<ILearner, bool> HNSWithoutEHCP()
+        {
+            return x =>
+                (x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) && y.LearnFAMCode == 1)) &&
+                !(x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC)));
+        }
+
+        private static Func<ILearner, bool> HNSWithEHCP()
+        {
+            return x =>
+                (x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS) && y.LearnFAMCode == 1)) &&
+                (x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) && y.LearnFAMCode == 1));
+        }
+
+
+        private static Func<ILearner, bool> EHCPWithoutHNS()
+        {
+            return x =>
+                !(x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.HNS))) &&
+                (x.LearnerFAMs.Any(y => y.LearnFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.EHC) && y.LearnFAMCode == 1));
+        }
+      
     }
 }
