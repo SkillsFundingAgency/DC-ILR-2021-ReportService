@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
 
             var fundingSummaryReport =
                 new DevolvedAdultEducationFundingSummaryReportModel(sofLookup, 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164917-01.xml", "ILR-10000000-1920-20191204-164916-01.xml",DateTime.Now, "easVersion", "OrgVersion","LarsVersion", "PostcodeVersion", "EmployersVersion", "ApplicationVersion", "ReportGeneratedAt",  Enumerable.Range(1, 2)
-                    .Select(l => (IDevolvedAdultEducationFundingCategory)new DevolvedAdultEducationFundingCategory("Funding Category Title")
+                    .Select(l => (IDevolvedAdultEducationFundingCategory)new DevolvedAdultEducationFundingCategory("Funding Category Title", 1)
                         {
                             FundLineGroups = Enumerable.Range(1, 5)
                                 .Select(k => (IDevolvedAdultEducationFundLineGroup)new DevolvedAdultEducationFundLineGroup("Funding Sub Category Title", currentPeriod, FundingDataSources.FM35, new string[] { }, null)
