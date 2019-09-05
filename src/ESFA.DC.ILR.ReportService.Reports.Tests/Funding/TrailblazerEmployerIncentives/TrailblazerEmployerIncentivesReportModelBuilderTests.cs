@@ -22,11 +22,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerInc
                 {
                     EmployerIds = new Dictionary<string, int?> {{"Attribute1", 123}},
                     AttributeName = "Attribute1",
-                    ValuesDictionary = new Dictionary<string, decimal?> {{"Period1", 10.1m}, {"Period2", 22.1m}}
+                    Values = new decimal?[] { 10.1m, 22.1m }
                 }
             };
 
-            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", "Period1", 111);
+            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", 0, 111);
 
             periodValue.Should().Be(0.0m);
         }
@@ -40,11 +40,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerInc
                 {
                     EmployerIds = new Dictionary<string, int?> {{"Attribute1", 111}},
                     AttributeName = "Attribute2",
-                    ValuesDictionary = new Dictionary<string, decimal?> {{"Period1", 10.1m}, {"Period2", 22.1m}}
+                    Values = new decimal?[] { 10.1m, 22.1m }
                 }
             };
 
-            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", "Period1", 111);
+            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", 0, 111);
 
             periodValue.Should().Be(0.0m);
         }
@@ -58,11 +58,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerInc
                 {
                     EmployerIds = new Dictionary<string, int?> {{"Attribute1", 111}},
                     AttributeName = "Attribute1",
-                    ValuesDictionary = new Dictionary<string, decimal?> {{"Period1", 10.1m}, {"Period2", 22.1m}}
+                    Values = new decimal?[] { 10.1m, 22.1m }
                 }
             };
 
-            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", "Period1", 111);
+            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", 0, 111);
 
             periodValue.Should().Be(10.1m);
         }
@@ -76,17 +76,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerInc
                 {
                     EmployerIds = new Dictionary<string, int?> {{"Attribute1", 111}},
                     AttributeName = "Attribute1",
-                    ValuesDictionary = new Dictionary<string, decimal?> {{"Period1", 10.1m}, {"Period2", 22.1m}}
+                    Values = new decimal?[] { 10.1m, 22.1m }
                 },
                 new TrailblazerLearningDeliveryPeriodisedValues
                 {
                     EmployerIds = new Dictionary<string, int?> {{"Attribute1", 111}},
                     AttributeName = "Attribute1",
-                    ValuesDictionary = new Dictionary<string, decimal?> {{"Period1", 20.1m}, {"Period2", 22.1m}}
+                    Values = new decimal?[] { 20.1m, 22.1m }
                 }
             };
 
-            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", "Period1", 111);
+            var periodValue = NewBuilder().CalculatePaymentValue(periodisedValues, "Attribute1", 0, 111);
 
             periodValue.Should().Be(30.2m);
         }
