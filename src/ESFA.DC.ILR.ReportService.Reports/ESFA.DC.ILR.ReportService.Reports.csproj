@@ -12,10 +12,12 @@
 
   <ItemGroup>
     <None Remove="Resources\Aspose.Cells.lic" />
+    <None Remove="Templates\HNSSummaryReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Aspose.Cells.lic" />
+    <EmbeddedResource Include="Templates\HNSSummaryReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>

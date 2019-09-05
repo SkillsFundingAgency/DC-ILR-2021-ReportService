@@ -8,6 +8,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface.Output
     {
         Workbook NewWorkbook();
 
+        Workbook GetWorkbookFromTemplate(string templateFileName);
+
         Worksheet GetWorksheetFromWorkbook(Workbook workbook, int index);
 
         Worksheet GetWorksheetFromWorkbook(Workbook workbook, string sheetName);
