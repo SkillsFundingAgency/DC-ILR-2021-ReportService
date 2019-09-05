@@ -9,130 +9,109 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
 {
     public class TrailblazerEmployerIncentiveReportModelBuilder : IModelBuilder<IEnumerable<TrailblazerEmployerIncentivesReportModel>>
     {
-        protected IEnumerable<FundingDataSources> FundingDataSources { private get; set; }
-
-        public TrailblazerEmployerIncentiveReportModelBuilder()
-        {
-            FundingDataSources = new[]
-            {
-                Funding.FundingDataSources.FM81
-            };
-        }
         public IEnumerable<TrailblazerEmployerIncentivesReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
-            var reportModelList = new List<TrailblazerEmployerIncentivesReportModel>();
             var fm81 = reportServiceDependentData.Get<FM81Global>();
 
-            var employerIds = BuildFm81EmployersHashSet(fm81);
-            var periodisedValues = BuildFm81PeriodisedValuesList(fm81);
+            var employerIds = BuildFm81EmployersCollection(fm81);
+            var periodisedValues = BuildFm81PeriodisedValuesList(fm81).ToList();
 
-            foreach (var empId in employerIds)
-            {
-                reportModelList.Add(new TrailblazerEmployerIncentivesReportModel
+            var reportModels = employerIds
+                .Select(
+                    empId =>
+                new TrailblazerEmployerIncentivesReportModel
                 {
                     EmployerIdentifier = empId,
-                    AugustSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period1, empId),
-                    August1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new [] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period1, empId),
-                    AugustAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period1, empId),
+                    AugustSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 0, empId),
+                    August1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 0, empId),
+                    AugustAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 0, empId),
 
-                    SeptemberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period2, empId),
-                    September1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period2, empId),
-                    SeptemberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period2, empId),
+                    SeptemberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 1, empId),
+                    September1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 1, empId),
+                    SeptemberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 1, empId),
 
-                    OctoberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period3, empId),
-                    October1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period3, empId),
-                    OctoberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period3, empId),
+                    OctoberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 2, empId),
+                    October1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 2, empId),
+                    OctoberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 2, empId),
 
-                    NovemberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period4, empId),
-                    November1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period4, empId),
-                    NovemberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period4, empId),
+                    NovemberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 3, empId),
+                    November1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 3, empId),
+                    NovemberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 3, empId),
 
-                    DecemberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period5, empId),
-                    December1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period5, empId),
-                    DecemberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period5, empId),
+                    DecemberSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 4, empId),
+                    December1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 4, empId),
+                    DecemberAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 4, empId),
 
-                    JanuarySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period6, empId),
-                    January1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period6, empId),
-                    JanuaryAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period6, empId),
+                    JanuarySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 5, empId),
+                    January1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 5, empId),
+                    JanuaryAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 5, empId),
 
-                    FebruarySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period7, empId),
-                    February1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period7, empId),
-                    FebruaryAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period7, empId),
+                    FebruarySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 6, empId),
+                    February1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 6, empId),
+                    FebruaryAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 6, empId),
 
-                    MarchSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period8, empId),
-                    March1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period8, empId),
-                    MarchAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period8, empId),
+                    MarchSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 7, empId),
+                    March1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 7, empId),
+                    MarchAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 7, empId),
 
-                    AprilSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period9, empId),
-                    April1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period9, empId),
-                    AprilAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period9, empId),
+                    AprilSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 8, empId),
+                    April1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 8, empId),
+                    AprilAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 8, empId),
 
-                    MaySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period10, empId),
-                    May1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period10, empId),
-                    MayAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period10, empId),
+                    MaySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 9, empId),
+                    May1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 9, empId),
+                    MayAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 9, empId),
 
-                    JuneSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period11, empId),
-                    June1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period11, empId),
-                    JuneAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period11, empId),
+                    JuneSmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 10, empId),
+                    June1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 10, empId),
+                    JuneAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 10, empId),
 
-                    JulySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, PeriodConstants.Period12, empId),
-                    July1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, PeriodConstants.Period12, empId),
-                    JulyAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, PeriodConstants.Period12, empId),
+                    JulySmallEmployerIncentive = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81SmallBusPayment, 11, empId),
+                    July1618ApprenticeIncentive = CalculatePaymentValue(periodisedValues, new[] { AttributeConstants.Fm81YoungAppFirstPayment, AttributeConstants.Fm81YoungAppSecondPayment }, 11, empId),
+                    JulyAchievementPayment = CalculatePaymentValue(periodisedValues, AttributeConstants.Fm81AchPayment, 11, empId),
                 });
-            }
 
-            return Order(reportModelList);
+            return Order(reportModels);
         }
 
-        public decimal CalculatePaymentValue(IEnumerable<TrailblazerLearningDeliveryPeriodisedValues> periodisedValues, string[] attributeConstants, string period, int empId)
+        public decimal CalculatePaymentValue(ICollection<TrailblazerLearningDeliveryPeriodisedValues> periodisedValues, IEnumerable<string> attributeConstants, int periodIndex, int empId)
         {
-            decimal paymentValue = 0.0m;
-
-            foreach (var constant in attributeConstants)
-            {
-                paymentValue += CalculatePaymentValue(periodisedValues, constant, period, empId);
-            }
-
-            return paymentValue;
+            return attributeConstants.Sum(a => CalculatePaymentValue(periodisedValues, a, periodIndex, empId));
         }
 
-        public decimal CalculatePaymentValue(IEnumerable<TrailblazerLearningDeliveryPeriodisedValues> periodisedValues, string attributeConstant, string period, int empId)
+        public decimal CalculatePaymentValue(ICollection<TrailblazerLearningDeliveryPeriodisedValues> periodisedValues, string attributeConstant, int periodIndex, int empId)
         {
             return periodisedValues
                 .Where(pv =>
-                    pv.EmployerIds[attributeConstant].GetValueOrDefault() == empId &&
-                    pv.AttributeName == attributeConstant).Sum(s => s.ValuesDictionary[period] ?? 0);
+                    pv.EmployerIds[attributeConstant] == empId 
+                    && pv.AttributeName == attributeConstant)
+                .Sum(s => s.Values[periodIndex] ?? 0);
         }
 
-        public HashSet<int> BuildFm81EmployersHashSet(FM81Global fm81Global)
+        public IEnumerable<int> BuildFm81EmployersCollection(FM81Global fm81Global)
         {
             var employerIdHashSet = new HashSet<int>();
 
-            foreach (var learner in fm81Global?.Learners ?? new List<FM81Learner>())
+            foreach (var learner in fm81Global?.Learners.Where(l => l != null) ?? Enumerable.Empty<FM81Learner>())
             {
-                if (!learner.LearningDeliveries.Any())
+                foreach (var learningDelivery in learner.LearningDeliveries?.Where(ld => ld?.LearningDeliveryValues != null) ?? Enumerable.Empty<LearningDelivery>())
                 {
-                    continue;
-                }
-
-                foreach (var learningDelivery in learner.LearningDeliveries)
-                {
-                    if (learningDelivery?.LearningDeliveryValues.EmpIdSmallBusDate.HasValue ?? false)
+                    if (learningDelivery.LearningDeliveryValues.EmpIdSmallBusDate.HasValue)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdSmallBusDate.Value);
                     }
 
-                    if (learningDelivery?.LearningDeliveryValues.EmpIdFirstYoungAppDate.HasValue ?? false)
+                    if (learningDelivery.LearningDeliveryValues.EmpIdFirstYoungAppDate.HasValue)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdFirstYoungAppDate.Value);
                     }
 
-                    if (learningDelivery?.LearningDeliveryValues.EmpIdSecondYoungAppDate.HasValue ?? false)
+                    if (learningDelivery.LearningDeliveryValues.EmpIdSecondYoungAppDate.HasValue)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdSecondYoungAppDate.Value);
                     }
 
-                    if (learningDelivery?.LearningDeliveryValues.EmpIdAchDate.HasValue ?? false)
+                    if (learningDelivery.LearningDeliveryValues.EmpIdAchDate.HasValue)
                     {
                         employerIdHashSet.Add(learningDelivery.LearningDeliveryValues.EmpIdAchDate.Value);
                     }
@@ -159,20 +138,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
                                     { AttributeConstants.Fm81AchPayment, ld.LearningDeliveryValues.EmpIdAchDate }
                                 },
                                 AttributeName = ldpv.AttributeName,
-                                ValuesDictionary = new Dictionary<string, decimal?>
+                                Values = new[]
                                 {
-                                    { PeriodConstants.Period1, ldpv.Period1 },
-                                    { PeriodConstants.Period2, ldpv.Period2 },
-                                    { PeriodConstants.Period3, ldpv.Period3 },
-                                    { PeriodConstants.Period4, ldpv.Period4 },
-                                    { PeriodConstants.Period5, ldpv.Period5 },
-                                    { PeriodConstants.Period6, ldpv.Period6 },
-                                    { PeriodConstants.Period7, ldpv.Period7 },
-                                    { PeriodConstants.Period8, ldpv.Period8 },
-                                    { PeriodConstants.Period9, ldpv.Period9 },
-                                    { PeriodConstants.Period10, ldpv.Period10 },
-                                    { PeriodConstants.Period11, ldpv.Period11 },
-                                    { PeriodConstants.Period12, ldpv.Period12 }
+                                    ldpv.Period1,
+                                    ldpv.Period2,
+                                    ldpv.Period3,
+                                    ldpv.Period4,
+                                    ldpv.Period5,
+                                    ldpv.Period6,
+                                    ldpv.Period7,
+                                    ldpv.Period8,
+                                    ldpv.Period9,
+                                    ldpv.Period10,
+                                    ldpv.Period11,
+                                    ldpv.Period12
                                 }
                             })
                     ));
