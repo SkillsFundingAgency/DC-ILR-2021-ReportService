@@ -7,9 +7,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
 {
     public class DevolvedAdultEducationFundingCategory : IDevolvedAdultEducationFundingCategory
     {
-        public DevolvedAdultEducationFundingCategory(string fundingCategoryTitle)
+        public DevolvedAdultEducationFundingCategory(string fundingCategoryTitle, int currentPeriod)
         {
             FundingCategoryTitle = fundingCategoryTitle;
+            CurrentPeriod = currentPeriod;
         }
 
         public string FundingCategoryTitle { get; }
