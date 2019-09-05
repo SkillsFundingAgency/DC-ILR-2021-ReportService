@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary
 {
@@ -88,24 +89,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             if (validLearnersForFundlineA != null)
             {
                 var validApplicableLearners1416FundLine =
-                    applicableLearners.Where(x =>
-                            validLearnersForFundlineA.Contains(x.LearnRefNumber) && x.LearnerFAMs != null)
-                        .ToList();
+                    applicableLearners.Where(x => validLearnersForFundlineA.Contains(x.LearnRefNumber) && x.LearnerFAMs != null).ToList();
 
-                model.TotalDirectFunded1416_WithEHCP = validApplicableLearners1416FundLine.Count(WithEHCP);
-
-                model.TotalDirectFunded1416_WithoutEHCP = validApplicableLearners1416FundLine.Count(WithoutEhcp);
-
-                model.TotalDirectFunded1416_HNSWithoutEHCP = validApplicableLearners1416FundLine.Count(HNSWithoutEHCP);
-
-                model.TotalDirectFunded1416_HNSWithEHCP = validApplicableLearners1416FundLine.Count(HNSWithEHCP);
-
-                model.TotalDirectFunded1416_EHCPWithoutHNS = validApplicableLearners1416FundLine.Count(EHCPWithoutHNS);
+                model.DirectFunded1416StudentsTotal = new FundingLineReportingBandStudentNumbers()
+                {
+                    WithEHCP = validApplicableLearners1416FundLine.Count(WithEHCP),
+                    WithoutEHCP = validApplicableLearners1416FundLine.Count(WithoutEhcp),
+                    HNSWithoutEHCP = validApplicableLearners1416FundLine.Count(HNSWithoutEHCP),
+                    EHCPWithHNS = validApplicableLearners1416FundLine.Count(HNSWithEHCP),
+                    EHCPWithoutHNS = validApplicableLearners1416FundLine.Count(EHCPWithoutHNS)
+                };
             }
         }
         
-        private void PopulateFundlineB(string[] validLearnersForFundlineB, List<ILearner> applicableLearners,
-            HighNeedsStudentSummaryReportModel model)
+        private void PopulateFundlineB(string[] validLearnersForFundlineB, List<ILearner> applicableLearners, HighNeedsStudentSummaryReportModel model)
         {
             if (validLearnersForFundlineB != null)
             {
@@ -113,15 +110,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                     applicableLearners.Where(x => validLearnersForFundlineB.Contains(x.LearnRefNumber) && x.LearnerFAMs != null)
                         .ToList();
 
-                model.Total1619IncludingHNS_WithEHCP = validApplicableLearners1619FundLine.Count(WithEHCP);
-
-                model.Total1619IncludingHNS_WithoutEHCP = validApplicableLearners1619FundLine.Count(WithoutEhcp);
-
-                model.Total1619IncludingHNS_HNSWithoutEHCP = validApplicableLearners1619FundLine.Count(HNSWithoutEHCP);
-
-                model.Total1619IncludingHNS_HNSWithEHCP = validApplicableLearners1619FundLine.Count(HNSWithEHCP);
-
-                model.Total1619IncludingHNS_EHCPWithoutHNS = validApplicableLearners1619FundLine.Count(EHCPWithoutHNS);
+                model.IncludingHNS1619StudentsTotal = new FundingLineReportingBandStudentNumbers()
+                {
+                    WithEHCP = validApplicableLearners1619FundLine.Count(WithEHCP),
+                    WithoutEHCP = validApplicableLearners1619FundLine.Count(WithoutEhcp),
+                    HNSWithoutEHCP = validApplicableLearners1619FundLine.Count(HNSWithoutEHCP),
+                    EHCPWithHNS = validApplicableLearners1619FundLine.Count(HNSWithEHCP),
+                    EHCPWithoutHNS = validApplicableLearners1619FundLine.Count(EHCPWithoutHNS)
+                };
             }
         }
 
@@ -133,35 +129,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                 var validApplicableLearners1924Fundline =
                     applicableLearners.Where(x => validLearnersForFundlineC.Contains(x.LearnRefNumber) && x.LearnerFAMs != null)
                         .ToList();
-
-                model.Total1924WithEHCP_WithEHCP = validApplicableLearners1924Fundline.Count(WithEHCP);
-
-                model.Total1924WithEHCP_WithoutEHCP = validApplicableLearners1924Fundline.Count(WithoutEhcp);
-
-                model.Total1924WithEHCP_HNSWithoutEHCP = validApplicableLearners1924Fundline.Count(HNSWithoutEHCP);
-
-                model.Total1924WithEHCP_HNSWithEHCP = validApplicableLearners1924Fundline.Count(HNSWithEHCP);
-
-                model.Total1924WithEHCP_EHCPWithoutHNS = validApplicableLearners1924Fundline.Count(EHCPWithoutHNS);
+                model.EHCP1924StudentsTotal = new FundingLineReportingBandStudentNumbers()
+                {
+                    WithEHCP = validApplicableLearners1924Fundline.Count(WithEHCP),
+                    WithoutEHCP = validApplicableLearners1924Fundline.Count(WithoutEhcp),
+                    HNSWithoutEHCP = validApplicableLearners1924Fundline.Count(HNSWithoutEHCP),
+                    EHCPWithHNS = validApplicableLearners1924Fundline.Count(HNSWithEHCP),
+                    EHCPWithoutHNS = validApplicableLearners1924Fundline.Count(EHCPWithoutHNS)
+                };
             }
         }
 
-        private void PopulatefundlineD(string[] validLearnersForFundlineD, List<ILearner> applicableLearners,
-            HighNeedsStudentSummaryReportModel model)
+        private void PopulatefundlineD(string[] validLearnersForFundlineD, List<ILearner> applicableLearners,HighNeedsStudentSummaryReportModel model)
         {
             if (validLearnersForFundlineD != null)
             {
                 var validApplicableLearners19PlusFundline = applicableLearners.Where(x => validLearnersForFundlineD.Contains(x.LearnRefNumber) && x.LearnerFAMs != null).ToList();
 
-                model.Total19PlusWithoutEHCP_WithEHCP = validApplicableLearners19PlusFundline.Count(WithEHCP);
-
-                model.Total19PlusWithoutEHCP_WithoutEHCP = validApplicableLearners19PlusFundline.Count(WithoutEhcp);
-
-                model.Total19PlusWithoutEHCP_HNSWithoutEHCP = validApplicableLearners19PlusFundline.Count(HNSWithoutEHCP);
-
-                model.Total19PlusWithoutEHCP_HNSWithEHCP = validApplicableLearners19PlusFundline.Count(HNSWithEHCP);
-
-                model.Total19PlusWithoutEHCP_EHCPWithoutHNS = validApplicableLearners19PlusFundline.Count(EHCPWithoutHNS);
+                model.Continuing19PlusExcludingEHCPStudentsTotal = new FundingLineReportingBandStudentNumbers()
+                {
+                    WithEHCP = validApplicableLearners19PlusFundline.Count(WithEHCP),
+                    WithoutEHCP = validApplicableLearners19PlusFundline.Count(WithoutEhcp),
+                    HNSWithoutEHCP = validApplicableLearners19PlusFundline.Count(HNSWithoutEHCP),
+                    EHCPWithHNS = validApplicableLearners19PlusFundline.Count(HNSWithEHCP),
+                    EHCPWithoutHNS = validApplicableLearners19PlusFundline.Count(EHCPWithoutHNS)
+                };
             }
         }
 

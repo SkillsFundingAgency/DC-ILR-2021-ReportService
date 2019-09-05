@@ -36,8 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
             var learningDeliveryFams = new List<ILearningDeliveryFAM>()
             {
                 learningDeliveryFam.Object,
-                albLearningDeliveryFam.Object,
-
+                albLearningDeliveryFam.Object
             };
 
             var learningDelivery = new TestLearningDelivery()
@@ -117,29 +116,30 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
             result.PostcodeData.Should().Be("4.4.4.4");
             result.ProviderName.Should().Be("Provider XYZ");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
-            result.TotalDirectFunded1416_WithEHCP.Should().Be(2);
-            result.TotalDirectFunded1416_WithoutEHCP.Should().Be(0);
-            result.TotalDirectFunded1416_HNSWithoutEHCP.Should().Be(0);
-            result.TotalDirectFunded1416_HNSWithEHCP.Should().Be(1);
-            result.TotalDirectFunded1416_EHCPWithoutHNS.Should().Be(1);
 
-            result.Total1619IncludingHNS_WithEHCP.Should().Be(2);
-            result.Total1619IncludingHNS_WithoutEHCP.Should().Be(0);
-            result.Total1619IncludingHNS_HNSWithoutEHCP.Should().Be(0);
-            result.Total1619IncludingHNS_HNSWithEHCP.Should().Be(1);
-            result.Total1619IncludingHNS_EHCPWithoutHNS.Should().Be(1);
+            result.DirectFunded1416StudentsTotal.WithEHCP.Should().Be(2);
+            result.DirectFunded1416StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.DirectFunded1416StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.DirectFunded1416StudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.DirectFunded1416StudentsTotal.EHCPWithoutHNS.Should().Be(1);
 
-            result.Total1924WithEHCP_WithEHCP.Should().Be(2);
-            result.Total1924WithEHCP_WithoutEHCP.Should().Be(0);
-            result.Total1924WithEHCP_HNSWithoutEHCP.Should().Be(0);
-            result.Total1924WithEHCP_HNSWithEHCP.Should().Be(1);
-            result.Total1924WithEHCP_EHCPWithoutHNS.Should().Be(1);
+            result.IncludingHNS1619StudentsTotal.WithEHCP.Should().Be(2);
+            result.IncludingHNS1619StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.IncludingHNS1619StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.IncludingHNS1619StudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.IncludingHNS1619StudentsTotal.EHCPWithoutHNS.Should().Be(1);
 
-            result.Total19PlusWithoutEHCP_WithEHCP.Should().Be(2);
-            result.Total19PlusWithoutEHCP_WithoutEHCP.Should().Be(0);
-            result.Total19PlusWithoutEHCP_HNSWithoutEHCP.Should().Be(0);
-            result.Total19PlusWithoutEHCP_HNSWithEHCP.Should().Be(1);
-            result.Total19PlusWithoutEHCP_EHCPWithoutHNS.Should().Be(1);
+            result.EHCP1924StudentsTotal.WithEHCP.Should().Be(2);
+            result.EHCP1924StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.EHCP1924StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.EHCP1924StudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.EHCP1924StudentsTotal.EHCPWithoutHNS.Should().Be(1);
+
+            result.Continuing19PlusExcludingEHCPStudentsTotal.WithEHCP.Should().Be(2);
+            result.Continuing19PlusExcludingEHCPStudentsTotal.WithoutEHCP.Should().Be(0);
+            result.Continuing19PlusExcludingEHCPStudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithoutHNS.Should().Be(1);
 
             result.Ukprn.Should().Be(987654321);
             result.Year.Should().Be("2019/20");
