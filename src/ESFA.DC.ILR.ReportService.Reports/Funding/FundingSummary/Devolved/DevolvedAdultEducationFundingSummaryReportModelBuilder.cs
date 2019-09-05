@@ -94,10 +94,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     reportGeneratedAt,
                     new List<IDevolvedAdultEducationFundingCategory>
                     {
-                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (non-procured)")
+                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (non-procured)", reportCurrentPeriod)
                             .WithFundLineGroup(BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues))
                             .WithFundLineGroup(BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLANonProcured }, periodisedValues)),
-                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (procured)")
+                        new DevolvedAdultEducationFundingCategory(@"Adult Education Budget - Eligible for MCA/GLA funding (procured)", reportCurrentPeriod)
                             .WithFundLineGroup(BuildIlrFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues))
                             .WithFundLineGroup(BuildEasFm35FundLineGroup(reportCurrentPeriod, new [] { FundLineConstants.AdultEducationEligibleMCAGLAProcured }, periodisedValues))
                     }
