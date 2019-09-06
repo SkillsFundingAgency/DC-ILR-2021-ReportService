@@ -15,6 +15,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentDetail;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfFundingByStudent;
 using ESFA.DC.ILR.ReportService.Reports.Model;
@@ -127,6 +128,9 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<HighNeedsStudentDetailReport>().As<IReport>();
             containerBuilder.RegisterType<HighNeedsStudentDetailReportModelBuilder>().As<IModelBuilder<IEnumerable<HighNeedsStudentDetailReportModel>>>();
+
+            containerBuilder.RegisterType<HighNeedsStudentSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<HighNeedsStudentSummaryReportModelBuilder>().As<IModelBuilder<HighNeedsStudentSummaryReportModel>>();
         }
 
         private void RegisterSummaryOfFundingByStudentReport(ContainerBuilder containerBuilder)

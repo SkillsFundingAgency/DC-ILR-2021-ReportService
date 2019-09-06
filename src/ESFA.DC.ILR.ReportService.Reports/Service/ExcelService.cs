@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -36,6 +37,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
             }
         }
 
+        public Workbook GetWorkbookFromTemplate(string templateFileName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            string resourceName = assembly.GetManifestResourceNames().Single(str => str.EndsWith(templateFileName));
+
+            using (Stream manifestResourceStream = assembly.GetManifestResourceStream(resourceName))
+            {
+                return new Workbook(manifestResourceStream);
+            }
+        }
         public void ApplyLicense()
         {
             var workbook = new Workbook();

@@ -14,6 +14,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string N = "N";
 
         // Dates
+        public const string Year = "2019/20";
+
         public static readonly DateTime BeginningOfYear = new DateTime(2019, 8, 1);
         public static readonly DateTime EndOfYear = new DateTime(2020, 7, 31, 23, 59, 59);
     }

@@ -161,6 +161,7 @@
     <Compile Include="Funding\FundingSummary\Model\FundLineTests.cs" />
     <Compile Include="Funding\HighNeedsStudentDetail\HighNeedsStudentDetailReportClassMapTests.cs" />
     <Compile Include="Funding\HighNeedsStudentDetail\HighNeedsStudentDetailReportModelBuilderTests.cs" />
+    <Compile Include="Funding\HighNeedsStudentSummary\HighNeedsStudentSummaryReportModelBuilderTests.cs" />
     <Compile Include="Funding\SummaryOfFundingByStudent\SummaryOfFundingByStudentReportClassMapTests.cs" />
     <Compile Include="Funding\SummaryOfFundingByStudent\SummaryOfFundingByStudentReportModelBuilderTests.cs" />
     <Compile Include="Funding\MathsAndEnglish\MathsAndEnglishReportClassMapTests.cs" />

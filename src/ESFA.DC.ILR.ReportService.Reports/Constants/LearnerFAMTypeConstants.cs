@@ -9,5 +9,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string EHC = "EHC";
 
         public const string HNS = "HNS";
+
+        public const string SOF = "SOF";
     }
 }
