@@ -45,11 +45,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             model.Year = "2019/20";
             model.FundingFactor = new FundingFactorModel()
             {
-                AreaCostFact1618Hist = "0.123",
+                AreaCostFact1618Hist = "0.12345",
                 ProgWeightHist = "1.61",
                 PrvDisadvPropnHist = "0.222",
                 PrvHistLrgProgPropn = "0.354",
-                PrvRetentFactHist = "1.0.15"
+                PrvRetentFactHist = "1.0152"
             };
 
             model.DirectFundingStudents = new FundingLineReportingBandModel()
@@ -127,17 +127,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             model.CofRemovalData = "CLEVersion 3.0.0: 17 Sep 2019 08:13:35:643";
             model.CofRemoval = (decimal) -10.22;
 
-            var designer = new WorkbookDesigner
-            {
-                Workbook = _excelService.GetWorkbookFromTemplate("FundingClaim1619ReportTemplate.xlsx")
-            };
-            designer.SetDataSource("FundingClaim", new List<FundingClaimReportModel> { model });
-            designer.Process();
-            await _excelService.SaveWorkbookAsync(designer.Workbook, fileName, reportServiceContext.Container, cancellationToken);
+            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "FundingClaim1619ReportTemplate.xlsx", "FundingClaim");
+            await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] { fileName };
         }
 
-        public virtual IEnumerable<Type> DependsOn
+       public virtual IEnumerable<Type> DependsOn
             => new[]
             {
                 DependentDataCatalog.Fm25,

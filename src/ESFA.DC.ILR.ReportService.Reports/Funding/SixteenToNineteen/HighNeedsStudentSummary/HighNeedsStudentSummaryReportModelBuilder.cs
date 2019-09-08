@@ -59,7 +59,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             var validLearnersForFundlineA = applicablefm25Learners?
                 .Where(x => x.FundLine == FundLineConstants.DirectFundedStudents1416).Select(x => x.LearnRefNumber)?.ToArray();
             var validLearnersForFundlineB = applicablefm25Learners?
-                .Where(x => x.FundLine == FundLineConstants.StudentsIncludingHighNeeds1619).Select(x => x.LearnRefNumber)?.ToArray();
+                .Where(x => x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
+                            x.FundLine == FundLineConstants.HighNeedsStudents1619).Select(x => x.LearnRefNumber)?.ToArray();
             var validLearnersForFundlineC = applicablefm25Learners?
                 .Where(x => x.FundLine == FundLineConstants.StudentsWithEHCP1924).Select(x => x.LearnRefNumber)?.ToArray();
             var validLearnersForFundlineD = applicablefm25Learners?

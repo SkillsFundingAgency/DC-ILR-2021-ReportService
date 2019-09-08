@@ -77,7 +77,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
                 var validLearnersForFundlineA = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.DirectFundedStudents1416).ToList();
                 model.DirectFundingStudents = BuildFundlineReprtingBandModel(validLearnersForFundlineA);
 
-                var validLearnersForFundlineB = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.StudentsIncludingHighNeeds1619).ToList();
+                var validLearnersForFundlineB = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
+                                                                                   x.FundLine == FundLineConstants.HighNeedsStudents1619).ToList();
                 model.StudentsIncludingHNS = BuildFundlineReprtingBandModel(validLearnersForFundlineB);
 
                 var validLearnersForFundlineC = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.StudentsWithEHCP1924).ToList();

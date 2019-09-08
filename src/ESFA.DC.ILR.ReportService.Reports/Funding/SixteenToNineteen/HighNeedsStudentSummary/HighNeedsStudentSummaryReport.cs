@@ -36,13 +36,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
         {
             var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
-            var designer = new WorkbookDesigner
-            {
-                Workbook = _excelService.GetWorkbookFromTemplate("HNSSummaryReportTemplate.xlsx")
-            };
-            designer.SetDataSource("HNSSummary", new List<HighNeedsStudentSummaryReportModel>{ model });
-            designer.Process();
-            await _excelService.SaveWorkbookAsync(designer.Workbook, fileName, reportServiceContext.Container, cancellationToken);
+            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "HNSSummaryReportTemplate.xlsx", "HNSSummary");
+            await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] { fileName };
         }
 

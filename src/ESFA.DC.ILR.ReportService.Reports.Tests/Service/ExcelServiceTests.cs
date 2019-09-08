@@ -1,4 +1,6 @@
-﻿using Aspose.Cells;
+﻿using System;
+using Aspose.Cells;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using FluentAssertions;
 using Xunit;
@@ -19,6 +21,37 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
             workbook.IsLicensed.Should().BeTrue();
         }
 
+        [Theory]
+        [InlineData("FundingClaim1619ReportTemplate.xlsx")]
+        [InlineData("HNSSummaryReportTemplate.xlsx")]
+        public void GetTemplateFromWorkbook_Returns_Workbook_For_ValidTemplate(string template)
+        {
+            var workbook = NewService().GetWorkbookFromTemplate(template);
+            workbook.Should().NotBeNull();
+            workbook.Worksheets.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void GetTemplateFromWorkbook_ThrowsException_For_InvalidTemplate()
+        {
+            var ex = Assert.Throws<InvalidOperationException>(() => NewService().GetWorkbookFromTemplate("invalid.xlsx"));
+            Assert.Equal("Sequence contains no matching element", ex.Message);
+        }
+
+        [Fact]
+        public void BindExcelTemplateToWorkbook_Returns_Workbook_For_ValidTemplate()
+        {
+            var workbook = NewService().BindExcelTemplateToWorkbook(new FundingClaimReportModel(), "HNSSummary.xlsx", "HNSSummary");
+            workbook.Should().NotBeNull();
+            workbook.Worksheets.Count.Should().Be(1);
+        }
+
+        [Fact]
+        public void BindExcelTemplateToWorkbook_ThrowsException_For_InvalidTemplate()
+        {
+            var ex = Assert.Throws<InvalidOperationException>(() => NewService().BindExcelTemplateToWorkbook(new FundingClaimReportModel(), "invalid.xlsx", "asdf"));
+            Assert.Equal("Sequence contains no matching element", ex.Message);
+        }
         private ExcelService NewService()
         {
             return new ExcelService(null);

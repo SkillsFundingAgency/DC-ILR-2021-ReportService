@@ -336,13 +336,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
                 {
                     LearnRefNumber = "FundingLineBLearnRef1",
                     StartFund = true,
-                    FundLine = "16-19 Students (including High Needs Students)"
+                    FundLine = "16-19 High Needs Students"
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "FundingLineBLearnRef2",
                     StartFund = true,
-                    FundLine = "16-19 Students (including High Needs Students)"
+                    FundLine = "16-19 Students (excluding High Needs Students)"
                 },
                 new FM25Learner()
                 {
