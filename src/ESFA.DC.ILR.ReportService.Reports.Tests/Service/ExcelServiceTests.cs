@@ -46,12 +46,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
             workbook.Worksheets.Count.Should().Be(1);
         }
 
-        [Fact]
-        public void BindExcelTemplateToWorkbook_ThrowsException_For_InvalidTemplate()
-        {
-            var ex = Assert.Throws<InvalidOperationException>(() => NewService().BindExcelTemplateToWorkbook(new FundingClaimReportModel(), "invalid.xlsx", "asdf"));
-            Assert.Equal("Sequence contains no matching element", ex.Message);
-        }
         private ExcelService NewService()
         {
             return new ExcelService(null);

@@ -10,22 +10,14 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim
 {
-    public class FundingClaimReportModelBuilder : IModelBuilder<FundingClaimReportModel>
+    public class FundingClaimReportModelBuilder : AbstractSixteenToNineteenReportModelBuilder , IModelBuilder<FundingClaimReportModel>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
-
-        private readonly string[] _applicableFundingLineTypes = new string[]
-        {
-            "14-16 Direct Funded Students",
-            "16-19 Students (excluding High Needs Students)",
-            "16-19 High Needs Students",
-            "19-24 Students with an EHCP",
-            "19+ Continuing Students (excluding EHCP)"
-        };
 
         public FundingClaimReportModelBuilder(IDateTimeProvider dateTimeProvider)
         {
@@ -103,20 +95,33 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             return model;
         }
 
-        private List<FM25Learner> FilterFm25Learners(FM25Global fm25Data, string[] learnersArray)
+        public List<FM25Learner> FilterFm25Learners(FM25Global fm25Data, string[] learnersArray)
         {
-            return fm25Data.Learners?.Where(x => x.StartFund.GetValueOrDefault()
-                                                 && _applicableFundingLineTypes.Contains(x.FundLine)
+            return fm25Data.Learners?.Where(x => FilterStartFund(x.StartFund)
+                                                 && FilterFundLine(x.FundLine)
                                                  && learnersArray.Contains(x.LearnRefNumber))?.ToList();
         }
 
-        private IEnumerable<ILearner> FilterLearners(IEnumerable<ILearner> learners)
+        public IEnumerable<ILearner> FilterLearners(IEnumerable<ILearner> learners)
         {
             return learners.Where(x => x.LearningDeliveries.Any(ld =>
                 ld.FundModel == 25 &&
                 ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.SOF)) &&
                 ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619)))).ToList();
         }
+
+
+        public bool Band5(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("540+ hours (Band 5)");
+
+        public bool Band4a(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("450+ hours (Band 4a)");
+
+        public bool Band4b(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("450 to 539 hours (Band 4b)");
+
+        public bool Band3(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("360 to 449 hours (Band 3)");
+
+        public bool Band2(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("280 to 359 hours (Band 2)");
+
+        public bool Band1(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("Up to 279 hours (Band 1)");
 
         private FundingLineReportingBandModel BuildFundlineReprtingBandModel(List<FM25Learner> fm25Learners)
         {
@@ -126,7 +131,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
                 Band5TotalFunding = fm25Learners.Where(Band5).Sum(x => x.OnProgPayment.GetValueOrDefault()),
                 Band4aStudentNumbers = fm25Learners.Count(Band4a),
                 Band4aTotalFunding = fm25Learners.Where(Band4a).Sum(x => x.OnProgPayment.GetValueOrDefault()),
-                Band4bStudentNumbers = fm25Learners.Count(Band4a),
+                Band4bStudentNumbers = fm25Learners.Count(Band4b),
                 Band4bTotalFunding = fm25Learners.Where(Band4b).Sum(x => x.OnProgPayment.GetValueOrDefault()),
                 Band3StudentNumbers = fm25Learners.Count(Band3),
                 Band3TotalFunding = fm25Learners.Where(Band3).Sum(x => x.OnProgPayment.GetValueOrDefault()),
@@ -138,34 +143,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             return model;
         }
 
-        private bool Band5(FM25Learner fm25Learner)
-        {
-            return fm25Learner.RateBand.CaseInsensitiveEquals("540+ hours (Band 5)");
-        }
-
-        private bool Band4a(FM25Learner fm25Learner)
-        {
-            return fm25Learner.RateBand.CaseInsensitiveEquals("450+ hours (Band 4a)");
-        }
-
-        private bool Band4b(FM25Learner fm25Learner)
-        {
-            return fm25Learner.RateBand.CaseInsensitiveEquals("450 to 539 hours (Band 4b)");
-        }
-
-        private bool Band3(FM25Learner fm25Learner)
-        {
-            return fm25Learner.RateBand.CaseInsensitiveEquals("360 to 449 hours (Band 3)");
-        }
-
-        private bool Band2(FM25Learner fm25Learner)
-        {
-            return fm25Learner.RateBand.CaseInsensitiveEquals("280 to 359 hours (Band 2)");
-        }
-
-        private bool Band1(FM25Learner fm25Learner)
-        {
-            return fm25Learner.RateBand.CaseInsensitiveEquals("Up to 279 hours (Band 1)");
-        }
     }
 }

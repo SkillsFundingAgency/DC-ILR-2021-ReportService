@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
     public class FundingClaim1619ReportModelBuilderTests
     {
         [Fact]
-        public void Build()
+        public void BuildTest()
         {
             var dependentDataMock = new Mock<IReportServiceDependentData>();
 
@@ -135,61 +135,149 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.FundingFactor.PrvDisadvPropnHist.Should().Be("0.34500");
             result.FundingFactor.PrvHistLrgProgPropn.Should().Be("0.21300");
 
-            result.DirectFundingStudents.Band1StudentNumbers.Should().Be(1);
-            result.DirectFundingStudents.Band1TotalFunding.Should().Be(1);
-            result.DirectFundingStudents.Band2StudentNumbers.Should().Be(1);
-            result.DirectFundingStudents.Band2TotalFunding.Should().Be(1);
-            result.DirectFundingStudents.Band3StudentNumbers.Should().Be(1);
-            result.DirectFundingStudents.Band3TotalFunding.Should().Be(1);
+            result.DirectFundingStudents.Band1StudentNumbers.Should().Be(0);
+            result.DirectFundingStudents.Band2StudentNumbers.Should().Be(0);
+            result.DirectFundingStudents.Band3StudentNumbers.Should().Be(0);
             result.DirectFundingStudents.Band4aStudentNumbers.Should().Be(1);
-            result.DirectFundingStudents.Band4aTotalFunding.Should().Be(1);
-            result.DirectFundingStudents.Band4bStudentNumbers.Should().Be(1);
-            result.DirectFundingStudents.Band4bTotalFunding.Should().Be(1);
+            result.DirectFundingStudents.Band4bStudentNumbers.Should().Be(0);
             result.DirectFundingStudents.Band5StudentNumbers.Should().Be(1);
-            result.DirectFundingStudents.Band5TotalFunding.Should().Be(1);
 
 
-            result.StudentsIncludingHNS.Band1StudentNumbers.Should().Be(1);
-            result.StudentsIncludingHNS.Band1TotalFunding.Should().Be(1);
-            result.StudentsIncludingHNS.Band2StudentNumbers.Should().Be(1);
-            result.StudentsIncludingHNS.Band2TotalFunding.Should().Be(1);
+            result.StudentsIncludingHNS.Band1StudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band1TotalFunding.Should().Be(0);
+            result.StudentsIncludingHNS.Band2StudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band2TotalFunding.Should().Be(0);
             result.StudentsIncludingHNS.Band3StudentNumbers.Should().Be(1);
-            result.StudentsIncludingHNS.Band3TotalFunding.Should().Be(1);
-            result.StudentsIncludingHNS.Band4aStudentNumbers.Should().Be(1);
-            result.StudentsIncludingHNS.Band4aTotalFunding.Should().Be(1);
+            result.StudentsIncludingHNS.Band3TotalFunding.Should().Be((decimal)25815.43);
+            result.StudentsIncludingHNS.Band4aStudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band4aTotalFunding.Should().Be(0);
             result.StudentsIncludingHNS.Band4bStudentNumbers.Should().Be(1);
-            result.StudentsIncludingHNS.Band4bTotalFunding.Should().Be(1);
-            result.StudentsIncludingHNS.Band5StudentNumbers.Should().Be(1);
-            result.StudentsIncludingHNS.Band5TotalFunding.Should().Be(1);
+            result.StudentsIncludingHNS.Band4bTotalFunding.Should().Be((decimal)2589915.43);
+            result.StudentsIncludingHNS.Band5StudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band5TotalFunding.Should().Be(0);
 
             result.StudentsWithEHCPlan.Band1StudentNumbers.Should().Be(1);
-            result.StudentsWithEHCPlan.Band1TotalFunding.Should().Be(1);
+            result.StudentsWithEHCPlan.Band1TotalFunding.Should().Be((decimal)125.67);
             result.StudentsWithEHCPlan.Band2StudentNumbers.Should().Be(1);
-            result.StudentsWithEHCPlan.Band2TotalFunding.Should().Be(1);
-            result.StudentsWithEHCPlan.Band3StudentNumbers.Should().Be(1);
-            result.StudentsWithEHCPlan.Band3TotalFunding.Should().Be(1);
-            result.StudentsWithEHCPlan.Band4aStudentNumbers.Should().Be(1);
-            result.StudentsWithEHCPlan.Band4aTotalFunding.Should().Be(1);
-            result.StudentsWithEHCPlan.Band4bStudentNumbers.Should().Be(1);
-            result.StudentsWithEHCPlan.Band4bTotalFunding.Should().Be(1);
-            result.StudentsWithEHCPlan.Band5StudentNumbers.Should().Be(1);
-            result.StudentsWithEHCPlan.Band5TotalFunding.Should().Be(1);
+            result.StudentsWithEHCPlan.Band2TotalFunding.Should().Be((decimal)555.12);
+            result.StudentsWithEHCPlan.Band3StudentNumbers.Should().Be(0);
+            result.StudentsWithEHCPlan.Band3TotalFunding.Should().Be(0);
+            result.StudentsWithEHCPlan.Band4aStudentNumbers.Should().Be(0);
+            result.StudentsWithEHCPlan.Band4aTotalFunding.Should().Be(0);
+            result.StudentsWithEHCPlan.Band4bStudentNumbers.Should().Be(0);
+            result.StudentsWithEHCPlan.Band4bTotalFunding.Should().Be(0);
+            result.StudentsWithEHCPlan.Band5StudentNumbers.Should().Be(0);
+            result.StudentsWithEHCPlan.Band5TotalFunding.Should().Be(0);
 
-            result.ContinuingStudentsExcludingEHCPlan.Band1StudentNumbers.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band1TotalFunding.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band2StudentNumbers.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band2TotalFunding.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band3StudentNumbers.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band3TotalFunding.Should().Be(1);
+            result.ContinuingStudentsExcludingEHCPlan.Band1StudentNumbers.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band1TotalFunding.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band2StudentNumbers.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band2TotalFunding.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band3StudentNumbers.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band3TotalFunding.Should().Be(0);
             result.ContinuingStudentsExcludingEHCPlan.Band4aStudentNumbers.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band4aTotalFunding.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band4bStudentNumbers.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band4bTotalFunding.Should().Be(1);
+            result.ContinuingStudentsExcludingEHCPlan.Band4aTotalFunding.Should().Be((decimal)855.55);
+            result.ContinuingStudentsExcludingEHCPlan.Band4bStudentNumbers.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band4bTotalFunding.Should().Be(0);
             result.ContinuingStudentsExcludingEHCPlan.Band5StudentNumbers.Should().Be(1);
-            result.ContinuingStudentsExcludingEHCPlan.Band5TotalFunding.Should().Be(1);
+            result.ContinuingStudentsExcludingEHCPlan.Band5TotalFunding.Should().Be((decimal)56425.99);
+        }
 
+        [Theory]
+        [InlineData("540+ hours (Band 5)",true)]
+        [InlineData("540+ hours (band 5)", true)]
+        [InlineData("444+ hours (Band 5)", false)]
+        public void Band5Tests(string rateBand, bool result)
+        {
+            var band = NewBuilder(null).Band5(new FM25Learner() {RateBand = rateBand});
+            band.Should().Be(result);
+        }
 
-           
+        [Theory]
+        [InlineData("450+ hours (Band 4a)", true)]
+        [InlineData("44444+ hours (Band 4)", false)]
+        public void Band4aTests(string rateBand, bool result)
+        {
+            var band = NewBuilder(null).Band4a(new FM25Learner() { RateBand = rateBand });
+            band.Should().Be(result);
+        }
+
+        [Theory]
+        [InlineData("450 to 539 hours (Band 4b)", true)]
+        [InlineData("44444+ hours (Band 4b )", false)]
+        public void Band4bTests(string rateBand, bool result)
+        {
+            var band = NewBuilder(null).Band4b(new FM25Learner() { RateBand = rateBand });
+            band.Should().Be(result);
+        }
+
+        [Theory]
+        [InlineData("360 to 449 hours (Band 3)", true)]
+        [InlineData("44444+ hours (Band 3 )", false)]
+        public void Band3Tests(string rateBand, bool result)
+        {
+            var band = NewBuilder(null).Band3(new FM25Learner() { RateBand = rateBand });
+            band.Should().Be(result);
+        }
+
+        [Theory]
+        [InlineData("280 to 359 hours (Band 2)", true)]
+        [InlineData("260 to 359", false)]
+        public void Band2Tests(string rateBand, bool result)
+        {
+            var band = NewBuilder(null).Band2(new FM25Learner() { RateBand = rateBand });
+            band.Should().Be(result);
+        }
+
+        [Theory]
+        [InlineData("Up to 279 hours (Band 1)", true)]
+        [InlineData("upto+ hours (Band 1 )", false)]
+        public void Band1Tests(string rateBand, bool result)
+        {
+            var band = NewBuilder(null).Band1
+(new FM25Learner() { RateBand = rateBand });
+            band.Should().Be(result);
+        }
+
+        [Fact]
+        public void FilterStartFund_True()
+        {
+            NewBuilder().FilterStartFund(true).Should().BeTrue();
+        }
+
+        [Fact]
+        public void FilterStartFund_False()
+        {
+            NewBuilder().FilterStartFund(false).Should().BeFalse();
+        }
+
+        [Fact]
+        public void FilterStartFund_False_Null()
+        {
+            NewBuilder().FilterStartFund(null).Should().BeFalse();
+        }
+
+        [Theory]
+        [InlineData("14-16 Direct Funded Students")]
+        [InlineData("16-19 Students (excluding High Needs Students)")]
+        [InlineData("16-19 High Needs Students")]
+        [InlineData("19-24 Students with an EHCP")]
+        [InlineData("19+ Continuing Students (excluding EHCP)")]
+        public void FilterFundLine(string fundLine)
+        {
+            NewBuilder().FilterFundLine(fundLine).Should().BeTrue();
+        }
+
+        [Fact]
+        public void FilterFundLine_Null()
+        {
+            NewBuilder().FilterFundLine(null).Should().BeFalse();
+        }
+
+        [Fact]
+        public void FilterFundLine_Mismatch()
+        {
+            NewBuilder().FilterFundLine("Junk").Should().BeFalse();
         }
 
         private List<ILearner> BuildLearners(TestLearningDelivery learningDelivery)
@@ -313,7 +401,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                 {
                     LearnRefNumber = "FundingLineBLearnRef1",
                     StartFund = true,
-                    FundLine = "16-19 Students (including High Needs Students)",
+                    FundLine = "16-19 Students (excluding High Needs Students)",
                     RateBand = "450 to 539 hours (Band 4b)",
                     OnProgPayment = (decimal)2589915.43,
                     PrvRetentFactHist = (decimal)0.796,
@@ -326,7 +414,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                 {
                     LearnRefNumber = "FundingLineBLearnRef2",
                     StartFund = true,
-                    FundLine = "16-19 Students (including High Needs Students)",
+                    FundLine = "16-19 High Needs Students",
                     RateBand = "360 to 449 hours (Band 3)",
                     OnProgPayment = (decimal)25815.43,
                 },
