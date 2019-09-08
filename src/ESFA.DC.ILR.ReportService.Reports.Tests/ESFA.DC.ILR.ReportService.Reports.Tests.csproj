@@ -152,6 +152,7 @@
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportTests.cs" />
+    <Compile Include="Funding\FundingClaim1619\FundingClaim1619ReportModelBuilderTests.cs" />
     <Compile Include="Funding\FundingSummary\DesktopFundingSummaryReportTests.cs" />
     <Compile Include="Funding\FundingSummary\FundingSummaryReportModelBuilderTests.cs" />
     <Compile Include="Funding\FundingSummary\FundingSummaryReportRenderServiceTests.cs" />

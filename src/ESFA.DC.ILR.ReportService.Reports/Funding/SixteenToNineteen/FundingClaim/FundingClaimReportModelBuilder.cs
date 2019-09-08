@@ -56,12 +56,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             model.CofRemoval = -cofRemoval.GetValueOrDefault();
 
             // Body
-            var applicableLearners = FilterLearners(learners).ToList();
+            var applicableLearners = FilterLearners(learners);
             var learnersArray = applicableLearners.Select(x => x.LearnRefNumber).ToArray();
 
-            var applicableFm25Learners = fm25Data.Learners?.Where(x => x.StartFund.GetValueOrDefault()
-                                              && _applicableFundingLineTypes.Contains(x.FundLine)
-                                              && learnersArray.Contains(x.LearnRefNumber))?.ToList();
+            var applicableFm25Learners = FilterFm25Learners(fm25Data, learnersArray);
 
             if (applicableFm25Learners != null)
             {
@@ -104,12 +102,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             return model;
         }
 
-        private static IEnumerable<ILearner> FilterLearners(IEnumerable<ILearner> learners)
+        private List<FM25Learner> FilterFm25Learners(FM25Global fm25Data, string[] learnersArray)
+        {
+            return fm25Data.Learners?.Where(x => x.StartFund.GetValueOrDefault()
+                                                 && _applicableFundingLineTypes.Contains(x.FundLine)
+                                                 && learnersArray.Contains(x.LearnRefNumber))?.ToList();
+        }
+
+        private IEnumerable<ILearner> FilterLearners(IEnumerable<ILearner> learners)
         {
             return learners.Where(x => x.LearningDeliveries.Any(ld =>
                 ld.FundModel == 25 &&
                 ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.SOF)) &&
-                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619))));
+                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619)))).ToList();
         }
 
         private FundingLineReportingBandModel BuildFundlineReprtingBandModel(List<FM25Learner> fm25Learners)
