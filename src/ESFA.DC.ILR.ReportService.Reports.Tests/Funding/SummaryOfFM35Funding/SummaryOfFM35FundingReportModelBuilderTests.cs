@@ -394,6 +394,38 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
             };
         }
 
+        [Fact]
+        public void Attributes_AsExpected()
+        {
+            var expectedList = new List<string>
+            {
+                AttributeConstants.Fm35OnProgPayment,
+                AttributeConstants.Fm35BalancePayment,
+                AttributeConstants.Fm35EmpOutcomePay,
+                AttributeConstants.Fm35AchievePayment,
+                AttributeConstants.Fm35LearnSuppFundCash
+            };
+
+            NewBuilder().Attributes.Should().BeEquivalentTo(expectedList);
+        }
+
+        [Fact]
+        public void Fundlines_AsExpected()
+        {
+            var expectedList = new List<string>
+            {
+                FundLineConstants.Apprenticeship1618,
+                FundLineConstants.Apprenticeship1923,
+                FundLineConstants.Apprenticeship24Plus,
+                FundLineConstants.Traineeship1924NonProcured,
+                FundLineConstants.Traineeship1924ProcuredFromNov2017,
+                FundLineConstants.AebOtherLearningNonProcured,
+                FundLineConstants.AebOtherLearningProcuredFromNov2017,
+            };
+
+            NewBuilder().FundLines.Should().BeEquivalentTo(expectedList);
+        }
+
         private SummaryOfFM35FundingReportModelBuilder NewBuilder()
         {
             return new SummaryOfFM35FundingReportModelBuilder();
