@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerOccupancy
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
-            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Trailblazer Occupancy Report", OutputTypes.Csv, true)).Returns(fileName);
+            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Trailblazer Apprenticeships Occupancy Report", OutputTypes.Csv, true)).Returns(fileName);
 
             var modelBuilderMock = new Mock<IModelBuilder<IEnumerable<TrailblazerOccupancyReportModel>>>();
 

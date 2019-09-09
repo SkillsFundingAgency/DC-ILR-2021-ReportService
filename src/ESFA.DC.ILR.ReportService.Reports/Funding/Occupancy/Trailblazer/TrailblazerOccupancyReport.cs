@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer
                 modelBuilder,
                 csvService,
                 ReportTaskNameConstants.TrailblazerAppsOccupancyReport,
-                "Trailblazer Occupancy Report")
+                "Trailblazer Apprenticeships Occupancy Report")
         {
         }
 
