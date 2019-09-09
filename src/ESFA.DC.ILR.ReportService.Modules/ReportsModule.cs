@@ -28,6 +28,7 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -43,6 +44,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterAppsIndicativeEarningsReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
+
+            RegisterSummaryOfFM35FundingReport(containerBuilder);
 
             RegisterTrailblazerEmployerIncentivesReport(containerBuilder);
             RegisterTrailblazerOccupancyReport(containerBuilder);
@@ -99,6 +102,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
+        }
+
+        private void RegisterSummaryOfFM35FundingReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<SummaryOfFM35FundingReport>().As<IReport>();
+            containerBuilder.RegisterType<SummaryOfFM35FundingReportModelBuilder>().As<IModelBuilder<IEnumerable<SummaryOfFM35FundingReportModel>>>();
         }
 
         protected virtual void RegisterDevolvedAdultEducationFundingSummaryReport(ContainerBuilder containerBuilder)

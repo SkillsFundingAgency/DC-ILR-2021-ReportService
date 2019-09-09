@@ -138,6 +138,9 @@
     <Compile Include="Extensions\IEnumerableExtensionsTests.cs" />
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
+    <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportClassMapTests.cs" />
+    <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportModelBuilderTests.cs" />
+    <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportTests.cs" />
     <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportTests.cs" />
@@ -199,6 +202,10 @@
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Desktop\ESFA.DC.ILR.ReportService.Desktop.csproj">
       <Project>{1FBAB247-ADF1-4A86-9D1F-7126E086CF5C}</Project>
       <Name>ESFA.DC.ILR.ReportService.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR.ReportService.Model.csproj">
+      <Project>{39db428d-1380-40f2-9361-18ed31cf95fc}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Reports\ESFA.DC.ILR.ReportService.Reports.csproj">
       <Project>{0f1ea521-4ae8-4e4a-96b9-99dc4dc3c78d}</Project>
