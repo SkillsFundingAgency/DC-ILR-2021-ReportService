@@ -10,7 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
 {
     public class SummaryOfFM35FundingReportModelBuilder : IModelBuilder<IEnumerable<SummaryOfFM35FundingReportModel>>
     {
-        private readonly HashSet<string> _attributes = new HashSet<string>
+        public readonly ICollection<string> Attributes = new HashSet<string>
         {
             AttributeConstants.Fm35OnProgPayment,
             AttributeConstants.Fm35BalancePayment,
@@ -19,7 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
             AttributeConstants.Fm35LearnSuppFundCash
         };
 
-        private readonly HashSet<string> _fundLines = new HashSet<string>
+        public readonly ICollection<string> FundLines = new HashSet<string>
         {
             FundLineConstants.Apprenticeship1618,
             FundLineConstants.Apprenticeship1923,
@@ -30,21 +30,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
             FundLineConstants.AebOtherLearningProcuredFromNov2017,
         };
 
-        public SummaryOfFM35FundingReportModelBuilder()
-        {
-        }
-
         public IEnumerable<SummaryOfFM35FundingReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var ukprn = reportServiceContext.Ukprn;
             var fm35 = reportServiceDependentData.Get<FM35Global>();
 
             var fm35LearningDeliveries = GetFM35LearningDeliveryPeriodisedValues(fm35, reportServiceContext.Ukprn);
-            var fm35LearningDeliveryDictionary = BuildFm35LearningDeliveryDictionary(fm35LearningDeliveries);
+            var fm35LearningDeliveryDictionary = BuildFm35LearningDeliveryDictionary(fm35LearningDeliveries, Attributes);
 
             var models = new List<SummaryOfFM35FundingReportModel>();
 
-            foreach (var fundline in _fundLines)
+            foreach (var fundline in FundLines)
             {
                 for (var periodIndex = 0; periodIndex < 12; periodIndex++)
                 {
@@ -63,10 +59,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
             return models;
         }
 
-        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm35LearningDeliveryDictionary(List<FM35LearningDeliveryValues> fm35LearningDeliveryValues)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm35LearningDeliveryDictionary(IEnumerable<FM35LearningDeliveryValues> fm35LearningDeliveryValues, ICollection<string> attributes)
         {
             return fm35LearningDeliveryValues?
-               .Where(a => _attributes.Contains(a.AttributeName, StringComparer.OrdinalIgnoreCase))
+               .Where(a => attributes.Contains(a.AttributeName, StringComparer.OrdinalIgnoreCase))
                .GroupBy(f => f.FundLine)
                .ToDictionary(
                k1 => k1.Key,
@@ -143,6 +139,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
             return result;
         }
 
+        public decimal? GetPeriodValue(decimal?[][] periodisedValues, int periodIndex)
+        {
+            return periodisedValues?.Where(p => p != null).Sum(p => p[periodIndex]) ?? 0m;
+        }
+
         private SummaryOfFM35FundingReportModel BuildRow(int ukprn, string fundline, int periodIndex, Dictionary<string, decimal?[][]> learningDelivery)
         {
             return new SummaryOfFM35FundingReportModel
@@ -171,11 +172,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
                 AimAchievement = 0m,
                 LearningSupport = 0m,
             };
-        }
-
-        private decimal? GetPeriodValue(decimal?[][] periodisedValues, int periodIndex)
-        {
-            return periodisedValues?.Sum(p => p[periodIndex]) ?? 0m;
         }
     }
 }

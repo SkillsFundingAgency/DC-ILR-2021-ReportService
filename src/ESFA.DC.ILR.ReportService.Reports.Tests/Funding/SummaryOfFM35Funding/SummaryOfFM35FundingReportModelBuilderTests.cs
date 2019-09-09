@@ -111,6 +111,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
         [Fact]
         public void BuildFm35LearningDeliveryDictionary()
         {
+            ICollection<string> attributes = new HashSet<string>
+            {
+                AttributeConstants.Fm35OnProgPayment,
+                AttributeConstants.Fm35BalancePayment,
+                AttributeConstants.Fm35EmpOutcomePay,
+                AttributeConstants.Fm35AchievePayment,
+                AttributeConstants.Fm35LearnSuppFundCash
+            };
+
             var learningDeliveries = new List<FM35LearningDeliveryValues>
             {
                 BuildFM35PeriodisedValuesForAttribute(1, "Learner1", 1, FundLineConstants.Apprenticeship1618, AttributeConstants.Fm35BalancePayment),
@@ -121,6 +130,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
                 BuildFM35PeriodisedValuesForAttribute(1, "Learner2", 1, FundLineConstants.Apprenticeship1618, AttributeConstants.Fm35LearnSuppFundCash),
                 BuildFM35PeriodisedValuesForAttribute(1, "Learner2", 2, FundLineConstants.Apprenticeship1923, AttributeConstants.Fm35EmpOutcomePay),
                 BuildFM35PeriodisedValuesForAttribute(1, "Learner2", 2, FundLineConstants.Apprenticeship1923, AttributeConstants.Fm35OnProgPayment),
+                BuildFM35PeriodisedValuesForAttribute(1, "Learner2", 2, FundLineConstants.Apprenticeship1923, AttributeConstants.Fm25LrnOnProgPay),
             };
 
             var pvArray = new decimal?[]
@@ -181,12 +191,81 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
                 }
             };
 
-            NewBuilder().BuildFm35LearningDeliveryDictionary(learningDeliveries).Should().BeEquivalentTo(expectedDictionary);
+            var builder = NewBuilder().BuildFm35LearningDeliveryDictionary(learningDeliveries, attributes);
+
+            builder.Should().BeEquivalentTo(expectedDictionary);
+
+            NewBuilder().FundLines.Should().Contain(builder.Keys);
+            NewBuilder().Attributes.Should().Contain(builder.SelectMany(v => v.Value).Select(k => k.Key));
+            builder.SelectMany(v => v.Value).Select(k => k.Key).Should().NotContain(AttributeConstants.Fm25LrnOnProgPay);
+        }
+
+        [Theory]
+        [InlineData(0, "2.222")]
+        [InlineData(1, "2.222")]
+        [InlineData(2, "6.666")]
+        [InlineData(3, "0")]
+        public void GetPeriodValue(int index, string value)
+        {
+            var pvArray1 = new decimal?[]
+            {
+                1.111m,
+                2.222m,
+                3.333m,
+                null,
+                5.555m,
+                6.666m,
+                7.777m,
+                8.888m,
+                9.999m,
+                10.1010m,
+                11.1111m,
+                12.1212m
+            };
+
+            var pvArray2 = new decimal?[]
+            {
+                1.111m,
+                null,
+                3.333m,
+                null,
+                5.555m,
+                6.666m,
+                null,
+                8.888m,
+                9.999m,
+                10.1010m,
+                11.1111m,
+                12.1212m
+            };
+
+           NewBuilder().GetPeriodValue(new decimal?[][] { pvArray1, pvArray2 }, index).Should().Be(decimal.Parse(value));
+        }
+
+        [Fact]
+        public void GetPeriodValue_Empty()
+        {
+            NewBuilder().GetPeriodValue(null, 0).Should().Be(0m);
+        }
+
+        [Fact]
+        public void GetPeriodValue_EmptyArray()
+        {
+            NewBuilder().GetPeriodValue(new decimal?[][] { null }, 0).Should().Be(0m);
         }
 
         [Fact]
         public void Build()
         {
+             ICollection<string> _attributes = new HashSet<string>
+            {
+                AttributeConstants.Fm35OnProgPayment,
+                AttributeConstants.Fm35BalancePayment,
+                AttributeConstants.Fm35EmpOutcomePay,
+                AttributeConstants.Fm35AchievePayment,
+                AttributeConstants.Fm35LearnSuppFundCash
+            };
+
             var learningDeliveryPeriodisedValues = new List<LearningDeliveryPeriodisedValue>
             {
                 BuildPeriodisedValuesForAttribute(AttributeConstants.Fm35OnProgPayment),
@@ -267,7 +346,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
             var result = NewBuilder().Build(context.Object, reportServiceDependentData.Object);
 
             result.Should().HaveCount(84);
-            result.Select(f => f.FundingLineType).Distinct().Should().HaveCount(7);
+            result.Select(f => f.FundingLineType).Distinct().Should().BeEquivalentTo(NewBuilder().FundLines);
             result.Where(f => f.FundingLineType == FundLineConstants.Apprenticeship1618 && f.Period == 1).FirstOrDefault().Total.Should().Be(11.11m);
         }
 
