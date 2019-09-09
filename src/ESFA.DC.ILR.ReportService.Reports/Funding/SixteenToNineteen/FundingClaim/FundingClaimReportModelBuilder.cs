@@ -29,9 +29,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             var fm25Data = reportServiceDependentData.Get<FM25Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
+            var organisation = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn);
+            var organisationName = organisation?.Name ?? string.Empty;
             var ilrFileName = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
-            var cofRemoval = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.OrganisationCoFRemovals?.OrderByDescending(x => x.EffectiveFrom).FirstOrDefault()?.CoFRemoval;
+            var cofRemoval = organisation?.OrganisationCoFRemovals?.OrderByDescending(x => x.EffectiveFrom).FirstOrDefault()?.CoFRemoval;
             var learners = message?.Learners ?? Enumerable.Empty<ILearner>();
 
             var model = new FundingClaimReportModel();
@@ -80,8 +81,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
                 model.ContinuingStudentsExcludingEHCPlan = BuildFundlineReprtingBandModel(validLearnersForFundlineD);
             }
 
-
-
             // Footer
             model.ReportGeneratedAt = reportGeneratedAt;
             model.ApplicationVersion = reportServiceContext.ServiceReleaseVersion;
@@ -91,6 +90,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.FilePreparationDate = message?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
+            
+            //Todo : CoFRemovalData will be added to ReferencedDataRoot
+            //model.CofRemovalData = //
 
             return model;
         }
