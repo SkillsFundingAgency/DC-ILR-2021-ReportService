@@ -29,7 +29,7 @@
 
         private decimal SumTotal()
         {
-            return OnProgramme + Balancing + TotalAchievement * LearningSupport ?? 0m;
+            return OnProgramme + Balancing + TotalAchievement + LearningSupport ?? 0m;
         }
     }
 }

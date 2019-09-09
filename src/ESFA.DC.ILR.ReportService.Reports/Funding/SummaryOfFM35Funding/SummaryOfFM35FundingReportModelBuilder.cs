@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -38,51 +37,33 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
         public IEnumerable<SummaryOfFM35FundingReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var ukprn = reportServiceContext.Ukprn;
-            var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
 
             var fm35LearningDeliveries = GetFM35LearningDeliveryPeriodisedValues(fm35, reportServiceContext.Ukprn);
             var fm35LearningDeliveryDictionary = BuildFm35LearningDeliveryDictionary(fm35LearningDeliveries);
-            var fundlines = fm35LearningDeliveries.Select(f => f.FundLine).Distinct().ToList();
 
             var models = new List<SummaryOfFM35FundingReportModel>();
 
             foreach (var fundline in _fundLines)
             {
-                int i = 1;
-                while (i > 0 && i < 13)
+                for (var periodIndex = 0; periodIndex < 12; periodIndex++)
                 {
-                   models.Add(
-                   new SummaryOfFM35FundingReportModel
-                   {
-                       UKPRN = ukprn,
-                       FundingLineType = fundline,
-                       Period = i,
-                       OnProgramme = fm35LearningDeliveryDictionary[fundline][AttributeConstants.Fm35OnProgPayment].Select(p => GetPeriodValue(p, i)).FirstOrDefault(),
-                       Balancing= fm35LearningDeliveryDictionary[fundline][AttributeConstants.Fm35BalancePayment].Select(p => GetPeriodValue(p, i)).FirstOrDefault(),
-                       JobOutcomeAchievement = fm35LearningDeliveryDictionary[fundline][AttributeConstants.Fm35EmpOutcomePay].Select(p => GetPeriodValue(p, i)).FirstOrDefault(),
-                       AimAchievement = fm35LearningDeliveryDictionary[fundline][AttributeConstants.Fm35AchievePayment].Select(p => GetPeriodValue(p, i)).FirstOrDefault(),
-                       LearningSupport = fm35LearningDeliveryDictionary[fundline][AttributeConstants.Fm35LearnSuppFundCash].Select(p => GetPeriodValue(p, i)).FirstOrDefault(),
-                   });
-                }
+                    if (fm35LearningDeliveryDictionary.TryGetValue(fundline, out var learningDelivery))
+                    {
+                        models.Add(BuildRow(ukprn, fundline, periodIndex, learningDelivery));
+                    }
 
-                i++;
+                    else
+                    {
+                        models.Add(BuildDefaultRow(ukprn, fundline, periodIndex));
+                    }
+                }
             }
           
             return models;
         }
 
-        private decimal? SumTotalAchievement(decimal?[] periodisedValues, int period)
-        {
-            return periodisedValues[period - 1] != null ? periodisedValues[period - 1] : 0m;
-        }
-
-        private decimal? GetPeriodValue(decimal?[] periodisedValues, int period)
-        {
-            return periodisedValues[period - 1] != null ? periodisedValues[period - 1] : 0m;
-        }
-
-        private Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm35LearningDeliveryDictionary(List<FM35LearningDeliveryValues> fm35LearningDeliveryValues)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildFm35LearningDeliveryDictionary(List<FM35LearningDeliveryValues> fm35LearningDeliveryValues)
         {
             return fm35LearningDeliveryValues?
                .Where(a => _attributes.Contains(a.AttributeName, StringComparer.OrdinalIgnoreCase))
@@ -111,7 +92,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        private static List<FM35LearningDeliveryValues> GetFM35LearningDeliveryPeriodisedValues(FM35Global fm35Global, int ukPrn)
+        public List<FM35LearningDeliveryValues> GetFM35LearningDeliveryPeriodisedValues(FM35Global fm35Global, int ukPrn)
         {
             var result = new List<FM35LearningDeliveryValues>();
             if (fm35Global?.Learners == null)
@@ -160,6 +141,41 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
             }
 
             return result;
+        }
+
+        private SummaryOfFM35FundingReportModel BuildRow(int ukprn, string fundline, int periodIndex, Dictionary<string, decimal?[][]> learningDelivery)
+        {
+            return new SummaryOfFM35FundingReportModel
+            {
+                UKPRN = ukprn,
+                FundingLineType = fundline,
+                Period = periodIndex + 1,
+                OnProgramme = GetPeriodValue(learningDelivery[AttributeConstants.Fm35OnProgPayment], periodIndex),
+                Balancing = GetPeriodValue(learningDelivery[AttributeConstants.Fm35BalancePayment], periodIndex),
+                JobOutcomeAchievement = GetPeriodValue(learningDelivery[AttributeConstants.Fm35EmpOutcomePay], periodIndex),
+                AimAchievement = GetPeriodValue(learningDelivery[AttributeConstants.Fm35AchievePayment], periodIndex),
+                LearningSupport = GetPeriodValue(learningDelivery[AttributeConstants.Fm35LearnSuppFundCash], periodIndex),
+            };
+        }
+
+        private SummaryOfFM35FundingReportModel BuildDefaultRow(int ukprn, string fundline, int periodIndex)
+        {
+            return new SummaryOfFM35FundingReportModel
+            {
+                UKPRN = ukprn,
+                FundingLineType = fundline,
+                Period = periodIndex + 1,
+                OnProgramme = 0m,
+                Balancing = 0m,
+                JobOutcomeAchievement = 0m,
+                AimAchievement = 0m,
+                LearningSupport = 0m,
+            };
+        }
+
+        private decimal? GetPeriodValue(decimal?[][] periodisedValues, int periodIndex)
+        {
+            return periodisedValues?.Sum(p => p[periodIndex]) ?? 0m;
         }
     }
 }
