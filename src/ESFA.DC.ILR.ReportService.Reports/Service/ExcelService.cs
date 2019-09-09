@@ -37,6 +37,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
             }
         }
 
+        public Workbook BindExcelTemplateToWorkbook<T>(T model, string templateName, string dataSource)
+        {
+            var designer = new WorkbookDesigner
+            {
+                Workbook = GetWorkbookFromTemplate(templateName)
+            };
+            designer.SetDataSource(dataSource, new List<T> { model });
+            designer.Process();
+            return designer.Workbook;
+        }
+
         public Workbook GetWorkbookFromTemplate(string templateFileName)
         {
             var assembly = Assembly.GetExecutingAssembly();

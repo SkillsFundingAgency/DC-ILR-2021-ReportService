@@ -1,30 +1,25 @@
-﻿using Aspose.Cells;
-using ESFA.DC.ILR.ReportService.Reports.Abstract;
+﻿using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary.Model;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim
 {
-    public class HighNeedsStudentSummaryReport : AbstractReport, IReport
+    public class FundingClaimReport : AbstractReport, IReport
     {
         private readonly IFileNameService _fileNameService;
-        private readonly IModelBuilder<HighNeedsStudentSummaryReportModel> _modelBuilder;
+        private readonly IModelBuilder<FundingClaimReportModel> _modelBuilder;
         private readonly IExcelService _excelService;
 
-        public HighNeedsStudentSummaryReport(
+        public FundingClaimReport(
             IFileNameService fileNameService,
-            IModelBuilder<HighNeedsStudentSummaryReportModel> modelBuilder,
+            IModelBuilder<FundingClaimReportModel> modelBuilder,
             IExcelService excelService
            )
-            : base(ReportTaskNameConstants.HNSSummaryReport, "High Needs Students Summary Report")
+            : base(ReportTaskNameConstants.FundingClaim1619Report, "16-19 Funding Claim Report")
         {
             _fileNameService = fileNameService;
             _modelBuilder = modelBuilder;
@@ -36,12 +31,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
         {
             var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
-            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "HNSSummaryReportTemplate.xlsx", "HNSSummary");
+            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "FundingClaim1619ReportTemplate.xlsx", "FundingClaim");
             await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] { fileName };
         }
 
-        public virtual IEnumerable<Type> DependsOn
+       public virtual IEnumerable<Type> DependsOn
             => new[]
             {
                 DependentDataCatalog.Fm25,

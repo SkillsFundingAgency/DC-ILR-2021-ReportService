@@ -12,7 +12,12 @@
 
   <ItemGroup>
     <None Remove="Resources\Aspose.Cells.lic" />
+    <None Remove="Templates\FundingClaim1619ReportTemplate.xlsx" />
     <None Remove="Templates\HNSSummaryReportTemplate.xlsx" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\FundingClaim1619ReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
