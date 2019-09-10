@@ -5,6 +5,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Model;
 using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
@@ -34,7 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                                     };
                                 }).ToList()
                         }).ToList()))
-                    .ToList());
+                    .ToList(), new SummaryPageModel());
             
             var worksheet = workbook.Worksheets[0];
 

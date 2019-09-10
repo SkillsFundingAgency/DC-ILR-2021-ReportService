@@ -1,11 +1,17 @@
 ﻿using System;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
@@ -13,14 +19,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
     {
         private string AdultEducationBudgetNote =
             "Please note that devolved adult education funding for learners who are funded through the Mayoral Combined Authorities or Greater London Authority is not included here.\nPlease refer to the separate Devolved Adult Education Funding Summary Report.";
+        private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
+        private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
+        private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
 
         private readonly IPeriodisedValuesLookupProvider _periodisedValuesLookupProvider;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
         protected IEnumerable<FundingDataSources> FundingDataSources { private get; set; }
 
-        public FundingSummaryReportModelBuilder(IPeriodisedValuesLookupProvider periodisedValuesLookupProvider )
+        public FundingSummaryReportModelBuilder(IPeriodisedValuesLookupProvider periodisedValuesLookupProvider, IDateTimeProvider dateTimeProvider)
         {
             _periodisedValuesLookupProvider = periodisedValuesLookupProvider;
+            _dateTimeProvider = dateTimeProvider;
 
             FundingDataSources = new[]
             {
@@ -35,6 +46,24 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         public FundingSummaryReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
+            var message = reportServiceDependentData.Get<IMessage>();
+            var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+
+            var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
+
+            var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
+            var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
+            var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
+            var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
+            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime.ToString();
+
+            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
+
+            DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
+            DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
+
+            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
+
             var periodisedValues = _periodisedValuesLookupProvider.Provide(FundingDataSources, reportServiceDependentData);
 
             var reportCurrentPeriod = reportServiceContext.ReturnPeriod > 12 ? 12 : reportServiceContext.ReturnPeriod;
@@ -148,6 +177,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 .WithFundLineGroup(BuildIlrFm99FundLineGroup(reportCurrentPeriod, periodisedValues))
                                 .WithFundLineGroup(BuildEasFm99FundLineGroup(reportCurrentPeriod, periodisedValues))
                         })
+                }, new SummaryPageModel()
+                {
+                    ProviderName = organisationName,
+                    UKPRN = reportServiceContext.Ukprn,
+                    ILRFile = reportServiceContext.OriginalFilename,
+                    LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
+                    LastEASUpdate = easLastUpdate,
+                    ApplicationVersion = reportServiceContext.ServiceReleaseVersion,
+                    FilePreparationDate = filePreparationDate,
+                    LARSVersion = larsVersion,
+                    PostcodeVersion = postcodesVersion,
+                    OrganisationVersion = orgVersion,
+                    LargeEmployersVersion = employersVersion,
+                    ReportGeneratedAt = reportGeneratedAt
                 });
         }
 
@@ -289,6 +332,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             return new FundLineGroup($"EAS Total {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
                 .WithFundLine($"EAS {description} Excess Support (£)", new[] { AttributeConstants.EasAllbExcessSupport })
                 .WithFundLine($"EAS {description} Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaims });
+        }
+
+        private string ExtractDisplayDateTimeFromFileName(string ilrFileName)
+        {
+            var parts = ilrFileName.Split('/');
+            var ilrFilenameDateTime = parts[parts.Length - 1].Substring(18, 15);
+
+            DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime);
+
+            return parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat);
         }
     }
 }

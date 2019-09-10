@@ -11,6 +11,8 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using System.Collections.Generic;
+using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Service;
 
 namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 {
@@ -21,6 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             containerBuilder.RegisterType<DesktopFundingSummaryReport>().As<IReport>();
             containerBuilder.RegisterType<DesktopFundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
+            containerBuilder.RegisterType<SummaryPageRenderService>().As<IRenderService<ISummaryPage>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
         }
 
