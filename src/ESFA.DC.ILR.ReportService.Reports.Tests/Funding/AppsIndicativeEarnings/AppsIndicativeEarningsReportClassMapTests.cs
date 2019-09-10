@@ -6,7 +6,7 @@ using System.Text;
 using CsvHelper;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
@@ -14,7 +14,7 @@ using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
 {
-    public class AppsIndicativeEarningsReportClassMapTests
+    public class NonContractedAppsActivityReportClassMapTests
     {
         [Fact]
         public void Map_Columns()
