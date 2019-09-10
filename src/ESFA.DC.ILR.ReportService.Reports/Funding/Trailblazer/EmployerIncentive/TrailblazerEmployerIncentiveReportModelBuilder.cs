@@ -92,7 +92,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
         {
             var employerIdHashSet = new HashSet<int>();
 
-            foreach (var learner in fm81Global?.Learners.Where(l => l != null) ?? Enumerable.Empty<FM81Learner>())
+            foreach (var learner in fm81Global?.Learners?.Where(l => l != null) ?? Enumerable.Empty<FM81Learner>())
             {
                 foreach (var learningDelivery in learner.LearningDeliveries?.Where(ld => ld?.LearningDeliveryValues != null) ?? Enumerable.Empty<LearningDelivery>())
                 {
