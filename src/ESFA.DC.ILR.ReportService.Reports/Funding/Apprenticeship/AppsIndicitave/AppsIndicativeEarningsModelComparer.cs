@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave
 {
     public sealed class AppsIndicativeEarningsModelComparer : IComparer<AppsIndicativeEarningsReportModel>
     {

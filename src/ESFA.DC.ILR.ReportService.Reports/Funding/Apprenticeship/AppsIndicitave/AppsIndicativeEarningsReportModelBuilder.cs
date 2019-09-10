@@ -11,7 +11,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave
 {
     public class AppsIndicativeEarningsReportModelBuilder : IModelBuilder<IEnumerable<AppsIndicativeEarningsReportModel>>
     {

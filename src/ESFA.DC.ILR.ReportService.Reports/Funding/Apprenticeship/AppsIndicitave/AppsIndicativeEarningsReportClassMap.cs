@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using CsvHelper.Configuration;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave
 {
     public sealed class AppsIndicativeEarningsReportClassMap : ClassMap<AppsIndicativeEarningsReportModel>
     {
