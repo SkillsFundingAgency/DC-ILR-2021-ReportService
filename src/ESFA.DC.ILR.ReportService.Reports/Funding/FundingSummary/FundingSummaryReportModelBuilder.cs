@@ -46,24 +46,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         public FundingSummaryReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
-            var message = reportServiceDependentData.Get<IMessage>();
-            var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
-
-            var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
-
-            var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
-            var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
-            var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
-            var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime.ToString();
-
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
-
-            DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
-            DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
-
-            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
-
             var periodisedValues = _periodisedValuesLookupProvider.Provide(FundingDataSources, reportServiceDependentData);
 
             var reportCurrentPeriod = reportServiceContext.ReturnPeriod > 12 ? 12 : reportServiceContext.ReturnPeriod;
@@ -177,21 +159,44 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 .WithFundLineGroup(BuildIlrFm99FundLineGroup(reportCurrentPeriod, periodisedValues))
                                 .WithFundLineGroup(BuildEasFm99FundLineGroup(reportCurrentPeriod, periodisedValues))
                         })
-                }, new SummaryPageModel()
-                {
-                    ProviderName = organisationName,
-                    UKPRN = reportServiceContext.Ukprn,
-                    ILRFile = reportServiceContext.OriginalFilename,
-                    LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
-                    LastEASUpdate = easLastUpdate,
-                    ApplicationVersion = reportServiceContext.ServiceReleaseVersion,
-                    FilePreparationDate = filePreparationDate,
-                    LARSVersion = larsVersion,
-                    PostcodeVersion = postcodesVersion,
-                    OrganisationVersion = orgVersion,
-                    LargeEmployersVersion = employersVersion,
-                    ReportGeneratedAt = reportGeneratedAt
-                });
+                }, BuildSummaryPage(reportServiceContext, reportServiceDependentData));
+        }
+
+        public SummaryPageModel BuildSummaryPage(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
+        {
+            var message = reportServiceDependentData.Get<IMessage>();
+            var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+
+            var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
+
+            var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
+            var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
+            var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
+            var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
+            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime.ToString();
+
+            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
+
+            DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
+            DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
+
+            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
+
+            return new SummaryPageModel()
+            {
+                ProviderName = organisationName,
+                UKPRN = reportServiceContext.Ukprn,
+                ILRFile = reportServiceContext.OriginalFilename,
+                LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
+                LastEASUpdate = easLastUpdate,
+                ApplicationVersion = reportServiceContext.ServiceReleaseVersion,
+                FilePreparationDate = filePreparationDate,
+                LARSVersion = larsVersion,
+                PostcodeVersion = postcodesVersion,
+                OrganisationVersion = orgVersion,
+                LargeEmployersVersion = employersVersion,
+                ReportGeneratedAt = reportGeneratedAt
+            };
         }
 
         private IFundLineGroup BuildIlrFm99FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
