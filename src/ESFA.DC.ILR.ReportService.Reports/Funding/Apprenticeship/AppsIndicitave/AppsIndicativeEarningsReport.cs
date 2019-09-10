@@ -4,7 +4,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using System;
 using System.Collections.Generic;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave
 {
     public class AppsIndicativeEarningsReport : AbstractCsvReport<AppsIndicativeEarningsReportModel, AppsIndicativeEarningsReportClassMap>, IReport
     {

@@ -7,7 +7,7 @@ using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship
+namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave
 {
     public class AppsIndicativeEarningsReportModel
     {
