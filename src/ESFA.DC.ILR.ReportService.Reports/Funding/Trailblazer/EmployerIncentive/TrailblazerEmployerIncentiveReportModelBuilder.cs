@@ -154,7 +154,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
                                     ldpv.Period12
                                 }
                             })
-                    ));
+                    )) ?? Enumerable.Empty<TrailblazerLearningDeliveryPeriodisedValues>();
         }
 
         public IEnumerable<TrailblazerEmployerIncentivesReportModel> Order(IEnumerable<TrailblazerEmployerIncentivesReportModel> models)
