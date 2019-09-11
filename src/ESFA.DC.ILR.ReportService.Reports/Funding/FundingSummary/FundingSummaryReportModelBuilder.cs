@@ -23,6 +23,21 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
         private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
 
+        private const string ProviderName = "Provider Name:";
+        private const string UKPRN = "UKPRN:";
+        private const string ILRFile = "ILR File:";
+        private const string LastILRFileUpdate = "Last ILR File Update:";
+        private const string LastEASUpdate = "Last EAS Update:";
+        private const string SecurityClassification = "Security Classification:";
+
+        private const string ApplicationVersion = "Application Version:";
+        private const string FilePreparationDate = "File Preparation Date:";
+        private const string LARSVersion = "LARS Data:";
+        private const string PostcodeVersion = "Postcode Data:";
+        private const string OrganisationVersion = "Organisation Data:";
+        private const string LargeEmployersVersion = "Large Employers Data:";
+        private const string ReportGeneratedAt = "Report Generated at:";
+
         private readonly IPeriodisedValuesLookupProvider _periodisedValuesLookupProvider;
         private readonly IDateTimeProvider _dateTimeProvider;
 
@@ -168,7 +183,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
 
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
-
             var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
@@ -182,20 +196,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
             var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
 
+            var headerDataDictionary = new Dictionary<string, string>();
+            var footerDataDictionary = new Dictionary<string, string>();
+
+            headerDataDictionary.Add(ProviderName, organisationName);
+            headerDataDictionary.Add(UKPRN, reportServiceContext.Ukprn.ToString());
+            headerDataDictionary.Add(ILRFile, reportServiceContext.OriginalFilename);
+            headerDataDictionary.Add(LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename));
+            headerDataDictionary.Add(LastEASUpdate, easLastUpdate);
+            headerDataDictionary.Add(SecurityClassification, ReportingConstants.OfficialSensitive);
+
+            footerDataDictionary.Add(ApplicationVersion, reportServiceContext.ServiceReleaseVersion);
+            footerDataDictionary.Add(FilePreparationDate, filePreparationDate);
+            footerDataDictionary.Add(LARSVersion, larsVersion);
+            footerDataDictionary.Add(PostcodeVersion, postcodesVersion);
+            footerDataDictionary.Add(OrganisationVersion, orgVersion);
+            footerDataDictionary.Add(LargeEmployersVersion, employersVersion);
+            footerDataDictionary.Add(ReportGeneratedAt, reportGeneratedAt);
+
             return new SummaryPageModel()
             {
-                ProviderName = organisationName,
-                UKPRN = reportServiceContext.Ukprn,
-                ILRFile = reportServiceContext.OriginalFilename,
-                LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
-                LastEASUpdate = easLastUpdate,
-                ApplicationVersion = reportServiceContext.ServiceReleaseVersion,
-                FilePreparationDate = filePreparationDate,
-                LARSVersion = larsVersion,
-                PostcodeVersion = postcodesVersion,
-                OrganisationVersion = orgVersion,
-                LargeEmployersVersion = employersVersion,
-                ReportGeneratedAt = reportGeneratedAt
+                HeaderData = headerDataDictionary,
+                FooterData = footerDataDictionary
             };
         }
 
