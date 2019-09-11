@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                 AimSeqNumber = 1,
                 LearningDeliveryFAMs = learningDeliveryFams,
                 StdCodeNullable = 1,
-                
+
             };
             var message = new TestMessage()
             {
@@ -183,13 +183,99 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.ContinuingStudentsExcludingEHCPlan.Band5TotalFunding.Should().Be((decimal)56425.99);
         }
 
+        [Fact]
+        public void Build_NoLearners()
+        {
+            var dependentDataMock = new Mock<IReportServiceDependentData>();
+
+            var message = new TestMessage()
+            {
+                Learners = new List<TestLearner>(),
+                HeaderEntity = new TestHeader()
+                {
+                    CollectionDetailsEntity = new MessageHeaderCollectionDetails()
+                    {
+                        FilePreparationDate = new DateTime(2019, 11, 06)
+                    }
+                }
+            };
+
+            var referenceDataRoot = new ReferenceDataRoot()
+            {
+                Organisations = new List<Organisation>()
+                {
+                    new Organisation()
+                    {
+                        UKPRN = 987654321,
+                        Name = "Provider XYZ",
+                        OrganisationCoFRemovals = new List<OrganisationCoFRemoval>()
+                        {
+                            new OrganisationCoFRemoval()
+                            {
+                                EffectiveFrom = new DateTime(2019, 01, 01),
+                                CoFRemoval = (decimal)4500.12
+                            }
+                        },
+                    }
+                },
+                MetaDatas = new MetaData()
+                {
+                    ReferenceDataVersions = new ReferenceDataVersion()
+                    {
+                        OrganisationsVersion = new OrganisationsVersion("1.1.1.1"),
+                        Employers = new EmployersVersion("2.2.2.2"),
+                        LarsVersion = new LarsVersion("3.3.3.3"),
+                        PostcodesVersion = new PostcodesVersion("4.4.4.4")
+                    }
+                }
+            };
+
+            var fm25Global = new FM25Global()
+            {
+                Learners = new List<FM25Learner>()
+            };
+
+            dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
+            dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
+            dependentDataMock.Setup(d => d.Get<FM25Global>()).Returns(fm25Global);
+
+            var submissionDateTime = new DateTime(2019, 1, 1, 1, 1, 1);
+            var ukDateTime = new DateTime(2020, 1, 1, 1, 1, 1);
+            var dateTimeProvider = new Mock<IDateTimeProvider>();
+            var reportServiceContextMock = new Mock<IReportServiceContext>();
+
+            reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
+            reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
+            reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
+            reportServiceContextMock.SetupGet(c => c.Filename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+
+            dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
+            dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
+
+            var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
+
+            result.ApplicationVersion.Should().Be("11.22.3300.4321");
+            result.ComponentSetVersion.Should().Be("NA");
+            result.FilePreparationDate.Should().Be("06/11/2019");
+            result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
+            result.LargeEmployerData.Should().Be("2.2.2.2");
+            result.LarsData.Should().Be("3.3.3.3");
+            result.OrganisationData.Should().Be("1.1.1.1");
+            result.PostcodeData.Should().Be("4.4.4.4");
+            result.ProviderName.Should().Be("Provider XYZ");
+            result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
+
+            result.Ukprn.Should().Be(987654321);
+            result.Year.Should().Be("2019/20");
+            result.CofRemoval.Should().Be((decimal)-4500.12);
+        }
         [Theory]
-        [InlineData("540+ hours (Band 5)",true)]
+        [InlineData("540+ hours (Band 5)", true)]
         [InlineData("540+ hours (band 5)", true)]
         [InlineData("444+ hours (Band 5)", false)]
         public void Band5Tests(string rateBand, bool result)
         {
-            var band = NewBuilder(null).Band5(new FM25Learner() {RateBand = rateBand});
+            var band = NewBuilder(null).Band5(new FM25Learner() { RateBand = rateBand });
             band.Should().Be(result);
         }
 

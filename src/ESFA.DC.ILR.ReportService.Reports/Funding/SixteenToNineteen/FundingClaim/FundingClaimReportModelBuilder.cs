@@ -54,7 +54,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
             var applicableFm25Learners = FilterFm25Learners(fm25Data, learnersArray);
 
-            if (applicableFm25Learners != null)
+            if (applicableFm25Learners.Any())
             {
                 var fm25Learner = applicableFm25Learners.First();
 
