@@ -90,7 +90,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             if (validLearnersForFundline != null)
             {
                 var validApplicableLearners =
-                    applicableLearners.Where(x => validLearnersForFundline.Contains(x.LearnRefNumber) && x.LearnerFAMs != null).ToList();
+                    applicableLearners.Where(x => validLearnersForFundline.Contains(x.LearnRefNumber)).ToList();
 
                 model =  new FundingLineReportingBandStudentNumbers()
                 {
@@ -98,7 +98,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                     WithoutEHCP = validApplicableLearners.Count(WithoutEhcp),
                     HNSWithoutEHCP = validApplicableLearners.Count(HNSWithoutEHCP),
                     EHCPWithHNS = validApplicableLearners.Count(HNSWithEHCP),
-                    EHCPWithoutHNS = validApplicableLearners.Count(EHCPWithoutHNS)
+                    EHCPWithoutHNS = validApplicableLearners.Count(EHCPWithoutHNS),
+                    TotalFundineStudents = validApplicableLearners.Count
                 };
             }
             return model;
@@ -131,8 +132,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                    HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.EHC, 1);
         }
 
-        public bool HasLearnerFAMType(ILearner learner, string famType) => learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType));
+        public bool HasLearnerFAMType(ILearner learner, string famType)
+        {
+            return learner?.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType));
+        }
 
-        public bool HasLearnerFAMTypeAndCode(ILearner learner, string famType, int code) => learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType) && x.LearnFAMCode == code);
+        public bool HasLearnerFAMTypeAndCode(ILearner learner, string famType, int code)
+        {
+            return learner?.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType) && x.LearnFAMCode == code);
+        }
     }
 }

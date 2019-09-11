@@ -11,5 +11,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
         public int HNSWithoutEHCP { get; set; }
         public int EHCPWithHNS { get; set; }
         public int EHCPWithoutHNS { get; set; }
+        public int TotalFundineStudents { get; set; }
     }
 }
