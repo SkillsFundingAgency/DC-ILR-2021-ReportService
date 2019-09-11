@@ -134,12 +134,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
 
         public bool HasLearnerFAMType(ILearner learner, string famType)
         {
-            return learner.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType));
+            return learner?.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType));
         }
 
         public bool HasLearnerFAMTypeAndCode(ILearner learner, string famType, int code)
         {
-            return learner.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType) && x.LearnFAMCode == code);
+            return learner?.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType) && x.LearnFAMCode == code);
         }
     }
 }
