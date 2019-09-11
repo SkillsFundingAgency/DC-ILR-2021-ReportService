@@ -122,24 +122,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
             result.DirectFunded1416StudentsTotal.HNSWithoutEHCP.Should().Be(0);
             result.DirectFunded1416StudentsTotal.EHCPWithHNS.Should().Be(1);
             result.DirectFunded1416StudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.DirectFunded1416StudentsTotal.TotalFundineStudents.Should().Be(2);
 
             result.IncludingHNS1619StudentsTotal.WithEHCP.Should().Be(2);
             result.IncludingHNS1619StudentsTotal.WithoutEHCP.Should().Be(0);
             result.IncludingHNS1619StudentsTotal.HNSWithoutEHCP.Should().Be(0);
             result.IncludingHNS1619StudentsTotal.EHCPWithHNS.Should().Be(1);
             result.IncludingHNS1619StudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.IncludingHNS1619StudentsTotal.TotalFundineStudents.Should().Be(2);
 
             result.EHCP1924StudentsTotal.WithEHCP.Should().Be(2);
             result.EHCP1924StudentsTotal.WithoutEHCP.Should().Be(0);
             result.EHCP1924StudentsTotal.HNSWithoutEHCP.Should().Be(0);
             result.EHCP1924StudentsTotal.EHCPWithHNS.Should().Be(1);
             result.EHCP1924StudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.EHCP1924StudentsTotal.TotalFundineStudents.Should().Be(2);
 
             result.Continuing19PlusExcludingEHCPStudentsTotal.WithEHCP.Should().Be(2);
             result.Continuing19PlusExcludingEHCPStudentsTotal.WithoutEHCP.Should().Be(0);
             result.Continuing19PlusExcludingEHCPStudentsTotal.HNSWithoutEHCP.Should().Be(0);
             result.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithHNS.Should().Be(1);
             result.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.Continuing19PlusExcludingEHCPStudentsTotal.TotalFundineStudents.Should().Be(2);
 
             result.Ukprn.Should().Be(987654321);
             result.Year.Should().Be("2019/20");
