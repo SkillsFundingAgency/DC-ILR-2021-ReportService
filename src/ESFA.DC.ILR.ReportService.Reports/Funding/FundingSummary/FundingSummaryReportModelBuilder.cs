@@ -22,21 +22,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             "Please note that devolved adult education funding for learners who are funded through the Mayoral Combined Authorities or Greater London Authority is not included here.\nPlease refer to the separate Devolved Adult Education Funding Summary Report.";
         private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
 
-        private const string ProviderName = "Provider Name:";
-        private const string UKPRN = "UKPRN:";
-        private const string ILRFile = "ILR File:";
-        private const string LastILRFileUpdate = "Last ILR File Update:";
-        private const string LastEASUpdate = "Last EAS Update:";
-        private const string SecurityClassification = "Security Classification:";
-
-        private const string ApplicationVersion = "Application Version:";
-        private const string FilePreparationDate = "File Preparation Date:";
-        private const string LARSVersion = "LARS Data:";
-        private const string PostcodeVersion = "Postcode Data:";
-        private const string OrganisationVersion = "Organisation Data:";
-        private const string LargeEmployersVersion = "Large Employers Data:";
-        private const string ReportGeneratedAt = "Report Generated at:";
-
         private readonly IPeriodisedValuesLookupProvider _periodisedValuesLookupProvider;
         private readonly IDateTimeProvider _dateTimeProvider;
 
@@ -197,23 +182,23 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
             var headerDataDictionary = new Dictionary<string, string>()
             {
-                {ProviderName, organisationName},
-                {UKPRN, reportServiceContext.Ukprn.ToString()},
-                {ILRFile, reportServiceContext.OriginalFilename},
-                {LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename)},
-                {LastEASUpdate, easLastUpdate},
-                {SecurityClassification, ReportingConstants.OfficialSensitive}
+                {SummaryPageConstants.ProviderName, organisationName},
+                {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
+                {SummaryPageConstants.ILRFile, reportServiceContext.OriginalFilename},
+                {SummaryPageConstants.LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename)},
+                {SummaryPageConstants.LastEASUpdate, easLastUpdate},
+                {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
 
             var footerDataDictionary = new Dictionary<string, string>()
             {
-                {ApplicationVersion, reportServiceContext.ServiceReleaseVersion},
-                {FilePreparationDate, filePreparationDate},
-                {LARSVersion, larsVersion},
-                {PostcodeVersion, postcodesVersion},
-                {OrganisationVersion, orgVersion},
-                {LargeEmployersVersion, employersVersion},
-                {ReportGeneratedAt, reportGeneratedAt}
+                {SummaryPageConstants.ApplicationVersion, reportServiceContext.ServiceReleaseVersion},
+                {SummaryPageConstants.FilePreparationDate, filePreparationDate},
+                {SummaryPageConstants.LARSVersion, larsVersion},
+                {SummaryPageConstants.PostcodeVersion, postcodesVersion},
+                {SummaryPageConstants.OrganisationVersion, orgVersion},
+                {SummaryPageConstants.LargeEmployersVersion, employersVersion},
+                {SummaryPageConstants.ReportGeneratedAt, reportGeneratedAt}
             };
 
             return new SummaryPageModel()
