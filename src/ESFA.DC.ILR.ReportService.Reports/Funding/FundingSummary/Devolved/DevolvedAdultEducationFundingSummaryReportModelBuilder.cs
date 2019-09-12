@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
+using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
@@ -16,12 +16,10 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 {
-    public class DevolvedAdultEducationFundingSummaryReportModelBuilder : IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
+    public class DevolvedAdultEducationFundingSummaryReportModelBuilder : AbstractReportModelBuilder, IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
-        private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
-        private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
 
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
@@ -208,16 +206,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
         private decimal? GetPeriodValue(List<EasPaymentValue> easPaymentValues, int sofCode)
         {
             return easPaymentValues?.Where(sof => sof.DevolvedAreaSofs == sofCode).Select(pv => pv.PaymentValue).FirstOrDefault() ?? 0m;
-        }
-
-        private string ExtractDisplayDateTimeFromFileName(string ilrFileName)
-        {
-            var parts = ilrFileName.Split('/');
-            var ilrFilenameDateTime = parts[parts.Length - 1].Substring(18, 15);
-
-            DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime);
-
-            return parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat);
         }
     }
 }

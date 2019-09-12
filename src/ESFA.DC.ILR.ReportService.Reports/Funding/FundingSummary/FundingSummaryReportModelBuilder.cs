@@ -6,6 +6,7 @@ using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
@@ -15,13 +16,11 @@ using ESFA.DC.ILR.ReportService.Reports.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
-    public class FundingSummaryReportModelBuilder : IModelBuilder<FundingSummaryReportModel>
+    public class FundingSummaryReportModelBuilder : AbstractReportModelBuilder, IModelBuilder<FundingSummaryReportModel>
     {
         private string AdultEducationBudgetNote =
             "Please note that devolved adult education funding for learners who are funded through the Mayoral Combined Authorities or Greater London Authority is not included here.\nPlease refer to the separate Devolved Adult Education Funding Summary Report.";
         private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
-        private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
-        private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
 
         private const string ProviderName = "Provider Name:";
         private const string UKPRN = "UKPRN:";
@@ -196,23 +195,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
             var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
 
-            var headerDataDictionary = new Dictionary<string, string>();
-            var footerDataDictionary = new Dictionary<string, string>();
+            var headerDataDictionary = new Dictionary<string, string>()
+            {
+                {ProviderName, organisationName},
+                {UKPRN, reportServiceContext.Ukprn.ToString()},
+                {ILRFile, reportServiceContext.OriginalFilename},
+                {LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename)},
+                {LastEASUpdate, easLastUpdate},
+                {SecurityClassification, ReportingConstants.OfficialSensitive}
+            };
 
-            headerDataDictionary.Add(ProviderName, organisationName);
-            headerDataDictionary.Add(UKPRN, reportServiceContext.Ukprn.ToString());
-            headerDataDictionary.Add(ILRFile, reportServiceContext.OriginalFilename);
-            headerDataDictionary.Add(LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename));
-            headerDataDictionary.Add(LastEASUpdate, easLastUpdate);
-            headerDataDictionary.Add(SecurityClassification, ReportingConstants.OfficialSensitive);
-
-            footerDataDictionary.Add(ApplicationVersion, reportServiceContext.ServiceReleaseVersion);
-            footerDataDictionary.Add(FilePreparationDate, filePreparationDate);
-            footerDataDictionary.Add(LARSVersion, larsVersion);
-            footerDataDictionary.Add(PostcodeVersion, postcodesVersion);
-            footerDataDictionary.Add(OrganisationVersion, orgVersion);
-            footerDataDictionary.Add(LargeEmployersVersion, employersVersion);
-            footerDataDictionary.Add(ReportGeneratedAt, reportGeneratedAt);
+            var footerDataDictionary = new Dictionary<string, string>()
+            {
+                {ApplicationVersion, reportServiceContext.ServiceReleaseVersion},
+                {FilePreparationDate, filePreparationDate},
+                {LARSVersion, larsVersion},
+                {PostcodeVersion, postcodesVersion},
+                {OrganisationVersion, orgVersion},
+                {LargeEmployersVersion, employersVersion},
+                {ReportGeneratedAt, reportGeneratedAt}
+            };
 
             return new SummaryPageModel()
             {
@@ -359,16 +361,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             return new FundLineGroup($"EAS Total {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, new [] { FundLineConstants.AdvancedLearnerLoansBursary }, periodisedValues)
                 .WithFundLine($"EAS {description} Excess Support (£)", new[] { AttributeConstants.EasAllbExcessSupport })
                 .WithFundLine($"EAS {description} Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaims });
-        }
-
-        private string ExtractDisplayDateTimeFromFileName(string ilrFileName)
-        {
-            var parts = ilrFileName.Split('/');
-            var ilrFilenameDateTime = parts[parts.Length - 1].Substring(18, 15);
-
-            DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime);
-
-            return parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat);
         }
     }
 }
