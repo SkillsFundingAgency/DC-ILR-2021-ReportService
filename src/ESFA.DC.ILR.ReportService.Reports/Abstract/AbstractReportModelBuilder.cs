@@ -10,12 +10,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 
         public string ExtractDisplayDateTimeFromFileName(string ilrFileName)
         {
+            if (ilrFileName.Length < 33)
+            {
+                return string.Empty;
+            }
+
             var parts = ilrFileName.Split('/');
             var ilrFilenameDateTime = parts[parts.Length - 1].Substring(18, 15);
 
-            DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime);
-
-            return parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat);
+            return DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime) 
+                ? parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat) : string.Empty;
         }
     }
 }
