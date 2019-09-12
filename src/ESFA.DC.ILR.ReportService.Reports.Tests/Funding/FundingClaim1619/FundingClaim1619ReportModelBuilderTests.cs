@@ -107,7 +107,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.Filename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
             dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
@@ -247,7 +247,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.Filename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
             dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
@@ -364,6 +364,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
         public void FilterFundLine_Mismatch()
         {
             NewBuilder().FilterFundLine("Junk").Should().BeFalse();
+        }
+
+
+        [Theory]
+        [InlineData("ILR-10006341-1920-20190701-000000-97.xml", "ILR-10006341-1920-20190701-000000-97.xml")]
+        [InlineData("10006341/ILR-10006341-1920-20190701-000000-97.xml", "ILR-10006341-1920-20190701-000000-97.xml")]
+        [InlineData("10006341/121/ILR-10006341-1920-20190701-000000-97.xml", "ILR-10006341-1920-20190701-000000-97.xml")]
+        [InlineData("","")]
+        [InlineData(null,"")]
+        public void FilenameTests(string originalFilename, string expectedFilename)
+        {
+            var actualFilename = NewBuilder().IlrFilename(originalFilename);
+            actualFilename.Should().BeEquivalentTo(expectedFilename);
         }
 
         private List<ILearner> BuildLearners(TestLearningDelivery learningDelivery)

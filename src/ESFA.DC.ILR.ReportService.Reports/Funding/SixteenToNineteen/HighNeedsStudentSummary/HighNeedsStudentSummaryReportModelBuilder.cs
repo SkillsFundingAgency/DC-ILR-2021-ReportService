@@ -7,12 +7,14 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary
 {
-    public class HighNeedsStudentSummaryReportModelBuilder : IModelBuilder<HighNeedsStudentSummaryReportModel>
+    public class HighNeedsStudentSummaryReportModelBuilder : AbstractSixteenToNineteenReportModelBuilder, IModelBuilder<HighNeedsStudentSummaryReportModel>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
@@ -31,8 +33,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             var learners = message?.Learners ?? Enumerable.Empty<ILearner>();
             var model = new HighNeedsStudentSummaryReportModel();
 
-            var ilrFileName = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
-
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             // Header
             model.ProviderName = organisationName;
             model.Ukprn = reportServiceContext.Ukprn;
-            model.IlrFile = ilrFileName;
+            model.IlrFile = ExtractFileName(reportServiceContext.OriginalFilename);
             model.Year = ReportingConstants.Year;
 
            
