@@ -32,7 +32,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
 
         public IEnumerable<SummaryOfFM35FundingReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
-            var ukprn = reportServiceContext.Ukprn;
             var fm35 = reportServiceDependentData.Get<FM35Global>();
 
             var fm35LearningDeliveries = GetFM35LearningDeliveryPeriodisedValues(fm35, reportServiceContext.Ukprn);
@@ -46,12 +45,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
                 {
                     if (fm35LearningDeliveryDictionary.TryGetValue(fundline, out var learningDelivery))
                     {
-                        models.Add(BuildRow(ukprn, fundline, periodIndex, learningDelivery));
+                        models.Add(BuildRow(fundline, periodIndex, learningDelivery));
                     }
 
                     else
                     {
-                        models.Add(BuildDefaultRow(ukprn, fundline, periodIndex));
+                        models.Add(BuildDefaultRow(fundline, periodIndex));
                     }
                 }
             }
@@ -144,11 +143,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
             return periodisedValues?.Where(p => p != null).Sum(p => p[periodIndex]) ?? 0m;
         }
 
-        private SummaryOfFM35FundingReportModel BuildRow(int ukprn, string fundline, int periodIndex, Dictionary<string, decimal?[][]> learningDelivery)
+        private SummaryOfFM35FundingReportModel BuildRow(string fundline, int periodIndex, Dictionary<string, decimal?[][]> learningDelivery)
         {
             return new SummaryOfFM35FundingReportModel
             {
-                UKPRN = ukprn,
                 FundingLineType = fundline,
                 Period = periodIndex + 1,
                 OnProgramme = GetPeriodValue(learningDelivery[AttributeConstants.Fm35OnProgPayment], periodIndex),
@@ -159,11 +157,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
             };
         }
 
-        private SummaryOfFM35FundingReportModel BuildDefaultRow(int ukprn, string fundline, int periodIndex)
+        private SummaryOfFM35FundingReportModel BuildDefaultRow(string fundline, int periodIndex)
         {
             return new SummaryOfFM35FundingReportModel
             {
-                UKPRN = ukprn,
                 FundingLineType = fundline,
                 Period = periodIndex + 1,
                 OnProgramme = 0m,

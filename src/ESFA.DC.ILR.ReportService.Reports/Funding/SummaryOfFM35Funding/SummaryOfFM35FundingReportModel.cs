@@ -2,8 +2,6 @@
 {
     public class SummaryOfFM35FundingReportModel
     {
-        public int UKPRN { get; set; }
-
         public string FundingLineType { get; set; }
 
         public int Period { get; set; }
