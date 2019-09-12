@@ -31,7 +31,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
             var organisation = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn);
             var organisationName = organisation?.Name ?? string.Empty;
-            var ilrFileName = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
             var cofRemoval = organisation?.OrganisationCoFRemovals?.OrderByDescending(x => x.EffectiveFrom).FirstOrDefault()?.CoFRemoval;
             var learners = message?.Learners ?? Enumerable.Empty<ILearner>();
 
@@ -44,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             // Header
             model.ProviderName = organisationName;
             model.Ukprn = reportServiceContext.Ukprn;
-            model.IlrFile = ilrFileName;
+            model.IlrFile = IlrFilename(reportServiceContext.OriginalFilename);
             model.Year = ReportingConstants.Year;
             model.CofRemoval = -cofRemoval.GetValueOrDefault();
 
@@ -124,6 +123,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         public bool Band2(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("280 to 359 hours (Band 2)");
 
         public bool Band1(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("Up to 279 hours (Band 1)");
+
+        public string IlrFilename(string originalFilename) => ExtractFileName(originalFilename);
 
         private FundingLineReportingBandModel BuildFundlineReprtingBandModel(List<FM25Learner> fm25Learners)
         {

@@ -21,5 +21,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
             return DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime) 
                 ? parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat) : string.Empty;
         }
+
+        public string ExtractFileName(string ilrFileName)
+        {
+            if (string.IsNullOrEmpty(ilrFileName) || ilrFileName.Length < 33)
+            {
+                return string.Empty;
+            }
+
+            var parts = ilrFileName.Split('/');
+            var ilrFilename = parts[parts.Length - 1];
+
+            return ilrFilename;
+        }
     }
 }

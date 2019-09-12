@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
-using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish;
-using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
 {
-    public abstract class AbstractSixteenToNineteenReportModelBuilder
+    public abstract class AbstractSixteenToNineteenReportModelBuilder : AbstractReportModelBuilder
     {
         private readonly IDictionary<string, int?> _fundModelDictionary =
               new Dictionary<string, int?>(StringComparer.OrdinalIgnoreCase)
