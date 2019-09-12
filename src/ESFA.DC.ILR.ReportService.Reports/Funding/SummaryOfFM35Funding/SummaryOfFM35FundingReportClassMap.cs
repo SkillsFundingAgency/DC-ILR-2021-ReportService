@@ -8,7 +8,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
         {
             var index = 0;
 
-            Map(m => m.UKPRN).Name(@"UKPRN").Index(++index);
             Map(m => m.FundingLineType).Name(@"Funding Line Type").Index(++index);
             Map(m => m.Period).Name(@"Period").Index(++index);
             Map(m => m.OnProgramme).Name(@"On-programme (£)").Index(++index);

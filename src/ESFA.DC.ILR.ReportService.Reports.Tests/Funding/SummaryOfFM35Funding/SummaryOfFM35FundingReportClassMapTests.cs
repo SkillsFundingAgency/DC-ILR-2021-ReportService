@@ -16,7 +16,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
         {
             var orderedColumns = new string[]
             {
-                "UKPRN",
                 "Funding Line Type",
                 "Period",
                 "On-programme (£)",
@@ -55,7 +54,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(11);
+                        header.Should().HaveCount(10);
                     }
                 }
             }
@@ -68,7 +67,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
             {
                 new SummaryOfFM35FundingReportModel()
                 {
-                    UKPRN = 1,
                     FundingLineType = "FundLine1",
                     Period = 1,
                     OnProgramme = 1m,
@@ -79,7 +77,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
                 },
                 new SummaryOfFM35FundingReportModel()
                 {
-                    UKPRN = 1,
                     FundingLineType = "FundLine2",
                     Period = 2,
                     OnProgramme = 2m,
@@ -110,7 +107,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
                     {
                         var output = csvReader.GetRecords<dynamic>().ToList();
 
-                        (output[0] as IDictionary<string, object>).Values.ToArray()[1].Should().Be("FundLine1");
+                        (output[0] as IDictionary<string, object>).Values.ToArray()[0].Should().Be("FundLine1");
                     }
                 }
             }
