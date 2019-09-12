@@ -2,13 +2,14 @@
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 using System.Collections.Generic;
+using ESFA.DC.DateTimeProvider.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Desktop
 {
     public class DesktopFundingSummaryReportModelBuilder : FundingSummaryReportModelBuilder
     {
-        public DesktopFundingSummaryReportModelBuilder(IPeriodisedValuesLookupProvider periodisedValuesLookupProvider)
-            : base(periodisedValuesLookupProvider)
+        public DesktopFundingSummaryReportModelBuilder(IPeriodisedValuesLookupProvider periodisedValuesLookupProvider, IDateTimeProvider dateTimeProvider)
+            : base(periodisedValuesLookupProvider, dateTimeProvider)
         {
             FundingDataSources = new[]
             {
