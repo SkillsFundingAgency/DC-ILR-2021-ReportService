@@ -21,7 +21,6 @@
         public const string FundingClaim1619Report = "TaskGenerateFundingClaim1619Report";
         public const string TrailblazerAppsOccupancyReport = "TaskGenerateTrailblazerAppsOccupancyReport";
         public const string HNSReport = "TaskGenerateHNSReport";
-        public const string SummaryOfFM35FundingReport = "TaskGenerateSummaryOfFM35FundingReport";
         public const string NonContractedAppsActivityReport = "TaskGenerateNonContractedAppsActivityReport";
         public const string ILRDataQualityReport = "TaskGenerateILRDataQualityReport";
         public const string HNSSummaryReport = "TaskGenerateHNSSummaryReport";
