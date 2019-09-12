@@ -139,6 +139,7 @@
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportClassMapTests.cs" />
+    <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportModelBuilderTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportClassMapTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportModelBuilderTests.cs" />
