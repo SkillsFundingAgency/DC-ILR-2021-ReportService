@@ -59,9 +59,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
                 _fundingSummaryReportRenderService.Render(fundingSummaryReportModel, worksheet);
 
-                var summaryPage = _excelService.GetWorksheetFromWorkbook(workbook, "Summary");
+                //var summaryPage = _excelService.GetWorksheetFromWorkbook(workbook, "Summary");
 
-                _summaryPageRenderService.Render(fundingSummaryReportModel.SummaryPage, summaryPage);
+                //_summaryPageRenderService.Render(fundingSummaryReportModel.SummaryPage, summaryPage);
 
                 await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             }

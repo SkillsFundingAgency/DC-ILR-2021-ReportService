@@ -1,5 +1,4 @@
 ﻿using Aspose.Cells;
-using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -7,20 +6,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
 {
     public class SummaryPageRenderService : IRenderService<ISummaryPage>
     {
-        private readonly Style _defaultStyle;
+        private readonly Style _descriptionStyle;
+
+        private readonly StyleFlag _styleFlag = new StyleFlag()
+        {
+            All = true,
+        };
 
         public SummaryPageRenderService()
         {
             var cellsFactory = new CellsFactory();
-            _defaultStyle = cellsFactory.CreateStyle();
+            _descriptionStyle = cellsFactory.CreateStyle();
             ConfigureStyles();
         }
 
         public Worksheet Render(ISummaryPage model, Worksheet worksheet)
         {
-            worksheet.Workbook.DefaultStyle = _defaultStyle;
-            worksheet.Cells.StandardWidth = 20;
-            worksheet.Cells.Columns[0].Width = 65;
+            worksheet.Cells.Columns[0].Width = 30;
+            worksheet.Cells.Columns[1].Width = 40;
+            worksheet.Cells.CreateRange(0, 0, 13, 1).ApplyStyle(_descriptionStyle, _styleFlag);
 
             int row = 0;
 
@@ -49,9 +53,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
 
         private void ConfigureStyles()
         {
-            _defaultStyle.Font.Size = 10;
-            _defaultStyle.Font.Name = "Arial";
-            _defaultStyle.Font.IsBold = true;
+            _descriptionStyle.Font.Size = 10;
+            _descriptionStyle.Font.Name = "Arial";
+            _descriptionStyle.Font.IsBold = true;
         }
     }
 }
