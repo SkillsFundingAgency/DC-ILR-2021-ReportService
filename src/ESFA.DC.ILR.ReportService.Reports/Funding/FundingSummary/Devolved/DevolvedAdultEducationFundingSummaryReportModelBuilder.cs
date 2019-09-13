@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     mgaClaSof,
                     reportServiceContext.Ukprn,
                     organisationName,
-                    reportServiceContext.OriginalFilename,
+                    ExtractFileName(reportServiceContext.OriginalFilename),
                     ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
                     filePreparationDate,
                     easLastUpdate,
