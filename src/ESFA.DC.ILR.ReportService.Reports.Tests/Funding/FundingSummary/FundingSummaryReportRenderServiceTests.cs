@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
@@ -20,7 +21,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             var currentPeriod = 12;
 
             var fundingSummaryReport = 
-                new FundingSummaryReportModel(Enumerable.Range(1, 5)
+                new FundingSummaryReportModel(
+                    new Dictionary<string, string>(), 
+                    Enumerable.Range(1, 5)
                     .Select(l => (IFundingCategory)new FundingCategory("Funding Category Title", currentPeriod, Enumerable.Range(1, 10)
                         .Select(k => (IFundingSubCategory)new FundingSubCategory("Funding Sub Category Title", currentPeriod)
                         {
@@ -35,7 +38,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                                     };
                                 }).ToList()
                         }).ToList()))
-                    .ToList(), new SummaryPageModel());
+                    .ToList(),
+                    new Dictionary<string, string>());
             
             var worksheet = workbook.Worksheets[0];
 

@@ -22,6 +22,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private readonly Style _fundingCategoryStyle;
         private readonly Style _fundingSubCategoryStyle;
         private readonly Style _fundLineGroupStyle;
+        private readonly Style _headerStyle;
+        private readonly Style _footerStyle;
 
         private readonly StyleFlag _styleFlag = new StyleFlag()
         {
@@ -43,6 +45,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _fundingCategoryStyle = cellsFactory.CreateStyle();
             _fundingSubCategoryStyle = cellsFactory.CreateStyle();
             _fundLineGroupStyle = cellsFactory.CreateStyle();
+            _headerStyle = cellsFactory.CreateStyle();
+            _footerStyle = cellsFactory.CreateStyle();
 
             ConfigureStyles();
         }
@@ -53,12 +57,50 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             worksheet.Cells.StandardWidth = 20;
             worksheet.Cells.Columns[0].Width = 65;
 
+            RenderHeader(worksheet, NextRow(worksheet), fundingSummaryReport);
+
             foreach (var fundingCategory in fundingSummaryReport.FundingCategories)
             {
                 RenderFundingCategory(worksheet, fundingCategory);
             }
-            
+
+            RenderFooter(worksheet, NextRow(worksheet) + 1, fundingSummaryReport);
+
             worksheet.AutoFitColumn(0);
+
+            return worksheet;
+        }
+
+        private Worksheet RenderHeader(Worksheet worksheet, int row, IFundingSummaryReport fundingSummaryReport)
+        {
+            foreach (var entry in fundingSummaryReport.HeaderData)
+            {
+                worksheet.Cells.ImportTwoDimensionArray(new object[,]
+                {
+                    { entry.Key, entry.Value }
+                }, row, 0);
+
+                ApplyStyleToRow(worksheet, row, _headerStyle);
+
+                row++;
+            }
+
+            return worksheet;
+        }
+
+        private Worksheet RenderFooter(Worksheet worksheet, int row, IFundingSummaryReport fundingSummaryReport)
+        {
+            foreach (var entry in fundingSummaryReport.FooterData)
+            {
+                worksheet.Cells.ImportTwoDimensionArray(new object[,]
+                {
+                    { entry.Key, entry.Value }
+                }, row, 0);
+
+                ApplyStyleToRow(worksheet, row, _footerStyle);
+
+                row++;
+            }
 
             return worksheet;
         }
@@ -260,6 +302,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _fundLineGroupStyle.Font.IsBold = true;
             _fundLineGroupStyle.Font.Name = "Arial";
             _fundLineGroupStyle.SetCustom(DecimalFormat, false);
+
+            _headerStyle.Font.Size = 10;
+            _headerStyle.Font.Name = "Arial";
+            _headerStyle.Font.IsBold = true;
+
+            _footerStyle.Font.Size = 10;
+            _footerStyle.Font.Name = "Arial";
+            _footerStyle.Font.IsBold = true;
         }
     }
 }

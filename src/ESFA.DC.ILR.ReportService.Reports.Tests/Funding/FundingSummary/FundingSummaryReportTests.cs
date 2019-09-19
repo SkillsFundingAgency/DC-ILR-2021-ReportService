@@ -75,9 +75,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel, true)).Returns(fileName);
 
             var fundingSummaryReportRenderServiceMock = new Mock<IRenderService<IFundingSummaryReport>>();
-            var summaryPageRenderServiceMock = new Mock<IRenderService<ISummaryPage>>();
             
-            var report = NewReport(fileNameServiceMock.Object, fundingSummaryReportModelBuilderMock.Object, excelServiceMock.Object, fundingSummaryReportRenderServiceMock.Object, summaryPageRenderServiceMock.Object);
+            var report = NewReport(fileNameServiceMock.Object, fundingSummaryReportModelBuilderMock.Object, excelServiceMock.Object, fundingSummaryReportRenderServiceMock.Object);
 
             var cancellationToken = CancellationToken.None;
 
@@ -156,14 +155,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel, true)).Returns(fileName);
 
             var fundingSummaryReportRenderService = new FundingSummaryReportRenderService();
-            var summaryPageRenderService = new SummaryPageRenderService();
 
             var report = NewReport(
                 fileNameServiceMock.Object,
                 fundingSummaryReportModelBuilder,
                 excelService,
-                fundingSummaryReportRenderService,
-                summaryPageRenderService);
+                fundingSummaryReportRenderService);
 
             var cancellationToken = CancellationToken.None;
 
@@ -176,10 +173,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             IFileNameService fileNameService = null,
             IModelBuilder<IFundingSummaryReport> fundingSummaryReportModelBuilder = null,
             IExcelService excelService = null,
-            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService = null,
-            IRenderService<ISummaryPage> summaryPageRenderService = null)
+            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService = null)
         {
-            return new FundingSummaryReport(fileNameService, fundingSummaryReportModelBuilder, excelService, fundingSummaryReportRenderService, summaryPageRenderService);
+            return new FundingSummaryReport(fileNameService, fundingSummaryReportModelBuilder, excelService, fundingSummaryReportRenderService);
         }
     }
 }
