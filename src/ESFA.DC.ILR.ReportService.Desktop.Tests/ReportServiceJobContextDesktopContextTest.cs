@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -41,7 +42,9 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 10, 10));
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
 
-            var context = NewContext(mockDesktopContext.Object);
+            var reportFilterQueries = Enumerable.Empty<IReportFilterQuery>();
+
+            var context = NewContext(mockDesktopContext.Object, reportFilterQueries);
 
             context.Filename.Should().Be("someilr.xml");
             context.OriginalFilename.Should().Be("mtheoriginal.xml");
@@ -67,11 +70,13 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             context.Tasks.ElementAt(0).Should().Be("TaskGenerateValidationReport");
             context.Tasks.ElementAt(1).Should().Be("TaskGenerateFundingSummaryReport");
             context.Tasks.ElementAt(2).Should().Be("TaskGenerateAdultFundingClaimReport");
+
+            context.ReportFilters.Should().BeSameAs(reportFilterQueries);
         }
 
-        private ReportServiceJobContextDesktopContext NewContext(IDesktopContext desktopContext)
+        private ReportServiceJobContextDesktopContext NewContext(IDesktopContext desktopContext, IEnumerable<IReportFilterQuery> reportFilterQueries)
         {
-            return new ReportServiceJobContextDesktopContext(desktopContext);
+            return new ReportServiceJobContextDesktopContext(desktopContext, reportFilterQueries);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 
         public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
-            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Csv);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Csv);
 
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
 

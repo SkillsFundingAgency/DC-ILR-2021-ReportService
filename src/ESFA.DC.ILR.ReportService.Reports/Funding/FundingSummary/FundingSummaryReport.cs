@@ -48,7 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         {
             var fundingSummaryReportModel = _fundingSummaryReportModelBuilder.Build(reportServiceContext, reportsDependentData);
 
-            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
 
             using (var workbook = _excelService.NewWorkbook())
             {

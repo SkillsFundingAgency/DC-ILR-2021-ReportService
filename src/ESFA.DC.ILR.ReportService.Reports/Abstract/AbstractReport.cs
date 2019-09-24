@@ -5,11 +5,11 @@
         protected AbstractReport(string taskName, string fileName)
         {
             TaskName = taskName;
-            FileName = fileName;
+            ReportName = fileName;
         }
 
         public string TaskName { get; }
 
-        public string FileName { get; }
+        public string ReportName { get; }
     }
 }

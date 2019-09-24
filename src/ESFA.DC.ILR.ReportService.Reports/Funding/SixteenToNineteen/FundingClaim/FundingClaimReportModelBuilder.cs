@@ -23,6 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         {
             _dateTimeProvider = dateTimeProvider;
         }
+
         public FundingClaimReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var message = reportServiceDependentData.Get<IMessage>();
@@ -106,9 +107,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         public IEnumerable<ILearner> FilterLearners(IEnumerable<ILearner> learners)
         {
             return learners.Where(x => x.LearningDeliveries.Any(ld =>
-                ld.FundModel == 25 &&
+                ld.FundModel == FundModelConstants.FM25 &&
                 ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.SOF)) &&
-                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619)))).ToList();
+                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619))));
         }
 
 
