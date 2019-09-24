@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface
 {
@@ -7,6 +6,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interfa
     {
         List<IFundingCategory> FundingCategories { get; }
 
-        ISummaryPage SummaryPage { get; }
+        IDictionary<string, string> HeaderData { get; }
+
+        IDictionary<string, string> FooterData { get; }
     }
 }

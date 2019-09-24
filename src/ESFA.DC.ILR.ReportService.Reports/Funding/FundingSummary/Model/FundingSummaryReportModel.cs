@@ -1,20 +1,24 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Model;
-using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model
 {
     public class FundingSummaryReportModel : IFundingSummaryReport
     {
-        public FundingSummaryReportModel(List<IFundingCategory> fundingCategories, ISummaryPage summaryPage)
+        public FundingSummaryReportModel(
+            IDictionary<string, string> headerData,
+            List<IFundingCategory> fundingCategories,
+            IDictionary<string, string> footerData)
         {
             FundingCategories = fundingCategories ?? new List<IFundingCategory>();
-            SummaryPage = summaryPage ?? new SummaryPageModel();
+            HeaderData = headerData ?? new Dictionary<string, string>();
+            FooterData = footerData ?? new Dictionary<string, string>();
         }
+
+        public IDictionary<string, string> HeaderData { get; }
 
         public List<IFundingCategory> FundingCategories { get; }
 
-        public ISummaryPage SummaryPage { get; }
+        public IDictionary<string, string> FooterData { get; }
     }
 }
