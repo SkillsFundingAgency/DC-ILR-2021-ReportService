@@ -22,8 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private readonly Style _fundingCategoryStyle;
         private readonly Style _fundingSubCategoryStyle;
         private readonly Style _fundLineGroupStyle;
-        private readonly Style _headerStyle;
-        private readonly Style _footerStyle;
+        private readonly Style _headerAndFooterStyle;
 
         private readonly StyleFlag _styleFlag = new StyleFlag()
         {
@@ -45,8 +44,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _fundingCategoryStyle = cellsFactory.CreateStyle();
             _fundingSubCategoryStyle = cellsFactory.CreateStyle();
             _fundLineGroupStyle = cellsFactory.CreateStyle();
-            _headerStyle = cellsFactory.CreateStyle();
-            _footerStyle = cellsFactory.CreateStyle();
+            _headerAndFooterStyle = cellsFactory.CreateStyle();
 
             ConfigureStyles();
         }
@@ -80,7 +78,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                     { entry.Key, entry.Value }
                 }, row, 0);
 
-                ApplyStyleToRow(worksheet, row, _headerStyle);
+                ApplyStyleToRow(worksheet, row, _headerAndFooterStyle);
 
                 row++;
             }
@@ -97,7 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                     { entry.Key, entry.Value }
                 }, row, 0);
 
-                ApplyStyleToRow(worksheet, row, _footerStyle);
+                ApplyStyleToRow(worksheet, row, _headerAndFooterStyle);
 
                 row++;
             }
@@ -303,13 +301,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             _fundLineGroupStyle.Font.Name = "Arial";
             _fundLineGroupStyle.SetCustom(DecimalFormat, false);
 
-            _headerStyle.Font.Size = 10;
-            _headerStyle.Font.Name = "Arial";
-            _headerStyle.Font.IsBold = true;
-
-            _footerStyle.Font.Size = 10;
-            _footerStyle.Font.Name = "Arial";
-            _footerStyle.Font.IsBold = true;
+            _headerAndFooterStyle.Font.Size = 10;
+            _headerAndFooterStyle.Font.Name = "Arial";
+            _headerAndFooterStyle.Font.IsBold = true;
         }
     }
 }
