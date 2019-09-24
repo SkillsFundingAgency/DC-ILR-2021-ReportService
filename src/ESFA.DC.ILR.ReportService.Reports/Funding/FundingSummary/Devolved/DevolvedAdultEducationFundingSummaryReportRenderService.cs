@@ -94,7 +94,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 { UKPRN, fundingSummaryReport.Ukprn.ToString() },
                 { ILRFile, fundingSummaryReport.IlrFile },
                 { LastILRFileUpdate, fundingSummaryReport.LastSubmittedIlrFileName },
-                { LastEASUpdate, "" }, // TODO Need Reference Data Update
+                { LastEASUpdate, fundingSummaryReport.EasLastUpdated },
                 { SourceOfFunding, fundingSummaryReport.SofLookup.McaGlaFullName },
                 { SecurityClassification, ReportingConstants.OfficialSensitive }
             },row,0 );
