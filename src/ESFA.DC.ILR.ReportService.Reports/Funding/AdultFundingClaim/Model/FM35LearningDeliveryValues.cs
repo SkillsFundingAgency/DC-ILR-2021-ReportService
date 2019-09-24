@@ -6,12 +6,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim.Model
 {
     public class FM35LearningDeliveryValues
     {
-        public int UKPRN { get; set; }
-
-        public string LearnRefNumber { get; set; }
-
-        public int AimSeqNumber { get; set; }
-
         public string FundLine { get; set; }
 
         public string AttributeName { get; set; }
