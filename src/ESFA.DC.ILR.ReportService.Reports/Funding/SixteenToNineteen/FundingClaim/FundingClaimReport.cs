@@ -33,9 +33,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
                 DependentDataCatalog.ReferenceData
             };
 
-        public IEnumerable<IReportFilterPropertyDefinition> FilteredOn => new[]
+        public IReportFilterDefinition Filter => new ReportFilterDefinition()
         {
-            new ReportFilterPropertyDefinition<DateTime?>("Reference Date"),
+            ReportName = ReportName,
+            Properties = new[]
+            {
+                new ReportFilterPropertyDefinition<DateTime?>("Reference Date"),
+            }
         };
 
         public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
