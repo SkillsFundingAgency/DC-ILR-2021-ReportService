@@ -158,7 +158,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingClaimReport>().As<IReport>();
             containerBuilder.RegisterType<FundingClaimReportModelBuilder>().As<IModelBuilder<FundingClaimReportModel>>();
         }
-        private void RegisterAdultFundingClaimReport(ContainerBuilder containerBuilder)
+        protected virtual void RegisterAdultFundingClaimReport(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<AdultFundingClaimReport>().As<IReport>();
             containerBuilder.RegisterType<AdultFundingClaimReportModelBuilder>().As<IModelBuilder<AdultFundingClaimReportModel>>();

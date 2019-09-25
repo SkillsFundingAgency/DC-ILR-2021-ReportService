@@ -316,27 +316,27 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
                 foreach (var submissionValue in submissionValues)
                 {
                     value = value +
-                            (submissionValue.Period1?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period2?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period3?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period4?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period5?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period6?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
+                            (submissionValue.Period1?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                            (submissionValue.Period2?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                            (submissionValue.Period3?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                            (submissionValue.Period4?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                            (submissionValue.Period5?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                            (submissionValue.Period6?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0);
 
                     if (forMonths >= 10)
                     {
                         value = value +
-                                (submissionValue.Period7?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                                (submissionValue.Period8?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                                (submissionValue.Period9?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                                (submissionValue.Period10?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
+                                (submissionValue.Period7?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                                (submissionValue.Period8?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                                (submissionValue.Period9?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                                (submissionValue.Period10?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0);
                     }
 
                     if (forMonths == 12)
                     {
                         value = value +
-                                (submissionValue.Period11?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                                (submissionValue.Period12?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
+                                (submissionValue.Period11?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0) +
+                                (submissionValue.Period12?.Where(x => x.PaymentValue != null).Sum(x => x.PaymentValue.Value) ?? 0);
                     }
                 }
             }

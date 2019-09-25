@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
-using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
@@ -35,7 +33,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
             var workbook = _excelService.BindExcelTemplateToWorkbook(model, "AdultFundingClaimReportTemplate.xlsx", "AdultFundingClaim");
-            workbook.Worksheets[0].Cells.DeleteRow(FisInfoRow);
+            RenderIndicativeMessage(workbook);
             await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] { fileName };
         }
@@ -47,5 +45,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
                 DependentDataCatalog.Fm99,
                 DependentDataCatalog.ReferenceData
             };
+
+        public virtual void RenderIndicativeMessage(Workbook workbook)
+        {
+            workbook.Worksheets[0].Cells.DeleteRow(FisInfoRow);
+        }
     }
 }
