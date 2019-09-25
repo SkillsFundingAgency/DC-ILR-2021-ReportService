@@ -153,7 +153,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
 
         private void RegisterFundingClaim1619Report(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<FundingClaimReport>().As<IReport>();
+            containerBuilder.RegisterType<FundingClaimReport>().As<IReport>().As<IFilteredReport>();
             containerBuilder.RegisterType<FundingClaimReportModelBuilder>().As<IModelBuilder<FundingClaimReportModel>>();
         }
     }

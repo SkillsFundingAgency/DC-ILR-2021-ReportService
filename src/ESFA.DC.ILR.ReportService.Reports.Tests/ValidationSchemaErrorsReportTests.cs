@@ -74,7 +74,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
         [Fact]
         public void FileName()
         {
-            NewReport().FileName.Should().Be("Rule Violation Report");
+            NewReport().ReportName.Should().Be("Rule Violation Report");
         }
 
         [Fact]

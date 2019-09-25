@@ -78,7 +78,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 06, 25));
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
 
-            var reportServiceJobContextDesktopContext = new ReportServiceJobContextDesktopContext(mockDesktopContext.Object);
+            var reportServiceJobContextDesktopContext = new ReportServiceJobContextDesktopContext(mockDesktopContext.Object, Enumerable.Empty<IReportFilterQuery>());
 
             var reportOutputFileNames = await entryPoint.Callback(reportServiceJobContextDesktopContext, cancellationToken);
 
