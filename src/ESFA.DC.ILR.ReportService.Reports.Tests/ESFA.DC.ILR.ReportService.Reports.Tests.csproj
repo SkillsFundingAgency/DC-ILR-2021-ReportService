@@ -138,6 +138,7 @@
     <Compile Include="Extensions\IEnumerableExtensionsTests.cs" />
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
+    <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportClassMapTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportModelBuilderTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportTests.cs" />
@@ -216,9 +217,7 @@
       <Name>ESFA.DC.ILR.ReportService.Service.Interface</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Funding\AdultFundingClaim\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

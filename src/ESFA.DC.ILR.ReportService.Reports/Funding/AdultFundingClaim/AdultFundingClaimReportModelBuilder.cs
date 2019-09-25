@@ -19,6 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
+        private const string LastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
 
         private const int MidYearMonths = 6;
         private const int YearEndMonths = 10;
@@ -131,7 +132,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             model.OrganisationData = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             // todo: model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.
-            model.LastEASFileUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault().ToString("dd/MM/yyyy");
+            model.LastEASFileUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault().ToString(LastSubmittedIlrFileDateStringFormat);
             model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
             return model;
         }
@@ -243,27 +244,27 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             string[] fundLines)
         {
             decimal value = 0;
-            var otherLearningProgramFunding = albLearningDeliveryValues.Where(x =>
+            var deliveryValues = albLearningDeliveryValues.Where(x =>
                 attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
                 && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
-            foreach (var deliveryValues in otherLearningProgramFunding)
+            foreach (var deliveryValue in deliveryValues)
             {
                 value = value +
-                        deliveryValues.Period1.GetValueOrDefault() + deliveryValues.Period2.GetValueOrDefault() + deliveryValues.Period3.GetValueOrDefault() +
-                        deliveryValues.Period4.GetValueOrDefault() + deliveryValues.Period5.GetValueOrDefault() + deliveryValues.Period6.GetValueOrDefault();
+                        deliveryValue.Period1.GetValueOrDefault() + deliveryValue.Period2.GetValueOrDefault() + deliveryValue.Period3.GetValueOrDefault() +
+                        deliveryValue.Period4.GetValueOrDefault() + deliveryValue.Period5.GetValueOrDefault() + deliveryValue.Period6.GetValueOrDefault();
 
                 if (forMonths >= 10)
                 {
                     value = value +
-                            deliveryValues.Period7.GetValueOrDefault() + deliveryValues.Period8.GetValueOrDefault() + deliveryValues.Period9.GetValueOrDefault() +
-                            deliveryValues.Period10.GetValueOrDefault();
+                            deliveryValue.Period7.GetValueOrDefault() + deliveryValue.Period8.GetValueOrDefault() + deliveryValue.Period9.GetValueOrDefault() +
+                            deliveryValue.Period10.GetValueOrDefault();
                 }
 
                 if (forMonths == 12)
                 {
                     value = value +
-                            deliveryValues.Period11.GetValueOrDefault() + deliveryValues.Period12.GetValueOrDefault();
+                            deliveryValue.Period11.GetValueOrDefault() + deliveryValue.Period12.GetValueOrDefault();
                 }
             }
 
@@ -277,27 +278,27 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             string[] fundLines)
         {
             decimal value = 0;
-            var otherLearningProgramFunding = fm35LearningDeliveryPeriodisedValues.Where(x =>
+            var fm35LearningDeliveryValues = fm35LearningDeliveryPeriodisedValues.Where(x =>
                 attributes.Any(a => a.CaseInsensitiveEquals(x.AttributeName))
                 && fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).ToList();
 
-            foreach (var deliveryValues in otherLearningProgramFunding)
+            foreach (var deliveryValue in fm35LearningDeliveryValues)
             {
                 value = value +
-                        deliveryValues.Period1.GetValueOrDefault() + deliveryValues.Period2.GetValueOrDefault() + deliveryValues.Period3.GetValueOrDefault() +
-                        deliveryValues.Period4.GetValueOrDefault() + deliveryValues.Period5.GetValueOrDefault() + deliveryValues.Period6.GetValueOrDefault();
+                        deliveryValue.Period1.GetValueOrDefault() + deliveryValue.Period2.GetValueOrDefault() + deliveryValue.Period3.GetValueOrDefault() +
+                        deliveryValue.Period4.GetValueOrDefault() + deliveryValue.Period5.GetValueOrDefault() + deliveryValue.Period6.GetValueOrDefault();
 
                 if (forMonths >= 10)
                 {
                     value = value +
-                            deliveryValues.Period7.GetValueOrDefault() + deliveryValues.Period8.GetValueOrDefault() + deliveryValues.Period9.GetValueOrDefault() +
-                            deliveryValues.Period10.GetValueOrDefault();
+                            deliveryValue.Period7.GetValueOrDefault() + deliveryValue.Period8.GetValueOrDefault() + deliveryValue.Period9.GetValueOrDefault() +
+                            deliveryValue.Period10.GetValueOrDefault();
                 }
 
                 if (forMonths == 12)
                 {
                     value = value +
-                            deliveryValues.Period11.GetValueOrDefault() + deliveryValues.Period12.GetValueOrDefault();
+                            deliveryValue.Period11.GetValueOrDefault() + deliveryValue.Period12.GetValueOrDefault();
                 }
             }
 
@@ -312,33 +313,35 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         {
             decimal value = 0;
 
-            var easSubmissionValues = easFundlines.Where(x => fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).SelectMany(y => y.EasSubmissionValues).ToList();
-            List<EasSubmissionValue> submissionValues = easSubmissionValues.Where(y => attributes.Any(a => a.CaseInsensitiveEquals(y.AdjustmentTypeName))).ToList();
-
-            foreach (var submissionValue in submissionValues)
+            var easSubmissionValues = easFundlines?.Where(x => fundLines.Any(f => f.CaseInsensitiveEquals(x.FundLine))).SelectMany(y => y.EasSubmissionValues).ToList();
+            List<EasSubmissionValue> submissionValues = easSubmissionValues?.Where(y => attributes.Any(a => a.CaseInsensitiveEquals(y.AdjustmentTypeName))).ToList();
+            if (submissionValues != null && submissionValues.Any())
             {
-                value = value +
-                        (submissionValue.Period1?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                        (submissionValue.Period2?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                        (submissionValue.Period3?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                        (submissionValue.Period4?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                        (submissionValue.Period5?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                        (submissionValue.Period6?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
-
-                if (forMonths >= 10)
+                foreach (var submissionValue in submissionValues)
                 {
                     value = value +
-                            (submissionValue.Period7?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period8?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period9?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period10?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
-                }
+                            (submissionValue.Period1?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                            (submissionValue.Period2?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                            (submissionValue.Period3?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                            (submissionValue.Period4?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                            (submissionValue.Period5?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                            (submissionValue.Period6?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
 
-                if (forMonths == 12)
-                {
-                    value = value +
-                            (submissionValue.Period11?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
-                            (submissionValue.Period12?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
+                    if (forMonths >= 10)
+                    {
+                        value = value +
+                                (submissionValue.Period7?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                                (submissionValue.Period8?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                                (submissionValue.Period9?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                                (submissionValue.Period10?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
+                    }
+
+                    if (forMonths == 12)
+                    {
+                        value = value +
+                                (submissionValue.Period11?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0) +
+                                (submissionValue.Period12?.Sum(x => x.PaymentValue.GetValueOrDefault()) ?? 0);
+                    }
                 }
             }
 
