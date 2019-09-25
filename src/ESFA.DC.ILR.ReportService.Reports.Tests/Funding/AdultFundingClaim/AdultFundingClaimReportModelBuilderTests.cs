@@ -1,14 +1,10 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.Model;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
 using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.ReferenceDataVersions;
 using ESFA.DC.ILR.ReferenceDataService.Model.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
 using Moq;
 using System;
@@ -30,17 +26,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
         {
             var dependentDataMock = new Mock<IReportServiceDependentData>();
            
-            var message = new TestMessage()
-            {
-                HeaderEntity = new TestHeader()
-                {
-                    CollectionDetailsEntity = new MessageHeaderCollectionDetails()
-                    {
-                        FilePreparationDate = new DateTime(2019, 11, 06)
-                    }
-                }
-            };
-
             var referenceDataRoot = new ReferenceDataRoot()
             {
                 Organisations = new List<Organisation>()
@@ -100,7 +85,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
                 }
             };
 
-            dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
             dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
             dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
             dependentDataMock.Setup(d => d.Get<ALBGlobal>()).Returns(albGlobal);

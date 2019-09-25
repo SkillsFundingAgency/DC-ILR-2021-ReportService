@@ -27,15 +27,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         private string[] EasProgrammeFundingFundlines => new[] { FundLineConstants.EasAebAdultSkillsNonProcured };
         private string[] EasProgrammeFundingAttributes => new[] { AttributeConstants.EasAuthorisedClaims, AttributeConstants.EasPrincesTrust };
         private string[] ProgrammeFundingFundlines => new[] { FundLineConstants.AebOtherLearningNonProcured };
-
-        private string[] ProgrammeFundingAttributes => new[]
-        {
-            AttributeConstants.Fm35OnProgPayment,
-            AttributeConstants.Fm35BalancePayment,
-            AttributeConstants.Fm35EmpOutcomePay,
-            AttributeConstants.Fm35AchievePayment,
-        };
-
         private string[] EasProgrammeFunding1924Fundlines => new[] { FundLineConstants.EasTraineeships1924NonProcured };
         private string[] EasProgrammeFunding1924Attributes => new[] { AttributeConstants.EasAuthorisedClaims };
         private string[] ProgrammeFunding1924Fundlines => new[] { FundLineConstants.Traineeship1924NonProcured };
@@ -49,6 +40,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         private string[] AlbFundline => new[] { FundLineConstants.AdvancedLearnerLoansBursary };
         private string[] AlbAreaCostAttributes => new[] { AttributeConstants.Fm99AreaUpliftBalPayment, AttributeConstants.Fm99AreaUpliftOnProgPayment };
 
+        private string[] ProgrammeFundingAttributes => new[]
+        {
+            AttributeConstants.Fm35OnProgPayment,
+            AttributeConstants.Fm35BalancePayment,
+            AttributeConstants.Fm35EmpOutcomePay,
+            AttributeConstants.Fm35AchievePayment,
+        };
+
         public AdultFundingClaimReportModelBuilder(IDateTimeProvider dateTimeProvider)
         {
             _dateTimeProvider = dateTimeProvider;
@@ -56,7 +55,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         public AdultFundingClaimReportModel Build(IReportServiceContext reportServiceContext,
             IReportServiceDependentData reportServiceDependentData)
         {
-            var message = reportServiceDependentData.Get<IMessage>();
             var fm35Global = reportServiceDependentData.Get<FM35Global>();
             var albGlobal = reportServiceDependentData.Get<ALBGlobal>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
@@ -97,7 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
                 FinalClaims = CalculateAEBClaims(FinalMonths, fm35LearningDeliveryPeriodisedValues, easFundingLines, ProgrammeFundingAttributes, ProgrammeFunding1924Fundlines, EasProgrammeFunding1924Attributes, EasProgrammeFunding1924Fundlines),
             };
 
-            model.AEBLearningSupport1924 = new ActualEarnings()
+            model.AEBLearningSupport1924 = new ActualEarnings
             {
                 MidYearClaims = CalculateAEBClaims(MidYearMonths, fm35LearningDeliveryPeriodisedValues, easFundingLines, LearningSupportAttributes, LearningSupport1924Fundlines, EasLearningSupportAttributes, EasLearningSupport1924Fundlines),
                 YearEndClaims = CalculateAEBClaims(YearEndMonths, fm35LearningDeliveryPeriodisedValues, easFundingLines, LearningSupportAttributes, LearningSupport1924Fundlines, EasLearningSupportAttributes, EasLearningSupport1924Fundlines),
@@ -136,9 +134,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
             return model;
         }
-
-
-
+        
         private decimal CalculateAEBClaims(int months, List<FM35LearningDeliveryValues> fm35LearningDeliveryPeriodisedValues,
                                             IReadOnlyCollection<EasFundingLine> easFundingLines,
                                             string[] attributes,

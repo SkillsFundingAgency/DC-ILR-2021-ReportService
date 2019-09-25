@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim.Model
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim.Model
 {
     public class ActualEarnings
     {

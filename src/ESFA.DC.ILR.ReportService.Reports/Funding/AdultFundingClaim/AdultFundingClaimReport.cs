@@ -16,7 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         private readonly IFileNameService _fileNameService;
         private readonly IModelBuilder<AdultFundingClaimReportModel> _modelBuilder;
         private readonly IExcelService _excelService;
-
+        private const int FisInfoRow = 8;
         public AdultFundingClaimReport(
             IFileNameService fileNameService,
             IModelBuilder<AdultFundingClaimReportModel> modelBuilder,
@@ -35,7 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
             var workbook = _excelService.BindExcelTemplateToWorkbook(model, "AdultFundingClaimReportTemplate.xlsx", "AdultFundingClaim");
-            workbook.Worksheets[0].Cells.DeleteRow(8);
+            workbook.Worksheets[0].Cells.DeleteRow(FisInfoRow);
             await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] { fileName };
         }
@@ -45,7 +45,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             {
                 DependentDataCatalog.Fm35,
                 DependentDataCatalog.Fm99,
-                DependentDataCatalog.ValidIlr,
                 DependentDataCatalog.ReferenceData
             };
     }

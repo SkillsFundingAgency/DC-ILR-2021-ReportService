@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 {
     public class AbstractReportHeaderFooterModel
     {
@@ -33,5 +29,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
         public string ReportGeneratedAt { get; set; }
 
         public string CofRemovalData { get; set; }
+
+        public string CampusIdData { get; set; }
+
+        public string LastILRFileUpdate { get; set; }
+
+        public string LastEASFileUpdate { get; set; }
     }
 }
