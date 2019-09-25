@@ -1,7 +1,6 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
@@ -175,18 +174,21 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
                         {
                             FundLine = ld.LearningDeliveryValue?.FundLine,
                             AttributeName = ldpv.AttributeName,
-                            Period1 = ldpv.Period1,
-                            Period2 = ldpv.Period2,
-                            Period3 = ldpv.Period3,
-                            Period4 = ldpv.Period4,
-                            Period5 = ldpv.Period5,
-                            Period6 = ldpv.Period6,
-                            Period7 = ldpv.Period7,
-                            Period8 = ldpv.Period8,
-                            Period9 = ldpv.Period9,
-                            Period10 = ldpv.Period10,
-                            Period11 = ldpv.Period11,
-                            Period12 = ldpv.Period12
+                            Periods = new[]
+                            {
+                                ldpv.Period1,
+                                ldpv.Period2,
+                                ldpv.Period3,
+                                ldpv.Period4,
+                                ldpv.Period5,
+                                ldpv.Period6,
+                                ldpv.Period7,
+                                ldpv.Period8,
+                                ldpv.Period9,
+                                ldpv.Period10,
+                                ldpv.Period11,
+                                ldpv.Period12
+                            }
                         });
                     }
                 }
@@ -213,18 +215,21 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
                         {
                             FundLine = ld.LearningDeliveryValue.FundLine,
                             AttributeName = ldpv.AttributeName,
-                            Period1 = ldpv.Period1,
-                            Period2 = ldpv.Period2,
-                            Period3 = ldpv.Period3,
-                            Period4 = ldpv.Period4,
-                            Period5 = ldpv.Period5,
-                            Period6 = ldpv.Period6,
-                            Period7 = ldpv.Period7,
-                            Period8 = ldpv.Period8,
-                            Period9 = ldpv.Period9,
-                            Period10 = ldpv.Period10,
-                            Period11 = ldpv.Period11,
-                            Period12 = ldpv.Period12
+                            Periods = new[]
+                            {
+                                ldpv.Period1,
+                                ldpv.Period2,
+                                ldpv.Period3,
+                                ldpv.Period4,
+                                ldpv.Period5,
+                                ldpv.Period6,
+                                ldpv.Period7,
+                                ldpv.Period8,
+                                ldpv.Period9,
+                                ldpv.Period10,
+                                ldpv.Period11,
+                                ldpv.Period12
+                            }
                         });
                     }
                 }
@@ -246,21 +251,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 
             foreach (var deliveryValue in deliveryValues)
             {
-                value = value +
-                        deliveryValue.Period1.GetValueOrDefault() + deliveryValue.Period2.GetValueOrDefault() + deliveryValue.Period3.GetValueOrDefault() +
-                        deliveryValue.Period4.GetValueOrDefault() + deliveryValue.Period5.GetValueOrDefault() + deliveryValue.Period6.GetValueOrDefault();
-
-                if (forMonths >= 10)
+                for (int period = 0; period < forMonths; period++)
                 {
-                    value = value +
-                            deliveryValue.Period7.GetValueOrDefault() + deliveryValue.Period8.GetValueOrDefault() + deliveryValue.Period9.GetValueOrDefault() +
-                            deliveryValue.Period10.GetValueOrDefault();
-                }
-
-                if (forMonths == 12)
-                {
-                    value = value +
-                            deliveryValue.Period11.GetValueOrDefault() + deliveryValue.Period12.GetValueOrDefault();
+                    value = value + deliveryValue.Periods[period].GetValueOrDefault();
                 }
             }
 
@@ -280,21 +273,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 
             foreach (var deliveryValue in fm35LearningDeliveryValues)
             {
-                value = value +
-                        deliveryValue.Period1.GetValueOrDefault() + deliveryValue.Period2.GetValueOrDefault() + deliveryValue.Period3.GetValueOrDefault() +
-                        deliveryValue.Period4.GetValueOrDefault() + deliveryValue.Period5.GetValueOrDefault() + deliveryValue.Period6.GetValueOrDefault();
-
-                if (forMonths >= 10)
+                for (int period = 0; period < forMonths; period++)
                 {
-                    value = value +
-                            deliveryValue.Period7.GetValueOrDefault() + deliveryValue.Period8.GetValueOrDefault() + deliveryValue.Period9.GetValueOrDefault() +
-                            deliveryValue.Period10.GetValueOrDefault();
-                }
-
-                if (forMonths == 12)
-                {
-                    value = value +
-                            deliveryValue.Period11.GetValueOrDefault() + deliveryValue.Period12.GetValueOrDefault();
+                    value = value + deliveryValue.Periods[period].GetValueOrDefault();
                 }
             }
 
