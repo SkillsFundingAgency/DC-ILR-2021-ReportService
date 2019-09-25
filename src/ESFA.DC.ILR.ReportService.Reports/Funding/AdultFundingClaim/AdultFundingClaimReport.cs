@@ -30,7 +30,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData,
             CancellationToken cancellationToken)
         {
-            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
             var workbook = _excelService.BindExcelTemplateToWorkbook(model, "AdultFundingClaimReportTemplate.xlsx", "AdultFundingClaim");
             RenderIndicativeMessage(workbook);
