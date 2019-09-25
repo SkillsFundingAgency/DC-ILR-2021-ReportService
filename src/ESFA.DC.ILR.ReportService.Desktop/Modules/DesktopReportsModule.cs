@@ -25,7 +25,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             containerBuilder.RegisterType<DesktopFundingSummaryReport>().As<IReport>();
             containerBuilder.RegisterType<DesktopFundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
-            containerBuilder.RegisterType<SummaryPageRenderService>().As<IRenderService<ISummaryPage>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
         }
 

@@ -78,5 +78,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
         public long JobId => _jobContextMessage.JobId;
 
         public string ServiceReleaseVersion => _versionInfo.ServiceReleaseVersion;
+
+        public IEnumerable<IReportFilterQuery> ReportFilters => Enumerable.Empty<IReportFilterQuery>();
     }
 }

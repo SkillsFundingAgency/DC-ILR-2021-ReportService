@@ -11,9 +11,10 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
     {
         private readonly IDesktopContext _desktopContext;
 
-        public ReportServiceJobContextDesktopContext(IDesktopContext desktopContext)
+        public ReportServiceJobContextDesktopContext(IDesktopContext desktopContext, IEnumerable<IReportFilterQuery> reportFilters)
         {
             _desktopContext = desktopContext;
+            ReportFilters = reportFilters;
         }
 
         public long JobId { get; }
@@ -63,5 +64,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         }
 
         public string ServiceReleaseVersion { get; set; }
+
+        public IEnumerable<IReportFilterQuery> ReportFilters { get; }
     }
 }

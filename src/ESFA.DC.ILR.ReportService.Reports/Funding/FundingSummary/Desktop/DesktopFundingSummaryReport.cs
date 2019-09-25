@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
@@ -13,9 +12,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Desktop
             IFileNameService fileNameService,
             IModelBuilder<IFundingSummaryReport> fundingSummaryReportModelBuilder,
             IExcelService excelService,
-            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService,
-            IRenderService<ISummaryPage> summaryPageRenderService) 
-            : base(fileNameService, fundingSummaryReportModelBuilder, excelService, fundingSummaryReportRenderService, summaryPageRenderService)
+            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService) 
+            : base(fileNameService, fundingSummaryReportModelBuilder, excelService, fundingSummaryReportRenderService)
         {
         }
 

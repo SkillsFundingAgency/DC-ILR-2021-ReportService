@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim
 {
-    public class FundingClaimReport : AbstractReport, IReport
+    public class FundingClaimReport : AbstractReport, IReport, IFilteredReport
     {
         private readonly IFileNameService _fileNameService;
         private readonly IModelBuilder<FundingClaimReportModel> _modelBuilder;
@@ -17,8 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         public FundingClaimReport(
             IFileNameService fileNameService,
             IModelBuilder<FundingClaimReportModel> modelBuilder,
-            IExcelService excelService
-           )
+            IExcelService excelService)
             : base(ReportTaskNameConstants.FundingClaim1619Report, "16-19 Funding Claim Report")
         {
             _fileNameService = fileNameService;
@@ -26,22 +25,33 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             _excelService = excelService;
         }
 
-        public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData,
-            CancellationToken cancellationToken)
-        {
-            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
-            var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
-            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "FundingClaim1619ReportTemplate.xlsx", "FundingClaim");
-            await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
-            return new[] { fileName };
-        }
-
-       public virtual IEnumerable<Type> DependsOn
+        public virtual IEnumerable<Type> DependsOn
             => new[]
             {
                 DependentDataCatalog.Fm25,
                 DependentDataCatalog.ValidIlr,
                 DependentDataCatalog.ReferenceData
             };
+
+        public IReportFilterDefinition Filter => new ReportFilterDefinition()
+        {
+            ReportName = ReportName,
+            Properties = new IReportFilterPropertyDefinition[]
+            {
+                new ReportFilterPropertyDefinition<DateTime?>("Reference Date"),
+            }
+        };
+
+        public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
+        {
+            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
+            var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
+
+            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "FundingClaim1619ReportTemplate.xlsx", "FundingClaim");
+
+            await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
+
+            return new[] { fileName };
+        }
     }
 }

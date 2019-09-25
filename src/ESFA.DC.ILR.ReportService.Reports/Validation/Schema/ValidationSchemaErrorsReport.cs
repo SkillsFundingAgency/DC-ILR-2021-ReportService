@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
         {
             var ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
 
-            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Csv);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Csv);
 
             var validationErrorRows = _validationSchemaErrorsReportBuilder.Build(ilrValidationErrors);
 

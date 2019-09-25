@@ -16,21 +16,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private readonly IModelBuilder<IFundingSummaryReport> _fundingSummaryReportModelBuilder;
         private readonly IExcelService _excelService;
         private readonly IRenderService<IFundingSummaryReport> _fundingSummaryReportRenderService;
-        private readonly IRenderService<ISummaryPage> _summaryPageRenderService;
 
         public FundingSummaryReport(
             IFileNameService fileNameService,
             IModelBuilder<IFundingSummaryReport> fundingSummaryReportModelBuilder,
             IExcelService excelService,
-            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService,
-            IRenderService<ISummaryPage> summaryPageRenderService)
+            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService)
             : base(ReportTaskNameConstants.FundingSummaryReport, "Funding Summary Report")
         {
             _fileNameService = fileNameService;
             _fundingSummaryReportModelBuilder = fundingSummaryReportModelBuilder;
             _excelService = excelService;
             _fundingSummaryReportRenderService = fundingSummaryReportRenderService;
-            _summaryPageRenderService = summaryPageRenderService;
         }
 
         public virtual IEnumerable<Type> DependsOn
@@ -51,17 +48,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         {
             var fundingSummaryReportModel = _fundingSummaryReportModelBuilder.Build(reportServiceContext, reportsDependentData);
 
-            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Excel);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
 
             using (var workbook = _excelService.NewWorkbook())
             {
-                var worksheet = _excelService.GetWorksheetFromWorkbook(workbook, 0);
+                workbook.Worksheets.Clear();
+
+                var worksheet = _excelService.GetWorksheetFromWorkbook(workbook, "FundingSummaryReport");
 
                 _fundingSummaryReportRenderService.Render(fundingSummaryReportModel, worksheet);
-
-                //var summaryPage = _excelService.GetWorksheetFromWorkbook(workbook, "Summary");
-
-                //_summaryPageRenderService.Render(fundingSummaryReportModel.SummaryPage, summaryPage);
 
                 await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             }
