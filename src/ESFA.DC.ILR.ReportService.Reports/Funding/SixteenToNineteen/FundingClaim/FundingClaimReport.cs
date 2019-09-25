@@ -36,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         public IReportFilterDefinition Filter => new ReportFilterDefinition()
         {
             ReportName = ReportName,
-            Properties = new[]
+            Properties = new IReportFilterPropertyDefinition[]
             {
                 new ReportFilterPropertyDefinition<DateTime?>("Reference Date"),
             }
