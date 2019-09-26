@@ -30,6 +30,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             var fm25Data = reportServiceDependentData.Get<FM25Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
 
+            var referenceDateFilter = RetrieveReportFilterValueFromContext<DateTime?>(reportServiceContext, FundingClaimReport.ReportNameConstant, FundingClaimReport.ReferenceDateFilterPropertyName);
+
             var organisation = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn);
             var organisationName = organisation?.Name ?? string.Empty;
             var cofRemoval = organisation?.OrganisationCoFRemovals?.OrderByDescending(x => x.EffectiveFrom).FirstOrDefault()?.CoFRemoval;
@@ -50,13 +52,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
             // Body
             var applicableLearners = FilterLearners(learners);
-            var learnersArray = applicableLearners.Select(x => x.LearnRefNumber).ToArray();
+            var learnersArray = applicableLearners.Select(x => x.LearnRefNumber);
 
-            var applicableFm25Learners = FilterFm25Learners(fm25Data, learnersArray);
 
-            if (applicableFm25Learners != null && applicableFm25Learners.Any())
+            var fm25LearnersQueryable = fm25Data?.Learners?.AsQueryable() ?? Enumerable.Empty<FM25Learner>().AsQueryable();
+            fm25LearnersQueryable = ApplyFm25LearnersFilter(fm25LearnersQueryable, learnersArray);
+            fm25LearnersQueryable = ApplyUserFilters(fm25LearnersQueryable, referenceDateFilter);
+
+            var filteredFm25Learners = fm25LearnersQueryable?.ToList();
+
+            if (filteredFm25Learners != null && filteredFm25Learners.Any())
             {
-                var fm25Learner = applicableFm25Learners.First();
+                var fm25Learner = filteredFm25Learners.First();
 
                 model.FundingFactor = new FundingFactorModel
                 {
@@ -67,17 +74,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
                     PrvRetentFactHist = fm25Learner.PrvRetentFactHist.GetValueOrDefault(0).ToString("N5")
                 };
 
-                var validLearnersForFundlineA = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.DirectFundedStudents1416).ToList();
+                var validLearnersForFundlineA = filteredFm25Learners?.Where(x => x.FundLine == FundLineConstants.DirectFundedStudents1416).ToList();
                 model.DirectFundingStudents = BuildFundlineReprtingBandModel(validLearnersForFundlineA);
 
-                var validLearnersForFundlineB = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
+                var validLearnersForFundlineB = filteredFm25Learners?.Where(x => x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
                                                                                    x.FundLine == FundLineConstants.HighNeedsStudents1619).ToList();
                 model.StudentsIncludingHNS = BuildFundlineReprtingBandModel(validLearnersForFundlineB);
 
-                var validLearnersForFundlineC = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.StudentsWithEHCP1924).ToList();
+                var validLearnersForFundlineC = filteredFm25Learners?.Where(x => x.FundLine == FundLineConstants.StudentsWithEHCP1924).ToList();
                 model.StudentsWithEHCPlan = BuildFundlineReprtingBandModel(validLearnersForFundlineC);
 
-                var validLearnersForFundlineD = applicableFm25Learners?.Where(x => x.FundLine == FundLineConstants.ContinuingStudents19Plus).ToList();
+                var validLearnersForFundlineD = filteredFm25Learners?.Where(x => x.FundLine == FundLineConstants.ContinuingStudents19Plus).ToList();
                 model.ContinuingStudentsExcludingEHCPlan = BuildFundlineReprtingBandModel(validLearnersForFundlineD);
             }
 
@@ -97,21 +104,38 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             return model;
         }
 
-        public List<FM25Learner> FilterFm25Learners(FM25Global fm25Data, string[] learnersArray)
+        public IQueryable<FM25Learner> ApplyFm25LearnersFilter(IQueryable<FM25Learner> learners, IEnumerable<string> learnRefNumbers)
         {
-            return fm25Data.Learners?.Where(x => FilterStartFund(x.StartFund)
-                                                 && FilterFundLine(x.FundLine)
-                                                 && learnersArray.Contains(x.LearnRefNumber))?.ToList();
+            var learnRefNumbersArray = learnRefNumbers.ToArray();
+
+            return learners?
+                .Where(x =>  
+                    FilterStartFund(x.StartFund)
+                     && FilterFundLine(x.FundLine)
+                     && learnRefNumbersArray.Contains(x.LearnRefNumber));
+        }
+
+        public IQueryable<FM25Learner> ApplyUserFilters(IQueryable<FM25Learner> learners, DateTime? referenceDate)
+        {
+            return referenceDate.HasValue
+                ? learners?.Where(l => l.LearnerStartDate <= referenceDate)
+                : learners;
         }
 
         public IEnumerable<ILearner> FilterLearners(IEnumerable<ILearner> learners)
         {
-            return learners.Where(x => x.LearningDeliveries.Any(ld =>
-                ld.FundModel == FundModelConstants.FM25 &&
-                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.SOF)) &&
-                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619))));
+            return learners?
+                .Where(x => 
+                    x.LearningDeliveries != null &&
+                    x.LearningDeliveries.Any(ld =>
+                        ld.FundModel == FundModelConstants.FM25 &&
+                        ld.LearningDeliveryFAMs != null &&
+                        ld.LearningDeliveryFAMs
+                            .Any(
+                                fam => 
+                                    fam.LearnDelFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.SOF)
+                                    && fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619))));
         }
-
 
         public bool Band5(FM25Learner fm25Learner) => fm25Learner.RateBand.CaseInsensitiveEquals("540+ hours (Band 5)");
 

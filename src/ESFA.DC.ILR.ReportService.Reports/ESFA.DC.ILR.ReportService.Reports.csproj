@@ -28,16 +28,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspose.Cells" Version="19.2.0" />
-    <PackageReference Include="Autofac" Version="4.9.2" />
-    <PackageReference Include="CsvHelper" Version="7.1.0" />
+    <PackageReference Include="Aspose.Cells" Version="19.9.0" />
+    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.230" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model" Version="0.0.230" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model" Version="0.0.230" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM36.FundingOutput.Model" Version="0.0.230" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM81.FundingOutput.Model" Version="0.0.230" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM36.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM81.FundingOutput.Model" Version="0.0.245" />
     <PackageReference Include="ESFA.DC.ILR.1920.Model" Version="0.1.8-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.1920.Model.Loose" Version="0.1.8-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
@@ -48,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR.ReportService.Model.csproj" />
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Interface\ESFA.DC.ILR.ReportService.Service.Interface.csproj" />
   </ItemGroup>
 

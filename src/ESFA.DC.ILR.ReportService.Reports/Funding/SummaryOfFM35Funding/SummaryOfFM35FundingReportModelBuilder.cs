@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReportService.Model.ILR;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
