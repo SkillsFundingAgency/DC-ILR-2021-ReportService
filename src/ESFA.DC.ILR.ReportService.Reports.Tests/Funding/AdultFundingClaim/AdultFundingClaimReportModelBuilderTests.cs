@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
         public void BuildTest()
         {
             var dependentDataMock = new Mock<IReportServiceDependentData>();
-           
+
             var referenceDataRoot = new ReferenceDataRoot()
             {
                 Organisations = new List<Organisation>()
@@ -48,11 +48,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
                 {
                     ReferenceDataVersions = new ReferenceDataVersion()
                     {
-                        OrganisationsVersion = new OrganisationsVersion("1.1.1.1"),
-                        Employers = new EmployersVersion("2.2.2.2"),
-                        LarsVersion = new LarsVersion("3.3.3.3"),
-                        PostcodesVersion = new PostcodesVersion("4.4.4.4"),
-                        EasUploadDateTime = new EasUploadDateTime(new DateTime(2019, 1, 1, 1, 1, 1))
+                        OrganisationsVersion = new OrganisationsVersion { Version = "1.1.1.1" },
+                        Employers = new EmployersVersion { Version = "2.2.2.2" },
+                        LarsVersion = new LarsVersion { Version = "3.3.3.3" },
+                        PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
+                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 1, 1, 1, 1, 1) }
                     }
                 },
                 EasFundingLines = BuildEasFundingLines()
