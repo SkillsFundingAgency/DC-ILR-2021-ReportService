@@ -1,4 +1,5 @@
 ﻿using CsvHelper.Configuration;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
 {

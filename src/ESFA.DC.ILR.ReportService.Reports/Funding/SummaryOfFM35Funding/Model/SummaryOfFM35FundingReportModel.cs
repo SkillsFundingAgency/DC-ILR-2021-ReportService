@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model
 {
     public class SummaryOfFM35FundingReportModel
     {

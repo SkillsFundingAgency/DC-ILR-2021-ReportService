@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -13,7 +14,19 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
 
         public IEnumerable<IReportFilterQuery> BuildReportFilterQueries(IDesktopContext desktopContext)
         {
-            return new List<IReportFilterQuery>();
+            return desktopContext
+                .ReportFilterQueries?
+                .Select(r => new ReportFilterQuery()
+                       {
+                           ReportName = r.ReportName,
+                           Properties = r.FilterProperties?
+                                            .Select(p => new ReportFilterPropertyQuery()
+                           {
+                               PropertyName = p.Name,
+                               Value = p.Value,
+                           }) ?? Enumerable.Empty<IReportFilterPropertyQuery>()
+                        })
+                ?? Enumerable.Empty<IReportFilterQuery>();
         }
     }
 }

@@ -52,8 +52,8 @@
     <Reference Include="ESFA.DC.FileService.Interface, Version=0.1.18.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.FileService.Interface.0.1.18-beta0001\lib\netstandard2.0\ESFA.DC.FileService.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Desktop.Interface, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.Desktop.Interface.0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Desktop.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Desktop.Interface, Version=1.0.4.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.Desktop.Interface.1.0.4.8\lib\netstandard2.0\ESFA.DC.ILR.Desktop.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.0.230.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model.0.0.230\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
@@ -193,7 +193,9 @@
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
@@ -202,10 +204,6 @@
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Desktop\ESFA.DC.ILR.ReportService.Desktop.csproj">
       <Project>{1FBAB247-ADF1-4A86-9D1F-7126E086CF5C}</Project>
       <Name>ESFA.DC.ILR.ReportService.Desktop</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Model\ESFA.DC.ILR.ReportService.Model.csproj">
-      <Project>{39db428d-1380-40f2-9361-18ed31cf95fc}</Project>
-      <Name>ESFA.DC.ILR.ReportService.Model</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Reports\ESFA.DC.ILR.ReportService.Reports.csproj">
       <Project>{0f1ea521-4ae8-4e4a-96b9-99dc4dc3c78d}</Project>

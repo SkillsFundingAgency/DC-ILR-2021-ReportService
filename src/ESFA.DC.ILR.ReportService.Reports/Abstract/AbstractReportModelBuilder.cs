@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 {
@@ -11,8 +14,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
         public string ExtractDisplayDateTimeFromFileName(string ilrFileName)
         {
             var ilrFilenameDateTime = ExtractFileName(ilrFileName).Substring(18, 15);
+
             return DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime) 
-                ? parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat) : string.Empty;
+                ? parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat) 
+                : string.Empty;
         }
 
         public string ExtractFileName(string ilrFileName)
@@ -26,6 +31,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
             var ilrFilename = parts[parts.Length - 1];
 
             return ilrFilename;
+        }
+
+        public T RetrieveReportFilterValueFromContext<T>(IReportServiceContext context, string reportName, string propertyName)
+        {
+            return context
+                .ReportFilters?
+                .FirstOrDefault(r => r.ReportName.CaseInsensitiveEquals(reportName))?
+                .Properties?
+                .FirstOrDefault(p => p.PropertyName.CaseInsensitiveEquals(propertyName))?
+                .Value is T value 
+                ? value 
+                : default(T);
         }
     }
 }

@@ -14,11 +14,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         private readonly IModelBuilder<FundingClaimReportModel> _modelBuilder;
         private readonly IExcelService _excelService;
 
+        public const string ReportNameConstant = @"16-19 Funding Claim Report";
+        public const string ReferenceDateFilterPropertyName = @"Reference Date";
+
         public FundingClaimReport(
             IFileNameService fileNameService,
             IModelBuilder<FundingClaimReportModel> modelBuilder,
             IExcelService excelService)
-            : base(ReportTaskNameConstants.FundingClaim1619Report, "16-19 Funding Claim Report")
+            : base(ReportTaskNameConstants.FundingClaim1619Report, ReportNameConstant)
         {
             _fileNameService = fileNameService;
             _modelBuilder = modelBuilder;
@@ -38,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             ReportName = ReportName,
             Properties = new IReportFilterPropertyDefinition[]
             {
-                new ReportFilterPropertyDefinition<DateTime?>("Reference Date"),
+                new ReportFilterPropertyDefinition<DateTime?>(ReferenceDateFilterPropertyName),
             }
         };
 
