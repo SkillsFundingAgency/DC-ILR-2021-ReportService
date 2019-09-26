@@ -7,6 +7,7 @@ using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReferenceDataService.Model.FCS;
 using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -145,6 +146,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 }
             }
 
+            return ApplySort(models);
+        }
+
+        public IEnumerable<NonContractedAppsActivityReportModel> ApplySort(IEnumerable<NonContractedAppsActivityReportModel> models)
+        {
             return models.OrderBy(m => m.LearnRefNumber).ThenBy(m => m.AimSeqNumber);
         }
 
@@ -164,8 +170,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             var learningDeliveryFAMDateTo = learningDeliveryFAMs?.Where(f => episodeStartDate <= f.LearnDelFAMDateToNullable).Min(x => x.LearnDelFAMDateToNullable);
 
             var learningDeliveryFAMCode = learningDeliveryFAMs?
-              .Where(f => episodeStartDate >= learningDeliveryFAMDateFrom && episodeStartDate <= (learningDeliveryFAMDateTo.HasValue ? learningDeliveryFAMDateTo.Value : episodeStartDate))
-              .FirstOrDefault().LearnDelFAMCode;
+              .FirstOrDefault(f => episodeStartDate >= learningDeliveryFAMDateFrom && episodeStartDate <= (learningDeliveryFAMDateTo.HasValue ? learningDeliveryFAMDateTo.Value : episodeStartDate))?
+              .LearnDelFAMCode;
 
             return new LearningDeliveryACT
             {
@@ -236,7 +242,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
         {
             if (priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType != null)
             {
-                validContractsDictionary.TryGetValue(priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType, out var fundLineType);
+                var fundLineType = validContractsDictionary.GetValueOrDefault(priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType);
 
                 if (fundLineType != null && !fundLineType.Contains(fundingStreamPeriodCode))
                 {
@@ -332,7 +338,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 fundlines.JulyFundLine
             }.Where(x => !string.IsNullOrWhiteSpace(x))
             .GroupBy(x => x)
-                .ToDictionary(
+            .ToDictionary(
                 k => k.Key,
                 v => v.Select(fundline => new FundLines
                 {
@@ -380,7 +386,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
         {
             if (periodValue != null && periodValue != "None")
             {
-                validContractsDictionary.TryGetValue(periodValue, out var fspCodes);
+                var fspCodes = validContractsDictionary.GetValueOrDefault(periodValue);
 
                 return fspCodes != null && !fspCodes.Contains(fundingStreamPeriodCode, StringComparer.OrdinalIgnoreCase) ? periodValue : string.Empty;
             }
