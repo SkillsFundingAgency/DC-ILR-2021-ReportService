@@ -4,7 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>ESFA.DC.ILR.1920.ReportService.Desktop</PackageId>
-    <Version>0.0.9005</Version>
+    <Version>0.0.9006</Version>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <Authors>DC</Authors>
     <Company>ESFA</Company>
@@ -13,8 +13,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.2" />
-    <PackageReference Include="CsvHelper" Version="7.1.0" />
+    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.1920.Constants" Version="0.1.8-beta0001" />
