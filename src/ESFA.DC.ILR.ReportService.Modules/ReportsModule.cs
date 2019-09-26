@@ -42,7 +42,9 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
             RegisterMainOccupancyReport(containerBuilder);
             RegisterAllbOccupancyReport(containerBuilder);
+
             RegisterAppsIndicativeEarningsReport(containerBuilder);
+            RegisterNonContractsAppsActivityReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
 

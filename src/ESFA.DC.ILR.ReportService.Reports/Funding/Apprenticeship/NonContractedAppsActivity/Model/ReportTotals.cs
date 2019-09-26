@@ -1,20 +1,10 @@
-﻿using System;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity.Model
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity.Model
 {
-    public class FM36LearningDeliveryTotals
+    public class ReportTotals
     {
         public string LearnRefNumber { get; set; }
 
         public int AimSeqNumber { get; set; }
-
-        public DateTime? AppAdjLearnStartDate { get; set; }
-
-        public int? AgeAtProgStart { get; set; }
-
-        public bool? LearnDelMathEng { get; set; }
-
-        public string FundLineType { get; set; }
 
         public decimal? AugustTotal { get; set; }
 

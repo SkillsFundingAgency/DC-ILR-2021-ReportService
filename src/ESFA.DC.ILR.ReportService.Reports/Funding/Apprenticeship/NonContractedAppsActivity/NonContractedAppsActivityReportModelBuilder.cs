@@ -20,12 +20,29 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
             new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
             new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 }),
-            new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.C1618nlap2018 }),
+            new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 }),
             new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 }),
             new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 })
         };
 
         private ICollection<string> _learningDeliveryFundedAttributes = new HashSet<string>(StringComparer.OrdinalIgnoreCase) { AttributeConstants.Fm36MathEngOnProgPayment, AttributeConstants.Fm36MathEngBalPayment, AttributeConstants.Fm36LearnSuppFundCash };
+        private ICollection<string> _priceEpisodeFundedAttributes = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+        {
+            AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName,
+            AttributeConstants.Fm3PriceEpisodeBalancePaymentAttributeName,
+            AttributeConstants.Fm36PriceEpisodeCompletionPaymentAttributeName,
+            AttributeConstants.Fm36PriceEpisodeLSFCashAttributeName,
+            AttributeConstants.Fm36PriceEpisodeFirstDisadvantagePaymentAttributeName,
+            AttributeConstants.Fm36PriceEpisodeSecondDisadvantagePaymentAttributeName,
+            AttributeConstants.Fm36PriceEpisodeFirstEmp1618PayAttributeName,
+            AttributeConstants.Fm36PriceEpisodeSecondEmp1618PayAttributeName,
+            AttributeConstants.Fm36PriceEpisodeFirstProv1618PayAttributeName,
+            AttributeConstants.Fm36PriceEpisodeSecondProv1618PayAttributeName,
+            AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftBalancingAttributeName,
+            AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftCompletionPaymentAttributeName,
+            AttributeConstants.Fm36PriceEpisodeApplic1618FrameworkUpliftOnProgPaymentAttributeName,
+            AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName
+        };
 
         private readonly IIlrModelMapper _ilrModelMapper;
 
@@ -40,142 +57,405 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             var fm36Data = reportServiceDependentData.Get<FM36Global>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
 
+            var censusEndDates = referenceData.MetaDatas.CollectionDates.CensusDates.ToDictionary(p => p.Period, e => (DateTime?)e.End);
             var validContractsDictionary = BuildValidContractMapping();
+            var larsLearningDeliveryDictionary = BuildLARSDictionary(referenceData.LARSLearningDeliveries);
             var fcsContractsDictionary = BuildFcsContractMapping(referenceData.FCSContractAllocations, message);
-            var fm36MessageDictionary = BuildFm36MessageDictionary(message);           
-            var fm36Dictionary = BuildFm36LearnerDeliveryDictionary(fm36Data);
-            // var fm36ContractsDictionary = BuildFm36LearnersContractMapping(message, fm36Dictionary, referenceData.FCSContractAllocations);
 
-            IDictionary<string, LARSLearningDelivery> larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
-            IDictionary<string, FM36LearningDeliveryTotals> nonContractedLearningDeliveries = BuildNonContractedLearningDeliveryDictionary(fm36Data, fm36MessageDictionary, fcsContractsDictionary, validContractsDictionary);
+            var fm36LearnerModel = BuildFm36Learners(message, fm36Data, fcsContractsDictionary, validContractsDictionary);
 
-            throw new NotImplementedException();
+            var reportRows = BuildReportRows(fm36LearnerModel, larsLearningDeliveryDictionary, censusEndDates);
+
+            return reportRows;
         }
 
-        public IDictionary<string, FM36LearningDeliveryTotals> BuildNonContractedLearningDeliveryDictionary(FM36Global global, IDictionary<string, Dictionary<int, ILearningDelivery>> fm36MessageDictionary, IDictionary<string, string> fcsContractsDictionary, IDictionary<string, string[]> validContracts)
+        public IEnumerable<NonContractedAppsActivityReportModel> BuildReportRows(IEnumerable<FM36LearnerData> fm36LearnerData, IDictionary<string, LARSLearningDelivery> larsDictionary, IReadOnlyDictionary<int, DateTime?> censusEndDates)
         {
-            var nonContractedLearningDeliveries = new List<FM36LearningDeliveryTotals>();
+            var models = new List<NonContractedAppsActivityReportModel>();
 
-            var periodisedTextValuesForFundLines = global?.Learners?
-                .SelectMany(l => l.LearningDeliveries?
-                .Where(ldv => ldv.LearningDeliveryValues.LearnDelMathEng == true)
-                .SelectMany(ld => ld.LearningDeliveryPeriodisedTextValues
-                .Where(ldpt => ldpt.AttributeName == AttributeConstants.Fm36FundLineType)
-                .Select(x => new FM36LearningDeliveryFundLine
-                {
-                    LearnRefNumber = l.LearnRefNumber,
-                    AimSeqNumber = ld.AimSeqNumber,
-                    ConRefNumber = fm36MessageDictionary[l.LearnRefNumber][ld.AimSeqNumber].ConRefNumber,
-                    AppAdjLearnStartDate = ld.LearningDeliveryValues.AppAdjLearnStartDate,
-                    AgeAtProgStart = ld.LearningDeliveryValues.AgeAtProgStart,
-                    LearnDelMathEng = ld.LearningDeliveryValues.LearnDelMathEng,
-                    Period1 = x.Period1,
-                    Period2 = x.Period2,
-                    Period3 = x.Period3,
-                    Period4 = x.Period4,
-                    Period5 = x.Period5,
-                    Period6 = x.Period6,
-                    Period7 = x.Period7,
-                    Period8 = x.Period8,
-                    Period9 = x.Period9,
-                    Period10 = x.Period10,
-                    Period11 = x.Period11,
-                    Period12 = x.Period12,
-                }).SelectMany(PivotPeriods)));
-
-            var learningDeliveryPeriodisedValues = global?.Learners?
-               .SelectMany(l => l.LearningDeliveries?
-               .Where(ldv => ldv.LearningDeliveryValues.LearnDelMathEng == true)
-               .SelectMany(ld => ld.LearningDeliveryPeriodisedValues
-               .Where(ldpv => _learningDeliveryFundedAttributes.Contains(ldpv.AttributeName))
-               .Select(x => new FM36LearningDelivery
-               {
-                   LearnRefNumber = l.LearnRefNumber,
-                   AimSeqNumber = ld.AimSeqNumber,
-                   AppAdjLearnStartDate = ld.LearningDeliveryValues.AppAdjLearnStartDate,
-                   AgeAtProgStart = ld.LearningDeliveryValues.AgeAtProgStart,
-                   LearnDelMathEng = ld.LearningDeliveryValues.LearnDelMathEng,
-                   Period1 = x.Period1,
-                   Period2 = x.Period2,
-                   Period3 = x.Period3,
-                   Period4 = x.Period4,
-                   Period5 = x.Period5,
-                   Period6 = x.Period6,
-                   Period7 = x.Period7,
-                   Period8 = x.Period8,
-                   Period9 = x.Period9,
-                   Period10 = x.Period10,
-                   Period11 = x.Period11,
-                   Period12 = x.Period12,
-               })))
-               .GroupBy(lrn => lrn.LearnRefNumber)
-               .ToDictionary(
-                   k1 => k1.Key,
-                   v1 => v1.Select(x => x)
-                   .GroupBy(asn => asn.AimSeqNumber)
-                   .ToDictionary(
-                       k2 => k2.Key,
-                       v2 => new FM36LearningDeliveryTotals
-                       {
-                           LearnRefNumber = v2.FirstOrDefault().LearnRefNumber,
-                           AimSeqNumber = v2.FirstOrDefault().AimSeqNumber,
-                           AppAdjLearnStartDate = v2.FirstOrDefault().AppAdjLearnStartDate,
-                           AgeAtProgStart = v2.FirstOrDefault().AgeAtProgStart,
-                           LearnDelMathEng = v2.FirstOrDefault().LearnDelMathEng,
-                           AugustTotal = v2.Sum(p => p.Period1) ?? 0m,
-                           SeptemberTotal = v2.Sum(p => p.Period2) ?? 0m,
-                           OctoberTotal = v2.Sum(p => p.Period3) ?? 0m,
-                           NovemberTotal = v2.Sum(p => p.Period4) ?? 0m,
-                           DecemberTotal = v2.Sum(p => p.Period5) ?? 0m,
-                           JanuaryTotal = v2.Sum(p => p.Period6) ?? 0m,
-                           FebruaryTotal = v2.Sum(p => p.Period7) ?? 0m,
-                           MarchTotal = v2.Sum(p => p.Period8) ?? 0m,
-                           AprilTotal = v2.Sum(p => p.Period9) ?? 0m,
-                           MayTotal = v2.Sum(p => p.Period10) ?? 0m,
-                           JuneTotal = v2.Sum(p => p.Period11) ?? 0m,
-                           JulyTotal = v2.Sum(p => p.Period12) ?? 0m,
-                       })
-                   ,StringComparer.OrdinalIgnoreCase);
-
-            foreach (var value in periodisedTextValuesForFundLines.Where(f => f.FundLineType != "None"))
+            if (fm36LearnerData != null)
             {
-                var fudingStreamPeriodCode = fcsContractsDictionary[value.ConRefNumber];
-
-                validContracts.TryGetValue(value.FundLineType, out var fundingStreamPeriodCodes);
-
-                if (fundingStreamPeriodCodes == null || !fundingStreamPeriodCodes.Contains(fudingStreamPeriodCode))
+                foreach (var learner in fm36LearnerData)
                 {
-                    nonContractedLearningDeliveries.Add(learningDeliveryPeriodisedValues[value.LearnRefNumber][value.AimSeqNumber]);
+                    foreach (var learningDelivery in learner.LearningDeliveries)
+                    {
+                        if (learningDelivery.LearnDelMathEng)
+                        {
+                            models.AddRange(
+                               learningDelivery.FM36LearningDelivery?.FundLineValues.SelectMany(fv =>
+                               BuildLearningDeliveryACTValues(learningDelivery.LearnActEndDate, learningDelivery.LearningDeliveryFAMs_ACT, fv.ReportTotals, censusEndDates)
+                               .Select(ldFamAct =>
+                                 new NonContractedAppsActivityReportModel
+                                 {
+                                     Learner = learner.Learner,
+                                     ProviderSpecLearnerMonitoring = learner.ProviderSpecLearnerMonitoringModels,
+                                     LarsLearningDelivery = larsDictionary[learningDelivery.LearnAimRef],
+                                     ProviderSpecDeliveryMonitoring = learningDelivery.ProviderSpecDeliveryMonitoringModels,
+                                     LearningDeliveryFAMs = learningDelivery.LearningDeliveryFAMsModels,
+                                     LearningDelivery = learningDelivery.LearningDelivery,
+                                     FundingLineType = fv.FundLineType,
+                                     Fm36LearningDelivery = learningDelivery.FM36LearningDelivery?.LearningDeliveryValues,
+                                     AugustTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[1]) ? fv.ReportTotals.AugustTotal : 0m,
+                                     SeptemberTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[2]) ? fv.ReportTotals.SeptemberTotal : 0m,
+                                     OctoberTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[3]) ? fv.ReportTotals.OctoberTotal : 0m,
+                                     NovemberTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[4]) ? fv.ReportTotals.NovemberTotal : 0m,
+                                     DecemberTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[5]) ? fv.ReportTotals.DecemberTotal : 0m,
+                                     JanuaryTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[6]) ? fv.ReportTotals.JanuaryTotal : 0m,
+                                     FebruaryTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[7]) ? fv.ReportTotals.FebruaryTotal: 0m,
+                                     MarchTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[8]) ? fv.ReportTotals.MarchTotal : 0m,
+                                     AprilTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[9]) ? fv.ReportTotals.AprilTotal : 0m,
+                                     MayTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[10]) ? fv.ReportTotals.MayTotal : 0m,
+                                     JuneTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[11]) ? fv.ReportTotals.JuneTotal : 0m,
+                                     JulyTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[12]) ? fv.ReportTotals.JulyTotal : 0m,
+                                     LearningDeliveryFAM_ACTs = ldFamAct
+                                 })).ToList());
+                        }
+
+                        else if (!learningDelivery.LearnDelMathEng)
+                        {
+                            models.AddRange(
+                                learningDelivery.FM36PriceEpisodes?.Select(pe =>
+                                new NonContractedAppsActivityReportModel
+                                {
+                                    Learner = learner.Learner,
+                                    ProviderSpecLearnerMonitoring = learner.ProviderSpecLearnerMonitoringModels,
+                                    LarsLearningDelivery = larsDictionary[learningDelivery.LearnAimRef],
+                                    ProviderSpecDeliveryMonitoring = learningDelivery.ProviderSpecDeliveryMonitoringModels,
+                                    LearningDeliveryFAMs = learningDelivery.LearningDeliveryFAMsModels,
+                                    LearningDelivery = learningDelivery.LearningDelivery,
+                                    FundingLineType = pe.PriceEpisodeValue.PriceEpisodeFundLineType,
+                                    PriceEpisodeValues = pe.PriceEpisodeValue,
+                                    PriceEpisodeStartDate = pe.PriceEpisodeValue.EpisodeStartDate,
+                                    AugustTotal = pe.FundLineValues.ReportTotals.AugustTotal,
+                                    SeptemberTotal = pe.FundLineValues.ReportTotals.SeptemberTotal,
+                                    OctoberTotal = pe.FundLineValues.ReportTotals.OctoberTotal,
+                                    NovemberTotal = pe.FundLineValues.ReportTotals.NovemberTotal,
+                                    DecemberTotal = pe.FundLineValues.ReportTotals.DecemberTotal,
+                                    JanuaryTotal = pe.FundLineValues.ReportTotals.JanuaryTotal,
+                                    FebruaryTotal = pe.FundLineValues.ReportTotals.FebruaryTotal,
+                                    MarchTotal = pe.FundLineValues.ReportTotals.MarchTotal,
+                                    AprilTotal = pe.FundLineValues.ReportTotals.AprilTotal,
+                                    MayTotal = pe.FundLineValues.ReportTotals.MayTotal,
+                                    JuneTotal = pe.FundLineValues.ReportTotals.JuneTotal,
+                                    JulyTotal = pe.FundLineValues.ReportTotals.JulyTotal,
+                                    LearningDeliveryFAM_ACTs = BuildPriceEpisodeACTValues(pe.PriceEpisodeValue.EpisodeStartDate, learningDelivery.LearningDeliveryFAMs_ACT),
+                                }).ToList());
+                        }
+                    }
                 }
             }
 
-            return new Dictionary<string, FM36LearningDeliveryTotals>();
+            return models.OrderBy(m => m.LearnRefNumber).ThenBy(m => m.AimSeqNumber);
         }
 
-        public IEnumerable<FM36LearningDeliveryFundLineByPeriod> PivotPeriods(FM36LearningDeliveryFundLine delivery)
+        public bool ReportRowTotalApplicable(ILearningDeliveryFAM learningDeliveryFAM, DateTime? censusDate)
         {
-            var learnRefNumber = delivery.LearnRefNumber;
-            var aimSeqNumber = delivery.AimSeqNumber;
-            var appAdjLearnStartDate = delivery.AppAdjLearnStartDate;
-            var ageAtProgStart = delivery.AgeAtProgStart;
-            var conRefNumber = delivery.ConRefNumber;
-            var learnDelMathEng = delivery.LearnDelMathEng;
-
-            return new List<FM36LearningDeliveryFundLineByPeriod>()
+            if (!learningDeliveryFAM.LearnDelFAMDateToNullable.HasValue)
             {
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 1, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period1),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 2, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period2),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 3, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period3),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 4, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period4),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 5, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period5),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 6, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period6),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 7, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period7),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 8, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period8),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 9, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period9),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 10, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period10),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 11, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period11),
-                new FM36LearningDeliveryFundLineByPeriod(learnRefNumber, aimSeqNumber, 12, conRefNumber, appAdjLearnStartDate, ageAtProgStart, learnDelMathEng, delivery.Period12)
+                return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate;
+            }
+
+            return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate && learningDeliveryFAM.LearnDelFAMDateToNullable >= censusDate;
+        }
+
+        public ILearningDeliveryFAM BuildPriceEpisodeACTValues(DateTime? episodeStartDate, IEnumerable<ILearningDeliveryFAM> learningDeliveryFAMs)
+        {
+            var learningDeliveryFAMDateFrom = learningDeliveryFAMs?.Where(f => episodeStartDate >= f.LearnDelFAMDateFromNullable).Max(x => x.LearnDelFAMDateFromNullable);
+            var learningDeliveryFAMDateTo = learningDeliveryFAMs?.Where(f => episodeStartDate <= f.LearnDelFAMDateToNullable).Min(x => x.LearnDelFAMDateToNullable);
+
+            var learningDeliveryFAMCode = learningDeliveryFAMs?
+              .Where(f => episodeStartDate >= learningDeliveryFAMDateFrom && episodeStartDate <= (learningDeliveryFAMDateTo.HasValue ? learningDeliveryFAMDateTo.Value : episodeStartDate))
+              .FirstOrDefault().LearnDelFAMCode;
+
+            return new LearningDeliveryACT
+            {
+                LearnDelFAMType = LearnerFAMTypeConstants.ACT,
+                LearnDelFAMCode = learningDeliveryFAMCode,
+                LearnDelFAMDateFromNullable = learningDeliveryFAMDateFrom,
+                LearnDelFAMDateToNullable = learningDeliveryFAMDateTo
             };
+        }
+
+        public ICollection<ILearningDeliveryFAM> BuildLearningDeliveryACTValues(DateTime? learnActEndDate, ICollection<ILearningDeliveryFAM> learningDeliveryFAMs, ReportTotals reportTotals, IReadOnlyDictionary<int, DateTime?> censusEndDates)
+        {
+            if (learnActEndDate.HasValue)
+            {
+                return learningDeliveryFAMs?.Where(f => learnActEndDate.Value == f.LearnDelFAMDateToNullable).ToList();                    
+            }
+
+            var endDates = new DateTime?[]
+            {
+                reportTotals.AugustTotal.HasValue ? censusEndDates[1] : null,
+                reportTotals.SeptemberTotal.HasValue ? censusEndDates[2] : null,
+                reportTotals.OctoberTotal.HasValue ? censusEndDates[3] : null,
+                reportTotals.NovemberTotal.HasValue ? censusEndDates[4] : null,
+                reportTotals.DecemberTotal.HasValue ? censusEndDates[5] : null,
+                reportTotals.JanuaryTotal.HasValue ? censusEndDates[6] : null,
+                reportTotals.FebruaryTotal.HasValue ? censusEndDates[7] : null,
+                reportTotals.MarchTotal.HasValue ? censusEndDates[8] : null,
+                reportTotals.AprilTotal.HasValue ? censusEndDates[9] : null,
+                reportTotals.MayTotal.HasValue ? censusEndDates[10] : null,
+                reportTotals.JuneTotal.HasValue ? censusEndDates[11] : null,
+                reportTotals.JulyTotal.HasValue ? censusEndDates[12] : null
+            };
+
+             var fams = endDates.Where(e => e != null).SelectMany(x => learningDeliveryFAMs.Where(l => l.LearnDelFAMDateFromNullable <= x && l.LearnDelFAMDateToNullable >= x)) // Closed Fams
+                .Union(endDates.Where(e => e != null).SelectMany(x => learningDeliveryFAMs.Where(l => l.LearnDelFAMDateFromNullable <= x && !l.LearnDelFAMDateToNullable.HasValue))) // Open ended Fams
+                .Distinct().ToList();
+
+            return fams;
+        }
+
+        public IEnumerable<FM36LearnerData> BuildFm36Learners(IMessage message, FM36Global fm36Data, IDictionary<string, Dictionary<int, string>> fcsContractsDictionary, IDictionary<string, string[]> validContractsDictionary)
+        {
+            var learnerData = new List<FM36LearnerData>();
+            var messageLearnerDictionary = BuildLearnerDictionary(message);
+            var messageLearningDeliveryDictionary = BuildFm36LearningDeliveryDictionary(message);
+
+            return fm36Data?.Learners?
+                .Select(l => new FM36LearnerData
+                {
+                    Learner = messageLearnerDictionary[l.LearnRefNumber],
+                    ProviderSpecLearnerMonitoringModels = _ilrModelMapper.MapProviderSpecLearnerMonitorings(messageLearnerDictionary[l.LearnRefNumber]?.ProviderSpecLearnerMonitorings),
+                    LearningDeliveries = l.LearningDeliveries?.Select(ld => new FM36LearningDeliveryData
+                    {
+                        LearningDelivery = messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber],
+                        FundingStreamPeriodCode = fcsContractsDictionary[l.LearnRefNumber][ld.AimSeqNumber],
+                        ProviderSpecDeliveryMonitoringModels = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.ProviderSpecDeliveryMonitorings),
+                        LearningDeliveryFAMsModels = _ilrModelMapper.MapLearningDeliveryFAMs(messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.LearningDeliveryFAMs),
+                        LearningDeliveryFAMs_ACT = messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.LearningDeliveryFAMs?.Where(fam => fam.LearnDelFAMType == LearningDeliveryFAMTypeConstants.ACT).ToList(),
+                        FM36PriceEpisodes =
+                            l.PriceEpisodes?.Where(p => p.PriceEpisodeValues?.PriceEpisodeAimSeqNumber == ld.AimSeqNumber)
+                            .Select(p => BuildNonContractedPriceEpisode(p, l.LearnRefNumber, fcsContractsDictionary[l.LearnRefNumber][ld.AimSeqNumber], validContractsDictionary)).ToList(),
+                        FM36LearningDelivery = BuildNonContractedLearningDelivery(ld, l.LearnRefNumber, fcsContractsDictionary[l.LearnRefNumber][ld.AimSeqNumber], validContractsDictionary)
+                    }).ToList()
+                }).ToList();
+        }
+
+        public FM36PriceEpisodeValue BuildNonContractedPriceEpisode(PriceEpisode priceEpisode, string learnRefNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        {
+            if (priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType != null)
+            {
+                validContractsDictionary.TryGetValue(priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType, out var fundLineType);
+
+                if (fundLineType != null && !fundLineType.Contains(fundingStreamPeriodCode))
+                {
+                    return new FM36PriceEpisodeValue
+                    {
+                        PriceEpisodeValue = priceEpisode?.PriceEpisodeValues,
+                        FundLineValues = new FundLineValue
+                        {
+                            FundLineType = priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType,
+                            ReportTotals = BuildPriceEpisodeReportTotals(priceEpisode.PriceEpisodePeriodisedValues, learnRefNumber, priceEpisode.PriceEpisodeValues.PriceEpisodeAimSeqNumber.Value)
+                        }
+                    };
+                }
+            }
+
+            return null;
+        }
+
+        public FM36LearningDeliveryValue BuildNonContractedLearningDelivery(LearningDelivery learningDelivery, string learnRefNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        {
+            var fundlinesDctionary = BuildNonContractedFundLinesDictionary(learningDelivery?.LearningDeliveryPeriodisedTextValues, learnRefNumber, learningDelivery.AimSeqNumber, fundingStreamPeriodCode, validContractsDictionary);
+            var totals = BuildLearningDeliveryReportTotals(learningDelivery?.LearningDeliveryPeriodisedValues, learnRefNumber, learningDelivery.AimSeqNumber);
+
+            var fundlinesToReturn = new List<FundLineValue>();
+
+            foreach (var fl in fundlinesDctionary)
+            {
+                fundlinesToReturn.Add(new FundLineValue
+                {
+                    FundLineType = fl.Key,
+                    ReportTotals = new ReportTotals
+                    {
+                        LearnRefNumber = learnRefNumber,
+                        AimSeqNumber = learningDelivery.AimSeqNumber,
+                        AugustTotal = fl.Value.AugustFundLine != null ? totals.AugustTotal : 0m,
+                        SeptemberTotal = fl.Value.SeptemberFundLine != null ? totals.SeptemberTotal : 0m,
+                        OctoberTotal = fl.Value.OctoberFundLine != null ? totals.OctoberTotal : 0m,
+                        NovemberTotal = fl.Value.NovemberFundLine != null ? totals.NovemberTotal : 0m,
+                        DecemberTotal = fl.Value.DecemberFundLine != null ? totals.DecemberTotal : 0m,
+                        JanuaryTotal = fl.Value.JanuaryFundLine != null ? totals.JanuaryTotal : 0m,
+                        FebruaryTotal = fl.Value.FebruaryFundLine != null ? totals.FebruaryTotal : 0m,
+                        MarchTotal = fl.Value.MarchFundLine != null ? totals.MarchTotal : 0m,
+                        AprilTotal = fl.Value.AprilFundLine != null ? totals.AprilTotal : 0m,
+                        MayTotal = fl.Value.MarchFundLine != null ? totals.MayTotal : 0m,
+                        JuneTotal = fl.Value.JuneFundLine != null ? totals.JuneTotal : 0m,
+                        JulyTotal = fl.Value.JulyFundLine != null ? totals.JulyTotal : 0m,
+                    }
+                });
+            }
+
+            return new FM36LearningDeliveryValue
+            {
+                LearningDeliveryValues = learningDelivery.LearningDeliveryValues,
+                FundLineValues = fundlinesToReturn
+            };
+        }
+
+        public IDictionary<string, FundLines> BuildNonContractedFundLinesDictionary(IEnumerable<LearningDeliveryPeriodisedTextValues> learningDeliveryPeriodisedValues, string learnRefNumber, int aimSeqNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        {
+            var fundlines = learningDeliveryPeriodisedValues?
+                .Where(a => a.AttributeName == AttributeConstants.Fm36FundLineType)
+                .Select(pv => new FundLines
+                {
+                    LearnRefNumber = learnRefNumber,
+                    AimSeqNumber = aimSeqNumber,
+                    AugustFundLine = GetNonContractedFundLine(pv?.Period1, fundingStreamPeriodCode, validContractsDictionary),
+                    SeptemberFundLine = GetNonContractedFundLine(pv?.Period2, fundingStreamPeriodCode, validContractsDictionary),
+                    OctoberFundLine = GetNonContractedFundLine(pv?.Period3, fundingStreamPeriodCode, validContractsDictionary),
+                    NovemberFundLine = GetNonContractedFundLine(pv?.Period4, fundingStreamPeriodCode, validContractsDictionary),
+                    DecemberFundLine = GetNonContractedFundLine(pv?.Period5, fundingStreamPeriodCode, validContractsDictionary),
+                    JanuaryFundLine = GetNonContractedFundLine(pv?.Period6, fundingStreamPeriodCode, validContractsDictionary),
+                    FebruaryFundLine = GetNonContractedFundLine(pv?.Period7, fundingStreamPeriodCode, validContractsDictionary),
+                    MarchFundLine = GetNonContractedFundLine(pv?.Period8, fundingStreamPeriodCode, validContractsDictionary),
+                    AprilFundLine = GetNonContractedFundLine(pv?.Period9, fundingStreamPeriodCode, validContractsDictionary),
+                    MayFundLine = GetNonContractedFundLine(pv?.Period10, fundingStreamPeriodCode, validContractsDictionary),
+                    JuneFundLine = GetNonContractedFundLine(pv?.Period11, fundingStreamPeriodCode, validContractsDictionary),
+                    JulyFundLine = GetNonContractedFundLine(pv?.Period12, fundingStreamPeriodCode, validContractsDictionary),
+                }).FirstOrDefault();
+
+            return new List<string>
+            {
+                fundlines.AugustFundLine,
+                fundlines.SeptemberFundLine,
+                fundlines.OctoberFundLine,
+                fundlines.NovemberFundLine,
+                fundlines.DecemberFundLine,
+                fundlines.JanuaryFundLine,
+                fundlines.FebruaryFundLine,
+                fundlines.MarchFundLine,
+                fundlines.AprilFundLine,
+                fundlines.MayFundLine,
+                fundlines.JuneFundLine,
+                fundlines.JulyFundLine
+            }.Where(x => !string.IsNullOrWhiteSpace(x))
+            .GroupBy(x => x)
+                .ToDictionary(
+                k => k.Key,
+                v => v.Select(fundline => new FundLines
+                {
+                    LearnRefNumber = learnRefNumber,
+                    AimSeqNumber = aimSeqNumber,
+                    AugustFundLine = fundlines.AugustFundLine == fundline ? fundlines.AugustFundLine : null,
+                    SeptemberFundLine = fundlines.SeptemberFundLine == fundline ? fundlines.SeptemberFundLine : null,
+                    OctoberFundLine = fundlines.OctoberFundLine == fundline ? fundlines.OctoberFundLine : null,
+                    NovemberFundLine = fundlines.NovemberFundLine == fundline ? fundlines.NovemberFundLine : null,
+                    DecemberFundLine = fundlines.DecemberFundLine == fundline ? fundlines.DecemberFundLine : null,
+                    JanuaryFundLine = fundlines.JanuaryFundLine == fundline ? fundlines.JanuaryFundLine : null,
+                    FebruaryFundLine = fundlines.FebruaryFundLine == fundline ? fundlines.FebruaryFundLine : null,
+                    MarchFundLine = fundlines.MarchFundLine == fundline ? fundlines.MarchFundLine : null,
+                    AprilFundLine = fundlines.AprilFundLine == fundline ? fundlines.AprilFundLine : null,
+                    MayFundLine = fundlines.MayFundLine == fundline ? fundlines.MayFundLine : null,
+                    JuneFundLine = fundlines.JuneFundLine == fundline ? fundlines.JuneFundLine : null,
+                    JulyFundLine = fundlines.JulyFundLine == fundline ? fundlines.JulyFundLine : null,
+                }).FirstOrDefault(), StringComparer.OrdinalIgnoreCase);
+        }
+
+        public FundLines BuildNonContractedFundLines(IEnumerable<LearningDeliveryPeriodisedTextValues> learningDeliveryPeriodisedValues, string learnRefNumber, int aimSeqNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        {
+            return learningDeliveryPeriodisedValues?
+                .Where(a => a.AttributeName == AttributeConstants.Fm36FundLineType)
+                .Select(pv => new FundLines
+                {
+                    LearnRefNumber = learnRefNumber,
+                    AimSeqNumber = aimSeqNumber,
+                    AugustFundLine = GetNonContractedFundLine(pv?.Period1, fundingStreamPeriodCode, validContractsDictionary),
+                    SeptemberFundLine = GetNonContractedFundLine(pv?.Period2, fundingStreamPeriodCode, validContractsDictionary),
+                    OctoberFundLine = GetNonContractedFundLine(pv?.Period3, fundingStreamPeriodCode, validContractsDictionary),
+                    NovemberFundLine = GetNonContractedFundLine(pv?.Period4, fundingStreamPeriodCode, validContractsDictionary),
+                    DecemberFundLine = GetNonContractedFundLine(pv?.Period5, fundingStreamPeriodCode, validContractsDictionary),
+                    JanuaryFundLine = GetNonContractedFundLine(pv?.Period6, fundingStreamPeriodCode, validContractsDictionary),
+                    FebruaryFundLine = GetNonContractedFundLine(pv?.Period7, fundingStreamPeriodCode, validContractsDictionary),
+                    MarchFundLine = GetNonContractedFundLine(pv?.Period8, fundingStreamPeriodCode, validContractsDictionary),
+                    AprilFundLine = GetNonContractedFundLine(pv?.Period9, fundingStreamPeriodCode, validContractsDictionary),
+                    MayFundLine = GetNonContractedFundLine(pv?.Period10, fundingStreamPeriodCode, validContractsDictionary),
+                    JuneFundLine = GetNonContractedFundLine(pv?.Period11, fundingStreamPeriodCode, validContractsDictionary),
+                    JulyFundLine = GetNonContractedFundLine(pv?.Period12, fundingStreamPeriodCode, validContractsDictionary),
+                }).FirstOrDefault();
+        }
+
+        public string GetNonContractedFundLine(string periodValue, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        {
+            if (periodValue != null && periodValue != "None")
+            {
+                validContractsDictionary.TryGetValue(periodValue, out var fspCodes);
+
+                return fspCodes != null && !fspCodes.Contains(fundingStreamPeriodCode, StringComparer.OrdinalIgnoreCase) ? periodValue : string.Empty;
+            }
+
+            return string.Empty;
+        }
+
+        public ReportTotals BuildPriceEpisodeReportTotals(IEnumerable<PriceEpisodePeriodisedValues> priceEpisodePeriodisedValues, string learnRefNumber, int aimSeqNumber)
+        {
+            var periodisedValues = priceEpisodePeriodisedValues?.Where(a => _priceEpisodeFundedAttributes.Contains(a.AttributeName))?
+                .Select(p => new decimal?[]
+                {
+                    p.Period1,
+                    p.Period2,
+                    p.Period3,
+                    p.Period4,
+                    p.Period5,
+                    p.Period6,
+                    p.Period7,
+                    p.Period8,
+                    p.Period9,
+                    p.Period10,
+                    p.Period11,
+                    p.Period12,
+                }).ToArray();
+
+            return SumPeriods(periodisedValues, learnRefNumber, aimSeqNumber);
+        }
+
+        public ReportTotals BuildLearningDeliveryReportTotals(IEnumerable<LearningDeliveryPeriodisedValues> learningDeliveryPeriodisedValues, string learnRefNumber, int aimSeqNumber)
+        {
+            var periodisedValues = learningDeliveryPeriodisedValues?.Where(a => _learningDeliveryFundedAttributes.Contains(a.AttributeName))?
+               .Select(p => new decimal?[]
+               {
+                    p.Period1,
+                    p.Period2,
+                    p.Period3,
+                    p.Period4,
+                    p.Period5,
+                    p.Period6,
+                    p.Period7,
+                    p.Period8,
+                    p.Period9,
+                    p.Period10,
+                    p.Period11,
+                    p.Period12,
+               }).ToArray();
+
+            return SumPeriods(periodisedValues, learnRefNumber, aimSeqNumber);
+        }
+
+        public ReportTotals SumPeriods(decimal?[][] periodisedValues, string learnRefNumber, int aimSeqNumber)
+        {
+            return new ReportTotals
+            {
+                LearnRefNumber = learnRefNumber,
+                AimSeqNumber = aimSeqNumber,
+                AugustTotal = periodisedValues?.Sum(p => p[0]) ?? 0m,
+                SeptemberTotal = periodisedValues?.Sum(p => p[1]) ?? 0m,
+                OctoberTotal = periodisedValues?.Sum(p => p[2]) ?? 0m,
+                NovemberTotal = periodisedValues?.Sum(p => p[3]) ?? 0m,
+                DecemberTotal = periodisedValues?.Sum(p => p[4]) ?? 0m,
+                JanuaryTotal = periodisedValues?.Sum(p => p[5]) ?? 0m,
+                FebruaryTotal = periodisedValues?.Sum(p => p[6]) ?? 0m,
+                MarchTotal = periodisedValues?.Sum(p => p[7]) ?? 0m,
+                AprilTotal = periodisedValues?.Sum(p => p[8]) ?? 0m,
+                MayTotal = periodisedValues?.Sum(p => p[9]) ?? 0m,
+                JuneTotal = periodisedValues.Sum(p => p[10]) ?? 0m,
+                JulyTotal = periodisedValues.Sum(p => p[11]) ?? 0m,
+            };
+        }
+
+        public IDictionary<string, LARSLearningDelivery> BuildLARSDictionary(IReadOnlyCollection<LARSLearningDelivery> larsLearningDeliveries)
+        {
+            return larsLearningDeliveries.ToDictionary(k => k.LearnAimRef, v => v, StringComparer.OrdinalIgnoreCase);
         }
 
         public IDictionary<string, string[]> BuildValidContractMapping()
@@ -190,25 +470,30 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             return contractsDictionary;
         }
 
-        public IDictionary<string, string> BuildFcsContractMapping(IEnumerable<FcsContractAllocation> fcsContractAllocations, IMessage message)
+        public IDictionary<string, Dictionary<int, string>> BuildFcsContractMapping(IEnumerable<FcsContractAllocation> fcsContractAllocations, IMessage message)
         {
             var conRefNumbers = new HashSet<string>(
                 message?.Learners?.SelectMany(l => l.LearningDeliveries
                 .Where(ld => ld.FundModel == FundModelConstants.FM36)
                 .Select(ld => ld.ConRefNumber)), StringComparer.OrdinalIgnoreCase);
 
-            return
+            var periodCodesDictionary =
                 fcsContractAllocations?
                 .Where(f => conRefNumbers.Contains(f.ContractAllocationNumber))
-                .ToDictionary(k => k.ContractAllocationNumber, v => v.FundingStreamPeriodCode, StringComparer.OrdinalIgnoreCase);
+                .ToDictionary(k => k.ContractAllocationNumber, v => v.FundingStreamPeriodCode, StringComparer.OrdinalIgnoreCase)
+                ?? new Dictionary<string, string>();
+
+            return message?.Learners?
+                .ToDictionary(
+                    l => l.LearnRefNumber,
+                    l => l.LearningDeliveries.Where(fm => fm.FundModel == FundModelConstants.FM36)
+                    .GroupBy(a => a.AimSeqNumber)
+                    .ToDictionary(
+                        k => k.Key,
+                        v => v.Select(ld => ld.ConRefNumber == null ? null : periodCodesDictionary[ld.ConRefNumber]).FirstOrDefault()), StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, Dictionary<int, string>>();
         }
 
-        public IDictionary<string, LARSLearningDelivery> BuildLarsLearningDeliveryDictionary(ReferenceDataRoot referenceDataRoot)
-        {
-            return referenceDataRoot?.LARSLearningDeliveries?.ToDictionary(ld => ld.LearnAimRef, ld => ld, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, LARSLearningDelivery>();
-        }
-
-        public IDictionary<string, Dictionary<int, ILearningDelivery>> BuildFm36MessageDictionary(IMessage message)
+        public IDictionary<string, Dictionary<int, ILearningDelivery>> BuildFm36LearningDeliveryDictionary(IMessage message)
         {
             return message?.Learners?
                 .ToDictionary(
@@ -218,13 +503,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                     .ToDictionary(
                         k => k.Key,
                         v => v.Select(ld => ld).FirstOrDefault())
-                    , StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, Dictionary<int, ILearningDelivery>>;
+                    , StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, Dictionary<int, ILearningDelivery>>();
         }
-        
 
-        public IDictionary<string, FM36Learner> BuildFm36LearnerDeliveryDictionary(FM36Global fm36Global)
+        public IDictionary<string, ILearner> BuildLearnerDictionary(IMessage message)
         {
-            return fm36Global?.Learners?.ToDictionary(ld => ld.LearnRefNumber, ld => ld, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, FM36Learner>();
+            return message.Learners.ToDictionary(l => l.LearnRefNumber, l => l, StringComparer.OrdinalIgnoreCase);
         }
     }
 }

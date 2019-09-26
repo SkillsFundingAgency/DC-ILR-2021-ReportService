@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
@@ -11,9 +10,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
     {
         public NonContractedAppsActivityReport(
             IFileNameService fileNameService,
-            IModelBuilder<IEnumerable<NonContractedAppsActivityReportModel>> appsIndicativeEarningsModelBuilder,
+            IModelBuilder<IEnumerable<NonContractedAppsActivityReportModel>> nonContractedAPpsActivityModelBuilder,
             ICsvService csvService)
-            : base(fileNameService, appsIndicativeEarningsModelBuilder, csvService, ReportTaskNameConstants.NonContractedAppsActivityReport, "Non-Contracted Apprenticeships Activity Report")
+            : base(fileNameService, nonContractedAPpsActivityModelBuilder, csvService, ReportTaskNameConstants.NonContractedAppsActivityReport, "Non-Contracted Apprenticeships Activity Report")
         {
         }
 

@@ -1,4 +1,5 @@
-﻿using ESFA.DC.ILR.Model.Interface;
+﻿using System;
+using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Abstract.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave.Model;
 
@@ -13,6 +14,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
         public string StandardNotionalEndLevel { get; set; }
 
         public int? EmpStatusMonitoringSmallEmployer { get; set; }
+
+        public string LearningDeliveryFAMTypeApprenticeshipContractType { get; set; }
+
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesFrom { get; set; }
+
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesTo { get; set; }
 
         public decimal TotalPRMPreviousFundingYear { get; set; }
 

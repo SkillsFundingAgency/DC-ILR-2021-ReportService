@@ -1,9 +1,19 @@
-﻿using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Abstract.Model;
+﻿using System;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Abstract.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity
 {
     public class NonContractedAppsActivityReportModel : AbstractAppsReportModel
     {
+        public ILearningDeliveryFAM LearningDeliveryFAM_ACTs { get; set; }
+
+        public string LearningDeliveryFAMTypeApprenticeshipContractType => LearningDeliveryFAM_ACTs.LearnDelFAMCode;
+
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesFrom => LearningDeliveryFAM_ACTs.LearnDelFAMDateFromNullable;
+
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesTo => LearningDeliveryFAM_ACTs.LearnDelFAMDateToNullable;
+
         public decimal? AugustTotal { get; set; }
 
         public decimal? SeptemberTotal { get; set; }
