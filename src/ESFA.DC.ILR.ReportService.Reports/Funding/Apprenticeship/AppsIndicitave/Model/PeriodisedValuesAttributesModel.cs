@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.Model
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave.Model
 {
     public class PeriodisedValuesAttributesModel
     {

@@ -82,8 +82,8 @@
     <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Loose.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.0.274.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.0.274\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.0.322.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.0.322\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.Tests.Model, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Tests.Model.0.1.7-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Tests.Model.dll</HintPath>
@@ -137,6 +137,9 @@
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
     <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
+    <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportClassMapTests.cs" />
+    <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportModelBuilderTests.cs" />
+    <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportClassMapTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportModelBuilderTests.cs" />
     <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportTests.cs" />

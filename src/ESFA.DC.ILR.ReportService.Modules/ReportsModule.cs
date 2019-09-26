@@ -31,6 +31,8 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -43,7 +45,9 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
             RegisterMainOccupancyReport(containerBuilder);
             RegisterAllbOccupancyReport(containerBuilder);
+
             RegisterAppsIndicativeEarningsReport(containerBuilder);
+            RegisterNonContractsAppsActivityReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
 
@@ -124,6 +128,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<AppsIndicativeEarningsReport>().As<IReport>();
             containerBuilder.RegisterType<AppsIndicativeEarningsReportModelBuilder>().As<IModelBuilder<IEnumerable<AppsIndicativeEarningsReportModel>>>();
+        }
+
+        private void RegisterNonContractsAppsActivityReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<NonContractedAppsActivityReport>().As<IReport>();
+            containerBuilder.RegisterType<NonContractedAppsActivityReportModelBuilder>().As<IModelBuilder<IEnumerable<NonContractedAppsActivityReportModel>>>();
         }
 
         private void RegisterTrailblazerEmployerIncentivesReport(ContainerBuilder containerBuilder)

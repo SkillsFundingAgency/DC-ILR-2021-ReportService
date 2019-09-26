@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
                 }
 
                 // list of reports to be generated
-                var reportsToBeGenerated = _reports.Where(x => reportServiceContext.Tasks.Contains(x.TaskName)).ToList();
+                var reportsToBeGenerated = _reports.Where(x => reportServiceContext.Tasks.Contains(x.TaskName, StringComparer.OrdinalIgnoreCase)).ToList();
 
                 if (!_reports.Any())
                 {
