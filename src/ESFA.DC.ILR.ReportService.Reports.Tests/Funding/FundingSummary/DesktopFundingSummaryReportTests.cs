@@ -63,11 +63,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                 {
                     ReferenceDataVersions = new ReferenceDataVersion()
                     {
-                        OrganisationsVersion = new OrganisationsVersion("orgVersion"),
-                        EasUploadDateTime = new EasUploadDateTime(new DateTime(2019, 01, 01)),
-                        LarsVersion = new LarsVersion("larsVersion"),
-                        PostcodesVersion = new PostcodesVersion("postcodeVersion"),
-                        Employers = new EmployersVersion("employersVersion")
+                        OrganisationsVersion = new OrganisationsVersion { Version = "orgVersion" },
+                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 01, 01)},
+                        LarsVersion = new LarsVersion { Version = "larsVersion" },
+                        PostcodesVersion = new PostcodesVersion { Version = "postcodeVersion" },
+                        Employers = new EmployersVersion { Version = "employersVersion" }
                     }
                 }
             };

@@ -222,10 +222,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                 {
                     ReferenceDataVersions = new ReferenceDataVersion()
                     {
-                        OrganisationsVersion = new OrganisationsVersion("1.1.1.1"),
-                        Employers = new EmployersVersion("2.2.2.2"),
-                        LarsVersion = new LarsVersion("3.3.3.3"),
-                        PostcodesVersion = new PostcodesVersion("4.4.4.4")
+                        OrganisationsVersion = new OrganisationsVersion { Version = "1.1.1.1" },
+                        Employers = new EmployersVersion { Version = "2.2.2.2" },
+                        LarsVersion = new LarsVersion { Version = "3.3.3.3" },
+                        PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
                     }
                 }
             };
