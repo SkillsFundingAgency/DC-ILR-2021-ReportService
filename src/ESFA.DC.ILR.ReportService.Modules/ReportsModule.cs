@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using Autofac;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
+using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
@@ -28,6 +30,7 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
 
@@ -59,6 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterHighNeedsStudentReport(containerBuilder);
             RegisterSummaryOfFundingByStudentReport(containerBuilder);
             RegisterFundingClaim1619Report(containerBuilder);
+            RegisterAdultFundingClaimReport(containerBuilder);
 
             containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
@@ -159,11 +163,15 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<SummaryOfFundingByStudentModelBuilder>().As<IModelBuilder<IEnumerable<SummaryOfFundingByStudentReportModel>>>();
         }
 
-
         private void RegisterFundingClaim1619Report(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<FundingClaimReport>().As<IReport>().As<IFilteredReport>();
             containerBuilder.RegisterType<FundingClaimReportModelBuilder>().As<IModelBuilder<FundingClaimReportModel>>();
+        }
+        protected virtual void RegisterAdultFundingClaimReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<AdultFundingClaimReport>().As<IReport>();
+            containerBuilder.RegisterType<AdultFundingClaimReportModelBuilder>().As<IModelBuilder<AdultFundingClaimReportModel>>();
         }
     }
 }

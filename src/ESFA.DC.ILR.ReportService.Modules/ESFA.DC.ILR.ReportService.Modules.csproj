@@ -5,9 +5,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="autofac" Version="4.9.2" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.230" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model" Version="0.0.230" />
+    <PackageReference Include="autofac" Version="4.9.4" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model" Version="0.0.245" />
   </ItemGroup>
 
   <ItemGroup>

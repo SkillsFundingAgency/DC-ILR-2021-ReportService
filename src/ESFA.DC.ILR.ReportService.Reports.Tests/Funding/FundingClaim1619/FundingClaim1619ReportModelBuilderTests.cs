@@ -12,6 +12,7 @@ using ESFA.DC.ILR.Tests.Model;
 using Moq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Xunit;
 
@@ -320,8 +321,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
         [InlineData("upto+ hours (Band 1 )", false)]
         public void Band1Tests(string rateBand, bool result)
         {
-            var band = NewBuilder(null).Band1
-(new FM25Learner() { RateBand = rateBand });
+            var band = NewBuilder(null).Band1(new FM25Learner() { RateBand = rateBand });
             band.Should().Be(result);
         }
 
@@ -377,6 +377,63 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
         {
             var actualFilename = NewBuilder().IlrFilename(originalFilename);
             actualFilename.Should().BeEquivalentTo(expectedFilename);
+        }
+
+        [Fact]
+        public void ApplyUserFilters_NullFilter()
+        {
+            var before = new FM25Learner()
+            {
+                LearnerStartDate = new DateTime(2013, 1, 1),
+            };
+
+            var after = new FM25Learner()
+            {
+                LearnerStartDate = new DateTime(2015, 1, 1),
+            };
+
+            var learners = new List<FM25Learner>()
+            {
+                before,
+                after,
+            }.AsQueryable();
+
+            var queryable = NewBuilder().ApplyUserFilters(learners, null);
+
+            queryable.Should().HaveCount(2);
+        }
+
+        [Fact]
+        public void ApplyUserFilters_NullLearners()
+        {
+            var queryable = NewBuilder().ApplyUserFilters(null, new DateTime(2014, 1, 1));
+
+            queryable.Should().BeNull();
+        }
+
+        [Fact]
+        public void ApplyUserFilters_Filter()
+        {
+            var before = new FM25Learner()
+            {
+                LearnerStartDate = new DateTime(2013, 1, 1),
+            };
+
+            var after = new FM25Learner()
+            {
+                LearnerStartDate = new DateTime(2015, 1, 1),
+            };
+
+            var learners = new List<FM25Learner>()
+            {
+                before,
+                after,
+            }.AsQueryable();
+
+            var queryable = NewBuilder().ApplyUserFilters(learners, new DateTime(2014, 1, 1));
+
+            queryable.Should().HaveCount(1);
+            queryable.First().Should().Be(before);
         }
 
         private List<ILearner> BuildLearners(TestLearningDelivery learningDelivery)

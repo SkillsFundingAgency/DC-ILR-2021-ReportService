@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using CsvHelper;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using FluentAssertions;
 using Xunit;
 
