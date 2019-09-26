@@ -49,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
         public async Task GenerateAsync()
         {
             var container = "Container";
+            var sheetName = "FundingSummaryReport";
 
             var fundingSummaryReportModelBuilderMock = new Mock<IModelBuilder<IFundingSummaryReport>>();
 
@@ -62,12 +63,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             fundingSummaryReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData)).Returns(fundingSummaryReportModel);
 
             Workbook workbook = new Workbook();
-            Worksheet worksheet = workbook.Worksheets.Add("Test");
+            Worksheet worksheet = workbook.Worksheets.Add(sheetName);
 
             var excelServiceMock = new Mock<IExcelService>();
 
             excelServiceMock.Setup(s => s.NewWorkbook()).Returns(workbook);
-            excelServiceMock.Setup(s => s.GetWorksheetFromWorkbook(workbook, 0)).Returns(worksheet);
+            excelServiceMock.Setup(s => s.GetWorksheetFromWorkbook(workbook, sheetName)).Returns(worksheet);
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
