@@ -18,6 +18,8 @@ using ESFA.DC.ServiceFabric.Common.Config.Interface;
 using ESFA.DC.ServiceFabric.Common.Modules;
 using VersionInfo = ESFA.DC.ILR.ReportService.Stateless.Configuration.VersionInfo;
 using ESFA.DC.ILR.ReportService.Modules;
+using ESFA.DC.ILR.ReportService.Reports.Service;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Stateless
 {
@@ -63,6 +65,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<MessageHandler>().As<IMessageHandler<JobContextMessage>>().InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
+
+            containerBuilder.RegisterType<FileNameService>().As<IFileNameService>();
 
             containerBuilder.RegisterModule<OrchestrationModule>();
             containerBuilder.RegisterModule<DataModule>();
