@@ -68,6 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
 
             containerBuilder.RegisterType<CsvService>().As<ICsvService>();
             containerBuilder.RegisterType<ExcelService>().As<IExcelService>();
+            containerBuilder.RegisterType<FileNameService>().As<IFileNameService>();
         }
 
         private void RegisterValidationReports(ContainerBuilder containerBuilder)
