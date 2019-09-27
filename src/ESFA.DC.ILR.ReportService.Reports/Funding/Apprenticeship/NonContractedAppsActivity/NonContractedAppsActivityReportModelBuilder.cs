@@ -61,9 +61,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             var censusEndDates = referenceData.MetaDatas.CollectionDates.CensusDates.ToDictionary(p => p.Period, e => (DateTime?)e.End);
             var validContractsDictionary = BuildValidContractMapping();
             var larsLearningDeliveryDictionary = BuildLARSDictionary(referenceData.LARSLearningDeliveries);
-            var fcsContractsDictionary = BuildFcsContractMapping(referenceData.FCSContractAllocations, message);
+            var fundingStreamPeriodCodesForUkprn = BuildFcsFundingStreamPeriodCodes(referenceData.FCSContractAllocations);
 
-            var fm36LearnerModel = BuildFm36Learners(message, fm36Data, fcsContractsDictionary, validContractsDictionary);
+            var fm36LearnerModel = BuildFm36Learners(message, fm36Data, fundingStreamPeriodCodesForUkprn, validContractsDictionary);
 
             var reportRows = BuildReportRows(fm36LearnerModel, larsLearningDeliveryDictionary, censusEndDates);
 
@@ -109,7 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                                      JuneTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[11]) ? fv.ReportTotals.JuneTotal : 0m,
                                      JulyTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[12]) ? fv.ReportTotals.JulyTotal : 0m,
                                      LearningDeliveryFAM_ACTs = ldFamAct
-                                 })).ToList());
+                                 })));
                         }
 
                         else if (!learningDelivery.LearnDelMathEng)
@@ -140,7 +140,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                                     JuneTotal = pe.FundLineValues.ReportTotals.JuneTotal,
                                     JulyTotal = pe.FundLineValues.ReportTotals.JulyTotal,
                                     LearningDeliveryFAM_ACTs = BuildPriceEpisodeACTValues(pe.PriceEpisodeValue.EpisodeStartDate, learningDelivery.LearningDeliveryFAMs_ACT),
-                                }).ToList());
+                                }));
                         }
                     }
                 }
@@ -212,7 +212,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             return fams;
         }
 
-        public IEnumerable<FM36LearnerData> BuildFm36Learners(IMessage message, FM36Global fm36Data, IDictionary<string, Dictionary<int, string>> fcsContractsDictionary, IDictionary<string, string[]> validContractsDictionary)
+        public IEnumerable<FM36LearnerData> BuildFm36Learners(IMessage message, FM36Global fm36Data, ICollection<string> fundingStreamPeriodCodes, IDictionary<string, string[]> validContractsDictionary)
         {
             var learnerData = new List<FM36LearnerData>();
             var messageLearnerDictionary = BuildLearnerDictionary(message);
@@ -226,25 +226,24 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                     LearningDeliveries = l.LearningDeliveries?.Select(ld => new FM36LearningDeliveryData
                     {
                         LearningDelivery = messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber],
-                        FundingStreamPeriodCode = fcsContractsDictionary[l.LearnRefNumber][ld.AimSeqNumber],
                         ProviderSpecDeliveryMonitoringModels = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.ProviderSpecDeliveryMonitorings),
                         LearningDeliveryFAMsModels = _ilrModelMapper.MapLearningDeliveryFAMs(messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.LearningDeliveryFAMs),
                         LearningDeliveryFAMs_ACT = messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.LearningDeliveryFAMs?.Where(fam => fam.LearnDelFAMType == LearningDeliveryFAMTypeConstants.ACT).ToList(),
                         FM36PriceEpisodes =
                             l.PriceEpisodes?.Where(p => p.PriceEpisodeValues?.PriceEpisodeAimSeqNumber == ld.AimSeqNumber)
-                            .Select(p => BuildNonContractedPriceEpisode(p, l.LearnRefNumber, fcsContractsDictionary[l.LearnRefNumber][ld.AimSeqNumber], validContractsDictionary)).ToList(),
-                        FM36LearningDelivery = BuildNonContractedLearningDelivery(ld, l.LearnRefNumber, fcsContractsDictionary[l.LearnRefNumber][ld.AimSeqNumber], validContractsDictionary)
+                            .Select(p => BuildNonContractedPriceEpisode(p, l.LearnRefNumber, fundingStreamPeriodCodes, validContractsDictionary)).Where(pe => pe != null).ToList(),
+                        FM36LearningDelivery = BuildNonContractedLearningDelivery(ld, l.LearnRefNumber, fundingStreamPeriodCodes, validContractsDictionary)
                     }).ToList()
                 }).ToList();
         }
 
-        public FM36PriceEpisodeValue BuildNonContractedPriceEpisode(PriceEpisode priceEpisode, string learnRefNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        public FM36PriceEpisodeValue BuildNonContractedPriceEpisode(PriceEpisode priceEpisode, string learnRefNumber, ICollection<string> fundingStreamPeriodCodes, IDictionary<string, string[]> validContractsDictionary)
         {
             if (priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType != null)
             {
-                var fundLineType = validContractsDictionary.GetValueOrDefault(priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType);
+                var fspCodesForFundLineType = validContractsDictionary.GetValueOrDefault(priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType);
 
-                if (fundLineType != null && !fundLineType.Contains(fundingStreamPeriodCode))
+                if (fspCodesForFundLineType != null && !fspCodesForFundLineType.Any(x => fundingStreamPeriodCodes.Contains(x)))
                 {
                     return new FM36PriceEpisodeValue
                     {
@@ -261,9 +260,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             return null;
         }
 
-        public FM36LearningDeliveryValue BuildNonContractedLearningDelivery(LearningDelivery learningDelivery, string learnRefNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        public FM36LearningDeliveryValue BuildNonContractedLearningDelivery(LearningDelivery learningDelivery, string learnRefNumber, ICollection<string> fundingStreamPeriodCodes, IDictionary<string, string[]> validContractsDictionary)
         {
-            var fundlinesDctionary = BuildNonContractedFundLinesDictionary(learningDelivery?.LearningDeliveryPeriodisedTextValues, learnRefNumber, learningDelivery.AimSeqNumber, fundingStreamPeriodCode, validContractsDictionary);
+            var fundlinesDctionary = BuildNonContractedFundLinesDictionary(learningDelivery?.LearningDeliveryPeriodisedTextValues, learnRefNumber, learningDelivery.AimSeqNumber, fundingStreamPeriodCodes, validContractsDictionary);
             var totals = BuildLearningDeliveryReportTotals(learningDelivery?.LearningDeliveryPeriodisedValues, learnRefNumber, learningDelivery.AimSeqNumber);
 
             var fundlinesToReturn = new List<FundLineValue>();
@@ -300,7 +299,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             };
         }
 
-        public IDictionary<string, FundLines> BuildNonContractedFundLinesDictionary(IEnumerable<LearningDeliveryPeriodisedTextValues> learningDeliveryPeriodisedValues, string learnRefNumber, int aimSeqNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        public IDictionary<string, FundLines> BuildNonContractedFundLinesDictionary(IEnumerable<LearningDeliveryPeriodisedTextValues> learningDeliveryPeriodisedValues, string learnRefNumber, int aimSeqNumber, ICollection<string> fundingStreamPeriodCodes, IDictionary<string, string[]> validContractsDictionary)
         {
             var fundlines = learningDeliveryPeriodisedValues?
                 .Where(a => a.AttributeName == AttributeConstants.Fm36FundLineType)
@@ -308,18 +307,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 {
                     LearnRefNumber = learnRefNumber,
                     AimSeqNumber = aimSeqNumber,
-                    AugustFundLine = GetNonContractedFundLine(pv?.Period1, fundingStreamPeriodCode, validContractsDictionary),
-                    SeptemberFundLine = GetNonContractedFundLine(pv?.Period2, fundingStreamPeriodCode, validContractsDictionary),
-                    OctoberFundLine = GetNonContractedFundLine(pv?.Period3, fundingStreamPeriodCode, validContractsDictionary),
-                    NovemberFundLine = GetNonContractedFundLine(pv?.Period4, fundingStreamPeriodCode, validContractsDictionary),
-                    DecemberFundLine = GetNonContractedFundLine(pv?.Period5, fundingStreamPeriodCode, validContractsDictionary),
-                    JanuaryFundLine = GetNonContractedFundLine(pv?.Period6, fundingStreamPeriodCode, validContractsDictionary),
-                    FebruaryFundLine = GetNonContractedFundLine(pv?.Period7, fundingStreamPeriodCode, validContractsDictionary),
-                    MarchFundLine = GetNonContractedFundLine(pv?.Period8, fundingStreamPeriodCode, validContractsDictionary),
-                    AprilFundLine = GetNonContractedFundLine(pv?.Period9, fundingStreamPeriodCode, validContractsDictionary),
-                    MayFundLine = GetNonContractedFundLine(pv?.Period10, fundingStreamPeriodCode, validContractsDictionary),
-                    JuneFundLine = GetNonContractedFundLine(pv?.Period11, fundingStreamPeriodCode, validContractsDictionary),
-                    JulyFundLine = GetNonContractedFundLine(pv?.Period12, fundingStreamPeriodCode, validContractsDictionary),
+                    AugustFundLine = GetNonContractedFundLine(pv?.Period1, fundingStreamPeriodCodes, validContractsDictionary),
+                    SeptemberFundLine = GetNonContractedFundLine(pv?.Period2, fundingStreamPeriodCodes, validContractsDictionary),
+                    OctoberFundLine = GetNonContractedFundLine(pv?.Period3, fundingStreamPeriodCodes, validContractsDictionary),
+                    NovemberFundLine = GetNonContractedFundLine(pv?.Period4, fundingStreamPeriodCodes, validContractsDictionary),
+                    DecemberFundLine = GetNonContractedFundLine(pv?.Period5, fundingStreamPeriodCodes, validContractsDictionary),
+                    JanuaryFundLine = GetNonContractedFundLine(pv?.Period6, fundingStreamPeriodCodes, validContractsDictionary),
+                    FebruaryFundLine = GetNonContractedFundLine(pv?.Period7, fundingStreamPeriodCodes, validContractsDictionary),
+                    MarchFundLine = GetNonContractedFundLine(pv?.Period8, fundingStreamPeriodCodes, validContractsDictionary),
+                    AprilFundLine = GetNonContractedFundLine(pv?.Period9, fundingStreamPeriodCodes, validContractsDictionary),
+                    MayFundLine = GetNonContractedFundLine(pv?.Period10, fundingStreamPeriodCodes, validContractsDictionary),
+                    JuneFundLine = GetNonContractedFundLine(pv?.Period11, fundingStreamPeriodCodes, validContractsDictionary),
+                    JulyFundLine = GetNonContractedFundLine(pv?.Period12, fundingStreamPeriodCodes, validContractsDictionary),
                 }).FirstOrDefault();
 
             return new List<string>
@@ -359,36 +358,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 }).FirstOrDefault(), StringComparer.OrdinalIgnoreCase);
         }
 
-        public FundLines BuildNonContractedFundLines(IEnumerable<LearningDeliveryPeriodisedTextValues> learningDeliveryPeriodisedValues, string learnRefNumber, int aimSeqNumber, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
-        {
-            return learningDeliveryPeriodisedValues?
-                .Where(a => a.AttributeName == AttributeConstants.Fm36FundLineType)
-                .Select(pv => new FundLines
-                {
-                    LearnRefNumber = learnRefNumber,
-                    AimSeqNumber = aimSeqNumber,
-                    AugustFundLine = GetNonContractedFundLine(pv?.Period1, fundingStreamPeriodCode, validContractsDictionary),
-                    SeptemberFundLine = GetNonContractedFundLine(pv?.Period2, fundingStreamPeriodCode, validContractsDictionary),
-                    OctoberFundLine = GetNonContractedFundLine(pv?.Period3, fundingStreamPeriodCode, validContractsDictionary),
-                    NovemberFundLine = GetNonContractedFundLine(pv?.Period4, fundingStreamPeriodCode, validContractsDictionary),
-                    DecemberFundLine = GetNonContractedFundLine(pv?.Period5, fundingStreamPeriodCode, validContractsDictionary),
-                    JanuaryFundLine = GetNonContractedFundLine(pv?.Period6, fundingStreamPeriodCode, validContractsDictionary),
-                    FebruaryFundLine = GetNonContractedFundLine(pv?.Period7, fundingStreamPeriodCode, validContractsDictionary),
-                    MarchFundLine = GetNonContractedFundLine(pv?.Period8, fundingStreamPeriodCode, validContractsDictionary),
-                    AprilFundLine = GetNonContractedFundLine(pv?.Period9, fundingStreamPeriodCode, validContractsDictionary),
-                    MayFundLine = GetNonContractedFundLine(pv?.Period10, fundingStreamPeriodCode, validContractsDictionary),
-                    JuneFundLine = GetNonContractedFundLine(pv?.Period11, fundingStreamPeriodCode, validContractsDictionary),
-                    JulyFundLine = GetNonContractedFundLine(pv?.Period12, fundingStreamPeriodCode, validContractsDictionary),
-                }).FirstOrDefault();
-        }
-
-        public string GetNonContractedFundLine(string periodValue, string fundingStreamPeriodCode, IDictionary<string, string[]> validContractsDictionary)
+        public string GetNonContractedFundLine(string periodValue, ICollection<string> fundingStreamPeriodCodes, IDictionary<string, string[]> validContractsDictionary)
         {
             if (periodValue != null && periodValue != "None")
             {
                 var fspCodes = validContractsDictionary.GetValueOrDefault(periodValue);
 
-                return fspCodes != null && !fspCodes.Contains(fundingStreamPeriodCode, StringComparer.OrdinalIgnoreCase) ? periodValue : string.Empty;
+                return fspCodes != null && !fspCodes.Any(x => fundingStreamPeriodCodes.Contains(x)) ? periodValue : string.Empty;
             }
 
             return string.Empty;
@@ -476,27 +452,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             return contractsDictionary;
         }
 
-        public IDictionary<string, Dictionary<int, string>> BuildFcsContractMapping(IEnumerable<FcsContractAllocation> fcsContractAllocations, IMessage message)
+        public ICollection<string> BuildFcsFundingStreamPeriodCodes(IEnumerable<FcsContractAllocation> fcsContractAllocations)
         {
-            var conRefNumbers = new HashSet<string>(
-                message?.Learners?.SelectMany(l => l.LearningDeliveries
-                .Where(ld => ld.FundModel == FundModelConstants.FM36)
-                .Select(ld => ld.ConRefNumber)), StringComparer.OrdinalIgnoreCase);
-
-            var periodCodesDictionary =
-                fcsContractAllocations?
-                .Where(f => conRefNumbers.Contains(f.ContractAllocationNumber))
-                .ToDictionary(k => k.ContractAllocationNumber, v => v.FundingStreamPeriodCode, StringComparer.OrdinalIgnoreCase)
-                ?? new Dictionary<string, string>();
-
-            return message?.Learners?
-                .ToDictionary(
-                    l => l.LearnRefNumber,
-                    l => l.LearningDeliveries.Where(fm => fm.FundModel == FundModelConstants.FM36)
-                    .GroupBy(a => a.AimSeqNumber)
-                    .ToDictionary(
-                        k => k.Key,
-                        v => v.Select(ld => ld.ConRefNumber == null ? null : periodCodesDictionary[ld.ConRefNumber]).FirstOrDefault()), StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, Dictionary<int, string>>();
+            return new HashSet<string>(fcsContractAllocations?
+                .Select(f => f.FundingStreamPeriodCode).Distinct().ToList(), StringComparer.OrdinalIgnoreCase);
         }
 
         public IDictionary<string, Dictionary<int, ILearningDelivery>> BuildFm36LearningDeliveryDictionary(IMessage message)

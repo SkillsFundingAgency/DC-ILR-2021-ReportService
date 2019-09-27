@@ -31,8 +31,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
 
         public int AimType => LearningDelivery.AimType;
 
-        public string ConRefNumber => LearningDelivery.ConRefNumber;
-
         public string FundingStreamPeriodCode { get; set; }
 
         public DateTime? OrigLearnStartDate => LearningDelivery.OrigLearnStartDateNullable;
