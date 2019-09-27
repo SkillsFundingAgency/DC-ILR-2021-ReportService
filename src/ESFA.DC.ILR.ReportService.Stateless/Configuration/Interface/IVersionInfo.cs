@@ -2,6 +2,6 @@
 {
     public interface IVersionInfo
     {
-        string ServiceReleaseVersion { get; set; }
+        string ServiceReleaseVersion { get; }
     }
 }

@@ -88,7 +88,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         azureBlobStorageOptions.AzureBlobConnectionString,
                         jobContextMessage.KeyValuePairs[ILRContextKeys.Container].ToString()))
                     .As<IAzureStorageKeyValuePersistenceServiceConfig>();
-                DIComposition.RegisterServicesByCollectionName(jobContextMessage.KeyValuePairs["CollectionName"].ToString(), c);
             });
         }
     }
