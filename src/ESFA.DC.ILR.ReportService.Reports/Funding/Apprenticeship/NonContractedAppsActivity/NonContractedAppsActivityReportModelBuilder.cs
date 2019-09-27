@@ -83,7 +83,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                         if (learningDelivery.LearnDelMathEng)
                         {
                             models.AddRange(
-                               learningDelivery?.FM36LearningDelivery?.FundLineValues.SelectMany(fv =>
+                               learningDelivery.FM36LearningDelivery?.FundLineValues.SelectMany(fv =>
                                BuildLearningDeliveryACTValues(learningDelivery.LearnActEndDate, learningDelivery.LearningDeliveryFAMs_ACT, fv.ReportTotals, censusEndDates)
                                .Select(ldFamAct =>
                                  new NonContractedAppsActivityReportModel
@@ -109,13 +109,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                                      JuneTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[11]) ? fv.ReportTotals.JuneTotal : 0m,
                                      JulyTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[12]) ? fv.ReportTotals.JulyTotal : 0m,
                                      LearningDeliveryFAM_ACTs = ldFamAct
-                                 })).ToList());
+                                 })));
                         }
 
                         else if (!learningDelivery.LearnDelMathEng)
                         {
                             models.AddRange(
-                                learningDelivery?.FM36PriceEpisodes?.Select(pe =>
+                                learningDelivery.FM36PriceEpisodes?.Select(pe =>
                                 new NonContractedAppsActivityReportModel
                                 {
                                     Learner = learner.Learner,
@@ -140,7 +140,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                                     JuneTotal = pe.FundLineValues.ReportTotals.JuneTotal,
                                     JulyTotal = pe.FundLineValues.ReportTotals.JulyTotal,
                                     LearningDeliveryFAM_ACTs = BuildPriceEpisodeACTValues(pe.PriceEpisodeValue.EpisodeStartDate, learningDelivery.LearningDeliveryFAMs_ACT),
-                                }).ToList());
+                                }));
                         }
                     }
                 }
@@ -243,7 +243,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             {
                 var fspCodesForFundLineType = validContractsDictionary.GetValueOrDefault(priceEpisode?.PriceEpisodeValues.PriceEpisodeFundLineType);
 
-                if (fspCodesForFundLineType != null && !fspCodesForFundLineType.Any(x => fundingStreamPeriodCodes.Contains(x, StringComparer.OrdinalIgnoreCase)))
+                if (fspCodesForFundLineType != null && !fspCodesForFundLineType.Any(x => fundingStreamPeriodCodes.Contains(x)))
                 {
                     return new FM36PriceEpisodeValue
                     {
@@ -364,7 +364,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             {
                 var fspCodes = validContractsDictionary.GetValueOrDefault(periodValue);
 
-                return fspCodes != null && !fspCodes.Any(x => fundingStreamPeriodCodes.Contains(x, StringComparer.OrdinalIgnoreCase)) ? periodValue : string.Empty;
+                return fspCodes != null && !fspCodes.Any(x => fundingStreamPeriodCodes.Contains(x)) ? periodValue : string.Empty;
             }
 
             return string.Empty;
