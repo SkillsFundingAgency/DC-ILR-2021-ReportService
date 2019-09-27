@@ -411,8 +411,8 @@
   <ItemGroup>
     <Compile Include="Configuration\AzureStorageKeyValuePersistenceConfig.cs" />
     <Compile Include="Configuration\AzureStorageOptions.cs" />
-    <Compile Include="Configuration\ReportServiceConfiguration.cs" />
-    <Compile Include="Configuration\SoftwareLicenceSection.cs" />
+    <Compile Include="Configuration\Interface\IAzureStorageOptions.cs" />
+    <Compile Include="Configuration\Interface\IVersionInfo.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContext.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContextFactory.cs" />
@@ -430,10 +430,6 @@
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Data\ESFA.DC.ILR.ReportService.Data.csproj">
       <Project>{733ff8eb-ce2a-4496-8b47-1a4c6673fcc1}</Project>
       <Name>ESFA.DC.ILR.ReportService.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Interface\ESFA.DC.ILR.ReportService.Interface.csproj">
-      <Project>{4d408f22-661b-44b3-b6ca-3c6cee60ac87}</Project>
-      <Name>ESFA.DC.ILR.ReportService.Interface</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Modules\ESFA.DC.ILR.ReportService.Modules.csproj">
       <Project>{9E623E50-C936-4DAC-B035-12A42815F02C}</Project>
@@ -458,6 +454,7 @@
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.CodeFixes.dll" />
     <Analyzer Include="..\packages\StyleCop.Analyzers.1.1.118\analyzers\dotnet\cs\StyleCop.Analyzers.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

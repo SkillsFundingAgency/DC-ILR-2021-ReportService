@@ -29,9 +29,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
             var statelessServiceConfiguration = serviceFabricConfigurationService.GetConfigSectionAsStatelessServiceConfiguration();
 
-            var reportServiceConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<ReportServiceConfiguration>("ReportServiceConfiguration");
-            containerBuilder.RegisterInstance(reportServiceConfiguration).As<IReportServiceConfiguration>();
-
             // register azure blob storage service
             var azureBlobStorageOptions = serviceFabricConfigurationService.GetConfigSectionAs<AzureStorageOptions>("AzureStorageSection");
             containerBuilder.RegisterInstance(azureBlobStorageOptions).As<IAzureStorageOptions>();
