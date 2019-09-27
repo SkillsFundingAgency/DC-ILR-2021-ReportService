@@ -20,26 +20,8 @@
     <Parameter Name="AzureBlobContainerName" Value="" />
   </Section>
 
-  <Section Name="SoftwareLicenceSection">
-    <Parameter Name="AsposeLicence" Value="" />
-  </Section>
-
   <Section Name="VersionSection">
     <Parameter Name="ServiceReleaseVersion" Value="" />
   </Section>
 
-  <Section Name="ReportServiceConfiguration">
-    <Parameter Name="LarsConnectionString" Value="" />
-    <Parameter Name="FCSConnectionString" Value="" />
-    <Parameter Name="DASPaymentsConnectionString" Value="" />
-    <Parameter Name="OrgConnectionString" Value=""/>
-    <Parameter Name="DasCommitmentsConnectionString" Value="" />
-    <Parameter Name="CollectionsManagementConnectionString" Value="" />
-    <Parameter Name="EasConnectionString" Value="asdf" />
-    <Parameter Name="PostcodeConnectionString" Value="" />
-    <Parameter Name="LargeEmployerConnectionString" Value="" />
-    <Parameter Name="IlrValidationErrorsConnectionString" Value="" />
-    <Parameter Name="ILRDataStoreConnectionString" Value="" />
-    <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
-  </Section>
 </Settings>
