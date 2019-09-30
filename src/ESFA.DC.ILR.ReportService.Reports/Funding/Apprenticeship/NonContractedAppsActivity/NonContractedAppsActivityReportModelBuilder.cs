@@ -45,10 +45,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName
         };
 
+        private readonly IAcademicYearService _academicYearService;
         private readonly IIlrModelMapper _ilrModelMapper;
 
-        public NonContractedAppsActivityReportModelBuilder(IIlrModelMapper ilrModelMapper)
+        public NonContractedAppsActivityReportModelBuilder(IAcademicYearService academicYearService, IIlrModelMapper ilrModelMapper)
         {
+            _academicYearService = academicYearService;
             _ilrModelMapper = ilrModelMapper;
         }
 
@@ -102,7 +104,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                                      NovemberTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[4]) ? fv.ReportTotals.NovemberTotal : 0m,
                                      DecemberTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[5]) ? fv.ReportTotals.DecemberTotal : 0m,
                                      JanuaryTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[6]) ? fv.ReportTotals.JanuaryTotal : 0m,
-                                     FebruaryTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[7]) ? fv.ReportTotals.FebruaryTotal: 0m,
+                                     FebruaryTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[7]) ? fv.ReportTotals.FebruaryTotal : 0m,
                                      MarchTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[8]) ? fv.ReportTotals.MarchTotal : 0m,
                                      AprilTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[9]) ? fv.ReportTotals.AprilTotal : 0m,
                                      MayTotal = ReportRowTotalApplicable(ldFamAct, censusEndDates[10]) ? fv.ReportTotals.MayTotal : 0m,
@@ -186,7 +188,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
         {
             if (learnActEndDate.HasValue)
             {
-                return learningDeliveryFAMs?.Where(f => learnActEndDate.Value == f.LearnDelFAMDateToNullable).ToList();                    
+                return learningDeliveryFAMs?.Where(f => learnActEndDate.Value == f.LearnDelFAMDateToNullable).ToList();
             }
 
             var endDates = new DateTime?[]
@@ -205,9 +207,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 reportTotals.JulyTotal.HasValue ? censusEndDates[12] : null
             };
 
-             var fams = endDates.Where(e => e != null).SelectMany(x => learningDeliveryFAMs.Where(l => l.LearnDelFAMDateFromNullable <= x && l.LearnDelFAMDateToNullable >= x)) // Closed Fams
-                .Union(endDates.Where(e => e != null).SelectMany(x => learningDeliveryFAMs.Where(l => l.LearnDelFAMDateFromNullable <= x && !l.LearnDelFAMDateToNullable.HasValue))) // Open ended Fams
-                .Distinct().ToList();
+            var fams = endDates.Where(e => e != null).SelectMany(x => learningDeliveryFAMs.Where(l => l.LearnDelFAMDateFromNullable <= x && l.LearnDelFAMDateToNullable >= x)) // Closed Fams
+               .Union(endDates.Where(e => e != null).SelectMany(x => learningDeliveryFAMs.Where(l => l.LearnDelFAMDateFromNullable <= x && !l.LearnDelFAMDateToNullable.HasValue))) // Open ended Fams
+               .Distinct().ToList();
 
             return fams;
         }
@@ -230,11 +232,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                         LearningDeliveryFAMsModels = _ilrModelMapper.MapLearningDeliveryFAMs(messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.LearningDeliveryFAMs),
                         LearningDeliveryFAMs_ACT = messageLearningDeliveryDictionary[l.LearnRefNumber][ld.AimSeqNumber]?.LearningDeliveryFAMs?.Where(fam => fam.LearnDelFAMType == LearningDeliveryFAMTypeConstants.ACT).ToList(),
                         FM36PriceEpisodes =
-                            l.PriceEpisodes?.Where(p => p.PriceEpisodeValues?.PriceEpisodeAimSeqNumber == ld.AimSeqNumber)
+                            l.PriceEpisodes?.Where(p => PriceEpisodeFilter(p.PriceEpisodeValues, ld.AimSeqNumber))
                             .Select(p => BuildNonContractedPriceEpisode(p, l.LearnRefNumber, fundingStreamPeriodCodes, validContractsDictionary)).Where(pe => pe != null).ToList(),
                         FM36LearningDelivery = BuildNonContractedLearningDelivery(ld, l.LearnRefNumber, fundingStreamPeriodCodes, validContractsDictionary)
                     }).ToList()
                 }).ToList();
+        }
+
+        public bool PriceEpisodeFilter(PriceEpisodeValues priceEpisodeValues, int aimSeqNumber)
+        {
+            if (priceEpisodeValues == null)
+            {
+                return false;
+            }
+
+            return priceEpisodeValues.PriceEpisodeAimSeqNumber == aimSeqNumber &&
+                _academicYearService.YearStart <= priceEpisodeValues.EpisodeStartDate && _academicYearService.YearEnd >= priceEpisodeValues.EpisodeStartDate;
         }
 
         public FM36PriceEpisodeValue BuildNonContractedPriceEpisode(PriceEpisode priceEpisode, string learnRefNumber, ICollection<string> fundingStreamPeriodCodes, IDictionary<string, string[]> validContractsDictionary)
@@ -285,7 +298,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                         FebruaryTotal = fl.Value.FebruaryFundLine != null ? totals.FebruaryTotal : 0m,
                         MarchTotal = fl.Value.MarchFundLine != null ? totals.MarchTotal : 0m,
                         AprilTotal = fl.Value.AprilFundLine != null ? totals.AprilTotal : 0m,
-                        MayTotal = fl.Value.MarchFundLine != null ? totals.MayTotal : 0m,
+                        MayTotal = fl.Value.MayFundLine != null ? totals.MayTotal : 0m,
                         JuneTotal = fl.Value.JuneFundLine != null ? totals.JuneTotal : 0m,
                         JulyTotal = fl.Value.JulyFundLine != null ? totals.JulyTotal : 0m,
                     }

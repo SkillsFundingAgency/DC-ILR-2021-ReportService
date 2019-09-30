@@ -186,6 +186,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
+    <Compile Include="Service\AcademicYearServiceTests.cs" />
     <Compile Include="Service\Converters\IlrBooleanConverterTests.cs" />
     <Compile Include="Service\CsvServiceTests.cs" />
     <Compile Include="Service\ExcelServiceTests.cs" />
