@@ -84,6 +84,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                     {
                         if (learningDelivery.LearnDelMathEng)
                         {
+                            var f = learningDelivery.FM36LearningDelivery?.FundLineValues.SelectMany(fv =>
+                              BuildLearningDeliveryACTValues(learningDelivery.LearnActEndDate, learningDelivery.LearningDeliveryFAMs_ACT, fv.ReportTotals, censusEndDates).ToList());
+
                             models.AddRange(
                                learningDelivery.FM36LearningDelivery?.FundLineValues.SelectMany(fv =>
                                BuildLearningDeliveryACTValues(learningDelivery.LearnActEndDate, learningDelivery.LearningDeliveryFAMs_ACT, fv.ReportTotals, censusEndDates)
