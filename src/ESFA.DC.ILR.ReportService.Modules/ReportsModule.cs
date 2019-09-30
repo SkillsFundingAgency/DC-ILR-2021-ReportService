@@ -64,6 +64,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterFundingClaim1619Report(containerBuilder);
             RegisterAdultFundingClaimReport(containerBuilder);
 
+            containerBuilder.RegisterType<AcademicYearService>().As<IAcademicYearService>();
             containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
             containerBuilder.RegisterType<CsvService>().As<ICsvService>();
