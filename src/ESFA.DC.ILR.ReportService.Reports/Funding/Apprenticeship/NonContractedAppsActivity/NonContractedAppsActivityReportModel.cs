@@ -8,11 +8,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
     {
         public ILearningDeliveryFAM LearningDeliveryFAM_ACTs { get; set; }
 
-        public string LearningDeliveryFAMTypeApprenticeshipContractType => LearningDeliveryFAM_ACTs?.LearnDelFAMCode;
+        public string LearningDeliveryFAMTypeApprenticeshipContractType => LearningDeliveryFAM_ACTs.LearnDelFAMCode;
 
-        public DateTime? LearningDeliveryFAMTypeACTDateAppliesFrom => LearningDeliveryFAM_ACTs?.LearnDelFAMDateFromNullable;
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesFrom => LearningDeliveryFAM_ACTs.LearnDelFAMDateFromNullable;
 
-        public DateTime? LearningDeliveryFAMTypeACTDateAppliesTo => LearningDeliveryFAM_ACTs?.LearnDelFAMDateToNullable;
+        public DateTime? LearningDeliveryFAMTypeACTDateAppliesTo => LearningDeliveryFAM_ACTs.LearnDelFAMDateToNullable;
 
         public decimal? AugustTotal { get; set; }
 

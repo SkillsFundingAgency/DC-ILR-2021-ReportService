@@ -1390,22 +1390,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner1" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner3" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 2 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 2 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner3" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner2" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
             };
 
@@ -1414,22 +1418,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner1" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner2" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner3" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
                 new NonContractedAppsActivityReportModel
                 {
                     Learner = new MessageLearner { LearnRefNumber = "Learner3" },
-                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 2 }
+                    LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 2 },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT()
                 },
             };
 
@@ -1792,7 +1800,319 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [Fact]
         public void Build()
         {
+            var contractsDictionary = new List<KeyValuePair<string, string[]>>
+            {
+                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 })
+            }.ToDictionary(k => k.Key, v => v.Value);
 
+            var fspCodes = new List<string>
+            {
+                "Code1"
+            };
+
+            ILearningDelivery learningDelivery = new TestLearningDelivery
+            {
+                LearnAimRef = "LearnAimRef1",
+                AimSeqNumber = 1,
+                FundModel = 36,
+                LearnStartDate = new DateTime(2019, 09, 01),
+                LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
+                {
+                    new TestLearningDeliveryFAM
+                    {
+                        LearnDelFAMType = "SOF",
+                        LearnDelFAMCode = "105",
+                        LearnDelFAMDateFromNullable = new DateTime(2019, 8, 1)
+                    },
+                    new TestLearningDeliveryFAM
+                    {
+                        LearnDelFAMType = "ACT",
+                        LearnDelFAMCode = "1",
+                        LearnDelFAMDateFromNullable = new DateTime(2019, 9, 1)
+                    }
+                }
+            };
+
+            ILearner learner1 = new TestLearner
+            {
+                LearnRefNumber = "Learner1",
+                LearningDeliveries = new[]
+                {
+                    learningDelivery
+                }
+            };
+
+            ILearner learner2 = new TestLearner
+            {
+                LearnRefNumber = "Learner2",
+                LearningDeliveries = new[]
+                {
+                    learningDelivery
+                }
+            };
+
+            ILearner learner3 = new TestLearner
+            {
+                LearnRefNumber = "Learner3",
+                LearningDeliveries = new[]
+                {
+                   learningDelivery
+                }
+            };
+
+            IMessage message = new TestMessage
+            {
+                Learners = new[]
+                {
+                    learner1,
+                    learner2,
+                    learner3
+                }
+            };
+
+            var global = new FM36Global
+            {
+                Learners = new List<FM36Learner>
+                {
+                    new FM36Learner
+                    {
+                        LearnRefNumber = "Learner1",
+                        LearningDeliveries = new List<LearningDelivery>
+                        {
+                            new LearningDelivery
+                            {
+                                AimSeqNumber = 1,
+                                LearningDeliveryValues = new LearningDeliveryValues
+                                {
+                                    LearnDelMathEng = true
+                                },
+                                LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                                {
+                                    new LearningDeliveryPeriodisedTextValues
+                                    {
+                                        AttributeName = AttributeConstants.Fm36FundLineType,
+                                        Period1 = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                                        Period2 = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                                        Period3 = FundLineConstants.ApprenticeshipEmployerOnAppService1618
+                                    }
+                                },
+                                LearningDeliveryPeriodisedValues =  new List<LearningDeliveryPeriodisedValues>
+                                {
+                                    new LearningDeliveryPeriodisedValues
+                                    {
+                                        AttributeName = AttributeConstants.Fm36MathEngOnProgPayment,
+                                        Period1 = 0m,
+                                        Period2 = 2m,
+                                        Period3 = 3m
+                                    }
+                                },
+                            }
+                        },
+                        PriceEpisodes = new List<PriceEpisode>
+                        {
+                            new PriceEpisode
+                            {
+                                PriceEpisodeValues = new PriceEpisodeValues
+                                {
+                                    PriceEpisodeAimSeqNumber = 1,
+                                    EpisodeStartDate = new DateTime(2019, 09, 01),
+                                    PriceEpisodeFundLineType = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                                },
+                                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                                {
+                                    new PriceEpisodePeriodisedValues
+                                    {
+                                        AttributeName = AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName,
+                                        Period1 = 0m,
+                                        Period2 = 2m,
+                                        Period3 = 3m
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    new FM36Learner
+                    {
+                        LearnRefNumber = "Learner2",
+                        LearningDeliveries = new List<LearningDelivery>
+                        {
+                            new LearningDelivery
+                            {
+                                AimSeqNumber = 1,
+                                LearningDeliveryValues = new LearningDeliveryValues
+                                {
+                                    LearnDelMathEng = false
+                                },
+                                LearningDeliveryPeriodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>
+                                {
+                                    new LearningDeliveryPeriodisedTextValues
+                                    {
+                                        AttributeName = AttributeConstants.Fm36FundLineType,
+                                        Period1 = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                                        Period2 = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                                        Period3 = FundLineConstants.ApprenticeshipEmployerOnAppService1618
+                                    }
+                                },
+                                LearningDeliveryPeriodisedValues =  new List<LearningDeliveryPeriodisedValues>
+                                {
+                                    new LearningDeliveryPeriodisedValues
+                                    {
+                                        AttributeName = AttributeConstants.Fm36MathEngOnProgPayment,
+                                        Period1 = 0m,
+                                        Period2 = 2m,
+                                        Period3 = 3m
+                                    }
+                                },
+                            },
+                        },
+                        PriceEpisodes = new List<PriceEpisode>
+                        {
+                            new PriceEpisode
+                            {
+                                PriceEpisodeValues = new PriceEpisodeValues
+                                {
+                                    PriceEpisodeAimSeqNumber = 1,
+                                    EpisodeStartDate = new DateTime(2019, 09, 01),
+                                    PriceEpisodeFundLineType = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                                },
+                                PriceEpisodePeriodisedValues = new List<PriceEpisodePeriodisedValues>
+                                {
+                                    new PriceEpisodePeriodisedValues
+                                    {
+                                        AttributeName = AttributeConstants.Fm36PriceEpisodeOnProgPaymentAttributeName,
+                                        Period1 = 0m,
+                                        Period2 = 2m,
+                                        Period3 = 3m
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+
+            var referenceDataRoot = new ReferenceDataRoot
+            {
+                MetaDatas = new ReferenceDataService.Model.MetaData.MetaData
+                {
+                    CollectionDates = new IlrCollectionDates
+                    {
+                        CensusDates = CensusDates()
+                    },
+                },
+                LARSLearningDeliveries = new List<LARSLearningDelivery>
+                {
+                    new LARSLearningDelivery
+                    {
+                        LearnAimRef = "LearnAimRef1",
+                        LearnAimRefTitle = "Title1"
+                    },
+                    new LARSLearningDelivery
+                    {
+                        LearnAimRef = "LearnAimRef2",
+                        LearnAimRefTitle = "Title2"
+                    }
+                },
+                FCSContractAllocations = new List<FcsContractAllocation>
+                {
+                    new FcsContractAllocation { ContractAllocationNumber = "ConRef1", FundingStreamPeriodCode = "FSPC1" },
+                    new FcsContractAllocation { ContractAllocationNumber = "ConRef2", FundingStreamPeriodCode = "FSPC1" },
+                    new FcsContractAllocation { ContractAllocationNumber = "ConRef3", FundingStreamPeriodCode = "FSPC2" },
+                    new FcsContractAllocation { ContractAllocationNumber = "ConRef4", FundingStreamPeriodCode = "FSPC3" },
+                }
+            };
+
+            var expectedModels = new List<NonContractedAppsActivityReportModel>
+            {
+                new NonContractedAppsActivityReportModel
+                {
+                    Learner = learner1,
+                    LearningDelivery = learner1.LearningDeliveries.First(),
+                    LearningDeliveryFAMs = new LearningDeliveryFAMsModel { SOF = "105" },
+                    LarsLearningDelivery = new LARSLearningDelivery
+                    {
+                        LearnAimRef = "LearnAimRef1",
+                        LearnAimRefTitle = "Title1"
+                    },
+                    FundingLineType = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                    Fm36LearningDelivery = new LearningDeliveryValues
+                    {
+                        LearnDelMathEng = true
+                    },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT
+                    {
+                        LearnDelFAMType = LearnerFAMTypeConstants.ACT,
+                        LearnDelFAMCode = "1",
+                        LearnDelFAMDateFromNullable = new DateTime(2019, 09, 01),
+                    },
+                    ProviderSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel(),
+                    ProviderSpecLearnerMonitoring = new ProviderSpecLearnerMonitoringModel(),
+                    AugustTotal = 0m,
+                    SeptemberTotal = 2m,
+                    OctoberTotal = 3m,
+                    NovemberTotal = 0m,
+                    DecemberTotal = 0m,
+                    JanuaryTotal = 0m,
+                    FebruaryTotal = 0m,
+                    MarchTotal = 0m,
+                    AprilTotal= 0m,
+                    MayTotal = 0m,
+                    JuneTotal = 0m,
+                    JulyTotal = 0m,
+                },
+                new NonContractedAppsActivityReportModel
+                {
+                    Learner = learner2,
+                    LearningDelivery = learner2.LearningDeliveries.First(),
+                    LearningDeliveryFAMs = new LearningDeliveryFAMsModel { SOF = "105" },
+                    LarsLearningDelivery = new LARSLearningDelivery
+                    {
+                        LearnAimRef = "LearnAimRef1",
+                        LearnAimRefTitle = "Title1"
+                    },
+                    FundingLineType = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                    PriceEpisodeStartDate = new DateTime(2019, 09, 01),
+                    PriceEpisodeValues = new PriceEpisodeValues
+                    {
+                        EpisodeStartDate = new DateTime(2019, 09, 01),
+                        PriceEpisodeAimSeqNumber = 1,
+                        PriceEpisodeFundLineType = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                    },
+                    LearningDeliveryFAM_ACTs = new LearningDeliveryACT
+                    {
+                        LearnDelFAMType = LearnerFAMTypeConstants.ACT,
+                        LearnDelFAMCode = "1",
+                        LearnDelFAMDateFromNullable = new DateTime(2019, 09, 01),
+                    },
+                    ProviderSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel(),
+                    ProviderSpecLearnerMonitoring = new ProviderSpecLearnerMonitoringModel(),
+                    AugustTotal = 0m,
+                    SeptemberTotal = 2m,
+                    OctoberTotal = 3m,
+                    NovemberTotal = 0m,
+                    DecemberTotal = 0m,
+                    JanuaryTotal = 0m,
+                    FebruaryTotal = 0m,
+                    MarchTotal = 0m,
+                    AprilTotal= 0m,
+                    MayTotal = 0m,
+                    JuneTotal = 0m,
+                    JulyTotal = 0m,
+                },
+            };
+
+            var dependentDataMock = new Mock<IReportServiceDependentData>();
+
+            dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
+            dependentDataMock.Setup(d => d.Get<FM36Global>()).Returns(global);
+            dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
+
+            NewBuilder(new AcademicYearService(), new IlrModelMapper()).Build(new Mock<IReportServiceContext>().Object, dependentDataMock.Object).Should().BeEquivalentTo(expectedModels);
         }
 
         private List<CensusDate> CensusDates() => new List<CensusDate>
