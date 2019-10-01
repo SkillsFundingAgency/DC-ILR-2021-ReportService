@@ -97,9 +97,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.FilePreparationDate = message?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
-            
-            //Todo : CoFRemovalData will be added to ReferencedDataRoot
-            //model.CofRemovalData = //
+            model.CofRemovalData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CoFVersion.Version;
 
             return model;
         }

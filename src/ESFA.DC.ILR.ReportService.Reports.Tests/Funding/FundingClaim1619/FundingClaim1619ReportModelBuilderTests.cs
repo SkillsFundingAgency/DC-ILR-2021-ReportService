@@ -86,7 +86,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                         OrganisationsVersion = new OrganisationsVersion { Version = "1.1.1.1" },
                         Employers = new EmployersVersion { Version = "2.2.2.2" },
                         LarsVersion = new LarsVersion { Version = "3.3.3.3" },
-                        PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" }
+                        PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
+                        CoFVersion = new CoFVersion() { Version = "5.5.5.5" }
                     }
                 }
             };
@@ -123,6 +124,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.LarsData.Should().Be("3.3.3.3");
             result.OrganisationData.Should().Be("1.1.1.1");
             result.PostcodeData.Should().Be("4.4.4.4");
+            result.CofRemovalData.Should().Be("5.5.5.5");
             result.ProviderName.Should().Be("Provider XYZ");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
@@ -227,6 +229,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                         Employers = new EmployersVersion { Version = "2.2.2.2" },
                         LarsVersion = new LarsVersion { Version = "3.3.3.3" },
                         PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
+                        CoFVersion = new CoFVersion() { Version = "5.5.5.5" }
                     }
                 }
             };
@@ -263,6 +266,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.LarsData.Should().Be("3.3.3.3");
             result.OrganisationData.Should().Be("1.1.1.1");
             result.PostcodeData.Should().Be("4.4.4.4");
+            result.CofRemovalData.Should().Be("5.5.5.5");
             result.ProviderName.Should().Be("Provider XYZ");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
