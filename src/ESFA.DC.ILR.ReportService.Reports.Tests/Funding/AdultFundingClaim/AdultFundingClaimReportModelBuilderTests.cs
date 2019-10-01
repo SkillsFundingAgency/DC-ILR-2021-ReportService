@@ -52,6 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
                         Employers = new EmployersVersion { Version = "2.2.2.2" },
                         LarsVersion = new LarsVersion { Version = "3.3.3.3" },
                         PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
+                        CampusIdentifierVersion = new CampusIdentifierVersion() { Version = "5.5.5.5" },
                         EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 1, 1, 1, 1, 1) }
                     }
                 },
@@ -113,6 +114,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             result.LarsData.Should().Be("3.3.3.3");
             result.OrganisationData.Should().Be("1.1.1.1");
             result.PostcodeData.Should().Be("4.4.4.4");
+            result.CampusIdData.Should().Be("5.5.5.5");
             result.LastEASFileUpdate.Should().Be("01/01/2019 01:01:01");
             result.LastILRFileUpdate.Should().Be("05/10/2019 15:13:22");
 

@@ -128,7 +128,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.OrganisationData = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            // todo: model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.
+            model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CampusIdentifierVersion.Version;
             model.LastEASFileUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault().ToString(LastSubmittedIlrFileDateStringFormat);
             model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
             return model;
