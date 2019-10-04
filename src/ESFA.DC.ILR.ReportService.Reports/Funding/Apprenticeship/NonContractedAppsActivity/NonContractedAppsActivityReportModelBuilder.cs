@@ -45,6 +45,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             AttributeConstants.Fm36PriceEpisodeLearnerAdditionalPaymentAttributeName
         };
 
+        private TimeSpan _timeSpanForActFilter = new TimeSpan(0, 23, 59, 59);
+
         private readonly IAcademicYearService _academicYearService;
         private readonly IIlrModelMapper _ilrModelMapper;
 
@@ -127,6 +129,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                                     LearningDeliveryFAMs = learningDelivery.LearningDeliveryFAMsModels,
                                     LearningDelivery = learningDelivery.LearningDelivery,
                                     FundingLineType = pe.PriceEpisodeValue.PriceEpisodeFundLineType,
+                                    Fm36LearningDelivery = learningDelivery.FM36LearningDelivery?.LearningDeliveryValues,
                                     PriceEpisodeValues = pe.PriceEpisodeValue,
                                     PriceEpisodeStartDate = pe.PriceEpisodeValue.EpisodeStartDate,
                                     AugustTotal = pe.FundLineValues.ReportTotals.AugustTotal,
@@ -163,7 +166,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate;
             }
 
-            return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate && learningDeliveryFAM.LearnDelFAMDateToNullable >= censusDate;
+            return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate && learningDeliveryFAM.LearnDelFAMDateToNullable.Value.Add(_timeSpanForActFilter) >= censusDate;
         }
 
         public ILearningDeliveryFAM BuildPriceEpisodeACTValues(DateTime? episodeStartDate, IEnumerable<ILearningDeliveryFAM> learningDeliveryFAMs)
