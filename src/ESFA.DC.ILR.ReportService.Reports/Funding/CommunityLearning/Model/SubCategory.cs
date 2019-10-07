@@ -6,6 +6,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model
     {
         public string SubCategoryName { get; set; }
 
-        public int Total { get; set; }
+        public int TotalLearners { get; set; }
+
+        public int TotalStartedInFundingYear { get; set; }
+
+        public int TotalEnrolmentsInFundingYear { get; set; }
     }
 }

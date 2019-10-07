@@ -4,6 +4,10 @@
     {
         string SubCategoryName { get; set; }
 
-        int Total { get; set; }
+        int TotalLearners { get; set; }
+
+        int TotalStartedInFundingYear { get; set; }
+
+        int TotalEnrolmentsInFundingYear { get; set; }
     }
 }
