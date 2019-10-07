@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 

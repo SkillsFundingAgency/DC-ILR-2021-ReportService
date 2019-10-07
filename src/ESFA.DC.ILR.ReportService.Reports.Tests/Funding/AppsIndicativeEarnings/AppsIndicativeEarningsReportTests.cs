@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using FluentAssertions;

@@ -46,7 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
             ReferenceDataRoot ilrReferenceData = reportsDependentData.Get<ReferenceDataRoot>();
             List<ValidationError> ilrValidationErrors = reportsDependentData.Get<List<ValidationError>>();
             
-            var fileName = _fileNameService.GetFilename(reportServiceContext, FileName, OutputTypes.Csv);
+            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Csv);
             
             var validationErrorRows = _validationErrorsReportBuilder.Build(ilrValidationErrors, ilrMessage, ilrReferenceData.MetaDatas.ValidationErrors);
 

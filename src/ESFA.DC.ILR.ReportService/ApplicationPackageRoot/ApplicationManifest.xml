@@ -10,66 +10,14 @@
     <Parameter Name="AuditMaxConcurrentCalls" DefaultValue="1" />
     <Parameter Name="TopicName" DefaultValue="TopicName" />
     <Parameter Name="ServiceBusConnectionString" DefaultValue="" />
-    <Parameter Name="ILRDataStoreConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
-    <Parameter Name="ILRDataStoreValidConnectionString" DefaultValue="data source=(local);initial catalog=ILR1819_DataStore;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90" />
     <Parameter Name="LoggerConnectionstring" DefaultValue="data source=(local);initial catalog=logs;integrated security=True;multipleactiveresultsets=True;Connect Timeout=90;" />
     <Parameter Name="AzureBlobConnectionString" DefaultValue="UseDevelopmentStorage=true" />
     <Parameter Name="AzureBlobContainerName" DefaultValue="ilr-files" />
-    <Parameter Name="AsposeLicence" DefaultValue="" />
-    <Parameter Name="RedisConnectionString" DefaultValue="" />
     <Parameter Name="DataServicePlacementConstraints" DefaultValue="" />
     <Parameter Name="ServiceReleaseVersion" DefaultValue="" />
     <Parameter Name="JobStatusQueueName" DefaultValue="" />
     <Parameter Name="JobStatusConnectionString" DefaultValue="" />
     <Parameter Name="ReportingSubscriptionName" DefaultValue="Reports" />
-    <!-- Topic Names -->
-    <Parameter Name="TopicValidation" DefaultValue="Validation" />
-    <Parameter Name="TopicFunding" DefaultValue="Funding" />
-    <Parameter Name="TopicDeds" DefaultValue="Deds" />
-    <Parameter Name="TopicReports" DefaultValue="Reports" />
-    <Parameter Name="TopicReports_TaskGenerateValidationReport" DefaultValue="GenerateValidationReport" />
-    <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" DefaultValue="GenerateAlbOccupancyReport" />
-    <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" DefaultValue="GenerateFundingSummaryReport" />
-    <Parameter Name="TopicReports_TaskGenerateAdultFundingClaimReport" DefaultValue="GenerateAdultFundingClaimReport" />
-    <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" DefaultValue="GenerateSummaryOfFunding1619Report" />
-    <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" DefaultValue="GenerateMathsAndEnglishReport" />
-    <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" DefaultValue="GenerateMainOccupancyReport" />
-    <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" DefaultValue="GenerateAppsAdditionalPaymentsReport" />
-    <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" DefaultValue="GenerateNonContractedAppsActivityReport" />
-    <Parameter Name="TopicReports_TaskGenerateILRDataQualityReport" DefaultValue="GenerateILRDataQualityReport" />
-    <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" DefaultValue="GenerateAppsIndicativeEarningsReport" />
-    <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" DefaultValue="GenerateAppsCoInvestmentContributionsReport" />
-    <Parameter Name="TopicReports_TaskGenerateAppsMonthlyPaymentReport" DefaultValue="GenerateAppsMonthlyPaymentReport" />
-    <Parameter Name="TopicReports_TaskGenerateAppsDataMatchMonthEndReport" DefaultValue="GenerateAppsDataMatchMonthEndReport" />
-    <Parameter Name="TopicReports_TaskGenerateFundingSummaryPeriodEndReport" DefaultValue="GenerateFundingSummaryPeriodEndReport" />
-    <Parameter Name="TopicReports_TaskGenerateDataMatchReport" DefaultValue="GenerateDataMatchReport" />
-    <Parameter Name="TopicDeds_TaskPersistDataToDeds" DefaultValue="PersistDataToDeds" />
-    <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" DefaultValue="GenerateTrailblazerEmployerIncentivesReport" />
-    <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" DefaultValue="TopicReports_TaskGenerateFundingClaim1619Report" />
-    <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" DefaultValue="GenerateTrailblazerAppsOccupancyReport" />
-    <Parameter Name="TopicReports_TaskGenerateHNSReport" DefaultValue="TopicReports_TaskGenerateHNSReport" />
-    <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" DefaultValue="TopicReports_TaskGenerateSummaryOfFM35FundingReport" />
-    <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" DefaultValue="TopicReports_TaskGenerateHNSSummaryReport" />
-    <!-- LARS -->
-    <Parameter Name="LarsConnectionString" DefaultValue="" />
-    <!-- FCS -->
-    <Parameter Name="FCSConnectionString" DefaultValue="" />
-    <!-- DASPayments -->
-    <Parameter Name="DASPaymentsConnectionString" DefaultValue="" />
-    <!-- DAS Commitments -->
-    <Parameter Name="DasCommitmentsConnectionString" DefaultValue="" />
-    <!-- EAS -->
-    <Parameter Name="EasConnectionString" DefaultValue="" />
-    <!-- Postcode -->
-    <Parameter Name="PostcodeConnectionString" DefaultValue="" />
-    <!-- Large Employer -->
-    <Parameter Name="LargeEmployerConnectionString" DefaultValue="" />
-    <!-- Org -->
-    <Parameter Name="OrgConnectionString" DefaultValue="" />
-    <!-- Collections Management -->
-    <Parameter Name="CollectionsManagementConnectionString" DefaultValue="" />
-    <!-- ILR Validation Errors -->
-    <Parameter Name="IlrValidationErrorsConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -91,26 +39,9 @@
             <Parameter Name="AuditMaxConcurrentCalls" Value="[AuditMaxConcurrentCalls]" />
             <Parameter Name="LoggerConnectionString" Value="[LoggerConnectionstring]" />
           </Section>
-          <Section Name="ReportServiceConfiguration">
-            <Parameter Name="LarsConnectionString" Value="[LarsConnectionString]" />
-            <Parameter Name="FCSConnectionString" Value="[FCSConnectionString]" />
-            <Parameter Name="DASPaymentsConnectionString" Value="[DASPaymentsConnectionString]" />
-            <Parameter Name="OrgConnectionString" Value="[OrgConnectionString]" />
-            <Parameter Name="DasCommitmentsConnectionString" Value="[DasCommitmentsConnectionString]" />
-            <Parameter Name="CollectionsManagementConnectionString" Value="[CollectionsManagementConnectionString]" />
-            <Parameter Name="EasConnectionString" Value="[EasConnectionString]" />
-            <Parameter Name="PostcodeConnectionString" Value="[PostcodeConnectionString]" />
-            <Parameter Name="LargeEmployerConnectionString" Value="[LargeEmployerConnectionString]" />
-            <Parameter Name="IlrValidationErrorsConnectionString" Value="[IlrValidationErrorsConnectionString]" />
-            <Parameter Name="ILRDataStoreConnectionString" Value="[ILRDataStoreConnectionString]" />
-            <Parameter Name="ILRDataStoreValidConnectionString" Value="[ILRDataStoreValidConnectionString]" />
-          </Section>
           <Section Name="AzureStorageSection">
             <Parameter Name="AzureBlobConnectionString" Value="[AzureBlobConnectionString]" />
             <Parameter Name="AzureBlobContainerName" Value="[AzureBlobContainerName]" />
-          </Section>
-          <Section Name="SoftwareLicenceSection">
-            <Parameter Name="AsposeLicence" Value="[AsposeLicence]" />
           </Section>
           <Section Name="VersionSection">
             <Parameter Name="ServiceReleaseVersion" Value="[ServiceReleaseVersion]" />

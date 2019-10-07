@@ -49,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
         public async Task GenerateAsync()
         {
             var container = "Container";
+            var sheetName = "FundingSummaryReport";
 
             var fundingSummaryReportModelBuilderMock = new Mock<IModelBuilder<IFundingSummaryReport>>();
 
@@ -62,12 +63,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             fundingSummaryReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData)).Returns(fundingSummaryReportModel);
 
             Workbook workbook = new Workbook();
-            Worksheet worksheet = workbook.Worksheets.Add("Test");
+            Worksheet worksheet = workbook.Worksheets.Add(sheetName);
 
             var excelServiceMock = new Mock<IExcelService>();
 
             excelServiceMock.Setup(s => s.NewWorkbook()).Returns(workbook);
-            excelServiceMock.Setup(s => s.GetWorksheetFromWorkbook(workbook, 0)).Returns(worksheet);
+            excelServiceMock.Setup(s => s.GetWorksheetFromWorkbook(workbook, sheetName)).Returns(worksheet);
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
@@ -75,9 +76,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel, true)).Returns(fileName);
 
             var fundingSummaryReportRenderServiceMock = new Mock<IRenderService<IFundingSummaryReport>>();
-            var summaryPageRenderServiceMock = new Mock<IRenderService<ISummaryPage>>();
             
-            var report = NewReport(fileNameServiceMock.Object, fundingSummaryReportModelBuilderMock.Object, excelServiceMock.Object, fundingSummaryReportRenderServiceMock.Object, summaryPageRenderServiceMock.Object);
+            var report = NewReport(fileNameServiceMock.Object, fundingSummaryReportModelBuilderMock.Object, excelServiceMock.Object, fundingSummaryReportRenderServiceMock.Object);
 
             var cancellationToken = CancellationToken.None;
 
@@ -108,11 +108,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                 {
                     ReferenceDataVersions = new ReferenceDataVersion()
                     {
-                        OrganisationsVersion = new OrganisationsVersion("orgVersion"),
-                        EasUploadDateTime = new EasUploadDateTime(new DateTime(2019, 01, 01)),
-                        LarsVersion = new LarsVersion("larsVersion"),
-                        PostcodesVersion = new PostcodesVersion("postcodeVersion"),
-                        Employers = new EmployersVersion("employersVersion")
+                        OrganisationsVersion = new OrganisationsVersion { Version = "orgVersion" },
+                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 01, 01) },
+                        LarsVersion = new LarsVersion { Version = "larsVersion" },
+                        PostcodesVersion = new PostcodesVersion { Version = "postcodeVersion" },
+                        Employers = new EmployersVersion { Version = "employersVersion" }
                     }
                 }
             };
@@ -156,14 +156,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel, true)).Returns(fileName);
 
             var fundingSummaryReportRenderService = new FundingSummaryReportRenderService();
-            var summaryPageRenderService = new SummaryPageRenderService();
 
             var report = NewReport(
                 fileNameServiceMock.Object,
                 fundingSummaryReportModelBuilder,
                 excelService,
-                fundingSummaryReportRenderService,
-                summaryPageRenderService);
+                fundingSummaryReportRenderService);
 
             var cancellationToken = CancellationToken.None;
 
@@ -176,10 +174,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             IFileNameService fileNameService = null,
             IModelBuilder<IFundingSummaryReport> fundingSummaryReportModelBuilder = null,
             IExcelService excelService = null,
-            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService = null,
-            IRenderService<ISummaryPage> summaryPageRenderService = null)
+            IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService = null)
         {
-            return new FundingSummaryReport(fileNameService, fundingSummaryReportModelBuilder, excelService, fundingSummaryReportRenderService, summaryPageRenderService);
+            return new FundingSummaryReport(fileNameService, fundingSummaryReportModelBuilder, excelService, fundingSummaryReportRenderService);
         }
     }
 }

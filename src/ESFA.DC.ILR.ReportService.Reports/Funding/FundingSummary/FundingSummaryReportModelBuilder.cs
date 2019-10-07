@@ -45,11 +45,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         public FundingSummaryReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
+            var message = reportServiceDependentData.Get<IMessage>();
+            var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+
             var periodisedValues = _periodisedValuesLookupProvider.Provide(FundingDataSources, reportServiceDependentData);
 
             var reportCurrentPeriod = reportServiceContext.ReturnPeriod > 12 ? 12 : reportServiceContext.ReturnPeriod;
 
             return new FundingSummaryReportModel(
+                BuildHeaderData(reportServiceContext, referenceDataRoot),
                 new List<IFundingCategory>()
                 {
                     new FundingCategory(
@@ -158,29 +162,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 .WithFundLineGroup(BuildIlrFm99FundLineGroup(reportCurrentPeriod, periodisedValues))
                                 .WithFundLineGroup(BuildEasFm99FundLineGroup(reportCurrentPeriod, periodisedValues))
                         })
-                }, BuildSummaryPage(reportServiceContext, reportServiceDependentData));
+                },
+                BuildFooterData(reportServiceContext, message, referenceDataRoot));
         }
 
-        public SummaryPageModel BuildSummaryPage(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
+        private IDictionary<string, string> BuildHeaderData(IReportServiceContext reportServiceContext, ReferenceDataRoot referenceDataRoot)
         {
-            var message = reportServiceDependentData.Get<IMessage>();
-            var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
-
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
-            var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
-            var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
-            var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
-            var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime.ToString();
 
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
-
-            DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
-            DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
-
-            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
-
-            var headerDataDictionary = new Dictionary<string, string>()
+            return new Dictionary<string, string>()
             {
                 {SummaryPageConstants.ProviderName, organisationName},
                 {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
@@ -189,8 +180,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 {SummaryPageConstants.LastEASUpdate, easLastUpdate},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
+        }
 
-            var footerDataDictionary = new Dictionary<string, string>()
+        private IDictionary<string, string> BuildFooterData(IReportServiceContext reportServiceContext, IMessage message, ReferenceDataRoot referenceDataRoot)
+        {
+            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
+            var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
+            var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
+            var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
+            var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
+
+            DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
+            DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
+
+            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
+
+            return new Dictionary<string, string>()
             {
                 {SummaryPageConstants.ApplicationVersion, reportServiceContext.ServiceReleaseVersion},
                 {SummaryPageConstants.FilePreparationDate, filePreparationDate},
@@ -200,14 +205,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 {SummaryPageConstants.LargeEmployersVersion, employersVersion},
                 {SummaryPageConstants.ReportGeneratedAt, reportGeneratedAt}
             };
-
-            return new SummaryPageModel()
-            {
-                HeaderData = headerDataDictionary,
-                FooterData = footerDataDictionary
-            };
         }
-
+        
         private IFundLineGroup BuildIlrFm99FundLineGroup(int currentPeriod, IPeriodisedValuesLookup periodisedValues)
         {
             var description = "Advanced Loans Bursary";

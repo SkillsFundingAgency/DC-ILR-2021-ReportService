@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
+﻿using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary
