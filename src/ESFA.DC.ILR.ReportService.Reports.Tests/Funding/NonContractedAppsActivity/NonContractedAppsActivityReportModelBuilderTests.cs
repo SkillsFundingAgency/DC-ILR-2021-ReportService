@@ -1767,6 +1767,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                     LearningDelivery = new MessageLearnerLearningDelivery { AimSeqNumber = 1, FundModel = 36, LearnStartDate = new DateTime(2019, 09, 01), LearnAimRef = "LearnAimRef2"},
                     LarsLearningDelivery = larsDictionary["LearnAimRef2"],
                     FundingLineType = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                    Fm36LearningDelivery = new LearningDeliveryValues
+                    {
+                        LearnDelMathEng = false
+                    },
                     PriceEpisodeStartDate = new DateTime(2019, 09, 01),
                     PriceEpisodeValues = new PriceEpisodeValues
                     {
@@ -2076,6 +2080,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                         LearnAimRefTitle = "Title1"
                     },
                     FundingLineType = FundLineConstants.ApprenticeshipEmployerOnAppService1618,
+                     Fm36LearningDelivery = new LearningDeliveryValues
+                    {
+                        LearnDelMathEng = false
+                    },
                     PriceEpisodeStartDate = new DateTime(2019, 09, 01),
                     PriceEpisodeValues = new PriceEpisodeValues
                     {
