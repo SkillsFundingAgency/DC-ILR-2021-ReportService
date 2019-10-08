@@ -1235,12 +1235,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             } as ICollection<ILearningDeliveryFAM>;
 
-            var reportTotals = new ReportTotals
+            var fundlineValues =  new FundLineValue
             {
-                LearnRefNumber = "Learner1",
-                AimSeqNumber = 1,
-                AugustTotal = 1,
-                SeptemberTotal = 2m
+                ReportTotals = new ReportTotals
+                {
+                    LearnRefNumber = "Learner1",
+                    AimSeqNumber = 1,
+                    AugustTotal = 1,
+                    SeptemberTotal = 2m
+                }
             };
 
             var censusEndDates = CensusDates().ToDictionary(p => p.Period, e => (DateTime?)e.End);
@@ -1256,7 +1259,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             } as ICollection<ILearningDeliveryFAM>;
 
-            NewBuilder().BuildLearningDeliveryACTValues(learnActEndDate, learningDeliveryFams, reportTotals, censusEndDates).Should().BeEquivalentTo(expectedLearningDeliveryFams);
+            NewBuilder().BuildLearningDeliveryACTValues(
+                learnActEndDate,
+                learningDeliveryFams,
+                fundlineValues,
+                censusEndDates,
+                "2").Should().BeEquivalentTo(expectedLearningDeliveryFams);
         }
 
         [Fact]
@@ -1280,12 +1288,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            var reportTotals = new ReportTotals
+            var fundlineValue = new FundLineValue
             {
-                LearnRefNumber = "Learner1",
-                AimSeqNumber = 1,
-                AugustTotal = 1,
-                SeptemberTotal = 2m
+                ReportTotals = new ReportTotals
+                {
+                    LearnRefNumber = "Learner1",
+                    AimSeqNumber = 1,
+                    AugustTotal = 1,
+                    SeptemberTotal = 2m
+                }
             };
 
             var censusEndDates = CensusDates().ToDictionary(p => p.Period, e => (DateTime?)e.End);
@@ -1301,7 +1312,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            NewBuilder().BuildLearningDeliveryACTValues(null, learningDeliveryFams, reportTotals, censusEndDates).Should().BeEquivalentTo(expectedLearningDeliveryFams);
+            NewBuilder().BuildLearningDeliveryACTValues(null, learningDeliveryFams, fundlineValue, censusEndDates, "1").Should().BeEquivalentTo(expectedLearningDeliveryFams);
         }
 
         [Fact]
@@ -1447,6 +1458,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [Fact]
         public void BuildReportRows_NoRows()
         {
+            var actContractsDictionary = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, "1"),
+                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, "1"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618NonProcured, "2"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618Procured, "2"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, "2"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusProcured, "2")
+            }
+            .ToDictionary(x => x.Key, v => v.Value);
+
             var learnerData = new FM36LearnerData[]
             {
                 new FM36LearnerData
@@ -1520,12 +1542,23 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 },
             };
 
-            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates).Should().BeNullOrEmpty();
+            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates, actContractsDictionary).Should().BeNullOrEmpty();
         }
 
         [Fact]
         public void BuildReportRows()
         {
+            var actContractsDictionary = new List<KeyValuePair<string, string>>
+            {
+                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, "1"),
+                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, "1"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618NonProcured, "2"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618Procured, "2"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, "2"),
+                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusProcured, "2")
+            }
+           .ToDictionary(x => x.Key, v => v.Value);
+
             var learnerData = new FM36LearnerData[]
             {
                 new FM36LearnerData
@@ -1798,7 +1831,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 },
             };
 
-            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates).Should().BeEquivalentTo(expectedModels);
+            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates, actContractsDictionary).Should().BeEquivalentTo(expectedModels);
         }
 
         [Fact]
@@ -2138,6 +2171,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
             new CensusDate { Period = 11, Start = new DateTime(2020, 06, 01), End = new DateTime(2020, 06, 30) },
             new CensusDate { Period = 12, Start = new DateTime(2020, 07, 01), End = new DateTime(2020, 07, 31) }
         };
+
 
         private NonContractedAppsActivityReportModelBuilder NewBuilder(IAcademicYearService academicYearService = null, IIlrModelMapper ilrModelMapper = null)
         {
