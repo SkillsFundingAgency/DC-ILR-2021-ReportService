@@ -485,7 +485,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
         public ICollection<string> BuildFcsFundingStreamPeriodCodes(IEnumerable<FcsContractAllocation> fcsContractAllocations)
         {
             return new HashSet<string>(fcsContractAllocations?
-                .Select(f => f.FundingStreamPeriodCode).Distinct().ToList(), StringComparer.OrdinalIgnoreCase);
+                .Select(f => f.FundingStreamPeriodCode).ToList(), StringComparer.OrdinalIgnoreCase);
         }
 
         public IDictionary<string, Dictionary<int, ILearningDelivery>> BuildFm36LearningDeliveryDictionary(IMessage message)
