@@ -103,17 +103,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [Fact]
         public void ValidContractMappings()
         {
-            var mappings = new List<KeyValuePair<string, string[]>>
+            var mappings = new Dictionary<string, string[]>
             {
-                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 })
+                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
+                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
+                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
+                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
+                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
+                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
             };
 
-            NewBuilder().ValidContractMappings.Should().BeEquivalentTo(mappings);
+            NewBuilder().ValidContractsDictionary.Should().BeEquivalentTo(mappings);
         }
 
         [Fact]
@@ -137,22 +137,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
 
             reportBuilder.Should().HaveCount(2);
             reportBuilder.Should().ContainKeys(new string[] { "LearnAimRef1", "LearnAimRef2" });
-        }
-
-        [Fact]
-        public void BuildValidContractMapping()
-        {
-            var contractsDictionary = new Dictionary<string, string[]>
-            {
-                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
-            };
-
-            NewBuilder().BuildValidContractMapping().Should().BeEquivalentTo(contractsDictionary);
         }
 
         [Fact]
@@ -350,16 +334,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [Fact]
         public void GetNonContractedFundLine_NoContract()
         {
-            var contractsDictionary = new Dictionary<string, string[]>
-            {
-                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
-            };
-
             var fspCodes = new List<string>
             {
                 "FSOC1",
@@ -367,22 +341,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
 
             var expectedFundLine =
 
-            NewBuilder().GetNonContractedFundLine(FundLineConstants.ApprenticeshipEmployerOnAppService1618, fspCodes, contractsDictionary).Should().Be(FundLineConstants.ApprenticeshipEmployerOnAppService1618);
+            NewBuilder().GetNonContractedFundLine(FundLineConstants.ApprenticeshipEmployerOnAppService1618, fspCodes).Should().Be(FundLineConstants.ApprenticeshipEmployerOnAppService1618);
         }
 
         [Fact]
         public void GetNonContractedFundLine_HasContract()
         {
-            var contractsDictionary = new Dictionary<string, string[]>
-            {
-                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
-            };
-
             var fspCodes = new List<string>
             {
                 "NONLEVY2019",
@@ -390,22 +354,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
 
             var expectedFundLine =
 
-            NewBuilder().GetNonContractedFundLine(FundLineConstants.ApprenticeshipEmployerOnAppService1618, fspCodes, contractsDictionary).Should().BeNullOrEmpty();
+            NewBuilder().GetNonContractedFundLine(FundLineConstants.ApprenticeshipEmployerOnAppService1618, fspCodes).Should().BeNullOrEmpty();
         }
 
         [Fact]
         public void BuildNonContractedFundLinesDictionary_NoContract()
         {
-            var contractsDictionary = new Dictionary<string, string[]>
-            {
-                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
-            };
-
             var fspCodes = new List<string>();
 
             var periodisedTextValues = new List<LearningDeliveryPeriodisedTextValues>()
@@ -478,22 +432,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            NewBuilder().BuildNonContractedFundLinesDictionary(periodisedTextValues, "Learner1", 1, fspCodes, contractsDictionary).Should().BeEquivalentTo(expectedDictionary);
+            NewBuilder().BuildNonContractedFundLinesDictionary(periodisedTextValues, "Learner1", 1, fspCodes).Should().BeEquivalentTo(expectedDictionary);
         }
 
         [Fact]
         public void BuildNonContractedFundLinesDictionary_HasContract()
         {
-            var contractsDictionary = new Dictionary<string, string[]>
-            {
-                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
-            };
-
             var fspCodes = new List<string>
             {
                 ContractsConstants.Levy1799
@@ -559,22 +503,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            NewBuilder().BuildNonContractedFundLinesDictionary(periodisedTextValues, "Learner1", 1, fspCodes, contractsDictionary).Should().BeEquivalentTo(expectedDictionary);
+            NewBuilder().BuildNonContractedFundLinesDictionary(periodisedTextValues, "Learner1", 1, fspCodes).Should().BeEquivalentTo(expectedDictionary);
         }
 
         [Fact]
         public void BuildNonContractedLearningDelivery()
         {
-            var contractsDictionary = new Dictionary<string, string[]>
-            {
-                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
-            };
-
             var fspCodes = new List<string>
             {
                 ContractsConstants.Levy1799
@@ -712,22 +646,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            NewBuilder().BuildNonContractedLearningDelivery(learningDelivery, "Learner1", fspCodes, contractsDictionary).Should().BeEquivalentTo(expectedFM36LearningDelivery);
+            NewBuilder().BuildNonContractedLearningDelivery(learningDelivery, "Learner1", fspCodes).Should().BeEquivalentTo(expectedFM36LearningDelivery);
         }
 
         [Fact]
         public void BuildNonContractedPriceEpisode()
         {
-            var contractsDictionary = new Dictionary<string, string[]>
-            {
-                { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
-            };
-
             var fspCodes = new List<string>
             {
                 ContractsConstants.Levy1799
@@ -791,7 +715,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            NewBuilder().BuildNonContractedPriceEpisode(priceEpisode, "Learner1", fspCodes, contractsDictionary).Should().BeEquivalentTo(expectedFM36PriceEpisode);
+            NewBuilder().BuildNonContractedPriceEpisode(priceEpisode, "Learner1", fspCodes).Should().BeEquivalentTo(expectedFM36PriceEpisode);
         }
 
         [Theory]
@@ -831,16 +755,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [Fact]
         public void BuildFm36Learners()
         {
-            var contractsDictionary = new List<KeyValuePair<string, string[]>>
-            {
-                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 })
-            }.ToDictionary(k => k.Key, v => v.Value);
-
             var fspCodes = new List<string>
             {
                 "Code1"
@@ -1210,22 +1124,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            NewBuilder(new AcademicYearService(), new IlrModelMapper()).BuildFm36Learners(message, global, fspCodes, contractsDictionary).Should().BeEquivalentTo(expectedModel);
+            NewBuilder(new AcademicYearService(), new IlrModelMapper()).BuildFm36Learners(message, global, fspCodes).Should().BeEquivalentTo(expectedModel);
         }
 
         [Fact]
         public void BuildFm36Learners_NoLearners()
         {
-            var contractsDictionary = new List<KeyValuePair<string, string[]>>
-            {
-                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 }),
-                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 })
-            }.ToDictionary(k => k.Key, v => v.Value);
-
             var fspCodes = new List<string>
             {
                 "Code1"
@@ -1235,7 +1139,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
 
             var expectedModel = new FM36LearnerData[]{};
 
-            NewBuilder(new AcademicYearService(), new IlrModelMapper()).BuildFm36Learners(message, new FM36Global(), fspCodes, contractsDictionary).Should().BeEquivalentTo(expectedModel);
+            NewBuilder(new AcademicYearService(), new IlrModelMapper()).BuildFm36Learners(message, new FM36Global(), fspCodes).Should().BeEquivalentTo(expectedModel);
         }
 
         [Fact]
@@ -1483,17 +1387,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [Fact]
         public void BuildReportRows_NoRows()
         {
-            var actContractsDictionary = new List<KeyValuePair<string, string>>
-            {
-                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, "1"),
-                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, "1"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618NonProcured, "2"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618Procured, "2"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, "2"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusProcured, "2")
-            }
-            .ToDictionary(x => x.Key, v => v.Value);
-
             var learnerData = new FM36LearnerData[]
             {
                 new FM36LearnerData
@@ -1567,23 +1460,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 },
             };
 
-            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates, actContractsDictionary).Should().BeNullOrEmpty();
+            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates).Should().BeNullOrEmpty();
         }
 
         [Fact]
         public void BuildReportRows()
         {
-            var actContractsDictionary = new List<KeyValuePair<string, string>>
-            {
-                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, "1"),
-                new KeyValuePair<string, string>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, "1"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618NonProcured, "2"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship1618Procured, "2"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, "2"),
-                new KeyValuePair<string, string>(FundLineConstants.NonLevyApprenticeship19PlusProcured, "2")
-            }
-           .ToDictionary(x => x.Key, v => v.Value);
-
             var learnerData = new FM36LearnerData[]
             {
                 new FM36LearnerData
@@ -1856,7 +1738,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 },
             };
 
-            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates, actContractsDictionary).Should().BeEquivalentTo(expectedModels);
+            NewBuilder().BuildReportRows(learnerData, larsDictionary, censusEndDates).Should().BeEquivalentTo(expectedModels);
         }
 
         [Fact]
