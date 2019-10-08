@@ -58,7 +58,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
             if (easLastUpdate != null)
             {
-                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("MM/dd/yyyy HH:mm:ss");
+                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("dd/MM/yyyy HH:mm:ss");
             }
 
             var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate;

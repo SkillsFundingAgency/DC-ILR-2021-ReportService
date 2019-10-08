@@ -175,7 +175,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
             if (easLastUpdate != null)
             {
-                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("MM/dd/yyyy HH:mm:ss");
+                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("dd/MM/yyyy HH:mm:ss");
             }
 
             return new Dictionary<string, string>()
