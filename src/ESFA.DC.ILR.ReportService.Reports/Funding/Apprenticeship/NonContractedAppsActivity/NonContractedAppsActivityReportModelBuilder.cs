@@ -231,10 +231,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 fundLineValue.ReportTotals.JulyTotal.HasValue ? censusEndDates[12] : null
             };
 
-            var fams =
-               endDates.Where(e => e != null).SelectMany(x => learningDeliveryFAMs
+            var fams = endDates.Where(e => e != null)
+               .SelectMany(x => learningDeliveryFAMs
                .Where(l => (l.LearnDelFAMDateFromNullable <= x && l.LearnDelFAMDateToNullable >= x) // Closed Fams
-               | (l.LearnDelFAMDateFromNullable <= x && !l.LearnDelFAMDateToNullable.HasValue))) // Closed Fams
+               || (l.LearnDelFAMDateFromNullable <= x && !l.LearnDelFAMDateToNullable.HasValue))) // Open Fams
               .Where(f => actCode.CaseInsensitiveEquals(f.LearnDelFAMCode))
               .Distinct()
               .ToList();
