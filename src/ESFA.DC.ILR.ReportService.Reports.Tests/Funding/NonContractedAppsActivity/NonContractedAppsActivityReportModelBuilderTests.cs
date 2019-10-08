@@ -1214,6 +1214,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         }
 
         [Fact]
+        public void BuildFm36Learners_NoLearners()
+        {
+            var contractsDictionary = new List<KeyValuePair<string, string[]>>
+            {
+                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 }),
+                new KeyValuePair<string, string[]>(FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 })
+            }.ToDictionary(k => k.Key, v => v.Value);
+
+            var fspCodes = new List<string>
+            {
+                "Code1"
+            };
+
+            IMessage message = new TestMessage();
+
+            var expectedModel = new FM36LearnerData[]{};
+
+            NewBuilder(new AcademicYearService(), new IlrModelMapper()).BuildFm36Learners(message, new FM36Global(), fspCodes, contractsDictionary).Should().BeEquivalentTo(expectedModel);
+        }
+
+        [Fact]
         public void BuildLearningDeliveryACTValues_LearnActEndDate()
         {
             var learnActEndDate = new DateTime(2020, 01, 01);

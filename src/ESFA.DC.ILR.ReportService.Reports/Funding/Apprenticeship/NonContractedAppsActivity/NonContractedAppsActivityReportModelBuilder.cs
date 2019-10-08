@@ -265,7 +265,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                             .Select(p => BuildNonContractedPriceEpisode(p, l.LearnRefNumber, fundingStreamPeriodCodes, validContractsDictionary)).Where(pe => pe != null).ToList(),
                         FM36LearningDelivery = BuildNonContractedLearningDelivery(ld, l.LearnRefNumber, fundingStreamPeriodCodes, validContractsDictionary)
                     }).ToList()
-                }).ToList();
+                }).ToList()
+                ?? Enumerable.Empty<FM36LearnerData>();
         }
 
         public bool PriceEpisodeFilter(PriceEpisodeValues priceEpisodeValues, int aimSeqNumber)
@@ -527,7 +528,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
 
         public IDictionary<string, ILearner> BuildLearnerDictionary(IMessage message)
         {
-            return message.Learners.ToDictionary(l => l.LearnRefNumber, l => l, StringComparer.OrdinalIgnoreCase);
+            return message?.Learners?.ToDictionary(l => l.LearnRefNumber, l => l, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
