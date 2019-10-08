@@ -52,7 +52,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime.ToString();
+            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime;
+
+            string easLastUpdateUk = null;
+
+            if (easLastUpdate != null)
+            {
+                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("dd/MM/yyyy HH:mm:ss");
+            }
 
             var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate;
 
@@ -83,7 +90,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     ExtractFileName(reportServiceContext.OriginalFilename),
                     ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename),
                     filePreparationDate,
-                    easLastUpdate,
+                    easLastUpdateUk,
                     orgVersion,
                     larsVersion,
                     postcodesVersion,

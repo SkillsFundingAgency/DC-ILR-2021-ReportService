@@ -169,7 +169,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private IDictionary<string, string> BuildHeaderData(IReportServiceContext reportServiceContext, ReferenceDataRoot referenceDataRoot)
         {
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
-            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime.ToString();
+            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime;
+
+            string easLastUpdateUk = null;
+
+            if (easLastUpdate != null)
+            {
+                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("dd/MM/yyyy HH:mm:ss");
+            }
 
             return new Dictionary<string, string>()
             {
@@ -177,7 +184,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
                 {SummaryPageConstants.ILRFile, reportServiceContext.OriginalFilename},
                 {SummaryPageConstants.LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename)},
-                {SummaryPageConstants.LastEASUpdate, easLastUpdate},
+                {SummaryPageConstants.LastEASUpdate, easLastUpdateUk},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
         }

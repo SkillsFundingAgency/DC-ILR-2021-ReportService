@@ -93,6 +93,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             var container = "Output";
             var ukprn = 123456789;
             var reportGeneratedAt = new DateTime(2019, 03, 03);
+            var easLastUpdatedAt = new DateTime(2019, 04, 04);
 
             var refDataRoot = new ReferenceDataRoot()
             {
@@ -109,7 +110,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                     ReferenceDataVersions = new ReferenceDataVersion()
                     {
                         OrganisationsVersion = new OrganisationsVersion { Version = "orgVersion" },
-                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 01, 01) },
+                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = easLastUpdatedAt },
                         LarsVersion = new LarsVersion { Version = "larsVersion" },
                         PostcodesVersion = new PostcodesVersion { Version = "postcodeVersion" },
                         Employers = new EmployersVersion { Version = "employersVersion" }
@@ -139,6 +140,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             var dateTimeProviderMock = new Mock<IDateTimeProvider>();
             dateTimeProviderMock.Setup(x => x.GetNowUtc()).Returns(reportGeneratedAt);
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(reportGeneratedAt)).Returns(reportGeneratedAt);
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(easLastUpdatedAt)).Returns(easLastUpdatedAt);
 
             var fundingSummaryReportModelBuilder = new FundingSummaryReportModelBuilder(periodisedValuesLookupProvider.Object, dateTimeProviderMock.Object);
 
