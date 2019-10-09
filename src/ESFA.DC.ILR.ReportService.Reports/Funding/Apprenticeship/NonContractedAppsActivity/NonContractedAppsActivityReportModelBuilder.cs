@@ -156,7 +156,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                                     MayTotal = pe.FundLineValues.ReportTotals.MayTotal,
                                     JuneTotal = pe.FundLineValues.ReportTotals.JuneTotal,
                                     JulyTotal = pe.FundLineValues.ReportTotals.JulyTotal,
-                                    LearningDeliveryFAM_ACTs = BuildPriceEpisodeACTValues(pe.PriceEpisodeValue.EpisodeStartDate, learningDelivery.LearningDeliveryFAMs_ACT),
+                                    LearningDeliveryFAM_ACTs = BuildPriceEpisodeACTValues(
+                                        pe.PriceEpisodeValue.EpisodeStartDate,
+                                        learningDelivery.LearningDeliveryFAMs_ACT,
+                                        ActCodeContractDictionary[pe.PriceEpisodeValue.PriceEpisodeFundLineType]),
                                 }));
                         }
                     }
@@ -181,19 +184,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate && learningDeliveryFAM.LearnDelFAMDateToNullable.Value.Add(_timeSpanForActFilter) >= censusDate;
         }
 
-        public ILearningDeliveryFAM BuildPriceEpisodeACTValues(DateTime? episodeStartDate, IEnumerable<ILearningDeliveryFAM> learningDeliveryFAMs)
+        public ILearningDeliveryFAM BuildPriceEpisodeACTValues(DateTime? episodeStartDate, IEnumerable<ILearningDeliveryFAM> learningDeliveryFAMs, string actCode)
         {
             var learningDeliveryFAMDateFrom = learningDeliveryFAMs?.Where(f => episodeStartDate >= f.LearnDelFAMDateFromNullable).Max(x => x.LearnDelFAMDateFromNullable);
             var learningDeliveryFAMDateTo = learningDeliveryFAMs?.Where(f => episodeStartDate <= f.LearnDelFAMDateToNullable).Min(x => x.LearnDelFAMDateToNullable);
 
-            var learningDeliveryFAMCode = learningDeliveryFAMs?
-              .FirstOrDefault(f => episodeStartDate >= learningDeliveryFAMDateFrom && episodeStartDate <= (learningDeliveryFAMDateTo.HasValue ? learningDeliveryFAMDateTo.Value : episodeStartDate))?
-              .LearnDelFAMCode;
-
             return new LearningDeliveryACT
             {
                 LearnDelFAMType = LearnerFAMTypeConstants.ACT,
-                LearnDelFAMCode = learningDeliveryFAMCode,
+                LearnDelFAMCode = actCode,
                 LearnDelFAMDateFromNullable = learningDeliveryFAMDateFrom,
                 LearnDelFAMDateToNullable = learningDeliveryFAMDateTo
             };

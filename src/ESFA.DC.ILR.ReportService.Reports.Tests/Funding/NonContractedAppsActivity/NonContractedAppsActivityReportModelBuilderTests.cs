@@ -1279,7 +1279,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 LearnDelFAMDateToNullable = new DateTime(2019, 11, 01)
             };
 
-            NewBuilder().BuildPriceEpisodeACTValues(new DateTime(2019, 09, 1), learningDeliveryFams).Should().BeEquivalentTo(expectedFam);
+            NewBuilder().BuildPriceEpisodeACTValues(new DateTime(2019, 09, 1), learningDeliveryFams, "1").Should().BeEquivalentTo(expectedFam);
         }
 
         [Fact]
