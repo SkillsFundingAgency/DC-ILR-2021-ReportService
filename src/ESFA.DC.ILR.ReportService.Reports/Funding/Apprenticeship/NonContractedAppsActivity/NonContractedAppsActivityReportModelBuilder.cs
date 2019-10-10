@@ -181,7 +181,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
                 return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate;
             }
 
-            return learningDeliveryFAM.LearnDelFAMDateFromNullable <= censusDate && learningDeliveryFAM.LearnDelFAMDateToNullable.Value.Add(_timeSpanForActFilter) >= censusDate;
+            return learningDeliveryFAM.LearnDelFAMDateFromNullable.Value <= censusDate &&
+                (learningDeliveryFAM.LearnDelFAMDateToNullable.Value.Add(_timeSpanForActFilter) >= censusDate.Value || learningDeliveryFAM.LearnDelFAMDateToNullable.Value.Month >= censusDate.Value.Month);
         }
 
         public ILearningDeliveryFAM BuildPriceEpisodeACTValues(DateTime? episodeStartDate, IEnumerable<ILearningDeliveryFAM> learningDeliveryFAMs, string actCode)
