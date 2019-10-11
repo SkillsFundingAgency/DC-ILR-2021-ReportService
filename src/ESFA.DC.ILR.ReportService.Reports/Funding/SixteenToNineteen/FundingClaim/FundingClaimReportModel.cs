@@ -12,5 +12,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         public FundingLineReportingBandModel StudentsWithEHCPlan { get; set; }
         public FundingLineReportingBandModel ContinuingStudentsExcludingEHCPlan { get; set; }
         public decimal CofRemoval { get; set; }
+        public string ReferenceDate { get; set; }
     }
 }
