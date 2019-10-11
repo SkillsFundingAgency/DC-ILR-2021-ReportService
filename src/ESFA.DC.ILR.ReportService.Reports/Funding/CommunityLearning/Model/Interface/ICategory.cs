@@ -9,7 +9,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Inte
 
         List<ISubCategory> SubCategories { get; set; }
 
-        int TotalLearner { get; }
+        int TotalLearners { get; }
 
         int TotalStartedInFundingYear { get; }
 

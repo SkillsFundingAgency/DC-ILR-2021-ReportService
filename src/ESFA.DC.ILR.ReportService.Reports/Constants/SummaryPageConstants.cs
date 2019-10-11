@@ -31,5 +31,7 @@
         public const string ReportGeneratedAt = "Report Generated at:";
 
         public const string Page = "Page:";
+
+        public const string DefaultPageNumber = "1 of 1";
     }
 }

@@ -10,10 +10,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model
 
         public List<ISubCategory> SubCategories { get; set; }
 
-        public int TotalLearner => SubCategories.Sum(x => x.TotalLearners);
+        public int TotalLearners => SubCategories.Sum(x => x.TotalLearners);
 
         public int TotalStartedInFundingYear => SubCategories.Sum(x => x.TotalStartedInFundingYear);
 
-        public int TotalEnrolmentsInFundingYear => SubCategories.Sum(x => x.TotalStartedInFundingYear);
+        public int TotalEnrolmentsInFundingYear => SubCategories.Sum(x => x.TotalEnrolmentsInFundingYear);
     }
 }

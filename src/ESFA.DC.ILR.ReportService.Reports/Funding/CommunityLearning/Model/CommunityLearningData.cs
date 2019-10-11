@@ -5,11 +5,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model
     public class CommunityLearningData
     {
         public string LearnerRefNumber { get; set; }
-        public DateTime? DateOfBirth { get; set; }
         public int AimSeqNumber { get; set; }
         public DateTime LearnStartDate { get; set; }
         public bool SixteenToEighteen { get; set; }
         public bool Adult { get; set; }
+        public bool EarliestStartDate { get; set; }
         public bool LearnStartDateIsInYear { get; set; }
         public bool PersonalAndCommunityDevelopmentLearning { get; set; }
         public bool NeighbourhoodLearningInDeprivedCommunities { get; set; }
