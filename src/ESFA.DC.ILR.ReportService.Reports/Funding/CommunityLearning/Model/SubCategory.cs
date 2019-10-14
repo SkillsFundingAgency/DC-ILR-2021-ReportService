@@ -4,8 +4,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model
 {
     public class SubCategory : ISubCategory
     {
-        public string SubCategoryName { get; set; }
-
         public int TotalLearners { get; set; }
 
         public int TotalStartedInFundingYear { get; set; }

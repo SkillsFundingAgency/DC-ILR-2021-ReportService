@@ -1,24 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model
 {
-    public class CommunityLearningReportModel : ICommunityLearningReport
+    public class CommunityLearningReportModel : AbstractReportHeaderFooterModel
     {
-        public CommunityLearningReportModel(
-          IDictionary<string, string> headerData,
-          List<ICategory> categories,
-          IDictionary<string, string> footerData)
-        {
-            Categories = categories ?? new List<ICategory>();
-            HeaderData = headerData ?? new Dictionary<string, string>();
-            FooterData = footerData ?? new Dictionary<string, string>();
-        }
+        public ICategory TotalCommunityLearning { get; set; }
 
-        public IDictionary<string, string> HeaderData { get; }
+        public ICategory PersonalAndCommunityDevelopment { get; set;  }
 
-        public List<ICategory> Categories { get; }
+        public ICategory NeigbourhoodLearning { get; set; }
 
-        public IDictionary<string, string> FooterData { get; }
+        public ICategory FamilyEnglishMaths { get; set; }
+
+        public ICategory WiderFamilyLearning { get; set; }
     }
 }

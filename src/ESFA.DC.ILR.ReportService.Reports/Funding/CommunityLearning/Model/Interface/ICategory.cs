@@ -1,18 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface
 {
     public interface ICategory
     {
-        string CategoryName { get; set; }
+        ISubCategory SixteenToEighteen { get; set; }
 
-        List<ISubCategory> SubCategories { get; set; }
+        ISubCategory Adult { get; set; }
 
-        int TotalLearners { get; }
+        int TotalLearners { get; set; }
 
-        int TotalStartedInFundingYear { get; }
+        int TotalStartedInFundingYear { get; set; }
 
-        int TotalEnrolmentsInFundingYear { get; }
+        int TotalEnrolmentsInFundingYear { get; set; }
     }
 }

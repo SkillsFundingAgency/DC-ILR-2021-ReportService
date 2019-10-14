@@ -6,9 +6,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
@@ -27,116 +25,86 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
             var message = reportServiceDependentData.Get<IMessage>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            return BuildModel(reportServiceContext, message, referenceData);
-        }
-
-        public CommunityLearningReportModel BuildModel(IReportServiceContext reportServiceContext, IMessage message, ReferenceDataRoot referenceData)
-        {
             var headerData = BuildHeaderData(reportServiceContext, referenceData);
             var footerData = BuildFooterData(reportServiceContext, message, referenceData);
 
             var categoryData = BuildCategoryData(message);
 
-            var categories = BuildCategories(categoryData);
-
-            return new CommunityLearningReportModel(headerData, categories, footerData);
+            return BuildModel(categoryData, headerData, footerData);
         }
 
-        public List<ICategory> BuildCategories(List<CommunityLearningData> communityLearningData)
+        public CommunityLearningReportModel BuildModel(List<CommunityLearningData> communityLearningData, IDictionary<string, string> headerData, IDictionary<string, string> footerData)
         {
-            return new List<ICategory>
+            return new CommunityLearningReportModel
             {
-                new Category
+                TotalCommunityLearning = new Category
                 {
-                    CategoryName = ReportCategoryConstants.TotalCommunityLearning,
-                    SubCategories = new List<ISubCategory>
+                    SixteenToEighteen = new SubCategory
                     {
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.SixteenToEighteen,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen && x.LearnStartDateIsInYear).Count(),
-                        },
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.Adult,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.LearnStartDateIsInYear).Count(),
-                        }
+                        TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen && x.LearnStartDateIsInYear).Count(),
+                    },
+                    Adult = new SubCategory
+                    {
+                        TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.LearnStartDateIsInYear).Count(),
+                    },
+                },
+                PersonalAndCommunityDevelopment = new Category
+                {
+                    TotalLearners = DistinctCount(communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning).Select(l => l.LearnerRefNumber)),
+                    TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                    TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning && x.LearnStartDateIsInYear).Count(),    
+                },
+                NeigbourhoodLearning = new Category
+                {
+                    TotalLearners = DistinctCount(communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities).Select(l => l.LearnerRefNumber)),
+                    TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                    TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities && x.LearnStartDateIsInYear).Count(),
+                },
+                FamilyEnglishMaths = new Category
+                {
+                    SixteenToEighteen = new SubCategory
+                    {
+                        TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Count(),
+                    },
+                    Adult = new SubCategory
+                    {
+                        TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Count(),
                     }
                 },
-                new Category
+                WiderFamilyLearning = new Category
                 {
-                    CategoryName = ReportCategoryConstants.PersonalAndCommunity,
-                    SubCategories = new List<ISubCategory>
+                    SixteenToEighteen = new SubCategory
                     {
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.PersonalAndCommunity,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning && x.LearnStartDateIsInYear).Count(),
-                        }
+                        TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.LearnStartDateIsInYear).Count(),
+                    },
+                    Adult = new SubCategory
+                    {
+                        TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.LearnStartDateIsInYear).Count(),
                     }
                 },
-                new Category
-                {
-                    CategoryName = ReportCategoryConstants.NeighbourhoodLearning,
-                    SubCategories = new List<ISubCategory>
-                    {
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.NeighbourhoodLearning,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities && x.LearnStartDateIsInYear).Count(),
-                        }
-                    }
-                },
-                new Category
-                {
-                    CategoryName = ReportCategoryConstants.FamilyEnglishMathsAndLanguage,
-                    SubCategories = new List<ISubCategory>
-                    {
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.SixteenToEighteen,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Count(),
-                        },
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.Adult,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Count(),
-                        }
-                    }
-                },
-                new Category
-                {
-                    CategoryName = ReportCategoryConstants.WiderFamilyLearning,
-                    SubCategories = new List<ISubCategory>
-                    {
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.SixteenToEighteen,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.LearnStartDateIsInYear).Count(),
-                        },
-                        new SubCategory
-                        {
-                            SubCategoryName = ReportCategoryConstants.Adult,
-                            TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
-                            TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
-                            TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.LearnStartDateIsInYear).Count(),
-                        }
-                    }
-                },
+                ProviderName = headerData[SummaryPageConstants.ProviderName],
+                Ukprn = int.Parse(headerData[SummaryPageConstants.UKPRN]),
+                IlrFile = headerData[SummaryPageConstants.ILRFile],
+                FilePreparationDate = footerData[SummaryPageConstants.FilePreparationDate],
+                ApplicationVersion = footerData[SummaryPageConstants.ApplicationVersion],
+                LarsData = footerData[SummaryPageConstants.LARSVersion],
+                OrganisationData = footerData[SummaryPageConstants.OrganisationVersion],
+                PostcodeData = footerData[SummaryPageConstants.PostcodeVersion],
+                LargeEmployerData = footerData[SummaryPageConstants.LargeEmployersVersion],
+                Year = ReportingConstants.Year,
+                ReportGeneratedAt = "Report generated at: " + footerData[SummaryPageConstants.ReportGeneratedAt]
             };
         }
 
@@ -218,8 +186,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                 {SummaryPageConstants.PostcodeVersion, postcodesVersion},
                 {SummaryPageConstants.OrganisationVersion, orgVersion},
                 {SummaryPageConstants.LargeEmployersVersion, employersVersion},
-                {SummaryPageConstants.ReportGeneratedAt, reportGeneratedAt},
-                {SummaryPageConstants.Page, SummaryPageConstants.DefaultPageNumber}
+                {SummaryPageConstants.ReportGeneratedAt, reportGeneratedAt}
             };
         }
 
@@ -253,6 +220,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
         {
             return objectToCount.Distinct().Count();
         }
-
     }
 }

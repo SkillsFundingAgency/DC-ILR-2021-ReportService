@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
@@ -9,9 +8,7 @@ using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.ReferenceDataVersions;
 using ESFA.DC.ILR.ReferenceDataService.Model.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
@@ -104,7 +101,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 { SummaryPageConstants.OrganisationVersion, "1" },
                 { SummaryPageConstants.LargeEmployersVersion, "1" },
                 { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2019" },
-                { SummaryPageConstants.Page, SummaryPageConstants.DefaultPageNumber }
             };
 
             NewBuilder(dateTimeProviderMock.Object).BuildFooterData(reportServiceContextMock.Object, message, referenceDataRoot).Should().BeEquivalentTo(expectedDictionary);
@@ -135,9 +131,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         }
 
         [Theory]
-        [InlineData("LDM","5")]
-        [InlineData("LDM","4")]
-        [InlineData("ASL","5")]
+        [InlineData("LDM", "5")]
+        [InlineData("LDM", "4")]
+        [InlineData("ASL", "5")]
         public void HasAnyASLFamTypeForFamCode_False(string famType, string famCode)
         {
             var learningDeliveryFams = new List<ILearningDeliveryFAM>
@@ -282,8 +278,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         }
 
         [Fact]
-        public void BuildCategories()
+        public void BuildModel()
         {
+            var headerDictionary = new Dictionary<string, string>
+            {
+                {SummaryPageConstants.ProviderName, "OrgName"},
+                {SummaryPageConstants.UKPRN, "1"},
+                {SummaryPageConstants.ILRFile, "Filename"},
+                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
+            };
+
+            var footerDictionary = new Dictionary<string, string>
+            {
+                { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
+                { SummaryPageConstants.FilePreparationDate, "01/08/2019 00:00:00" },
+                { SummaryPageConstants.LARSVersion, "1" },
+                { SummaryPageConstants.PostcodeVersion, "1" },
+                { SummaryPageConstants.OrganisationVersion, "1" },
+                { SummaryPageConstants.LargeEmployersVersion, "1" },
+                { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2019" }
+            };
+
             var categoryData = new List<CommunityLearningData>
             {
                 new CommunityLearningData
@@ -344,34 +360,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 },
             };
 
-            var result = NewBuilder().BuildCategories(categoryData).ToArray();
+            var result = NewBuilder().BuildModel(categoryData, headerDictionary, footerDictionary);
 
-            result[0].CategoryName.Should().Be(ReportCategoryConstants.TotalCommunityLearning);
-            result[1].CategoryName.Should().Be(ReportCategoryConstants.PersonalAndCommunity);
-            result[2].CategoryName.Should().Be(ReportCategoryConstants.NeighbourhoodLearning);
-            result[3].CategoryName.Should().Be(ReportCategoryConstants.FamilyEnglishMathsAndLanguage);
-            result[4].CategoryName.Should().Be(ReportCategoryConstants.WiderFamilyLearning);
+            result.TotalCommunityLearning.TotalLearners.Should().Be(4);
+            result.TotalCommunityLearning.TotalStartedInFundingYear.Should().Be(2);
+            result.TotalCommunityLearning.TotalEnrolmentsInFundingYear.Should().Be(3);
 
-            result[0].TotalLearners.Should().Be(4);
-            result[0].TotalStartedInFundingYear.Should().Be(2);
-            result[0].TotalEnrolmentsInFundingYear.Should().Be(3);
+            result.PersonalAndCommunityDevelopment.TotalLearners.Should().Be(2);
+            result.PersonalAndCommunityDevelopment.TotalStartedInFundingYear.Should().Be(1);
+            result.PersonalAndCommunityDevelopment.TotalEnrolmentsInFundingYear.Should().Be(1);
 
-            result[1].TotalLearners.Should().Be(2);
-            result[1].TotalStartedInFundingYear.Should().Be(1);
-            result[1].TotalEnrolmentsInFundingYear.Should().Be(1);
+            result.NeigbourhoodLearning.TotalLearners.Should().Be(1);
+            result.NeigbourhoodLearning.TotalStartedInFundingYear.Should().Be(0);
+            result.NeigbourhoodLearning.TotalEnrolmentsInFundingYear.Should().Be(1);
 
-            result[2].TotalLearners.Should().Be(1);
-            result[2].TotalStartedInFundingYear.Should().Be(0);
-            result[2].TotalEnrolmentsInFundingYear.Should().Be(1);
+            result.FamilyEnglishMaths.TotalLearners.Should().Be(0);
+            result.FamilyEnglishMaths.TotalStartedInFundingYear.Should().Be(0);
+            result.FamilyEnglishMaths.TotalEnrolmentsInFundingYear.Should().Be(0);
 
-            result[3].TotalLearners.Should().Be(0);
-            result[3].TotalStartedInFundingYear.Should().Be(0);
-            result[3].TotalEnrolmentsInFundingYear.Should().Be(0);
-
-            result[4].TotalLearners.Should().Be(1);
-            result[4].TotalStartedInFundingYear.Should().Be(1);
-            result[4].TotalEnrolmentsInFundingYear.Should().Be(1);
-        }    
+            result.WiderFamilyLearning.TotalLearners.Should().Be(1);
+            result.WiderFamilyLearning.TotalStartedInFundingYear.Should().Be(1);
+            result.WiderFamilyLearning.TotalEnrolmentsInFundingYear.Should().Be(1);
+        }
 
         private IMessage TestMessage() => new TestMessage
         {

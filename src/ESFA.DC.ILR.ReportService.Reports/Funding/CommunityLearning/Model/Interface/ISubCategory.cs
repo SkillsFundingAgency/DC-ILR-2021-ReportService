@@ -2,8 +2,6 @@
 {
     public interface ISubCategory
     {
-        string SubCategoryName { get; set; }
-
         int TotalLearners { get; set; }
 
         int TotalStartedInFundingYear { get; set; }
