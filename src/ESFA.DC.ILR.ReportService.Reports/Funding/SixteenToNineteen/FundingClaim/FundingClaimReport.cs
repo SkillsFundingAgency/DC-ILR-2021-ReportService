@@ -1,4 +1,5 @@
 ﻿using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using System;
@@ -50,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
 
-            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "FundingClaim1619ReportTemplate.xlsx", "FundingClaim");
+            var workbook = _excelService.BindExcelTemplateToWorkbook(model, ReportTemplateConstants.FundingClaimTemplateName, ReportTemplateConstants.FundingClaimDataSource);
 
             await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
 

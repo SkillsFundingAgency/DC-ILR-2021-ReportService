@@ -4,6 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
@@ -15,6 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         private readonly IModelBuilder<AdultFundingClaimReportModel> _modelBuilder;
         private readonly IExcelService _excelService;
         private const int FisInfoRow = 8;
+
         public AdultFundingClaimReport(
             IFileNameService fileNameService,
             IModelBuilder<AdultFundingClaimReportModel> modelBuilder,
@@ -32,7 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         {
             var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
-            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "AdultFundingClaimReportTemplate.xlsx", "AdultFundingClaim");
+            var workbook = _excelService.BindExcelTemplateToWorkbook(model, ReportTemplateConstants.AdultFundingClaimTemplateName, ReportTemplateConstants.AdultFundingClaimDataSource);
             RenderIndicativeMessage(workbook);
             await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] { fileName };
