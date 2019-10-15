@@ -33,6 +33,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -75,6 +76,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
             containerBuilder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
+            containerBuilder.RegisterType<RuleViolationSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<RuleViolationSummaryReportModelBuilder>().As<IModelBuilder<RuleViolationSummaryReportModel>>();
             containerBuilder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
             containerBuilder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>();
             containerBuilder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>();

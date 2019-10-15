@@ -35,17 +35,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
             var workbook = _excelService.BindExcelTemplateToWorkbook(model, "RuleViolationSummaryReportTemplate.xlsx", "RuleViolationSummary");
-            await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container,
-                cancellationToken);
+            await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] {fileName};
         }
 
-        public virtual IEnumerable<Type> DependsOn
-            => new[]
-            {
-                DependentDataCatalog.Fm35,
-                DependentDataCatalog.Fm99,
-                DependentDataCatalog.ReferenceData
-            };
+        public IEnumerable<Type> DependsOn => new List<Type>()
+        {
+            DependentDataCatalog.InvalidIlr,
+            DependentDataCatalog.ReferenceData,
+            DependentDataCatalog.ValidationErrors,
+        };
     }
 }
