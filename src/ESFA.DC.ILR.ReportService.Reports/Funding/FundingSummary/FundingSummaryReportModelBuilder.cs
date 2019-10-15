@@ -196,6 +196,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
+            var applicationversion = reportServiceContext.ServiceReleaseVersion;
 
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
@@ -211,6 +212,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 {SummaryPageConstants.OrganisationVersion, orgVersion},
                 {SummaryPageConstants.LargeEmployersVersion, employersVersion},
                 {SummaryPageConstants.ReportGeneratedAt, reportGeneratedAt}
+          
             };
         }
         
