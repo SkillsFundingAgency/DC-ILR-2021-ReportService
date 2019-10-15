@@ -63,7 +63,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
             set => _desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
         }
 
-        public string ServiceReleaseVersion { get; set; }
+        public string ServiceReleaseVersion => _desktopContext.KeyValuePairs[ILRContextKeys.ServiceReleaseVersion].ToString();
 
         public IEnumerable<IReportFilterQuery> ReportFilters { get; }
     }
