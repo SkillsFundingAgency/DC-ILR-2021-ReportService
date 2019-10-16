@@ -2,7 +2,9 @@
 using Autofac;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
+using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
@@ -20,6 +22,8 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStude
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfFundingByStudent;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
@@ -34,6 +38,8 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
+using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -58,6 +64,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterTrailblazerOccupancyReport(containerBuilder);
 
             RegisterDevolvedAdultEducationFundingSummaryReport(containerBuilder);
+
+            RegisterCommunityLearningReport(containerBuilder);
 
             RegisterMathsAndEnglishReport(containerBuilder);
             RegisterHighNeedsStudentReport(containerBuilder);
@@ -114,6 +122,13 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
         }
+
+        protected virtual void RegisterCommunityLearningReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<CommunityLearningReport>().As<IReport>();
+            containerBuilder.RegisterType<CommunityLearningReportModelBuilder>().As<IModelBuilder<CommunityLearningReportModel>>();
+        }
+
 
         private void RegisterSummaryOfFM35FundingReport(ContainerBuilder containerBuilder)
         {

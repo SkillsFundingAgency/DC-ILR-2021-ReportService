@@ -29,5 +29,6 @@
         public const string SummaryOfFundingByStudentReport = "TaskGenerateSummaryOfFundingByStudentReport";
         public const string SummaryOfFm35FundingReport = "TaskGenerateSummaryOfFm35FundingReport";
         public const string RuleViolationSummaryReport = "TaskGenerateRuleViolationSummaryReport";
+        public const string CommunityLearningReport = "TaskGenerateCommunityLearningReport";
     }
 }
