@@ -8,6 +8,8 @@
 
         public const string ILRFile = "ILR File:";
 
+        public const string Year = "Year:";
+
         public const string LastILRFileUpdate = "Last ILR File Update:";
 
         public const string LastEASUpdate = "Last EAS Update:";
@@ -27,5 +29,7 @@
         public const string LargeEmployersVersion = "Large Employers Data:";
 
         public const string ReportGeneratedAt = "Report Generated at:";
+
+        public const string Page = "Page:";
     }
 }

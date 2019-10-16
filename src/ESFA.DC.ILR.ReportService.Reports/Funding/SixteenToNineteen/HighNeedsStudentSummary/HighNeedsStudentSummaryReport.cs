@@ -10,6 +10,7 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary.Model;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary
 {
@@ -36,7 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
         {
             var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
-            var workbook = _excelService.BindExcelTemplateToWorkbook(model, "HNSSummaryReportTemplate.xlsx", "HNSSummary");
+            var workbook = _excelService.BindExcelTemplateToWorkbook(model, ReportTemplateConstants.HNSSummaryTemplateName, ReportTemplateConstants.HNSSummaryDataSource);
             await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             return new[] { fileName };
         }

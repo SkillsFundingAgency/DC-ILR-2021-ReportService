@@ -37,6 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "FundingAlbOutput", "FundingAlbOutput"},
                 { "ValidLearnRefNumbers", "ValidLearnRefNumbers"},
                 { "ReturnPeriod", 8},
+                { "CollectionYear", 2019},
                 { "ReportTasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"}
             };
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 10, 10));
@@ -65,6 +66,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             context.FundingALBOutputKey.Should().Be("FundingAlbOutput");
             context.ValidLearnRefNumbersKey.Should().Be("ValidLearnRefNumbers");
             context.ReturnPeriod.Should().Be(8);
+            context.CollectionYear.Should().Be("2019");
             context.SubmissionDateTimeUtc.Should().Be(new DateTime(2019, 10, 10));
             context.Tasks.Count().Should().Be(3);
             context.Tasks.ElementAt(0).Should().Be("TaskGenerateValidationReport");
