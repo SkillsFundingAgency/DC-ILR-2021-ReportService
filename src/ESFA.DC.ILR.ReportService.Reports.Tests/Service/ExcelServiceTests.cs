@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
         [Fact]
         public void BindExcelTemplateToWorkbook_Returns_Workbook_For_ValidTemplate()
         {
-            var workbook = NewService().BindExcelTemplateToWorkbook(new FundingClaimReportModel(), "HNSSummary.xlsx", "HNSSummary");
+            var workbook = NewService().BindExcelTemplateToWorkbook(new FundingClaimReportModel(), "HNSSummaryReportTemplate.xlsx", "HNSSummary");
             workbook.Should().NotBeNull();
             workbook.Worksheets.Count.Should().Be(1);
         }
