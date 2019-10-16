@@ -45,6 +45,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
             };
             designer.SetDataSource(dataSource, new List<T> { model });
             designer.Process();
+
+            designer.Workbook.CalculateFormula();
+
             return designer.Workbook;
         }
 
