@@ -52,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             var learnersWithValidationErrors = validationErrors.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
             var learnersWithErrors = validationErrorsList.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
             var learnersWithWarnings = validationErrorWarningsList.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
-            
+
             model.TotalNoOfErrors = validationErrorsList.Count;
             model.TotalNoOfWarnings = validationErrorWarningsList.Count;
 
@@ -104,27 +104,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             };
 
             model.LearningDeliveries.AdvancedLoanLearningDeliveries =
-                learningDeliveries.Where(x => x.LearningDeliveryFAMs != null && x.FundModelNullable!=null)
+                learningDeliveries.Where(x => x.LearningDeliveryFAMs != null && x.FundModelNullable != null)
                                   .Count(x => x.FundModelNullable.Value == FundModelConstants.FM99 &&
                                             x.LearningDeliveryFAMs.Any(y => y.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ADL)));
 
 
             model.LearnerDestinationProgressionSummary = new LearnerDestinationProgressionSummary()
             {
-                 Total = looseLearnerDestinationAndProgressions.Count,
+                Total = looseLearnerDestinationAndProgressions.Count,
                 ValidLearnerDestinationProgressions = looseLearnerDestinationAndProgressions.Count(x => !learnersWithValidationErrors.Contains(x.LearnRefNumber)),
                 InValidLearnerDestinationProgressions = looseLearnerDestinationAndProgressions.Count(x => learnersWithValidationErrors.Contains(x.LearnRefNumber)),
                 LearnerDestinationProgressionsWithWarnings = looseLearnerDestinationAndProgressions.Count(x => learnersWithWarnings.Contains(x.LearnRefNumber)),
             };
-
-            model.Errors = validationErrors.Where(x => x.Severity.CaseInsensitiveEquals("E")).Select(error =>
-                new ValidationErrorMessageModel()
-                {
-                    RuleName = error.RuleName,
-                    Message = validationErrorsMetadata.FirstOrDefault(x =>
-                        string.Equals(x.RuleName, error.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
-                    Occurrences = validationErrors.Count(x=>x.RuleName == error.RuleName)
-                }).ToList();
 
             model.Errors = GetValidationErrorMessageModels(validationErrorsList, validationErrorsMetadata);
             model.Warnings = GetValidationErrorMessageModels(validationErrorWarningsList, validationErrorsMetadata);
@@ -132,7 +123,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             // Footer
             model.ReportGeneratedAt = reportGeneratedAt;
             model.ApplicationVersion = reportServiceContext.ServiceReleaseVersion;
-            model.ComponentSetVersion = "NA";
             model.OrganisationData = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             model.LargeEmployerData = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
@@ -146,28 +136,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
         private List<ValidationErrorMessageModel> GetValidationErrorMessageModels(List<ValidationError> validationErrors, IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
         {
             return (from errors in validationErrors
-                group errors by errors.RuleName
+                    group errors by errors.RuleName
                 into validationErrorGroup
-                select new ValidationErrorMessageModel()
-                {
-                    RuleName = validationErrorGroup.Key,
-                    Message = validationErrorsMetadata.FirstOrDefault(x =>
-                            string.Equals(x.RuleName, validationErrorGroup.Key, StringComparison.OrdinalIgnoreCase))
-                        ?.Message,
-                    Occurrences = validationErrorGroup.Count()
-                }).ToList();
+                    select new ValidationErrorMessageModel()
+                    {
+                        RuleName = validationErrorGroup.Key,
+                        Message = validationErrorsMetadata.FirstOrDefault(x =>
+                                string.Equals(x.RuleName, validationErrorGroup.Key, StringComparison.OrdinalIgnoreCase))
+                            ?.Message,
+                        Occurrences = validationErrorGroup.Count()
+                    }).ToList();
         }
 
         private int GetLearningDeliveriesFundModelCount(List<ILooseLearningDelivery> learningDeliveries, int fundModel)
         {
-            return learningDeliveries.Where(x =>x.FundModelNullable!=null).Count(x => x.FundModelNullable.Value == fundModel);
+            return learningDeliveries.Where(x => x.FundModelNullable != null).Count(x => x.FundModelNullable.Value == fundModel);
         }
 
         private int GetFundModelCount(List<ILooseLearner> learners, int fundModel)
         {
             return learners.Where(x => x.LearningDeliveries != null)
                 .Where(x => x.LearningDeliveries.Any(y => y.FundModelNullable.GetValueOrDefault() == fundModel))
-                .DistinctByCount( x=> x.LearnRefNumber);
+                .DistinctByCount(x => x.LearnRefNumber);
         }
     }
 }
