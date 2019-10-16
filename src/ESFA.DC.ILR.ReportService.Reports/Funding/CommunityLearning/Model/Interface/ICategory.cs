@@ -2,9 +2,9 @@
 {
     public interface ICategory
     {
-        ISubCategory SixteenToEighteen { get; set; }
+        ICategory SixteenToEighteen { get; set; }
 
-        ISubCategory Adult { get; set; }
+        ICategory Adult { get; set; }
 
         int TotalLearners { get; set; }
 

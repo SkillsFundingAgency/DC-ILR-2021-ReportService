@@ -39,13 +39,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
             {
                 TotalCommunityLearning = new Category
                 {
-                    SixteenToEighteen = new SubCategory
+                    SixteenToEighteen = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen).Select(l => l.LearnerRefNumber)),
                         TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                         TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen && x.LearnStartDateIsInYear).Count(),
                     },
-                    Adult = new SubCategory
+                    Adult = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult).Select(l => l.LearnerRefNumber)),
                         TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
@@ -66,13 +66,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                 },
                 FamilyEnglishMaths = new Category
                 {
-                    SixteenToEighteen = new SubCategory
+                    SixteenToEighteen = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
                         TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                         TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Count(),
                     },
-                    Adult = new SubCategory
+                    Adult = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
                         TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
@@ -81,13 +81,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                 },
                 WiderFamilyLearning = new Category
                 {
-                    SixteenToEighteen = new SubCategory
+                    SixteenToEighteen = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
                         TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                         TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.LearnStartDateIsInYear).Count(),
                     },
-                    Adult = new SubCategory
+                    Adult = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
                         TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
