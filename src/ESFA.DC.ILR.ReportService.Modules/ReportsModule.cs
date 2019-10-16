@@ -33,12 +33,7 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
-using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 
 namespace ESFA.DC.ILR.ReportService.Modules
