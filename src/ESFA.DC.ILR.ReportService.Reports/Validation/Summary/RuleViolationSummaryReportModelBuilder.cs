@@ -17,6 +17,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
     {
         private readonly IDateTimeProvider _dateTimeProvider;
         private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
+        private const string Error = "E";
+        private const string Warning = "W";
 
         public RuleViolationSummaryReportModelBuilder(IDateTimeProvider dateTimeProvider)
         {
@@ -35,7 +37,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
             var reportGeneratedAt = "Report generated at: " + dateTimeNowUk.ToString(ReportGeneratedTimeStringFormat);
-            var looseLearners = message?.Learners?.ToList() ?? Enumerable.Empty<ILooseLearner>().ToList();
+            var looseLearners = message?.Learners?.ToList() ?? new List<ILooseLearner>();
             var looseLearnerDestinationAndProgressions = message?.LearnerDestinationAndProgressions?.ToList() ?? Enumerable.Empty<ILooseLearnerDestinationAndProgression>().ToList();
 
             // Header
@@ -46,8 +48,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
 
             // body
             var looseLearnersList = looseLearners.DistinctBy(x => x.LearnRefNumber).ToList();
-            var validationErrorsList = validationErrors.Where(x => x.Severity.CaseInsensitiveEquals("E")).ToList();
-            var validationErrorWarningsList = validationErrors.Where(x => x.Severity.CaseInsensitiveEquals("W")).ToList();
+            var validationErrorsList = validationErrors.Where(x => x.Severity.CaseInsensitiveEquals(Error)).ToList();
+            var validationErrorWarningsList = validationErrors.Where(x => x.Severity.CaseInsensitiveEquals(Warning)).ToList();
 
             var learnersWithValidationErrors = validationErrors.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
             var learnersWithErrors = validationErrorsList.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
@@ -150,13 +152,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
 
         private int GetLearningDeliveriesFundModelCount(List<ILooseLearningDelivery> learningDeliveries, int fundModel)
         {
-            return learningDeliveries.Where(x => x.FundModelNullable != null).Count(x => x.FundModelNullable.Value == fundModel);
+            return learningDeliveries.Count(x => x.FundModelNullable == fundModel);
         }
 
         private int GetFundModelCount(List<ILooseLearner> learners, int fundModel)
         {
             return learners.Where(x => x.LearningDeliveries != null)
-                .Where(x => x.LearningDeliveries.Any(y => y.FundModelNullable.GetValueOrDefault() == fundModel))
+                .Where(x => x.LearningDeliveries.Any(y => y.FundModelNullable == fundModel))
                 .DistinctByCount(x => x.LearnRefNumber);
         }
     }
