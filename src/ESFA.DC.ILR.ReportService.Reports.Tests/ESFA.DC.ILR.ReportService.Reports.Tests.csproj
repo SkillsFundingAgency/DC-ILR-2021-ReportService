@@ -196,6 +196,7 @@
     <Compile Include="Stubs\FileServiceStub.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
+    <Compile Include="Validation\RuleViolationSummaryModelBuilderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

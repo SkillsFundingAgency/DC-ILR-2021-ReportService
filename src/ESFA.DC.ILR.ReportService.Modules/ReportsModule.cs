@@ -33,7 +33,7 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 
 namespace ESFA.DC.ILR.ReportService.Modules
@@ -79,6 +79,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
             containerBuilder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
+            containerBuilder.RegisterType<RuleViolationSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<RuleViolationSummaryReportModelBuilder>().As<IModelBuilder<RuleViolationSummaryReportModel>>();
             containerBuilder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
             containerBuilder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>();
             containerBuilder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>();

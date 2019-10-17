@@ -13,5 +13,8 @@
 
         public const string HNSSummaryTemplateName = "HNSSummaryReportTemplate.xlsx";
         public const string HNSSummaryDataSource = "HNSSummary";
+
+        public const string RuleViolationSummaryReportTemplateName = "RuleViolationSummaryReportTemplate.xlsx";
+        public const string RuleViolationSummaryReportTemplateDataSource = "RuleViolationSummary";
     }
 }

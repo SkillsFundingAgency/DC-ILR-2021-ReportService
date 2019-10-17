@@ -16,6 +16,7 @@
     <None Remove="Templates\CommunityLearningReportTemplate.xlsx" />
     <None Remove="Templates\FundingClaim1619ReportTemplate.xlsx" />
     <None Remove="Templates\HNSSummaryReportTemplate.xlsx" />
+    <None Remove="Templates\RuleViolationSummaryReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,6 +28,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Aspose.Cells.lic" />
     <EmbeddedResource Include="Templates\HNSSummaryReportTemplate.xlsx" />
+    <EmbeddedResource Include="Templates\RuleViolationSummaryReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
