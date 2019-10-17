@@ -7,7 +7,16 @@
   <ItemGroup>
     <PackageReference Include="Aspose.Cells" Version="19.9.0" />
     <PackageReference Include="CsvHelper" Version="12.1.2" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.245" />
     <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM36.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM81.FundingOutput.Model" Version="0.0.245" />
+    <PackageReference Include="ESFA.DC.ILR1920.ReferenceDataService.Model" Version="0.0.335" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Models\ESFA.DC.ILR.ReportService.Models.csproj" />
   </ItemGroup>
 
 </Project>
