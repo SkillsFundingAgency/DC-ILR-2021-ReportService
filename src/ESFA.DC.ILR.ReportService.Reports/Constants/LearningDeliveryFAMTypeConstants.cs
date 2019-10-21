@@ -6,6 +6,8 @@
 
         public const string ALB = "ALB";
 
+        public const string ASL = "ASL";
+
         public const string SOF = "SOF";
 
         public const string FFI = "FFI";

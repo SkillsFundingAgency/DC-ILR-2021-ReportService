@@ -130,6 +130,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.Ukprn.Should().Be(987654321);
             result.Year.Should().Be("2019/20");
             result.CofRemoval.Should().Be((decimal)-4500.12);
+            result.ReferenceDate.Should().Be("(ALL)");
 
             result.FundingFactor.PrvRetentFactHist.Should().Be("0.79600");
             result.FundingFactor.ProgWeightHist.Should().Be("1.06100");

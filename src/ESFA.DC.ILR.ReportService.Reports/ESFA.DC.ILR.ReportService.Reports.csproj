@@ -13,18 +13,22 @@
   <ItemGroup>
     <None Remove="Resources\Aspose.Cells.lic" />
     <None Remove="Templates\AdultFundingClaimReportTemplate.xlsx" />
+    <None Remove="Templates\CommunityLearningReportTemplate.xlsx" />
     <None Remove="Templates\FundingClaim1619ReportTemplate.xlsx" />
     <None Remove="Templates\HNSSummaryReportTemplate.xlsx" />
+    <None Remove="Templates\RuleViolationSummaryReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Templates\AdultFundingClaimReportTemplate.xlsx" />
+    <EmbeddedResource Include="Templates\CommunityLearningReportTemplate.xlsx" />
     <EmbeddedResource Include="Templates\FundingClaim1619ReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Aspose.Cells.lic" />
     <EmbeddedResource Include="Templates\HNSSummaryReportTemplate.xlsx" />
+    <EmbeddedResource Include="Templates\RuleViolationSummaryReportTemplate.xlsx" />
   </ItemGroup>
 
   <ItemGroup>

@@ -54,6 +54,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         int ReturnPeriod { get; }
 
+        string CollectionYear { get;  }
+
         string IlrReferenceDataKey { get; }
 
         string ReportOutputFileNames { get; set; }

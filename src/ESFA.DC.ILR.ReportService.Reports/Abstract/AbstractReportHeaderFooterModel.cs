@@ -35,5 +35,6 @@
         public string LastILRFileUpdate { get; set; }
 
         public string LastEASFileUpdate { get; set; }
+
     }
 }

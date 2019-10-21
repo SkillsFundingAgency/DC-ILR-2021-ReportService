@@ -10,6 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
     {
         private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
         private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
+        protected const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
 
         public string ExtractDisplayDateTimeFromFileName(string ilrFileName)
         {

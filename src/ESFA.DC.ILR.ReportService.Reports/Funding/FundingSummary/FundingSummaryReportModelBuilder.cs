@@ -18,7 +18,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
     {
         private string AdultEducationBudgetNote =
             "Please note that devolved adult education funding for learners who are funded through the Mayoral Combined Authorities or Greater London Authority is not included here.\nPlease refer to the separate Devolved Adult Education Funding Summary Report.";
-        private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
 
         private readonly IPeriodisedValuesLookupProvider _periodisedValuesLookupProvider;
         private readonly IDateTimeProvider _dateTimeProvider;
@@ -194,6 +193,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
+            var applicationversion = reportServiceContext.ServiceReleaseVersion;
 
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
@@ -209,6 +209,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 {SummaryPageConstants.OrganisationVersion, orgVersion},
                 {SummaryPageConstants.LargeEmployersVersion, employersVersion},
                 {SummaryPageConstants.ReportGeneratedAt, reportGeneratedAt}
+          
             };
         }
         

@@ -119,6 +119,8 @@
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
     <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
+    <Compile Include="Funding\CommunityLearning\CommunityLearningReportModelBuilderTests.cs" />
+    <Compile Include="Funding\CommunityLearning\CommunityLearningReportTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportClassMapTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportModelBuilderTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportTests.cs" />
@@ -176,6 +178,7 @@
     <Compile Include="Stubs\FileServiceStub.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
+    <Compile Include="Validation\RuleViolationSummaryModelBuilderTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

@@ -129,7 +129,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             model.OrganisationData = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CampusIdentifierVersion.Version;
-            model.LastEASFileUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault().ToString(LastSubmittedIlrFileDateStringFormat);
+            model.LastEASFileUpdate = _dateTimeProvider.ConvertUtcToUk(referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault()).ToString(LastSubmittedIlrFileDateStringFormat);
             model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
             return model;
         }

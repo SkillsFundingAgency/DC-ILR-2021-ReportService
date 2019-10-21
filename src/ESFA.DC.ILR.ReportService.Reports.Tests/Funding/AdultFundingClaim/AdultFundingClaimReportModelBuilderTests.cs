@@ -99,8 +99,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
             reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
-            dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
+            
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
+            dateTimeProvider.SetupSequence(p => p.ConvertUtcToUk(It.IsAny<DateTime>()))
+            .Returns(ukDateTime)
+            .Returns(new DateTime(2019, 1, 1, 1, 1, 1));
+
 
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 

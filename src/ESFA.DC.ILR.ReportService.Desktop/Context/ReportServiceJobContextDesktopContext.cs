@@ -55,6 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public string InvalidLearnRefNumbersKey => _desktopContext.KeyValuePairs[ILRContextKeys.InvalidLearnRefNumbers].ToString();
         public string CollectionName { get; }
         public int ReturnPeriod => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
+        public string CollectionYear => _desktopContext.KeyValuePairs[ILRContextKeys.CollectionYear].ToString();
         public string IlrReferenceDataKey => _desktopContext.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
 
         public string ReportOutputFileNames
@@ -63,7 +64,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
             set => _desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
         }
 
-        public string ServiceReleaseVersion { get; set; }
+        public string ServiceReleaseVersion => _desktopContext.KeyValuePairs[ILRContextKeys.ServiceReleaseVersion].ToString();
 
         public IEnumerable<IReportFilterQuery> ReportFilters { get; }
     }
