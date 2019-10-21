@@ -15,10 +15,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
         {
             return new FM81Global()
             {
-                UKPRN = fm81Global.UKPRN,
-                CurFundYr = fm81Global.CurFundYr,
-                LARSVersion = fm81Global.LARSVersion,
-                RulebaseVersion = fm81Global.RulebaseVersion,
                 Learners = fm81Global.Learners?.Select(MapFm81Learner).ToList()
             };
         }
@@ -47,57 +43,21 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
             return new LearningDeliveryValue()
             {
                 AchApplicDate = fm81LearningDeliveryValue.AchApplicDate,
-                AchEligible = fm81LearningDeliveryValue.AchEligible,
-                Achieved = fm81LearningDeliveryValue.Achieved,
                 AchievementApplicVal = fm81LearningDeliveryValue.AchievementApplicVal,
-                AchPayment = fm81LearningDeliveryValue.AchPayment,
-                ActualDaysIL = fm81LearningDeliveryValue.ActualDaysIL,
-                ActualNumInstalm = fm81LearningDeliveryValue.ActualNumInstalm,
-                AdjProgStartDate = fm81LearningDeliveryValue.AdjProgStartDate,
-                AdjStartDate = fm81LearningDeliveryValue.AdjStartDate,
                 AgeStandardStart = fm81LearningDeliveryValue.AgeStandardStart,
                 ApplicFundValDate = fm81LearningDeliveryValue.ApplicFundValDate,
-                CombinedAdjProp = fm81LearningDeliveryValue.CombinedAdjProp,
                 CoreGovContCapApplicVal = fm81LearningDeliveryValue.CoreGovContCapApplicVal,
-                CoreGovContPayment = fm81LearningDeliveryValue.CoreGovContPayment,
-                CoreGovContUncapped = fm81LearningDeliveryValue.CoreGovContUncapped,
                 EmpIdAchDate = fm81LearningDeliveryValue.EmpIdAchDate,
                 EmpIdFirstDayStandard = fm81LearningDeliveryValue.EmpIdFirstDayStandard,
                 EmpIdFirstYoungAppDate = fm81LearningDeliveryValue.EmpIdFirstYoungAppDate,
                 EmpIdSecondYoungAppDate = fm81LearningDeliveryValue.EmpIdSecondYoungAppDate,
                 EmpIdSmallBusDate = fm81LearningDeliveryValue.EmpIdSmallBusDate,
                 FundLine = fm81LearningDeliveryValue.FundLine,
-                InstPerPeriod = fm81LearningDeliveryValue.InstPerPeriod,
-                LearnDelDaysIL = fm81LearningDeliveryValue.LearnDelDaysIL,
-                LearnDelStandardAccDaysIL = fm81LearningDeliveryValue.LearnDelStandardAccDaysIL,
-                LearnDelStandardPrevAccDaysIL = fm81LearningDeliveryValue.LearnDelStandardPrevAccDaysIL,
-                LearnDelStandardTotalDaysIL = fm81LearningDeliveryValue.LearnDelStandardTotalDaysIL,
-                LearnSuppFund = fm81LearningDeliveryValue.LearnSuppFund,
-                LearnSuppFundCash = fm81LearningDeliveryValue.LearnSuppFundCash,
-                MathEngAimValue = fm81LearningDeliveryValue.MathEngAimValue,
-                MathEngBalPayment = fm81LearningDeliveryValue.MathEngBalPayment,
-                MathEngBalPct = fm81LearningDeliveryValue.MathEngBalPct,
                 MathEngLSFFundStart = fm81LearningDeliveryValue.MathEngLSFFundStart,
-                MathEngLSFThresholdDays = fm81LearningDeliveryValue.MathEngLSFThresholdDays,
-                MathEngOnProgPayment = fm81LearningDeliveryValue.MathEngOnProgPayment,
-                MathEngOnProgPct = fm81LearningDeliveryValue.MathEngOnProgPct,
-                OutstandNumOnProgInstalm = fm81LearningDeliveryValue.OutstandNumOnProgInstalm,
-                PlannedNumOnProgInstalm = fm81LearningDeliveryValue.PlannedNumOnProgInstalm,
-                PlannedTotalDaysIL = fm81LearningDeliveryValue.PlannedTotalDaysIL,
-                ProgStandardStartDate = fm81LearningDeliveryValue.ProgStandardStartDate,
                 SmallBusApplicVal = fm81LearningDeliveryValue.SmallBusApplicVal,
                 SmallBusEligible = fm81LearningDeliveryValue.SmallBusEligible,
-                SmallBusPayment = fm81LearningDeliveryValue.SmallBusPayment,
-                SmallBusStatusFirstDayStandard = fm81LearningDeliveryValue.SmallBusStatusFirstDayStandard,
-                SmallBusStatusThreshold = fm81LearningDeliveryValue.SmallBusStatusThreshold,
-                SmallBusThresholdDate = fm81LearningDeliveryValue.SmallBusThresholdDate,
                 YoungAppApplicVal = fm81LearningDeliveryValue.YoungAppApplicVal,
                 YoungAppEligible = fm81LearningDeliveryValue.YoungAppEligible,
-                YoungAppFirstPayment = fm81LearningDeliveryValue.YoungAppFirstPayment,
-                YoungAppFirstThresholdDate = fm81LearningDeliveryValue.YoungAppFirstThresholdDate,
-                YoungAppPayment = fm81LearningDeliveryValue.YoungAppPayment,
-                YoungAppSecondPayment = fm81LearningDeliveryValue.YoungAppSecondPayment,
-                YoungAppSecondThresholdDate = fm81LearningDeliveryValue.YoungAppSecondThresholdDate
             };
         }
 
