@@ -15,10 +15,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
         {
             return  new ALBGlobal()
             {
-                UKPRN = albGlobal.UKPRN,
-                LARSVersion = albGlobal.LARSVersion,
-                PostcodeAreaCostVersion = albGlobal.PostcodeAreaCostVersion,
-                RulebaseVersion = albGlobal.RulebaseVersion,
                 Learners = albGlobal.Learners?.Select(MapAlbLearner).ToList()
             };
         }
@@ -29,7 +25,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
             {
                 LearnRefNumber = albLearner.LearnRefNumber,
                 LearningDeliveries = albLearner.LearningDeliveries?.Select(MapAlbLearningDelivery).ToList(),
-                LearnerPeriodisedValues = albLearner.LearnerPeriodisedValues?.Select(MapAlbLearnerPeriodisedValue).ToList()
             };
         }
 
@@ -47,19 +42,11 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
         {
             return new LearningDeliveryValue()
             {
-                Achieved = albLearningDeliveryValue.Achieved,
-                ActualNumInstalm = albLearningDeliveryValue.ActualNumInstalm,
-                AdvLoan = albLearningDeliveryValue.AdvLoan,
                 ApplicFactDate = albLearningDeliveryValue.ApplicFactDate,
                 ApplicProgWeightFact = albLearningDeliveryValue.ApplicProgWeightFact,
                 AreaCostFactAdj = albLearningDeliveryValue.AreaCostFactAdj,
-                AreaCostInstalment = albLearningDeliveryValue.AreaCostInstalment,
                 FundLine = albLearningDeliveryValue.FundLine,
-                FundStart = albLearningDeliveryValue.FundStart,
                 LiabilityDate = albLearningDeliveryValue.LiabilityDate,
-                LoanBursAreaUplift = albLearningDeliveryValue.LoanBursAreaUplift,
-                LoanBursSupp = albLearningDeliveryValue.LoanBursSupp,
-                OutstndNumOnProgInstalm = albLearningDeliveryValue.OutstndNumOnProgInstalm,
                 PlannedNumOnProgInstalm = albLearningDeliveryValue.PlannedNumOnProgInstalm,
                 WeightedRate = albLearningDeliveryValue.WeightedRate,
             };
@@ -82,26 +69,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
                 Period10 = albLearningDeliveryPeriodisedValue.Period10,
                 Period11 = albLearningDeliveryPeriodisedValue.Period11,
                 Period12 = albLearningDeliveryPeriodisedValue.Period12
-            };
-        }
-
-        private LearnerPeriodisedValue MapAlbLearnerPeriodisedValue(FundingService.ALB.FundingOutput.Model.Output.LearnerPeriodisedValue albLearnerPeriodisedValue)
-        {
-            return new LearnerPeriodisedValue()
-            {
-                AttributeName = albLearnerPeriodisedValue.AttributeName,
-                Period1 = albLearnerPeriodisedValue.Period1,
-                Period2 = albLearnerPeriodisedValue.Period2,
-                Period3 = albLearnerPeriodisedValue.Period3,
-                Period4 = albLearnerPeriodisedValue.Period4,
-                Period5 = albLearnerPeriodisedValue.Period5,
-                Period6 = albLearnerPeriodisedValue.Period6,
-                Period7 = albLearnerPeriodisedValue.Period7,
-                Period8 = albLearnerPeriodisedValue.Period8,
-                Period9 = albLearnerPeriodisedValue.Period9,
-                Period10 = albLearnerPeriodisedValue.Period10,
-                Period11 = albLearnerPeriodisedValue.Period11,
-                Period12 = albLearnerPeriodisedValue.Period12
             };
         }
     }
