@@ -1,5 +1,5 @@
-﻿using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.Model.Interface;
+﻿using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Models.Fm25;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
 {

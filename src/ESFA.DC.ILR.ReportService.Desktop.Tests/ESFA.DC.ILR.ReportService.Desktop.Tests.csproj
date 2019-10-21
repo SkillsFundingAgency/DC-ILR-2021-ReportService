@@ -67,9 +67,6 @@
     <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.0.335.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.0.335\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
-    </Reference>
     <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
     </Reference>
@@ -184,6 +181,10 @@
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Desktop\ESFA.DC.ILR.ReportService.Desktop.csproj">
       <Project>{1FBAB247-ADF1-4A86-9D1F-7126E086CF5C}</Project>
       <Name>ESFA.DC.ILR.ReportService.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Models\ESFA.DC.ILR.ReportService.Models.csproj">
+      <Project>{e3bb3cee-ca7d-422d-bcd7-aa7008f6982c}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Reports\ESFA.DC.ILR.ReportService.Reports.csproj">
       <Project>{0f1ea521-4ae8-4e4a-96b9-99dc4dc3c78d}</Project>

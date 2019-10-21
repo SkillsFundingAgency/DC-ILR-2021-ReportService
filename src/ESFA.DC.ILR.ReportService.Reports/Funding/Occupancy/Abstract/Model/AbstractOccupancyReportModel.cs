@@ -1,5 +1,5 @@
 ﻿using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 

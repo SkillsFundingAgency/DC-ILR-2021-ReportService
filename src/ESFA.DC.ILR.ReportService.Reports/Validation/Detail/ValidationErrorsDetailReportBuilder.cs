@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
@@ -17,7 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
         public IEnumerable<ValidationErrorRow> Build(
             IEnumerable<ValidationError> ilrValidationErrors,
             ILooseMessage message,
-            IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
+            IReadOnlyCollection<Models.ReferenceData.MetaData.ValidationError> validationErrorsMetadata)
         {
             List<ValidationErrorRow> validationErrorModels = new List<ValidationErrorRow>();
 

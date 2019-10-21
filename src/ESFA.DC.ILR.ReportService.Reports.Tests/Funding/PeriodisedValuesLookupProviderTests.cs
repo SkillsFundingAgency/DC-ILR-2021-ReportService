@@ -1,21 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
+using ESFA.DC.ILR.ReportService.Models.Fm25;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.Fm36;
+using ESFA.DC.ILR.ReportService.Models.Fm81;
+using ESFA.DC.ILR.ReportService.Models.Fm99;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using FluentAssertions;
 using Xunit;
-using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery;
-using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue;
-using LearningDeliveryValue = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDeliveryValue;
+using LearningDelivery = ESFA.DC.ILR.ReportService.Models.Fm35.LearningDelivery;
+using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.ReportService.Models.Fm35.LearningDeliveryPeriodisedValue;
+using LearningDeliveryValue = ESFA.DC.ILR.ReportService.Models.Fm35.LearningDeliveryValue;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
 {
@@ -115,10 +112,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
                     {
                         LearnRefNumber = i.ToString(),
                         LearningDeliveries = Enumerable.Range(0, 3)
-                            .Select(j => new FundingService.FM36.FundingOutput.Model.Output.LearningDelivery()
+                            .Select(j => new Models.Fm36.LearningDelivery()
                             {
                                 AimSeqNumber = j,
-                                LearningDeliveryValues = new FundingService.FM36.FundingOutput.Model.Output.LearningDeliveryValues()
+                                LearningDeliveryValues = new LearningDeliveryValues()
                                 {
                                     LearnDelInitialFundLineType = j % 2 == 0 ? fundLine1 : fundLine2
                                 },
@@ -130,7 +127,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
                                     }
                                 },
                                 LearningDeliveryPeriodisedValues = Enumerable.Range(0, 16)
-                                    .Select(k => new FundingService.FM36.FundingOutput.Model.Output.LearningDeliveryPeriodisedValues()
+                                    .Select(k => new LearningDeliveryPeriodisedValues()
                                     {
                                         AttributeName = k.ToString(),
                                         Period1 = 1,
@@ -175,14 +172,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
                     .Select(i => new FM81Learner()
                     {
                         LearningDeliveries = Enumerable.Range(0, 3)
-                            .Select(j => new FundingService.FM81.FundingOutput.Model.Output.LearningDelivery()
+                            .Select(j => new ESFA.DC.ILR.ReportService.Models.Fm81.LearningDelivery()
                             {
-                                LearningDeliveryValues = new FundingService.FM81.FundingOutput.Model.Output.LearningDeliveryValue()
+                                LearningDeliveryValues = new ESFA.DC.ILR.ReportService.Models.Fm81.LearningDeliveryValue()
                                 {
                                     FundLine = j % 2 == 0 ? fundLine1 : fundLine2
                                 },
                                 LearningDeliveryPeriodisedValues = Enumerable.Range(0, 16)
-                                    .Select(k => new FundingService.FM81.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue()
+                                    .Select(k => new ESFA.DC.ILR.ReportService.Models.Fm81.LearningDeliveryPeriodisedValue()
                                     {
                                         AttributeName = k % 2 == 0 ? attribute1 : attribute2
                                     }).ToList(),
@@ -219,14 +216,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding
                     .Select(i => new ALBLearner()
                     {
                         LearningDeliveries = Enumerable.Range(0, 3)
-                            .Select(j => new FundingService.ALB.FundingOutput.Model.Output.LearningDelivery()
+                            .Select(j => new ESFA.DC.ILR.ReportService.Models.Fm99.LearningDelivery()
                             {
-                                LearningDeliveryValue = new FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryValue()
+                                LearningDeliveryValue = new ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryValue()
                                 {
                                     FundLine = j % 2 == 0 ? fundLine1 : fundLine2
                                 },
                                 LearningDeliveryPeriodisedValues = Enumerable.Range(0, 16)
-                                    .Select(k => new FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue()
+                                    .Select(k => new ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryPeriodisedValue()
                                     {
                                         AttributeName = k % 2 == 0 ? attribute1 : attribute2
                                     }).ToList(),

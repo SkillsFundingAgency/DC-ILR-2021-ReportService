@@ -1,11 +1,10 @@
-﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
+using ESFA.DC.ILR.ReportService.Models.Fm25;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
@@ -193,7 +192,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                    ?? new Dictionary<string, FM25Learner>();
         }
 
-        public LearningDeliveryPeriodisedValuesModel BuildFm99PeriodisedValuesModel(IEnumerable<FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        public LearningDeliveryPeriodisedValuesModel BuildFm99PeriodisedValuesModel(IEnumerable<ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryPeriodisedValue> periodisedValues)
         {
             var periodisedValuesDictionary = BuildFm99PeriodisedValuesDictionary(periodisedValues);
 
@@ -242,7 +241,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
             };
         }
 
-        public IDictionary<string, decimal[]> BuildFm99PeriodisedValuesDictionary(IEnumerable<FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        public IDictionary<string, decimal[]> BuildFm99PeriodisedValuesDictionary(IEnumerable<ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryPeriodisedValue> periodisedValues)
         {
             return periodisedValues?
                        .ToDictionary(
@@ -266,7 +265,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                    ?? new Dictionary<string, decimal[]>();
         }
 
-        public LearningDeliveryPeriodisedValuesModel BuildFm81PeriodisedValuesModel(IEnumerable<FundingService.FM81.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        public LearningDeliveryPeriodisedValuesModel BuildFm81PeriodisedValuesModel(IEnumerable<ESFA.DC.ILR.ReportService.Models.Fm81.LearningDeliveryPeriodisedValue> periodisedValues)
         {
             var periodisedValuesDictionary = BuildFm81PeriodisedValuesDictionary(periodisedValues);
 
@@ -330,7 +329,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
             };
         }
 
-        public IDictionary<string, decimal[]> BuildFm81PeriodisedValuesDictionary(IEnumerable<FundingService.FM81.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue> periodisedValues)
+        public IDictionary<string, decimal[]> BuildFm81PeriodisedValuesDictionary(IEnumerable<Models.Fm81.LearningDeliveryPeriodisedValue> periodisedValues)
         {
             return periodisedValues?
                        .ToDictionary(

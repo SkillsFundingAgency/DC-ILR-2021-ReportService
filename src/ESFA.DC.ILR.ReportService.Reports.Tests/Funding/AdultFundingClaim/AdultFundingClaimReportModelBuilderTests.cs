@@ -1,21 +1,20 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.ReferenceDataVersions;
-using ESFA.DC.ILR.ReferenceDataService.Model.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.Fm99;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using Xunit;
-using LearningDelivery = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDelivery;
-using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue;
-using LearningDeliveryValue = ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output.LearningDeliveryValue;
+using LearningDelivery = ESFA.DC.ILR.ReportService.Models.Fm35.LearningDelivery;
+using LearningDeliveryPeriodisedValue = ESFA.DC.ILR.ReportService.Models.Fm35.LearningDeliveryPeriodisedValue;
+using LearningDeliveryValue = ESFA.DC.ILR.ReportService.Models.Fm35.LearningDeliveryValue;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
 {
@@ -211,18 +210,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             };
         }
 
-        private List<FundingService.ALB.FundingOutput.Model.Output.LearningDelivery> BuildAlbLearningDeliveries()
+        private List<ESFA.DC.ILR.ReportService.Models.Fm99.LearningDelivery> BuildAlbLearningDeliveries()
         {
-            var LearningDeliveries = new List<FundingService.ALB.FundingOutput.Model.Output.LearningDelivery>
+            var LearningDeliveries = new List<ESFA.DC.ILR.ReportService.Models.Fm99.LearningDelivery>
             {
-                new FundingService.ALB.FundingOutput.Model.Output.LearningDelivery
+                new ESFA.DC.ILR.ReportService.Models.Fm99.LearningDelivery
                 {
                     AimSeqNumber = 1,
-                    LearningDeliveryValue = new FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryValue
+                    LearningDeliveryValue = new ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryValue
                     {
                         FundLine = "Advanced Learner Loans Bursary"
                     },
-                    LearningDeliveryPeriodisedValues = new List<FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue>
+                    LearningDeliveryPeriodisedValues = new List<ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryPeriodisedValue>
                     {
                         BuildAlbPeriodisedValuesForAttribute("ALBSupportPayment"),
                         BuildAlbPeriodisedValuesForAttribute("AreaUpliftBalPayment"),
@@ -233,9 +232,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             return LearningDeliveries;
         }
 
-        private FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue BuildAlbPeriodisedValuesForAttribute(string attribute)
+        private ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryPeriodisedValue BuildAlbPeriodisedValuesForAttribute(string attribute)
         {
-            return new FundingService.ALB.FundingOutput.Model.Output.LearningDeliveryPeriodisedValue()
+            return new ESFA.DC.ILR.ReportService.Models.Fm99.LearningDeliveryPeriodisedValue()
             {
                 AttributeName = attribute,
                 Period1 = 1.111m,

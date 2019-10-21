@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using CsvHelper;
-using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.Tests.Model;
