@@ -1,10 +1,10 @@
 ﻿using System.Linq;
-using ESFA.DC.ILR.ReportService.Data.Interface.Mappers.ReferenceData;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
 {
-    public class MetaDataMapper : IMetaDataMapper
+    public class MetaDataMapper : IMapper<ReferenceDataService.Model.MetaData.MetaData, MetaData>
     {
         public MetaData MapData(ReferenceDataService.Model.MetaData.MetaData metaData)
         {

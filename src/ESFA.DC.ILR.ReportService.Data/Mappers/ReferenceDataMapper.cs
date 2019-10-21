@@ -1,24 +1,44 @@
-﻿using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
-using ESFA.DC.ILR.ReportService.Data.Interface.Mappers.ReferenceData;
+﻿using System.Collections.Generic;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Employers;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.EPA;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers
 {
-    public class ReferenceDataMapper : IReferenceDataMapper
+    public class ReferenceDataMapper : IMapper<ReferenceDataService.Model.ReferenceDataRoot, ReferenceDataRoot>
     {
-        private readonly IMetaDataMapper _metaDataMapper;
-        private readonly IApprenticeshipEarningsHistoryMapper _apprenticeshipEarningsHistoryMapper;
-        private readonly IEasFundingLineMapper _easFundingLineMapper;
-        private readonly IEmployerMapper _employerMapper;
-        private readonly IEpaOrganisationMapper _epaOrganisationMapper;
-        private readonly IFcsContractAllocationMapper _fcsContractAllocationMapper;
-        private readonly IOrganisationMapper _organisationMapper;
-        private readonly IPostcodeMapper _postcodeMapper;
-        private readonly IDevolvedPostcodeMapper _devolvedPostcodeMapper;
-        private readonly ILarsLearningDeliveryMapper _larsLearningDeliveryMapper;
-        private readonly ILarsStandardMapper _larsStandardMapper;
+        private readonly IMapper<ReferenceDataService.Model.MetaData.MetaData, MetaData> _metaDataMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.AppEarningsHistory.ApprenticeshipEarningsHistory>, IReadOnlyCollection<ApprenticeshipEarningsHistory>> _apprenticeshipEarningsHistoryMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>> _easFundingLineMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.Employers.Employer>, IReadOnlyCollection<Employer>> _employerMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.EPAOrganisations.EPAOrganisation>, IReadOnlyCollection<EPAOrganisation>> _epaOrganisationMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.FCS.FcsContractAllocation>, IReadOnlyCollection<FcsContractAllocation>> _fcsContractAllocationMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.Organisations.Organisation>, IReadOnlyCollection<Organisation>> _organisationMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.Postcodes.Postcode>, IReadOnlyCollection<Postcode>> _postcodeMapper;
+        private readonly IMapper<ReferenceDataService.Model.PostcodesDevolution.DevolvedPostcodes, DevolvedPostcodes> _devolvedPostcodeMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery>, IReadOnlyCollection<LARSLearningDelivery>> _larsLearningDeliveryMapper;
+        private readonly IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSStandard>, IReadOnlyCollection<LARSStandard>> _larsStandardMapper;
 
-        public ReferenceDataMapper(IMetaDataMapper metaDataMapper, IApprenticeshipEarningsHistoryMapper apprenticeshipEarningsHistoryMapper, IEasFundingLineMapper easFundingLineMapper, IEmployerMapper employerMapper, IEpaOrganisationMapper epaOrganisationMapper, IFcsContractAllocationMapper fcsContractAllocationMapper, IOrganisationMapper organisationMapper, IPostcodeMapper postcodeMapper, IDevolvedPostcodeMapper devolvedPostcodeMapper, ILarsLearningDeliveryMapper larsLearningDeliveryMapper, ILarsStandardMapper larsStandardMapper)
+        public ReferenceDataMapper(
+            IMapper<ReferenceDataService.Model.MetaData.MetaData, MetaData> metaDataMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.AppEarningsHistory.ApprenticeshipEarningsHistory>, IReadOnlyCollection<ApprenticeshipEarningsHistory>> apprenticeshipEarningsHistoryMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>> easFundingLineMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.Employers.Employer>, IReadOnlyCollection<Employer>> employerMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.EPAOrganisations.EPAOrganisation>, IReadOnlyCollection<EPAOrganisation>> epaOrganisationMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.FCS.FcsContractAllocation>, IReadOnlyCollection<FcsContractAllocation>> fcsContractAllocationMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.Organisations.Organisation>, IReadOnlyCollection<Organisation>> organisationMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.Postcodes.Postcode>, IReadOnlyCollection<Postcode>> postcodeMapper,
+            IMapper<ReferenceDataService.Model.PostcodesDevolution.DevolvedPostcodes, DevolvedPostcodes> devolvedPostcodeMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery>, IReadOnlyCollection<LARSLearningDelivery>> larsLearningDeliveryMapper,
+            IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSStandard>, IReadOnlyCollection<LARSStandard>> larsStandardMapper)
         {
             _metaDataMapper = metaDataMapper;
             _apprenticeshipEarningsHistoryMapper = apprenticeshipEarningsHistoryMapper;

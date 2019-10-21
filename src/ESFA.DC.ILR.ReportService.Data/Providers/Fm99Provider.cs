@@ -11,9 +11,12 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
 {
     public class Fm99Provider : AbstractFileServiceProvider, IExternalDataProvider
     {
-        private readonly IFm99Mapper _fm99Mapper;
+        private readonly IMapper<FundingService.ALB.FundingOutput.Model.Output.ALBGlobal, Models.Fm99.ALBGlobal> _fm99Mapper;
 
-        public Fm99Provider(IFileService fileService, IJsonSerializationService serializationService, IFm99Mapper fm99Mapper) 
+        public Fm99Provider(
+            IFileService fileService, 
+            IJsonSerializationService serializationService, 
+            IMapper<FundingService.ALB.FundingOutput.Model.Output.ALBGlobal, Models.Fm99.ALBGlobal> fm99Mapper) 
             : base(fileService, serializationService)
         {
             _fm99Mapper = fm99Mapper;

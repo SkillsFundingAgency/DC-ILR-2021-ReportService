@@ -11,9 +11,12 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
 {
     public class Fm81Provider : AbstractFileServiceProvider, IExternalDataProvider
     {
-        private readonly IFm81Mapper _fm81Mapper;
+        private readonly IMapper<FundingService.FM81.FundingOutput.Model.Output.FM81Global, Models.Fm81.FM81Global> _fm81Mapper;
 
-        public Fm81Provider(IFileService fileService, IJsonSerializationService serializationService, IFm81Mapper fm81Mapper) 
+        public Fm81Provider(
+            IFileService fileService, 
+            IJsonSerializationService serializationService, 
+            IMapper<FundingService.FM81.FundingOutput.Model.Output.FM81Global, Models.Fm81.FM81Global> fm81Mapper) 
             : base(fileService, serializationService)
         {
             _fm81Mapper = fm81Mapper;

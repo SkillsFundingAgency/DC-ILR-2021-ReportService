@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.ReportService.Data.Interface.Mappers.ReferenceData;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
 {
-    public class ApprenticeshipEarningsHistoryMapper : IApprenticeshipEarningsHistoryMapper
+    public class ApprenticeshipEarningsHistoryMapper : IMapper<IEnumerable<ReferenceDataService.Model.AppEarningsHistory.ApprenticeshipEarningsHistory>, IReadOnlyCollection<ApprenticeshipEarningsHistory>>
     {
         public IReadOnlyCollection<ApprenticeshipEarningsHistory> MapData(IEnumerable<ReferenceDataService.Model.AppEarningsHistory.ApprenticeshipEarningsHistory> appsEarningsHistory)
         {

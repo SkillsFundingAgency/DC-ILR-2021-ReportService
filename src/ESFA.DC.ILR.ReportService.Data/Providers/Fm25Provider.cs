@@ -11,9 +11,12 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
 {
     public class Fm25Provider : AbstractFileServiceProvider, IExternalDataProvider
     {
-        private readonly IFm25Mapper _fm25Mapper;
+        private readonly IMapper<FundingService.FM25.Model.Output.FM25Global, Models.Fm25.FM25Global> _fm25Mapper;
 
-        public Fm25Provider(IFileService fileService, IJsonSerializationService serializationService, IFm25Mapper fm25Mapper) 
+        public Fm25Provider(
+            IFileService fileService, 
+            IJsonSerializationService serializationService, 
+            IMapper<FundingService.FM25.Model.Output.FM25Global, Models.Fm25.FM25Global> fm25Mapper) 
             : base(fileService, serializationService)
         {
             _fm25Mapper = fm25Mapper;

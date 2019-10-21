@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.ReportService.Data.Interface.Mappers.ReferenceData;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
 {
-    public class LarsLearningDeliveryMapper : ILarsLearningDeliveryMapper
+    public class LarsLearningDeliveryMapper : IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery>, IReadOnlyCollection<LARSLearningDelivery>>
     {
         public IReadOnlyCollection<LARSLearningDelivery> MapData(IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery> larsLearningDeliveries)
         {

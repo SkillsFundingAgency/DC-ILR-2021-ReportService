@@ -4,7 +4,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm35;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers
 {
-    public class Fm35Mapper : IFm35Mapper
+    public class Fm35Mapper : IMapper<FundingService.FM35.FundingOutput.Model.Output.FM35Global, FM35Global>
     {
         public FM35Global MapData(FundingService.FM35.FundingOutput.Model.Output.FM35Global fm35Global)
         {

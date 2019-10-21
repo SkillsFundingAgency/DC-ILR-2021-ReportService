@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.ReportService.Data.Interface.Mappers.ReferenceData;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
 {
-    public class EasFundingLineMapper : IEasFundingLineMapper
+    public class EasFundingLineMapper : IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>>
     {
         public IReadOnlyCollection<EasFundingLine> MapData(IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine> fundingLine)
         {

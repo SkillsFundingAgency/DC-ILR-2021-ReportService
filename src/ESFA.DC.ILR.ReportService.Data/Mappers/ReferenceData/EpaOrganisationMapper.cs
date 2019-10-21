@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.ReportService.Data.Interface.Mappers.ReferenceData;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.EPA;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
 {
-    public class EpaOrganisationMapper : IEpaOrganisationMapper
+    public class EpaOrganisationMapper : IMapper<IEnumerable<ReferenceDataService.Model.EPAOrganisations.EPAOrganisation>, IReadOnlyCollection<EPAOrganisation>>
     {
         public IReadOnlyCollection<EPAOrganisation> MapData(IEnumerable<ReferenceDataService.Model.EPAOrganisations.EPAOrganisation> epaOrganisations)
         {

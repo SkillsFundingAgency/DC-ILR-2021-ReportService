@@ -11,9 +11,12 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
 {
     public class IlrReferenceDataProviderService : AbstractFileServiceProvider, IExternalDataProvider
     {
-        private readonly IReferenceDataMapper _referenceDataMapper;
+        private readonly IMapper<ReferenceDataService.Model.ReferenceDataRoot, Models.ReferenceData.ReferenceDataRoot> _referenceDataMapper;
 
-        public IlrReferenceDataProviderService(IFileService fileService, IJsonSerializationService jsonSerializationService, IReferenceDataMapper referenceDataMapper)
+        public IlrReferenceDataProviderService(
+            IFileService fileService, 
+            IJsonSerializationService jsonSerializationService, 
+            IMapper<ReferenceDataService.Model.ReferenceDataRoot, Models.ReferenceData.ReferenceDataRoot> referenceDataMapper)
             : base(fileService, jsonSerializationService)
         {
             _referenceDataMapper = referenceDataMapper;

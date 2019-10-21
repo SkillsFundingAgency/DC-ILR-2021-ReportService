@@ -4,7 +4,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm81;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers
 {
-    public class Fm81Mapper : IFm81Mapper
+    public class Fm81Mapper : IMapper<FundingService.FM81.FundingOutput.Model.Output.FM81Global, FM81Global>
     {
         public FM81Global MapData(FundingService.FM81.FundingOutput.Model.Output.FM81Global fm81Global)
         {

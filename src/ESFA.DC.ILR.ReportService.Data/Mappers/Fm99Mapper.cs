@@ -4,7 +4,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm99;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers
 {
-    public class Fm99Mapper : IFm99Mapper
+    public class Fm99Mapper : IMapper<FundingService.ALB.FundingOutput.Model.Output.ALBGlobal, ALBGlobal>
     {
         public ALBGlobal MapData(FundingService.ALB.FundingOutput.Model.Output.ALBGlobal albGlobal)
         {
