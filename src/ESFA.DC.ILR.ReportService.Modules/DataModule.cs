@@ -12,7 +12,6 @@ using ESFA.DC.ILR.ReportService.Models.Fm99;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.Employers;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.EPA;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
@@ -50,7 +49,6 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<ApprenticeshipEarningsHistoryMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.AppEarningsHistory.ApprenticeshipEarningsHistory>, IReadOnlyCollection<ApprenticeshipEarningsHistory>>>();
             builder.RegisterType<DevolvedPostcodeMapper>().As<IMapper<ReferenceDataService.Model.PostcodesDevolution.DevolvedPostcodes, DevolvedPostcodes>>();
             builder.RegisterType<EasFundingLineMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>>>();
-            builder.RegisterType<EmployerMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.Employers.Employer>, IReadOnlyCollection<Employer>>>();
             builder.RegisterType<EpaOrganisationMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.EPAOrganisations.EPAOrganisation>, IReadOnlyCollection<EPAOrganisation>>>();
             builder.RegisterType<FcsContractAllocationMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.FCS.FcsContractAllocation>, IReadOnlyCollection<FcsContractAllocation>>>();
             builder.RegisterType<LarsLearningDeliveryMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery>, IReadOnlyCollection<LARSLearningDelivery>>>();
