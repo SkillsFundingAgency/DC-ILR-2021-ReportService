@@ -16,7 +16,6 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -53,7 +52,6 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<LarsStandardMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSStandard>, IReadOnlyCollection<LARSStandard>>>();
             builder.RegisterType<MetaDataMapper>().As<IMapper<ReferenceDataService.Model.MetaData.MetaData, MetaData>>();
             builder.RegisterType<OrganisationMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.Organisations.Organisation>, IReadOnlyCollection<Organisation>>>();
-            builder.RegisterType<PostcodeMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.Postcodes.Postcode>, IReadOnlyCollection<Postcode>>>();
         }
     }
 }

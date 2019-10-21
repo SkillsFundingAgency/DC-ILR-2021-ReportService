@@ -7,7 +7,6 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers
 {
@@ -18,7 +17,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
         private readonly IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>> _easFundingLineMapper;
         private readonly IMapper<IEnumerable<ReferenceDataService.Model.FCS.FcsContractAllocation>, IReadOnlyCollection<FcsContractAllocation>> _fcsContractAllocationMapper;
         private readonly IMapper<IEnumerable<ReferenceDataService.Model.Organisations.Organisation>, IReadOnlyCollection<Organisation>> _organisationMapper;
-        private readonly IMapper<IEnumerable<ReferenceDataService.Model.Postcodes.Postcode>, IReadOnlyCollection<Postcode>> _postcodeMapper;
         private readonly IMapper<ReferenceDataService.Model.PostcodesDevolution.DevolvedPostcodes, DevolvedPostcodes> _devolvedPostcodeMapper;
         private readonly IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery>, IReadOnlyCollection<LARSLearningDelivery>> _larsLearningDeliveryMapper;
         private readonly IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSStandard>, IReadOnlyCollection<LARSStandard>> _larsStandardMapper;
@@ -29,7 +27,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
             IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>> easFundingLineMapper,
             IMapper<IEnumerable<ReferenceDataService.Model.FCS.FcsContractAllocation>, IReadOnlyCollection<FcsContractAllocation>> fcsContractAllocationMapper,
             IMapper<IEnumerable<ReferenceDataService.Model.Organisations.Organisation>, IReadOnlyCollection<Organisation>> organisationMapper,
-            IMapper<IEnumerable<ReferenceDataService.Model.Postcodes.Postcode>, IReadOnlyCollection<Postcode>> postcodeMapper,
             IMapper<ReferenceDataService.Model.PostcodesDevolution.DevolvedPostcodes, DevolvedPostcodes> devolvedPostcodeMapper,
             IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery>, IReadOnlyCollection<LARSLearningDelivery>> larsLearningDeliveryMapper,
             IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSStandard>, IReadOnlyCollection<LARSStandard>> larsStandardMapper)
@@ -39,7 +36,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
             _easFundingLineMapper = easFundingLineMapper;
             _fcsContractAllocationMapper = fcsContractAllocationMapper;
             _organisationMapper = organisationMapper;
-            _postcodeMapper = postcodeMapper;
             _devolvedPostcodeMapper = devolvedPostcodeMapper;
             _larsLearningDeliveryMapper = larsLearningDeliveryMapper;
             _larsStandardMapper = larsStandardMapper;
@@ -56,7 +52,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
                 LARSLearningDeliveries = _larsLearningDeliveryMapper.MapData(root.LARSLearningDeliveries),
                 LARSStandards = _larsStandardMapper.MapData(root.LARSStandards),
                 Organisations = _organisationMapper.MapData(root.Organisations),
-                Postcodes = _postcodeMapper.MapData(root.Postcodes),
                 DevolvedPostocdes = _devolvedPostcodeMapper.MapData(root.DevolvedPostocdes),
                 ULNs = root.ULNs
             };
