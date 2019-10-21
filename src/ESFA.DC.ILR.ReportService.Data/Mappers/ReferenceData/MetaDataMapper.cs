@@ -13,8 +13,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
                 DateGenerated = metaData.DateGenerated,
                 ReferenceDataVersions = MapReferenceDataVersions(metaData.ReferenceDataVersions),
                 ValidationErrors = metaData.ValidationErrors?.Select(MapValidationErrors).ToList(),
-                ValidationRules = metaData.ValidationRules?.Select(MapValidationRule).ToList(),
-                Lookups = metaData.Lookups.Select(MapLookUp).ToList(),
                 CollectionDates = MapIlrCollectionDates(metaData.CollectionDates)
             };
         }
@@ -43,55 +41,11 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
             };
         }
 
-        private ValidationRule MapValidationRule(ReferenceDataService.Model.MetaData.ValidationRule validationRule)
-        {
-            return new ValidationRule()
-            {
-                RuleName = validationRule.RuleName,
-                Desktop = validationRule.Desktop,
-                Online = validationRule.Online
-            };
-        }
-
-        private Lookup MapLookUp(ReferenceDataService.Model.MetaData.Lookup lookup)
-        {
-            return new Lookup()
-            {
-                Name = lookup.Name,
-                Code = lookup.Code,
-                EffectiveFrom = lookup.EffectiveFrom,
-                EffectiveTo = lookup.EffectiveTo,
-                SubCategories = lookup.SubCategories?.Select(MapLookUpSubCategory).ToList()
-            };
-        }
-
-        private LookupSubCategory MapLookUpSubCategory(ReferenceDataService.Model.MetaData.LookupSubCategory lookupSubCategory)
-        {
-            return new LookupSubCategory()
-            {
-                Code = lookupSubCategory.Code,
-                EffectiveFrom = lookupSubCategory.EffectiveFrom,
-                EffectiveTo = lookupSubCategory.EffectiveTo
-            };
-        }
-
         private IlrCollectionDates MapIlrCollectionDates(ReferenceDataService.Model.MetaData.CollectionDates.IlrCollectionDates ilrCollectionDates)
         {
             return new IlrCollectionDates()
             {
-                ReturnPeriods = ilrCollectionDates.ReturnPeriods?.Select(MapReturnPeriod).ToList(),
                 CensusDates = ilrCollectionDates.CensusDates.Select(MapCensusDate).ToList()
-            };
-        }
-
-        private ReturnPeriod MapReturnPeriod(ReferenceDataService.Model.MetaData.CollectionDates.ReturnPeriod returnPeriod)
-        {
-            return new ReturnPeriod()
-            {
-                Name = returnPeriod.Name,
-                Period = returnPeriod.Period,
-                Start = returnPeriod.Start,
-                End = returnPeriod.End
             };
         }
 
