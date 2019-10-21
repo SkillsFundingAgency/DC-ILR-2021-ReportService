@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using ESFA.DC.ILR.ReferenceDataService.Model.PostcodesDevolution;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface
 {

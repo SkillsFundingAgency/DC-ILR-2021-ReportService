@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.FCS;
-using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.CollectionDates;
+using ESFA.DC.ILR.ReportService.Models.Fm36;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity.Model;
@@ -17,7 +15,6 @@ using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
 using Moq;
@@ -1942,7 +1939,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
 
             var referenceDataRoot = new ReferenceDataRoot
             {
-                MetaDatas = new ReferenceDataService.Model.MetaData.MetaData
+                MetaDatas = new MetaData
                 {
                     CollectionDates = new IlrCollectionDates
                     {

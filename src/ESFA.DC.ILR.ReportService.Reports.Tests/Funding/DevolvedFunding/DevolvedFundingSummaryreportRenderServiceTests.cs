@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 using Aspose.Cells;
-using ESFA.DC.ILR.ReferenceDataService.Model.PostcodesDevolution;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;

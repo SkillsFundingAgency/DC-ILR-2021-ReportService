@@ -1,11 +1,6 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.ReferenceDataVersions;
-using ESFA.DC.ILR.ReferenceDataService.Model.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.Tests.Model;
@@ -13,6 +8,10 @@ using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Models.Fm25;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using FluentAssertions;
 using Xunit;
 

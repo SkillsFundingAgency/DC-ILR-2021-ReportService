@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
-using ESFA.DC.ILR.ReportService.Service.Interface.Mappers.ReferenceData;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers
 {
-    public class ReferenceDataMapper
+    public class ReferenceDataMapper : IReferenceDataMapper
     {
         private readonly IMetaDataMapper _metaDataMapper;
         private readonly IApprenticeshipEarningsHistoryMapper _apprenticeshipEarningsHistoryMapper;

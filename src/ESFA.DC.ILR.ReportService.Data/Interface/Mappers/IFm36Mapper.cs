@@ -1,6 +1,6 @@
 ﻿using ESFA.DC.ILR.ReportService.Models.Fm36;
 
-namespace ESFA.DC.ILR.ReportService.Service.Interface.Mappers
+namespace ESFA.DC.ILR.ReportService.Data.Interface.Mappers
 {
     public interface IFm36Mapper
     {

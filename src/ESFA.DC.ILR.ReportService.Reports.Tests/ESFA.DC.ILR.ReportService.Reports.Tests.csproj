@@ -55,23 +55,8 @@
     <Reference Include="ESFA.DC.ILR.Desktop.Interface, Version=1.0.4.8, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Desktop.Interface.1.0.4.8\lib\netstandard2.0\ESFA.DC.ILR.Desktop.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
-    </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
-    </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>
-    </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM36.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
-    </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model, Version=0.0.230.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM70.FundingOutput.Model.0.0.230\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model.dll</HintPath>
-    </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM81.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.Model, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Model.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
@@ -81,9 +66,6 @@
     </Reference>
     <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Loose.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
-    </Reference>
-    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.0.335.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.0.335\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.Tests.Model, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Tests.Model.0.1.7-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Tests.Model.dll</HintPath>
@@ -208,6 +190,10 @@
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Desktop\ESFA.DC.ILR.ReportService.Desktop.csproj">
       <Project>{1FBAB247-ADF1-4A86-9D1F-7126E086CF5C}</Project>
       <Name>ESFA.DC.ILR.ReportService.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Models\ESFA.DC.ILR.ReportService.Models.csproj">
+      <Project>{e3bb3cee-ca7d-422d-bcd7-aa7008f6982c}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Reports\ESFA.DC.ILR.ReportService.Reports.csproj">
       <Project>{0f1ea521-4ae8-4e4a-96b9-99dc4dc3c78d}</Project>

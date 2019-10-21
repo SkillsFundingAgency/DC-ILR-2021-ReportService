@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.FundingService.FM25.Model.Output;
+using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish;
 using ESFA.DC.ILR.ReportService.Reports.Tests.Abstract;

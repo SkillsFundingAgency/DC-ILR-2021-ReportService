@@ -1,8 +1,4 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
@@ -11,6 +7,10 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.Fm99;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 {

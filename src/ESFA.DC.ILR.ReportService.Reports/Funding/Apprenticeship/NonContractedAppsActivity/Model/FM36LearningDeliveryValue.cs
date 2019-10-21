@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.Output;
+using ESFA.DC.ILR.ReportService.Models.Fm36;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity.Model
 {

@@ -1,6 +1,6 @@
 ﻿using System.Linq;
+using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
-using ESFA.DC.ILR.ReportService.Service.Interface.Mappers;
 
 namespace ESFA.DC.ILR.ReportService.Data.Mappers
 {
