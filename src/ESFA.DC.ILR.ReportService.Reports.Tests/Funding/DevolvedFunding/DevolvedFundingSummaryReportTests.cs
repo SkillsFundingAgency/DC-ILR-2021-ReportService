@@ -23,11 +23,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
         {
             var dependsOn = NewReport().DependsOn.ToList();
 
-            dependsOn.Should().HaveCount(3);
+            dependsOn.Should().HaveCount(4);
 
             dependsOn.Should().Contain(DependentDataCatalog.Fm35);
             dependsOn.Should().Contain(DependentDataCatalog.ValidIlr);
             dependsOn.Should().Contain(DependentDataCatalog.ReferenceData);
+            dependsOn.Should().Contain(DependentDataCatalog.Eas);
         }
 
         [Fact]

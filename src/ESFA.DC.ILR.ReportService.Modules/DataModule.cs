@@ -4,6 +4,7 @@ using ESFA.DC.ILR.ReportService.Data.Interface.Mappers;
 using ESFA.DC.ILR.ReportService.Data.Mappers;
 using ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData;
 using ESFA.DC.ILR.ReportService.Data.Providers;
+using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.Fm36;
@@ -11,7 +12,6 @@ using ESFA.DC.ILR.ReportService.Models.Fm81;
 using ESFA.DC.ILR.ReportService.Models.Fm99;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
@@ -34,6 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<Fm36Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm36);
             builder.RegisterType<Fm81Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm81);
             builder.RegisterType<Fm99Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm99);
+            builder.RegisterType<EasProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Eas);
 
             builder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
 
@@ -42,11 +43,11 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<Fm36Mapper>().As<IMapper<FundingService.FM36.FundingOutput.Model.Output.FM36Global, FM36Global>>();
             builder.RegisterType<Fm81Mapper>().As<IMapper<FundingService.FM81.FundingOutput.Model.Output.FM81Global, FM81Global>>();
             builder.RegisterType<Fm99Mapper>().As<IMapper<FundingService.ALB.FundingOutput.Model.Output.ALBGlobal, ALBGlobal>>();
+            builder.RegisterType<EasMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>>>();
 
             builder.RegisterType<ReferenceDataMapper>().As<IMapper<ReferenceDataService.Model.ReferenceDataRoot, ReferenceDataRoot>>();
             builder.RegisterType<ApprenticeshipEarningsHistoryMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.AppEarningsHistory.ApprenticeshipEarningsHistory>, IReadOnlyCollection<ApprenticeshipEarningsHistory>>>();
             builder.RegisterType<DevolvedPostcodeMapper>().As<IMapper<ReferenceDataService.Model.PostcodesDevolution.DevolvedPostcodes, DevolvedPostcodes>>();
-            builder.RegisterType<EasFundingLineMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine>, IReadOnlyCollection<EasFundingLine>>>();
             builder.RegisterType<FcsContractAllocationMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.FCS.FcsContractAllocation>, IReadOnlyCollection<FcsContractAllocation>>>();
             builder.RegisterType<LarsLearningDeliveryMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDelivery>, IReadOnlyCollection<LARSLearningDelivery>>>();
             builder.RegisterType<LarsStandardMapper>().As<IMapper<IEnumerable<ReferenceDataService.Model.LARS.LARSStandard>, IReadOnlyCollection<LARSStandard>>>();

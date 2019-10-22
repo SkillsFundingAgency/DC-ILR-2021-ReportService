@@ -7,10 +7,10 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.Fm99;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 {
@@ -57,6 +57,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             var fm35Global = reportServiceDependentData.Get<FM35Global>();
             var albGlobal = reportServiceDependentData.Get<ALBGlobal>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+            var easFundingLines = reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>();
+
             string organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
             var model = new AdultFundingClaimReportModel();
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
@@ -71,7 +73,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             //Body
             var fm35LearningDeliveryPeriodisedValues = GetFM35LearningDeliveryPeriodisedValues(fm35Global);
             var albLearningDeliveryPeriodisedValues = GetAlbLearningDeliveryPeriodisedValues(albGlobal);
-            var easFundingLines = referenceDataRoot?.EasFundingLines;
 
             model.AEBProgrammeFunding = new ActualEarnings()
             {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
@@ -43,6 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+            var easFundingLines = reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>();
 
             var sofCodeDictionary = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups.Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)).ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
 
@@ -80,7 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 var periodisedValues = new PeriodisedValuesLookup
                 {
                     [FundingDataSources.FM35] = BuildPeriodisedValuesDictionary(fm35, learningDeliveries),
-                    [FundingDataSources.EAS] = BuildEASDictionary(referenceDataRoot, mgaClaSof?.SofCode)
+                    [FundingDataSources.EAS] = BuildEASDictionary(easFundingLines, mgaClaSof?.SofCode)
                 };
 
                 models.Add(new DevolvedAdultEducationFundingSummaryReportModel(
@@ -179,12 +180,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(ReferenceDataRoot referenceDataRoot, string sofCode)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(IReadOnlyCollection<EasFundingLine> easFundingLines, string sofCode)
         {
             int.TryParse(sofCode, out var sofCodeInt);
 
-            return referenceDataRoot?
-                       .EasFundingLines?
+            return easFundingLines?
                        .GroupBy(fl => fl.FundLine, StringComparer.OrdinalIgnoreCase)
                        .ToDictionary(k => k.Key,
                            v => v.SelectMany(ld => ld.EasSubmissionValues)

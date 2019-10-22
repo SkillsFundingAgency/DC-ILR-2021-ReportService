@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.Fm36;
 using ESFA.DC.ILR.ReportService.Models.Fm81;
 using ESFA.DC.ILR.ReportService.Models.Fm99;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
@@ -49,7 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
 
             if (fundingDataSources.Contains(FundingDataSources.EAS))
             {
-                periodisedValuesLookup[FundingDataSources.EAS] = BuildEASDictionary(reportServiceDependentData.Get<ReferenceDataRoot>());
+                periodisedValuesLookup[FundingDataSources.EAS] = BuildEASDictionary(reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>());
             }
             
             return periodisedValuesLookup;
@@ -232,10 +232,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(ReferenceDataRoot referenceDataRoot)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(IReadOnlyCollection<EasFundingLine> easFundingLines)
         {
-            return referenceDataRoot?
-                       .EasFundingLines?
+            return easFundingLines?
                        .GroupBy(fl => fl.FundLine, StringComparer.OrdinalIgnoreCase)
                        .ToDictionary(k => k.Key,
                            v => v.SelectMany(ld => ld.EasSubmissionValues)
