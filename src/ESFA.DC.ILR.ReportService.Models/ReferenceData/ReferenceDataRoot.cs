@@ -1,11 +1,8 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.Employers;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.EPA;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 
 namespace ESFA.DC.ILR.ReportService.Models.ReferenceData
 {
@@ -17,10 +14,6 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData
 
         public IReadOnlyCollection<EasFundingLine> EasFundingLines { get; set; }
 
-        public IReadOnlyCollection<Employer> Employers { get; set; }
-
-        public IReadOnlyCollection<EPAOrganisation> EPAOrganisations { get; set; }
-
         public IReadOnlyCollection<FcsContractAllocation> FCSContractAllocations { get; set; }
 
         public IReadOnlyCollection<LARSLearningDelivery> LARSLearningDeliveries { get; set; }
@@ -28,8 +21,6 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData
         public IReadOnlyCollection<LARSStandard> LARSStandards { get; set; }
 
         public IReadOnlyCollection<Organisation> Organisations { get; set; }
-
-        public IReadOnlyCollection<Postcode> Postcodes { get; set; }
 
         public DevolvedPostcodes.DevolvedPostcodes DevolvedPostocdes { get; set; }
 

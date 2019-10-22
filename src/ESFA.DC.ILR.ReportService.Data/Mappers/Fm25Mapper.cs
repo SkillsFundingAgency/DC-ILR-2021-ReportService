@@ -15,11 +15,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
         {
             return new FM25Global()
             {
-                UKPRN = fm25Global.UKPRN,
-                LARSVersion = fm25Global.LARSVersion,
-                OrgVersion = fm25Global.OrgVersion,
-                PostcodeDisadvantageVersion = fm25Global.PostcodeDisadvantageVersion,
-                RulebaseVersion = fm25Global.RulebaseVersion,
                 Learners = fm25Global.Learners?.Select(MapFm25Learner).ToList()
             };
         }
@@ -29,44 +24,22 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers
             return new FM25Learner()
             {
                 LearnRefNumber = learner.LearnRefNumber,
-                AcadMonthPayment = learner.AcadMonthPayment,
                 OnProgPayment = learner.OnProgPayment,
-                AcadProg = learner.AcadProg,
-                ActualDaysILCurrYear = learner.ActualDaysILCurrYear,
                 AreaCostFact1618Hist = learner.AreaCostFact1618Hist,
-                Block1DisadvUpliftNew = learner.Block1DisadvUpliftNew,
-                Block2DisadvElementsNew = learner.Block2DisadvElementsNew,
                 ConditionOfFundingEnglish = learner.ConditionOfFundingEnglish,
                 ConditionOfFundingMaths = learner.ConditionOfFundingMaths,
-                CoreAimSeqNumber = learner.CoreAimSeqNumber,
-                FullTimeEquiv = learner.FullTimeEquiv,
                 FundLine = learner.FundLine,
                 LearnerActEndDate = learner.LearnerActEndDate,
                 LearnerPlanEndDate = learner.LearnerPlanEndDate,
                 LearnerStartDate = learner.LearnerStartDate,
                 NatRate = learner.NatRate,
-                PlannedDaysILCurrYear = learner.PlannedDaysILCurrYear,
                 ProgWeightHist = learner.ProgWeightHist,
-                ProgWeightNew = learner.ProgWeightNew,
                 PrvDisadvPropnHist = learner.PrvDisadvPropnHist,
                 PrvHistLrgProgPropn = learner.PrvHistLrgProgPropn,
                 PrvRetentFactHist = learner.PrvRetentFactHist,
                 RateBand = learner.RateBand,
-                RetentNew = learner.RetentNew,
                 StartFund = learner.StartFund,
-                ThresholdDays = learner.ThresholdDays,
-                LearnerPeriods = learner.LearnerPeriods?.Select(MapLearnerPeriod).ToList(),
                 LearnerPeriodisedValues = learner.LearnerPeriodisedValues?.Select(MapLearnerPeriodisedValues).ToList()
-            };
-        }
-
-        private LearnerPeriod MapLearnerPeriod(FundingService.FM25.Model.Output.LearnerPeriod learnerPeriod)
-        {
-            return new LearnerPeriod()
-            {
-                LearnRefNumber = learnerPeriod.LearnRefNumber,
-                Period = learnerPeriod.Period.Value,
-                LnrOnProgPay = learnerPeriod.LnrOnProgPay
             };
         }
 

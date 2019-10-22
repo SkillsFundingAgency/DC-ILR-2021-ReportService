@@ -11,7 +11,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
             return new DevolvedPostcodes()
             {
                 McaGlaSofLookups = postcodes?.McaGlaSofLookups?.Select(MapMcaGlaSofLookup).ToList(),
-                Postcodes = postcodes?.Postcodes?.Select(MapDevolvedPostcode).ToList()
             };
         }
 
@@ -24,18 +23,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Mappers.ReferenceData
                 SofCode = mcaGlaSofLookup.SofCode,
                 EffectiveTo = mcaGlaSofLookup.EffectiveTo,
                 EffectiveFrom = mcaGlaSofLookup.EffectiveFrom
-            };
-        }
-
-        private DevolvedPostcode MapDevolvedPostcode(ReferenceDataService.Model.PostcodesDevolution.DevolvedPostcode devolvedPostcode)
-        {
-            return new DevolvedPostcode()
-            {
-                Postcode = devolvedPostcode.Postcode,
-                Area = devolvedPostcode.Area,
-                SourceOfFunding = devolvedPostcode.SourceOfFunding,
-                EffectiveTo = devolvedPostcode.EffectiveTo,
-                EffectiveFrom = devolvedPostcode.EffectiveFrom
             };
         }
     }
