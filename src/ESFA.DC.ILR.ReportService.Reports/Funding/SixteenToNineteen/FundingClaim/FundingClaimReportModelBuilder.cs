@@ -45,7 +45,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
             // Header
             model.ProviderName = organisationName;
-            model.Ukprn = reportServiceContext.Ukprn;
+            model.Ukprn = reportServiceContext.Ukprn.ToString();
             model.IlrFile = IlrFilename(reportServiceContext.OriginalFilename);
             model.Year = ReportingConstants.Year;
             model.CofRemoval = -cofRemoval.GetValueOrDefault();

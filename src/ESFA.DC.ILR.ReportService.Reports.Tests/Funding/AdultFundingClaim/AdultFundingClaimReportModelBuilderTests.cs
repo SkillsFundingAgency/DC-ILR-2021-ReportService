@@ -110,7 +110,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 
             result.ProviderName.Should().Be("Provider XYZ");
-            result.Ukprn.Should().Be(987654321);
+            result.Ukprn.Should().Be("987654321");
             result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
             result.Year.Should().Be("2019/20");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");

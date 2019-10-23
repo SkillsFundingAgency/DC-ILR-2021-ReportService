@@ -42,9 +42,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             var looseLearnerDestinationAndProgressions = message?.LearnerDestinationAndProgressions?.ToList() ?? new List<ILooseLearnerDestinationAndProgression>();
 
             // Header
-            model.ProviderName = organisationName;
-            model.Ukprn = reportServiceContext.Ukprn;
-            model.IlrFile = ExtractFileName(reportServiceContext.OriginalFilename);
+            model.ProviderName = $"Provider: {organisationName}";
+            model.Ukprn = $"UKPRN: {reportServiceContext.Ukprn}";
+            model.IlrFile =$"ILR File: {ExtractFileName(reportServiceContext.OriginalFilename)}";
             model.Year = ReportingConstants.Year;
 
             // body

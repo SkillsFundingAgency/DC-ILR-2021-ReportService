@@ -40,7 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
 
             // Header
             model.ProviderName = organisationName;
-            model.Ukprn = reportServiceContext.Ukprn;
+            model.Ukprn = reportServiceContext.Ukprn.ToString();
             model.IlrFile = ExtractFileName(reportServiceContext.OriginalFilename);
             model.Year = ReportingConstants.Year;
 
