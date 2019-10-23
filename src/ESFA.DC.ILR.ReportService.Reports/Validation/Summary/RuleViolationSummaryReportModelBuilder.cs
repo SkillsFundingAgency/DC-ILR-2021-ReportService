@@ -29,7 +29,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             ILooseMessage message = reportServiceDependentData.Get<ILooseMessage>();
             ReferenceDataRoot referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
             List<ValidationError> validationErrors = reportServiceDependentData.Get<List<ValidationError>>();
-            var validationErrorsMetadata = referenceDataRoot.MetaDatas.ValidationErrors;
+
+            var validationErrorMessageDictionary = referenceDataRoot.MetaDatas.ValidationErrors.ToDictionary(ve => ve.RuleName, ve => ve.Message, StringComparer.OrdinalIgnoreCase);
             var model = new RuleViolationSummaryReportModel();
             var organisation = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn);
             var organisationName = organisation?.Name ?? string.Empty;
@@ -38,7 +39,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
             var reportGeneratedAt = "Report generated at: " + dateTimeNowUk.ToString(ReportGeneratedTimeStringFormat);
             var looseLearners = message?.Learners?.ToList() ?? new List<ILooseLearner>();
-            var looseLearnerDestinationAndProgressions = message?.LearnerDestinationAndProgressions?.ToList() ?? Enumerable.Empty<ILooseLearnerDestinationAndProgression>().ToList();
+            var looseLearnerDestinationAndProgressions = message?.LearnerDestinationAndProgressions?.ToList() ?? new List<ILooseLearnerDestinationAndProgression>();
 
             // Header
             model.ProviderName = organisationName;
@@ -47,80 +48,75 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             model.Year = ReportingConstants.Year;
 
             // body
-            var looseLearnersList = looseLearners.DistinctBy(x => x.LearnRefNumber).ToList();
             var validationErrorsList = validationErrors.Where(x => x.Severity.CaseInsensitiveEquals(Error)).ToList();
             var validationErrorWarningsList = validationErrors.Where(x => x.Severity.CaseInsensitiveEquals(Warning)).ToList();
+            
+            var learnRefNumbersWithErrors = new HashSet<string>(validationErrorsList.Select(x => x.LearnerReferenceNumber), StringComparer.OrdinalIgnoreCase);
+            var learnRefNumbersWithWarnings = new HashSet<string>(validationErrorWarningsList.Select(x => x.LearnerReferenceNumber), StringComparer.OrdinalIgnoreCase);
 
-            var learnersWithValidationErrors = validationErrors.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
-            var learnersWithErrors = validationErrorsList.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
-            var learnersWithWarnings = validationErrorWarningsList.Select(x => x.LearnerReferenceNumber).Distinct().ToList();
+            var validLearners = looseLearners.Where(l => !learnRefNumbersWithErrors.Contains(l.LearnRefNumber)).ToList();
+            var invalidLearners = looseLearners.Where(l => learnRefNumbersWithErrors.Contains(l.LearnRefNumber)).ToList();
 
+            var validLearnerDestinationAndProgressions = looseLearnerDestinationAndProgressions.Where(ldp => !learnRefNumbersWithErrors.Contains(ldp.LearnRefNumber)).ToList();
+            var invalidLearnerDestinationAndProgressions = looseLearnerDestinationAndProgressions.Where(ldp => learnRefNumbersWithErrors.Contains(ldp.LearnRefNumber)).ToList();
+            
             model.TotalNoOfErrors = validationErrorsList.Count;
             model.TotalNoOfWarnings = validationErrorWarningsList.Count;
 
-            model.TotalNoOfLearners = looseLearnersList.DistinctByCount(x => x.LearnRefNumber);
-            model.TotalNoOfLearnersWithWarnings = learnersWithWarnings.Count();
-
-            List<ILooseLearner> fullyValidLearners = looseLearnersList.Where(x => !learnersWithValidationErrors.Contains(x.LearnRefNumber)).ToList();
-            List<ILooseLearner> inValidLearners = looseLearnersList.Where(x => learnersWithErrors.Contains(x.LearnRefNumber)).ToList();
-
-            var learningDeliveries = looseLearnersList.SelectMany(x => x.LearningDeliveries).ToList();
+            model.TotalNoOfLearners = looseLearners.DistinctByCount(x => x.LearnRefNumber);
+            model.TotalNoOfLearnersWithWarnings = learnRefNumbersWithWarnings.Count(l => !learnRefNumbersWithErrors.Contains(l));
+            
+            var learningDeliveries = looseLearners.SelectMany(x => x.LearningDeliveries).ToList();
 
             model.FullyValidLearners = new RuleViolationsTotalModel
             {
-                Total = fullyValidLearners.DistinctByCount(x => x.LearnRefNumber),
-                Apprenticeships = GetFundModelCount(fullyValidLearners, FundModelConstants.FM36),
-                Funded1619 = GetFundModelCount(fullyValidLearners, FundModelConstants.FM25),
-                AdultSkilledFunded = GetFundModelCount(fullyValidLearners, FundModelConstants.FM35),
-                CommunityLearningFunded = GetFundModelCount(fullyValidLearners, FundModelConstants.FM10),
-                ESFFunded = GetFundModelCount(fullyValidLearners, FundModelConstants.FM70),
-                OtherAdultFunded = GetFundModelCount(fullyValidLearners, FundModelConstants.FM81),
-                Other1619Funded = GetFundModelCount(fullyValidLearners, FundModelConstants.FM82),
-                NonFunded = GetFundModelCount(fullyValidLearners, FundModelConstants.FM99)
+                Total = validLearners.DistinctByCount(x => x.LearnRefNumber),
+                Apprenticeships = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM36),
+                Funded1619 = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM25),
+                AdultSkilledFunded = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM35),
+                CommunityLearningFunded = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM10),
+                ESFFunded = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM70),
+                OtherAdultFunded = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM81),
+                Other1619Funded = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM82),
+                NonFunded = LearnersWithFundModelLearningDeliveryFundModelCount(validLearners, FundModelConstants.FM99)
             };
 
             model.InvalidLearners = new RuleViolationsTotalModel
             {
-                Total = inValidLearners.DistinctByCount(x => x.LearnRefNumber),
-                Apprenticeships = GetFundModelCount(inValidLearners, FundModelConstants.FM36),
-                Funded1619 = GetFundModelCount(inValidLearners, FundModelConstants.FM25),
-                AdultSkilledFunded = GetFundModelCount(inValidLearners, FundModelConstants.FM35),
-                CommunityLearningFunded = GetFundModelCount(inValidLearners, FundModelConstants.FM10),
-                ESFFunded = GetFundModelCount(inValidLearners, FundModelConstants.FM70),
-                OtherAdultFunded = GetFundModelCount(inValidLearners, FundModelConstants.FM81),
-                Other1619Funded = GetFundModelCount(inValidLearners, FundModelConstants.FM82),
-                NonFunded = GetFundModelCount(inValidLearners, FundModelConstants.FM99)
+                Total = invalidLearners.DistinctByCount(x => x.LearnRefNumber),
+                Apprenticeships = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM36),
+                Funded1619 = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM25),
+                AdultSkilledFunded = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM35),
+                CommunityLearningFunded = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM10),
+                ESFFunded = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM70),
+                OtherAdultFunded = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM81),
+                Other1619Funded = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM82),
+                NonFunded = LearnersWithFundModelLearningDeliveryFundModelCount(invalidLearners, FundModelConstants.FM99)
             };
 
             model.LearningDeliveries = new RuleViolationsTotalModel
             {
                 Total = learningDeliveries.Count,
-                Apprenticeships = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM36),
-                Funded1619 = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM25),
-                AdultSkilledFunded = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM35),
-                CommunityLearningFunded = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM10),
-                ESFFunded = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM70),
-                OtherAdultFunded = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM81),
-                Other1619Funded = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM82),
-                NonFunded = GetLearningDeliveriesFundModelCount(learningDeliveries, FundModelConstants.FM99),
+                Apprenticeships = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM36),
+                Funded1619 = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM25),
+                AdultSkilledFunded = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM35),
+                CommunityLearningFunded = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM10),
+                ESFFunded = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM70),
+                OtherAdultFunded = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM81),
+                Other1619Funded = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM82),
+                NonFunded = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM99),
+                AdvancedLoanLearningDeliveries = GetLearningDeliveriesFundModelWithFAMCount(learningDeliveries, FundModelConstants.FM99, LearningDeliveryFAMTypeConstants.ADL),
             };
-
-            model.LearningDeliveries.AdvancedLoanLearningDeliveries =
-                learningDeliveries.Where(x => x.LearningDeliveryFAMs != null && x.FundModelNullable != null)
-                                  .Count(x => x.FundModelNullable.Value == FundModelConstants.FM99 &&
-                                            x.LearningDeliveryFAMs.Any(y => y.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.ADL)));
-
-
+            
             model.LearnerDestinationProgressionSummary = new LearnerDestinationProgressionSummary()
             {
                 Total = looseLearnerDestinationAndProgressions.Count,
-                ValidLearnerDestinationProgressions = looseLearnerDestinationAndProgressions.Count(x => !learnersWithValidationErrors.Contains(x.LearnRefNumber)),
-                InValidLearnerDestinationProgressions = looseLearnerDestinationAndProgressions.Count(x => learnersWithValidationErrors.Contains(x.LearnRefNumber)),
-                LearnerDestinationProgressionsWithWarnings = looseLearnerDestinationAndProgressions.Count(x => learnersWithWarnings.Contains(x.LearnRefNumber)),
+                ValidLearnerDestinationProgressions = validLearnerDestinationAndProgressions.Count,
+                InValidLearnerDestinationProgressions = invalidLearnerDestinationAndProgressions.Count,
             };
 
-            model.Errors = GetValidationErrorMessageModels(validationErrorsList, validationErrorsMetadata);
-            model.Warnings = GetValidationErrorMessageModels(validationErrorWarningsList, validationErrorsMetadata);
+            model.Errors = GetValidationErrorMessageModels(validationErrorsList, validationErrorMessageDictionary);
+            model.Warnings = GetValidationErrorMessageModels(validationErrorWarningsList, validationErrorMessageDictionary);
 
             // Footer
             model.ReportGeneratedAt = reportGeneratedAt;
@@ -135,30 +131,41 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             return model;
         }
 
-        private List<ValidationErrorMessageModel> GetValidationErrorMessageModels(List<ValidationError> validationErrors, IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata)
+        private List<ValidationErrorMessageModel> GetValidationErrorMessageModels(IEnumerable<ValidationError> validationErrors, IDictionary<string, string> validationErrorMessageDictionary)
         {
-            return (from errors in validationErrors
-                    group errors by errors.RuleName
-                into validationErrorGroup
-                    select new ValidationErrorMessageModel()
-                    {
-                        RuleName = validationErrorGroup.Key,
-                        Message = validationErrorsMetadata.FirstOrDefault(x =>
-                                string.Equals(x.RuleName, validationErrorGroup.Key, StringComparison.OrdinalIgnoreCase))
-                            ?.Message,
-                        Occurrences = validationErrorGroup.Count()
-                    }).ToList();
+            return validationErrors
+                .GroupBy(ve => ve.RuleName, StringComparer.OrdinalIgnoreCase)
+                .Select(g => new ValidationErrorMessageModel()
+                {
+                    RuleName = g.Key,
+                    Message = validationErrorMessageDictionary.GetValueOrDefault(g.Key),
+                    Occurrences = g.Count()
+                })
+                .OrderBy(ve => ve.RuleName)
+                .ToList();
         }
 
-        private int GetLearningDeliveriesFundModelCount(List<ILooseLearningDelivery> learningDeliveries, int fundModel)
+        private int GetLearningDeliveriesFundModelWithFAMCount(IEnumerable<ILooseLearningDelivery> learningDeliveries, int fundModel, string famType = null)
         {
-            return learningDeliveries.Count(x => x.FundModelNullable == fundModel);
+            var query = learningDeliveries.Where(x => x.FundModelNullable == fundModel);
+
+            if (famType != null)
+            {
+                query = query.Where(x => x.LearningDeliveryFAMs != null && x.LearningDeliveryFAMs.Any(y => y.LearnDelFAMType.CaseInsensitiveEquals(famType)));
+            }
+
+            return query.Count();
         }
 
-        private int GetFundModelCount(List<ILooseLearner> learners, int fundModel)
+        private bool HasLearningDeliveryWithFundModel(ILooseLearner learner, int fundModel)
         {
-            return learners.Where(x => x.LearningDeliveries != null)
-                .Where(x => x.LearningDeliveries.Any(y => y.FundModelNullable == fundModel))
+            return learner.LearningDeliveries != null
+                   && learner.LearningDeliveries.Any(ld => ld.FundModelNullable == fundModel);
+        }
+
+        private int LearnersWithFundModelLearningDeliveryFundModelCount(IEnumerable<ILooseLearner> learners, int fundModel)
+        {
+            return learners.Where(l => HasLearningDeliveryWithFundModel(l, fundModel))
                 .DistinctByCount(x => x.LearnRefNumber);
         }
     }

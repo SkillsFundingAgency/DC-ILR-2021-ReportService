@@ -9,6 +9,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary.Model
         public int Total { get; set; }
         public int ValidLearnerDestinationProgressions { get; set; }
         public int InValidLearnerDestinationProgressions { get; set; }
-        public int LearnerDestinationProgressionsWithWarnings{ get; set; }
     }
 }
