@@ -6,6 +6,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -55,13 +56,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                 PersonalAndCommunityDevelopment = new Category
                 {
                     TotalLearners = DistinctCount(communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning).Select(l => l.LearnerRefNumber)),
-                    TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                    TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning && x.EarliestStartDatePersonalAndCommunityDevelopmentLearning && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                     TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.PersonalAndCommunityDevelopmentLearning && x.LearnStartDateIsInYear).Count(),    
                 },
                 NeigbourhoodLearning = new Category
                 {
                     TotalLearners = DistinctCount(communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities).Select(l => l.LearnerRefNumber)),
-                    TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                    TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities && x.EarliestStartDateNeighbourhoodLearningInDeprivedCommunities && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                     TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.NeighbourhoodLearningInDeprivedCommunities && x.LearnStartDateIsInYear).Count(),
                 },
                 FamilyEnglishMaths = new Category
@@ -69,13 +70,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                     SixteenToEighteen = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
-                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDateFamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                         TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen && x.FamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Count(),
                     },
                     Adult = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage).Select(l => l.LearnerRefNumber)),
-                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.EarliestStartDateFamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                         TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.FamilyEnglishMathsAndLanguage && x.LearnStartDateIsInYear).Count(),
                     }
                 },
@@ -84,13 +85,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                     SixteenToEighteen = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
-                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.EarliestStartDateWiderFamilyLearning && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                         TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.SixteenToEighteen  && x.WiderFamilyLearning && x.LearnStartDateIsInYear).Count(),
                     },
                     Adult = new Category
                     {
                         TotalLearners = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning).Select(l => l.LearnerRefNumber)),
-                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.EarliestStartDate && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
+                        TotalStartedInFundingYear = DistinctCount(communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.EarliestStartDateWiderFamilyLearning && x.LearnStartDateIsInYear).Select(l => l.LearnerRefNumber)),
                         TotalEnrolmentsInFundingYear = communityLearningData.Where(x => x.Adult && x.WiderFamilyLearning && x.LearnStartDateIsInYear).Count(),
                     }
                 },
@@ -122,6 +123,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                         SixteenToEighteen = IsSixteenToEighteen(l.DateOfBirthNullable, ld.LearnStartDate),
                         Adult = IsAdult(l.DateOfBirthNullable, ld.LearnStartDate),
                         EarliestStartDate = IsEarliestStartDateForDeliveries(l.LearningDeliveries, ld.LearnStartDate),
+                        EarliestStartDatePersonalAndCommunityDevelopmentLearning = IsEarliestStartDateForDeliveriesFiltered(l.LearningDeliveries, ld.LearnStartDate, LearningDeliveryFAMTypeConstants.ASL, LearningDeliveryFAMCodeConstants.ASL_Personal),
+                        EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = IsEarliestStartDateForDeliveriesFiltered(l.LearningDeliveries, ld.LearnStartDate, LearningDeliveryFAMTypeConstants.ASL, LearningDeliveryFAMCodeConstants.ASL_Neighbour),
+                        EarliestStartDateFamilyEnglishMathsAndLanguage = IsEarliestStartDateForDeliveriesFiltered(l.LearningDeliveries, ld.LearnStartDate, LearningDeliveryFAMTypeConstants.ASL, LearningDeliveryFAMCodeConstants.ASL_FamilyEnglishMathsLanguage),
+                        EarliestStartDateWiderFamilyLearning = IsEarliestStartDateForDeliveriesFiltered(l.LearningDeliveries, ld.LearnStartDate, LearningDeliveryFAMTypeConstants.ASL, LearningDeliveryFAMCodeConstants.ASL_WiderFamily),
                         LearnStartDateIsInYear = LearnStartDateIsWithinYear(ld.LearnStartDate),
                         PersonalAndCommunityDevelopmentLearning = HasAnyASLFamTypeForFamCode(ld.LearningDeliveryFAMs, LearningDeliveryFAMCodeConstants.ASL_Personal),
                         NeighbourhoodLearningInDeprivedCommunities = HasAnyASLFamTypeForFamCode(ld.LearningDeliveryFAMs, LearningDeliveryFAMCodeConstants.ASL_Neighbour),
@@ -153,6 +158,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
         public bool IsEarliestStartDateForDeliveries(IReadOnlyCollection<ILearningDelivery> learningDeliveries, DateTime learnStartDate)
         {
             return learningDeliveries?.Where(LearningDeliveryFilter).Min(ld => ld.LearnStartDate) == learnStartDate;
+        }
+
+        public bool IsEarliestStartDateForDeliveriesFiltered(IReadOnlyCollection<ILearningDelivery> learningDeliveries, DateTime learnStartDate, string famType, string famCode)
+        {
+            return learningDeliveries?.Where(ld => LearningDeliveryFilter(ld) && LearningDeliveryFamFilter(ld, famType, famCode)).MinOrDefault(ld => ld.LearnStartDate) == learnStartDate;
         }
 
         public bool LearnStartDateIsWithinYear(DateTime learnStartDate)
@@ -208,6 +218,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
             ld.FundModel == FundModelConstants.FM10
             && ld.LearningDeliveryFAMs.Any(ldf => ldf.LearnDelFAMType == LearningDeliveryFAMTypeConstants.SOF
             && ldf.LearnDelFAMCode == LearningDeliveryFAMCodeConstants.SOF_ESFA);
+
+        private bool LearningDeliveryFamFilter(ILearningDelivery ld, string famType, string famCode) =>
+            ld.LearningDeliveryFAMs.Any(ldf => ldf.LearnDelFAMType == famType
+            && ldf.LearnDelFAMCode == famCode);
 
         private int YearsBetween(DateTime start, DateTime end)
         {
