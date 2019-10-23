@@ -95,7 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                     }
                 },
                 ProviderName = headerData[SummaryPageConstants.ProviderName],
-                Ukprn = int.Parse(headerData[SummaryPageConstants.UKPRN]),
+                Ukprn = headerData[SummaryPageConstants.UKPRN],
                 IlrFile = headerData[SummaryPageConstants.ILRFile],
                 FilePreparationDate = footerData[SummaryPageConstants.FilePreparationDate],
                 ApplicationVersion = footerData[SummaryPageConstants.ApplicationVersion],

@@ -44,8 +44,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 
-            result.ProviderName.Should().Be("Provider XYZ");
-            result.Ukprn.Should().Be(987654321);
+            result.ProviderName.Should().Be("Provider: Provider XYZ");
+            result.Ukprn.Should().Be("UKPRN: 987654321");
             result.Year.Should().Be("2019/20");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
             result.OrganisationData.Should().Be("1.1.1.1");
@@ -53,7 +53,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             result.LarsData.Should().Be("3.3.3.3");
             result.PostcodeData.Should().Be("4.4.4.4");
             result.FilePreparationDate.Should().Be("06/11/2019");
-            result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
+            result.IlrFile.Should().Be("ILR File: ILR-12345678-1920-20191005-151322-01.xml");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
             result.TotalNoOfErrors.Should().Be(5);
@@ -144,8 +144,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 
-            result.ProviderName.Should().Be("Provider XYZ");
-            result.Ukprn.Should().Be(987654321);
+            result.ProviderName.Should().Be("Provider: Provider XYZ");
+            result.Ukprn.Should().Be("UKPRN: 987654321");
             result.Year.Should().Be("2019/20");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
             result.OrganisationData.Should().Be("1.1.1.1");
@@ -153,7 +153,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             result.LarsData.Should().Be("3.3.3.3");
             result.PostcodeData.Should().Be("4.4.4.4");
             result.FilePreparationDate.Should().Be("06/11/2019");
-            result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
+            result.IlrFile.Should().Be("ILR File: ILR-12345678-1920-20191005-151322-01.xml");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
             result.TotalNoOfErrors.Should().Be(0);
