@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
         }
         public RuleViolationSummaryReportModel Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
-            ILooseMessage message = reportServiceDependentData.Get<ILooseMessage>();
+            ILooseMessage looseMessage = reportServiceDependentData.Get<ILooseMessage>();
             ReferenceDataRoot referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
             List<ValidationError> validationErrors = reportServiceDependentData.Get<List<ValidationError>>();
 
@@ -38,8 +38,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
             var reportGeneratedAt = "Report generated at: " + dateTimeNowUk.ToString(ReportGeneratedTimeStringFormat);
-            var looseLearners = message?.Learners?.ToList() ?? new List<ILooseLearner>();
-            var looseLearnerDestinationAndProgressions = message?.LearnerDestinationAndProgressions?.ToList() ?? new List<ILooseLearnerDestinationAndProgression>();
+            var looseLearners = looseMessage?.Learners?.ToList() ?? new List<ILooseLearner>();
+            var looseLearnerDestinationAndProgressions = looseMessage?.LearnerDestinationAndProgressions?.ToList() ?? new List<ILooseLearnerDestinationAndProgression>();
 
             // Header
             model.ProviderName = $"Provider: {organisationName}";
@@ -125,7 +125,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             model.LargeEmployerData = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            model.FilePreparationDate = message?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
+            model.FilePreparationDate = looseMessage?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
             //Todo: 
             //model.DevolvedPostcodesData
             return model;

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
@@ -21,9 +22,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
         {
             List<ValidationErrorRow> validationErrorModels = new List<ValidationErrorRow>();
 
+            var learnerDictionary = message
+                .Learners?
+                .GroupBy(l => l.LearnRefNumber, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(l => l.Key, l => l.FirstOrDefault(), StringComparer.OrdinalIgnoreCase);
+
             foreach (ValidationError validationError in ilrValidationErrors)
             {
-                ILooseLearner learner = message.Learners?.FirstOrDefault(x => x.LearnRefNumber == validationError.LearnerReferenceNumber);
+                ILooseLearner learner = learnerDictionary.GetValueOrDefault(validationError.LearnerReferenceNumber);
                 ILooseLearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumberNullable == validationError.AimSequenceNumber);
 
                 validationErrorModels.Add(new ValidationErrorRow()
