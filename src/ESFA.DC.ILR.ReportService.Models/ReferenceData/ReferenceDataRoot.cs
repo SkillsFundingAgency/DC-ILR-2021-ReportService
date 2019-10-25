@@ -9,8 +9,6 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData
     {
         public MetaData.MetaData MetaDatas { get; set; }
 
-        public IReadOnlyCollection<ApprenticeshipEarningsHistory> AppsEarningsHistories { get; set; }
-
         public IReadOnlyCollection<FcsContractAllocation> FCSContractAllocations { get; set; }
 
         public IReadOnlyCollection<LARSLearningDelivery> LARSLearningDeliveries { get; set; }
@@ -20,7 +18,5 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData
         public IReadOnlyCollection<Organisation> Organisations { get; set; }
 
         public DevolvedPostcodes.DevolvedPostcodes DevolvedPostocdes { get; set; }
-
-        public IReadOnlyCollection<long> ULNs { get; set; }
     }
 }
