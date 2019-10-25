@@ -16,7 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
     {
         public static readonly Type ValidIlr = typeof(IMessage);
 
-        public static readonly Type InvalidIlr = typeof(ILooseMessage);
+        public static readonly Type InputIlr = typeof(ILooseMessage);
 
         public static readonly Type ValidationErrors = typeof(List<ValidationError>);
 
