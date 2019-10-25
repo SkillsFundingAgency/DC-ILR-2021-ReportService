@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             {
                 DependentDataCatalog.Fm35,
                 DependentDataCatalog.ValidIlr,
+                DependentDataCatalog.Eas,
                 DependentDataCatalog.ReferenceData
             };
 

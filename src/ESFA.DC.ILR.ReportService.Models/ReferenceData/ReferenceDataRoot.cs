@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
@@ -11,8 +10,6 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData
         public MetaData.MetaData MetaDatas { get; set; }
 
         public IReadOnlyCollection<ApprenticeshipEarningsHistory> AppsEarningsHistories { get; set; }
-
-        public IReadOnlyCollection<EasFundingLine> EasFundingLines { get; set; }
 
         public IReadOnlyCollection<FcsContractAllocation> FCSContractAllocations { get; set; }
 

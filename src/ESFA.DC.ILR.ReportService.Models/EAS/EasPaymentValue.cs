@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS
+namespace ESFA.DC.ILR.ReportService.Models.EAS
 {
     public class EasPaymentValue
     {

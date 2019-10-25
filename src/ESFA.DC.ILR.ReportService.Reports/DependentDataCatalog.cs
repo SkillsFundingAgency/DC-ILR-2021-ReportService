@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
+using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.Fm36;
@@ -31,5 +32,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
         public static readonly Type Fm81 = typeof(FM81Global);
 
         public static readonly Type Fm99 = typeof(ALBGlobal);
+
+        public static readonly Type Eas = typeof(IReadOnlyCollection<EasFundingLine>);
     }
 }

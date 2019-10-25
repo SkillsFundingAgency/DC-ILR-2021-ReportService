@@ -5,10 +5,10 @@ using FluentAssertions;
 using Moq;
 using System;
 using System.Collections.Generic;
+using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.Fm99;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.EAS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using Xunit;
@@ -54,9 +54,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
                         CampusIdentifierVersion = new CampusIdentifierVersion() { Version = "5.5.5.5" },
                         EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 1, 1, 1, 1, 1) }
                     }
-                },
-                EasFundingLines = BuildEasFundingLines()
+                }
             };
+
+            var easFundingLines = BuildEasFundingLines();
 
             var fm35Learner = new FM35Learner
             {
@@ -88,6 +89,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
             dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
             dependentDataMock.Setup(d => d.Get<ALBGlobal>()).Returns(albGlobal);
+            dependentDataMock.Setup(d => d.Get<IReadOnlyCollection<EasFundingLine>>()).Returns(easFundingLines);
 
             var submissionDateTime = new DateTime(2019, 1, 1, 1, 1, 1);
             var ukDateTime = new DateTime(2020, 1, 1, 1, 1, 1);
