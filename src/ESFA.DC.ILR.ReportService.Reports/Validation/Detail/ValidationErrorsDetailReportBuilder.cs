@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
 
             foreach (ValidationError validationError in ilrValidationErrors)
             {
-                ILooseLearner learner = learnerDictionary.GetValueOrDefault(validationError.LearnerReferenceNumber);
+                ILooseLearner learner = learnerDictionary?.GetValueOrDefault(validationError.LearnerReferenceNumber);
                 ILooseLearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumberNullable == validationError.AimSequenceNumber);
 
                 validationErrorModels.Add(new ValidationErrorRow()
