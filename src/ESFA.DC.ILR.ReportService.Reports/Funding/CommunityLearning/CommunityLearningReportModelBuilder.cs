@@ -177,7 +177,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
 
         public IDictionary<string, string> BuildFooterData(IReportServiceContext reportServiceContext, IMessage message, ReferenceDataRoot referenceDataRoot)
         {
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
+            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.Date.ToString("d");
             var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
@@ -203,12 +203,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
         public IDictionary<string, string> BuildHeaderData(IReportServiceContext reportServiceContext, ReferenceDataRoot referenceDataRoot)
         {
             var organisationName = referenceDataRoot.Organisations?.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name;
+            var fileName = ExtractFileName(reportServiceContext.OriginalFilename);
 
             return new Dictionary<string, string>()
             {
                 {SummaryPageConstants.ProviderName, organisationName},
                 {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
-                {SummaryPageConstants.ILRFile, reportServiceContext.OriginalFilename},
+                {SummaryPageConstants.ILRFile, fileName},
                 {SummaryPageConstants.Year, reportServiceContext.CollectionYear},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };

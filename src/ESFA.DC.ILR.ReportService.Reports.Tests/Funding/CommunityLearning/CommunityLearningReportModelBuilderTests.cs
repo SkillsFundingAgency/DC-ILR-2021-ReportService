@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         {
             var reportServiceContextMock = new Mock<IReportServiceContext>();
 
-            reportServiceContextMock.Setup(r => r.OriginalFilename).Returns("Filename");
+            reportServiceContextMock.Setup(r => r.OriginalFilename).Returns("10000000/ILR-1920-20190801-090000.xml");
             reportServiceContextMock.Setup(r => r.Ukprn).Returns(1);
             reportServiceContextMock.Setup(r => r.CollectionYear).Returns("1920");
 
@@ -44,7 +44,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             {
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
-                {SummaryPageConstants.ILRFile, "Filename"},
+                {SummaryPageConstants.ILRFile, "ILR-1920-20190801-090000.xml"},
                 {SummaryPageConstants.Year, "1920"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
@@ -95,7 +95,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             {
 
                 { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
-                { SummaryPageConstants.FilePreparationDate, "01/08/2019 00:00:00" },
+                { SummaryPageConstants.FilePreparationDate, "01/08/2019" },
                 { SummaryPageConstants.LARSVersion, "1" },
                 { SummaryPageConstants.PostcodeVersion, "1" },
                 { SummaryPageConstants.OrganisationVersion, "1" },
