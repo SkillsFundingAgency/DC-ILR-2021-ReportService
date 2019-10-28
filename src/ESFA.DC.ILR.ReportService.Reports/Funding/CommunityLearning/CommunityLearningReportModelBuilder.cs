@@ -132,7 +132,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                         NeighbourhoodLearningInDeprivedCommunities = HasAnyASLFamTypeForFamCode(ld.LearningDeliveryFAMs, LearningDeliveryFAMCodeConstants.ASL_Neighbour),
                         FamilyEnglishMathsAndLanguage = HasAnyASLFamTypeForFamCode(ld.LearningDeliveryFAMs, LearningDeliveryFAMCodeConstants.ASL_FamilyEnglishMathsLanguage),
                         WiderFamilyLearning = HasAnyASLFamTypeForFamCode(ld.LearningDeliveryFAMs, LearningDeliveryFAMCodeConstants.ASL_WiderFamily),
-                    })).ToList();
+                    })).ToList() ?? new List<CommunityLearningData>();
         }
 
         public bool IsSixteenToEighteen(DateTime? dateOfBirth, DateTime learnStartDate)
