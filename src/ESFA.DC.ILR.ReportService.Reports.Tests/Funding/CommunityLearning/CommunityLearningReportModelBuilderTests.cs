@@ -294,6 +294,48 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         }
 
         [Fact]
+        public void BuildCategoryData_NoLearners()
+        {
+            var message = new TestMessage
+            {
+                Learners = new TestLearner[]
+                {
+                    new TestLearner
+                    {
+                        LearnRefNumber = "Learner1",
+                        DateOfBirthNullable = new DateTime(2000, 9, 1),
+                        LearningDeliveries = new TestLearningDelivery[]
+                        {
+                            new TestLearningDelivery
+                            {
+                                AimSeqNumber = 1,
+                                FundModel = 35,
+                                LearnStartDate = new DateTime(2019, 8, 1),
+                                LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
+                                {
+                                    new TestLearningDeliveryFAM
+                                    {
+                                        LearnDelFAMType = "ASL",
+                                        LearnDelFAMCode = "4"
+                                    },
+                                    new TestLearningDeliveryFAM
+                                    {
+                                        LearnDelFAMType = "SOF",
+                                        LearnDelFAMCode = "105"
+                                    }
+                                }
+                            },
+                        }
+                    }
+                }
+            };
+
+            var expectedData = new List<CommunityLearningData>();
+
+            NewBuilder().BuildCategoryData(message).Should().BeEquivalentTo(expectedData);
+        }
+
+        [Fact]
         public void BuildModel()
         {
             var headerDictionary = new Dictionary<string, string>
@@ -413,6 +455,54 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             result.WiderFamilyLearning.TotalLearners.Should().Be(1);
             result.WiderFamilyLearning.TotalStartedInFundingYear.Should().Be(1);
             result.WiderFamilyLearning.TotalEnrolmentsInFundingYear.Should().Be(1);
+        }
+
+        [Fact]
+        public void BuildModel_NoLearners()
+        {
+            var headerDictionary = new Dictionary<string, string>
+            {
+                {SummaryPageConstants.ProviderName, "OrgName"},
+                {SummaryPageConstants.UKPRN, "1"},
+                {SummaryPageConstants.ILRFile, "Filename"},
+                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
+            };
+
+            var footerDictionary = new Dictionary<string, string>
+            {
+                { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
+                { SummaryPageConstants.FilePreparationDate, "01/08/2019 00:00:00" },
+                { SummaryPageConstants.LARSVersion, "1" },
+                { SummaryPageConstants.PostcodeVersion, "1" },
+                { SummaryPageConstants.OrganisationVersion, "1" },
+                { SummaryPageConstants.LargeEmployersVersion, "1" },
+                { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2019" }
+            };
+
+            var categoryData = new List<CommunityLearningData>();
+
+            var result = NewBuilder().BuildModel(categoryData, headerDictionary, footerDictionary);
+
+            result.TotalCommunityLearning.TotalLearners.Should().Be(0);
+            result.TotalCommunityLearning.TotalStartedInFundingYear.Should().Be(0);
+            result.TotalCommunityLearning.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.PersonalAndCommunityDevelopment.TotalLearners.Should().Be(0);
+            result.PersonalAndCommunityDevelopment.TotalStartedInFundingYear.Should().Be(0);
+            result.PersonalAndCommunityDevelopment.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.NeigbourhoodLearning.TotalLearners.Should().Be(0);
+            result.NeigbourhoodLearning.TotalStartedInFundingYear.Should().Be(0);
+            result.NeigbourhoodLearning.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.FamilyEnglishMaths.TotalLearners.Should().Be(0);
+            result.FamilyEnglishMaths.TotalStartedInFundingYear.Should().Be(0);
+            result.FamilyEnglishMaths.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.WiderFamilyLearning.TotalLearners.Should().Be(0);
+            result.WiderFamilyLearning.TotalStartedInFundingYear.Should().Be(0);
+            result.WiderFamilyLearning.TotalEnrolmentsInFundingYear.Should().Be(0);
         }
 
         private IMessage TestMessage() => new TestMessage
