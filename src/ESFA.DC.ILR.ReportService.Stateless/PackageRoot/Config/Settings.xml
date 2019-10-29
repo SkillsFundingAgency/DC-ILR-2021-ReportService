@@ -24,4 +24,8 @@
     <Parameter Name="ServiceReleaseVersion" Value="" />
   </Section>
 
+  <Section Name="DatabaseConfiguration">
+    <Parameter Name="EasDbConnectionString" Value="" />
+  </Section>
+
 </Settings>

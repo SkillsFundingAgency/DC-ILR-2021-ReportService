@@ -5,7 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Providers\" />
+    <PackageReference Include="ESFA.DC.EAS1920.EF" Version="0.0.91" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Interface\ESFA.DC.ILR.ReportService.Service.Interface.csproj" />
   </ItemGroup>
 
 </Project>
