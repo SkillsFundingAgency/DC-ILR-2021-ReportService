@@ -239,7 +239,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
                             RuleName = "Rule2",
                             Message = "Rule2Message",
                         },
-                        new ReferenceDataService.Model.MetaData.ValidationError()
+                        new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                         {
                             RuleName = "Rule3",
                             Message = "Rule3Message",
