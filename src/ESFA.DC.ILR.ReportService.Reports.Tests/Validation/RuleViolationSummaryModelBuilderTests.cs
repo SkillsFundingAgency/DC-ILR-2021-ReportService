@@ -43,8 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 
-            result.ProviderName.Should().Be("Provider XYZ");
-            result.Ukprn.Should().Be(987654321);
+            result.ProviderName.Should().Be("Provider: Provider XYZ");
+            result.Ukprn.Should().Be("UKPRN: 987654321");
             result.Year.Should().Be("2019/20");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
             result.OrganisationData.Should().Be("1.1.1.1");
@@ -52,29 +52,32 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             result.LarsData.Should().Be("3.3.3.3");
             result.PostcodeData.Should().Be("4.4.4.4");
             result.FilePreparationDate.Should().Be("06/11/2019");
-            result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
+            result.IlrFile.Should().Be("ILR File: ILR-12345678-1920-20191005-151322-01.xml");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
             result.TotalNoOfErrors.Should().Be(5);
             result.TotalNoOfLearners.Should().Be(10);
-            result.TotalNoOfWarnings.Should().Be(5);
-            result.TotalNoOfLearnersWithWarnings.Should().Be(5);
+            result.TotalNoOfWarnings.Should().Be(6);
+            result.TotalNoOfLearnersWithWarnings.Should().Be(1);
 
             result.Errors.Count.Should().Be(2);
-            result.Errors[0].RuleName.Should().Be("Rule2");
-            result.Errors[0].Message.Should().Be("Rule2Message");
-            result.Errors[0].Occurrences.Should().Be(3);
-            result.Errors[1].RuleName.Should().Be("Rule1");
-            result.Errors[1].Message.Should().Be("Rule1Message");
-            result.Errors[1].Occurrences.Should().Be(2);
+            result.Errors[0].RuleName.Should().Be("Rule1");
+            result.Errors[0].Message.Should().Be("Rule1Message");
+            result.Errors[0].Occurrences.Should().Be(2);
+            result.Errors[1].RuleName.Should().Be("Rule2");
+            result.Errors[1].Message.Should().Be("Rule2Message");
+            result.Errors[1].Occurrences.Should().Be(3);
 
-            result.Warnings.Count.Should().Be(2);
-            result.Warnings[0].RuleName.Should().Be("Rule2");
-            result.Warnings[0].Message.Should().Be("Rule2Message");
-            result.Warnings[0].Occurrences.Should().Be(3);
-            result.Warnings[1].RuleName.Should().Be("Rule1");
-            result.Warnings[1].Message.Should().Be("Rule1Message");
-            result.Warnings[1].Occurrences.Should().Be(2);
+            result.Warnings.Count.Should().Be(3);
+            result.Warnings[0].RuleName.Should().Be("Rule1");
+            result.Warnings[0].Message.Should().Be("Rule1Message");
+            result.Warnings[0].Occurrences.Should().Be(2);
+            result.Warnings[1].RuleName.Should().Be("Rule2");
+            result.Warnings[1].Message.Should().Be("Rule2Message");
+            result.Warnings[1].Occurrences.Should().Be(3);
+            result.Warnings[2].RuleName.Should().Be("Rule3");
+            result.Warnings[2].Message.Should().Be("Rule3Message");
+            result.Warnings[2].Occurrences.Should().Be(1);
 
             result.FullyValidLearners.Apprenticeships.Should().Be(5);
             result.FullyValidLearners.Funded1619.Should().Be(5);
@@ -108,9 +111,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             result.LearnerDestinationProgressionSummary.ValidLearnerDestinationProgressions.Should().Be(3);
             result.LearnerDestinationProgressionSummary.InValidLearnerDestinationProgressions.Should().Be(5);
-            result.LearnerDestinationProgressionSummary.LearnerDestinationProgressionsWithWarnings.Should().Be(5);
             result.LearnerDestinationProgressionSummary.Total.Should().Be(8);
-
         }
 
         [Fact]
@@ -142,8 +143,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 
-            result.ProviderName.Should().Be("Provider XYZ");
-            result.Ukprn.Should().Be(987654321);
+            result.ProviderName.Should().Be("Provider: Provider XYZ");
+            result.Ukprn.Should().Be("UKPRN: 987654321");
             result.Year.Should().Be("2019/20");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
             result.OrganisationData.Should().Be("1.1.1.1");
@@ -151,7 +152,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             result.LarsData.Should().Be("3.3.3.3");
             result.PostcodeData.Should().Be("4.4.4.4");
             result.FilePreparationDate.Should().Be("06/11/2019");
-            result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
+            result.IlrFile.Should().Be("ILR File: ILR-12345678-1920-20191005-151322-01.xml");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
             result.TotalNoOfErrors.Should().Be(0);
@@ -194,7 +195,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             result.LearnerDestinationProgressionSummary.ValidLearnerDestinationProgressions.Should().Be(0);
             result.LearnerDestinationProgressionSummary.InValidLearnerDestinationProgressions.Should().Be(0);
-            result.LearnerDestinationProgressionSummary.LearnerDestinationProgressionsWithWarnings.Should().Be(0);
             result.LearnerDestinationProgressionSummary.Total.Should().Be(0);
         }
 
@@ -238,6 +238,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
                         {
                             RuleName = "Rule2",
                             Message = "Rule2Message",
+                        },
+                        new ReferenceDataService.Model.MetaData.ValidationError()
+                        {
+                            RuleName = "Rule3",
+                            Message = "Rule3Message",
                         }
                     }
                 }
@@ -318,6 +323,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
                     validationErrorList.Add(validationError);
                 }
             }
+
+            var warning = new ValidationError
+            {
+                LearnerReferenceNumber = "LearnRefNumber" + 6,
+                Severity = "W",
+                RuleName = "Rule3"
+            };
+
+            validationErrorList.Add(warning);
 
             return validationErrorList;
         }
