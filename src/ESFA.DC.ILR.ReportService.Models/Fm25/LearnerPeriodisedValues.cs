@@ -1,35 +1,10 @@
 ﻿using System;
+using ESFA.DC.ILR.ReportService.Models.Abstract;
 
 namespace ESFA.DC.ILR.ReportService.Models.Fm25
 {
-    public class LearnerPeriodisedValues
+    public class LearnerPeriodisedValues : AbstractPeriodisedValue
     {
         public string LearnRefNumber { get; set; }
-
-        public string AttributeName { get; set; }
-
-        public Decimal? Period1 { get; set; }
-
-        public Decimal? Period2 { get; set; }
-
-        public Decimal? Period3 { get; set; }
-
-        public Decimal? Period4 { get; set; }
-
-        public Decimal? Period5 { get; set; }
-
-        public Decimal? Period6 { get; set; }
-
-        public Decimal? Period7 { get; set; }
-
-        public Decimal? Period8 { get; set; }
-
-        public Decimal? Period9 { get; set; }
-
-        public Decimal? Period10 { get; set; }
-
-        public Decimal? Period11 { get; set; }
-
-        public Decimal? Period12 { get; set; }
     }
 }
