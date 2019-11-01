@@ -5,7 +5,7 @@
         //Header
         public string ProviderName { get; set; }
 
-        public int Ukprn { get; set; }
+        public string Ukprn { get; set; }
 
         public string IlrFile { get; set; }
 

@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         {
             var reportServiceContextMock = new Mock<IReportServiceContext>();
 
-            reportServiceContextMock.Setup(r => r.OriginalFilename).Returns("Filename");
+            reportServiceContextMock.Setup(r => r.OriginalFilename).Returns("10000000/ILR-1920-20190801-090000.xml");
             reportServiceContextMock.Setup(r => r.Ukprn).Returns(1);
             reportServiceContextMock.Setup(r => r.CollectionYear).Returns("1920");
 
@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             {
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
-                {SummaryPageConstants.ILRFile, "Filename"},
+                {SummaryPageConstants.ILRFile, "ILR-1920-20190801-090000.xml"},
                 {SummaryPageConstants.Year, "1920"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
@@ -94,7 +94,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             {
 
                 { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
-                { SummaryPageConstants.FilePreparationDate, "01/08/2019 00:00:00" },
+                { SummaryPageConstants.FilePreparationDate, "01/08/2019" },
                 { SummaryPageConstants.LARSVersion, "1" },
                 { SummaryPageConstants.PostcodeVersion, "1" },
                 { SummaryPageConstants.OrganisationVersion, "1" },
@@ -221,6 +221,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 1,
                     LearnStartDate = new DateTime(2019, 8, 1),
                     EarliestStartDate = true,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = false,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = false,
+                    EarliestStartDateWiderFamilyLearning = true,
                     SixteenToEighteen = true,
                     Adult = false,
                     LearnStartDateIsInYear = true,
@@ -235,6 +239,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 2,
                     LearnStartDate = new DateTime(2019, 10, 1),
                     EarliestStartDate = false,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = false,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = false,
+                    EarliestStartDateWiderFamilyLearning = false,
                     SixteenToEighteen = false,
                     Adult = true,
                     LearnStartDateIsInYear = true,
@@ -249,6 +257,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 1,
                     LearnStartDate = new DateTime(2019, 8, 1),
                     EarliestStartDate = true,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = false,
+                    EarliestStartDateWiderFamilyLearning = false,
                     SixteenToEighteen = true,
                     Adult = false,
                     LearnStartDateIsInYear = true,
@@ -263,6 +275,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 1,
                     LearnStartDate = new DateTime(2019, 6, 1),
                     EarliestStartDate = true,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = false,
+                    EarliestStartDateWiderFamilyLearning = false,
                     SixteenToEighteen = false,
                     Adult = true,
                     LearnStartDateIsInYear = false,
@@ -272,6 +288,48 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     WiderFamilyLearning = false,
                 },
             };
+
+            NewBuilder().BuildCategoryData(message).Should().BeEquivalentTo(expectedData);
+        }
+
+        [Fact]
+        public void BuildCategoryData_NoLearners()
+        {
+            var message = new TestMessage
+            {
+                Learners = new TestLearner[]
+                {
+                    new TestLearner
+                    {
+                        LearnRefNumber = "Learner1",
+                        DateOfBirthNullable = new DateTime(2000, 9, 1),
+                        LearningDeliveries = new TestLearningDelivery[]
+                        {
+                            new TestLearningDelivery
+                            {
+                                AimSeqNumber = 1,
+                                FundModel = 35,
+                                LearnStartDate = new DateTime(2019, 8, 1),
+                                LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
+                                {
+                                    new TestLearningDeliveryFAM
+                                    {
+                                        LearnDelFAMType = "ASL",
+                                        LearnDelFAMCode = "4"
+                                    },
+                                    new TestLearningDeliveryFAM
+                                    {
+                                        LearnDelFAMType = "SOF",
+                                        LearnDelFAMCode = "105"
+                                    }
+                                }
+                            },
+                        }
+                    }
+                }
+            };
+
+            var expectedData = new List<CommunityLearningData>();
 
             NewBuilder().BuildCategoryData(message).Should().BeEquivalentTo(expectedData);
         }
@@ -307,6 +365,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 1,
                     LearnStartDate = new DateTime(2019, 8, 1),
                     EarliestStartDate = true,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = true,
+                    EarliestStartDateWiderFamilyLearning = true,
                     SixteenToEighteen = true,
                     Adult = false,
                     LearnStartDateIsInYear = true,
@@ -321,6 +383,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 2,
                     LearnStartDate = new DateTime(2019, 10, 1),
                     EarliestStartDate = false,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = false,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = false,
+                    EarliestStartDateWiderFamilyLearning = false,
                     SixteenToEighteen = false,
                     Adult = true,
                     LearnStartDateIsInYear = true,
@@ -335,6 +401,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 1,
                     LearnStartDate = new DateTime(2019, 8, 1),
                     EarliestStartDate = true,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = true,
+                    EarliestStartDateWiderFamilyLearning = true,
                     SixteenToEighteen = true,
                     Adult = false,
                     LearnStartDateIsInYear = true,
@@ -349,6 +419,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                     AimSeqNumber = 1,
                     LearnStartDate = new DateTime(2019, 6, 1),
                     EarliestStartDate = true,
+                    EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
+                    EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
+                    EarliestStartDateFamilyEnglishMathsAndLanguage = true,
+                    EarliestStartDateWiderFamilyLearning = true,
                     SixteenToEighteen = false,
                     Adult = true,
                     LearnStartDateIsInYear = false,
@@ -380,6 +454,54 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             result.WiderFamilyLearning.TotalLearners.Should().Be(1);
             result.WiderFamilyLearning.TotalStartedInFundingYear.Should().Be(1);
             result.WiderFamilyLearning.TotalEnrolmentsInFundingYear.Should().Be(1);
+        }
+
+        [Fact]
+        public void BuildModel_NoLearners()
+        {
+            var headerDictionary = new Dictionary<string, string>
+            {
+                {SummaryPageConstants.ProviderName, "OrgName"},
+                {SummaryPageConstants.UKPRN, "1"},
+                {SummaryPageConstants.ILRFile, "Filename"},
+                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
+            };
+
+            var footerDictionary = new Dictionary<string, string>
+            {
+                { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
+                { SummaryPageConstants.FilePreparationDate, "01/08/2019 00:00:00" },
+                { SummaryPageConstants.LARSVersion, "1" },
+                { SummaryPageConstants.PostcodeVersion, "1" },
+                { SummaryPageConstants.OrganisationVersion, "1" },
+                { SummaryPageConstants.LargeEmployersVersion, "1" },
+                { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2019" }
+            };
+
+            var categoryData = new List<CommunityLearningData>();
+
+            var result = NewBuilder().BuildModel(categoryData, headerDictionary, footerDictionary);
+
+            result.TotalCommunityLearning.TotalLearners.Should().Be(0);
+            result.TotalCommunityLearning.TotalStartedInFundingYear.Should().Be(0);
+            result.TotalCommunityLearning.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.PersonalAndCommunityDevelopment.TotalLearners.Should().Be(0);
+            result.PersonalAndCommunityDevelopment.TotalStartedInFundingYear.Should().Be(0);
+            result.PersonalAndCommunityDevelopment.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.NeigbourhoodLearning.TotalLearners.Should().Be(0);
+            result.NeigbourhoodLearning.TotalStartedInFundingYear.Should().Be(0);
+            result.NeigbourhoodLearning.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.FamilyEnglishMaths.TotalLearners.Should().Be(0);
+            result.FamilyEnglishMaths.TotalStartedInFundingYear.Should().Be(0);
+            result.FamilyEnglishMaths.TotalEnrolmentsInFundingYear.Should().Be(0);
+
+            result.WiderFamilyLearning.TotalLearners.Should().Be(0);
+            result.WiderFamilyLearning.TotalStartedInFundingYear.Should().Be(0);
+            result.WiderFamilyLearning.TotalEnrolmentsInFundingYear.Should().Be(0);
         }
 
         private IMessage TestMessage() => new TestMessage

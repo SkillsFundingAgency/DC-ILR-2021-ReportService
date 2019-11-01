@@ -11,7 +11,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             builder.RegisterType<IlrReferenceDataProviderService>().Keyed<IExternalDataProvider>(DependentDataCatalog.ReferenceData);
             builder.RegisterType<ValidIlrFileServiceProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.ValidIlr);
-            builder.RegisterType<InvalidIlrFileServiceProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.InvalidIlr);
+            builder.RegisterType<InputIlrFileServiceProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.InputIlr);
             builder.RegisterType<IlrValidationErrorsProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.ValidationErrors);
             builder.RegisterType<Fm25Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm25);
             builder.RegisterType<Fm35Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm35);

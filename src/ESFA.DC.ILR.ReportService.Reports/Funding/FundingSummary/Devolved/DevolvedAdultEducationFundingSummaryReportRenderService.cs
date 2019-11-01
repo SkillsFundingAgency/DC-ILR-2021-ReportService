@@ -199,37 +199,42 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 "Year To Date",
                 "Total",
             }, row, 0, false);
-            ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
+            ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
+
+            var renderFundLineGroupTotals = fundingSubCategory.FundLineGroups.Count > 1;
 
             foreach (var fundLineGroup in fundingSubCategory.FundLineGroups)
             {
-                RenderFundLineGroup(worksheet, fundLineGroup);
+                RenderFundLineGroup(worksheet, fundLineGroup, renderFundLineGroupTotals);
             }
 
             row = NextRow(worksheet);
             RenderFundingSummaryReportRow(worksheet, row, fundingSubCategory);
-            ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
+            ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
             ApplyFutureMonthStyleToRow(worksheet, row, fundingSubCategory.CurrentPeriod);
 
             row = NextRow(worksheet);
             RenderFundingSummaryCumulativeReportRow(worksheet, row, fundingSubCategory);
-            ApplyStyleToRow(worksheet, row, _fundingSubCategoryStyle);
+            ApplyStyleToRow(worksheet, row, _fundingCategoryStyle);
             ApplyFutureMonthStyleToRow(worksheet, row, fundingSubCategory.CurrentPeriod);
 
             return worksheet;
         }
 
-        private Worksheet RenderFundLineGroup(Worksheet worksheet, IDevolvedAdultEducationFundLineGroup fundLineGroup)
+        private Worksheet RenderFundLineGroup(Worksheet worksheet, IDevolvedAdultEducationFundLineGroup fundLineGroup, bool renderFundLineGroupTotal)
         {
             foreach (var fundLine in fundLineGroup.FundLines)
             {
                 RenderFundLine(worksheet, fundLine);
             }
 
-            var row = NextRow(worksheet);
-            RenderFundingSummaryReportRow(worksheet, row, fundLineGroup);
-            ApplyStyleToRow(worksheet, row, _fundLineGroupStyle);
-            ApplyFutureMonthStyleToRow(worksheet, row, fundLineGroup.CurrentPeriod);
+            if (renderFundLineGroupTotal)
+            {
+                var row = NextRow(worksheet);
+                RenderFundingSummaryReportRow(worksheet, row, fundLineGroup);
+                ApplyStyleToRow(worksheet, row, _fundLineGroupStyle);
+                ApplyFutureMonthStyleToRow(worksheet, row, fundLineGroup.CurrentPeriod);
+            }
 
             return worksheet;
         }
@@ -277,7 +282,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
             _futureMonthStyle.Font.IsItalic = true;
 
-            _fundingCategoryStyle.ForegroundColor = Color.FromArgb(191, 191, 191);
+            _fundingCategoryStyle.ForegroundColor = Color.FromArgb(192, 192, 192);
             _fundingCategoryStyle.Pattern = BackgroundType.Solid;
             _fundingCategoryStyle.Font.Size = 13;
             _fundingCategoryStyle.Font.IsBold = true;

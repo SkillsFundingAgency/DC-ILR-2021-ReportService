@@ -41,7 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
 
         public IEnumerable<Type> DependsOn => new List<Type>()
         {
-            DependentDataCatalog.InvalidIlr,
+            DependentDataCatalog.InputIlr,
             DependentDataCatalog.ReferenceData,
             DependentDataCatalog.ValidationErrors,
         };

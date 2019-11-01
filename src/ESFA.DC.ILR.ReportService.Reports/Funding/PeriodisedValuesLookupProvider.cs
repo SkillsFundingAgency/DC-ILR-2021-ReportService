@@ -150,7 +150,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
                 }));
             
             return learningDeliveriesByPeriod?
-                .Where(p => p != null)
+                .Where(p => p?.FundLine != null)
                 .GroupBy(p => p.FundLine, StringComparer.OrdinalIgnoreCase) // Fund Lines
                 .ToDictionary(k => k.Key,
                     v => v.GroupBy(a => a.AttributeName, StringComparer.OrdinalIgnoreCase) // Attributes

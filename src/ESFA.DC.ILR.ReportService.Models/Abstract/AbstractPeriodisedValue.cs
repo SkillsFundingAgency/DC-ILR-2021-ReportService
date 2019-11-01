@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
-namespace ESFA.DC.ILR.ReportService.Models.Fm36
+namespace ESFA.DC.ILR.ReportService.Models.Abstract
 {
-    public class PeriodisedAttribute
+    public class AbstractPeriodisedValue
     {
         public string AttributeName { get; set; }
 
