@@ -1,6 +1,5 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
@@ -10,6 +9,7 @@ using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
 {

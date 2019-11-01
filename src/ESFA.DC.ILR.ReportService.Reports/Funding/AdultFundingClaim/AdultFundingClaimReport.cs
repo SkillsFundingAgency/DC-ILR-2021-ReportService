@@ -45,6 +45,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             {
                 DependentDataCatalog.Fm35,
                 DependentDataCatalog.Fm99,
+                DependentDataCatalog.Eas,
                 DependentDataCatalog.ReferenceData
             };
 

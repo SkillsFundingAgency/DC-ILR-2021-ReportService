@@ -57,26 +57,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
             result.ElementAt(2).Severity.Should().Be("W");
         }
 
-        private IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> BuildIlrValidationErrorsMetadata()
+        private IReadOnlyCollection<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError> BuildIlrValidationErrorsMetadata()
         {
-            IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata
-                = new List<ReferenceDataService.Model.MetaData.ValidationError>()
+            IReadOnlyCollection<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError> validationErrorsMetadata
+                = new List<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError>()
                 {
-                    new ReferenceDataService.Model.MetaData.ValidationError()
+                    new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                     {
-                        Severity = ReferenceDataService.Model.MetaData.ValidationError.SeverityLevel.Error,
+                        Severity = ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError.SeverityLevel.Error,
                         RuleName = "AchDate_03",
                         Message = "The Achievement date must not be before the Learning start date"
                     },
-                    new ReferenceDataService.Model.MetaData.ValidationError()
+                    new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                     {
-                        Severity = ReferenceDataService.Model.MetaData.ValidationError.SeverityLevel.Error,
+                        Severity = ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError.SeverityLevel.Error,
                         RuleName = "AchDate_05",
                         Message = "The Achievement date must be after the Learning actual end date"
                     },
-                    new ReferenceDataService.Model.MetaData.ValidationError()
+                    new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                     {
-                        Severity = ReferenceDataService.Model.MetaData.ValidationError.SeverityLevel.Warning,
+                        Severity = ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError.SeverityLevel.Warning,
                         RuleName = "EPAOrgID_01",
                         Message = "The end point assessment organisation is not valid for this standard on this planned end date."
                     }

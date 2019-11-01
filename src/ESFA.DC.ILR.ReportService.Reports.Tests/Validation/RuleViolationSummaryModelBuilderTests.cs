@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.ReferenceDataVersions;
-using ESFA.DC.ILR.ReferenceDataService.Model.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
@@ -228,19 +227,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
                         LarsVersion = new LarsVersion {Version = "3.3.3.3"},
                         PostcodesVersion = new PostcodesVersion {Version = "4.4.4.4"},
                     },
-                    ValidationErrors =new List<ReferenceDataService.Model.MetaData.ValidationError>()
+                    ValidationErrors =new List<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError>()
                     {
-                        new ReferenceDataService.Model.MetaData.ValidationError()
+                        new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                         {
                             RuleName = "Rule1",
                             Message = "Rule1Message",
                         },
-                        new ReferenceDataService.Model.MetaData.ValidationError()
+                        new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                         {
                             RuleName = "Rule2",
                             Message = "Rule2Message",
                         },
-                        new ReferenceDataService.Model.MetaData.ValidationError()
+                        new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                         {
                             RuleName = "Rule3",
                             Message = "Rule3Message",

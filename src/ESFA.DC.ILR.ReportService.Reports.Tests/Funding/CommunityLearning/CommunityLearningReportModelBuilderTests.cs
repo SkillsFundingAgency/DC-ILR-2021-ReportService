@@ -2,10 +2,9 @@
 using System.Collections.Generic;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData.ReferenceDataVersions;
-using ESFA.DC.ILR.ReferenceDataService.Model.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;

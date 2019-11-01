@@ -1,4 +1,4 @@
-﻿using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
+﻿using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
