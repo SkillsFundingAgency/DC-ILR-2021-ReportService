@@ -19,6 +19,7 @@
     <Parameter Name="JobStatusConnectionString" DefaultValue="" />
     <Parameter Name="ReportingSubscriptionName" DefaultValue="Reports" />
     <Parameter Name="EasDbConnectionString" DefaultValue="" />
+    <Parameter Name="IlrDbConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -49,6 +50,7 @@
           </Section>
           <Section Name="DatabaseConfiguration">
             <Parameter Name="EasDbConnectionString" Value="[EasDbConnectionString]" />
+            <Parameter Name="IlrDbConnectionString" Value="[IlrDbConnectionString]" />
           </Section>
         </Settings>
       </ConfigOverride>
