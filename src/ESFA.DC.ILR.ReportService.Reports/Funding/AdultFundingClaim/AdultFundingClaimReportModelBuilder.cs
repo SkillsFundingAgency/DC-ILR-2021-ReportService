@@ -17,9 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
     public class AdultFundingClaimReportModelBuilder : AbstractReportModelBuilder, IModelBuilder<AdultFundingClaimReportModel>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
-        private const string LastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
-
+        
         private const int MidYearMonths = 6;
         private const int YearEndMonths = 10;
         private const int FinalMonths = 12;
@@ -124,13 +122,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             };
 
             // Footer
-            model.ReportGeneratedAt = "Report generated at: " + dateTimeNowUk.ToString(ReportGeneratedTimeStringFormat);
+            model.ReportGeneratedAt = "Report generated at: " + FormatReportGeneratedAtDateTime(dateTimeNowUk);
             model.ApplicationVersion = reportServiceContext.ServiceReleaseVersion;
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.OrganisationData = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CampusIdentifierVersion.Version;
-            model.LastEASFileUpdate = _dateTimeProvider.ConvertUtcToUk(referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault()).ToString(LastSubmittedIlrFileDateStringFormat);
+            model.LastEASFileUpdate = _dateTimeProvider.ConvertUtcToUk(referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault()).LongDateStringFormat();
             model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
             return model;
         }

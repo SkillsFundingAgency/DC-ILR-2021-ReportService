@@ -1,10 +1,11 @@
-﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Constants;
-using ESFA.DC.ILR.ReportService.Service.Interface;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
@@ -16,8 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
     public class HighNeedsStudentSummaryReportModelBuilder : AbstractSixteenToNineteenReportModelBuilder, IModelBuilder<HighNeedsStudentSummaryReportModel>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
-
+    
         public HighNeedsStudentSummaryReportModelBuilder(IDateTimeProvider dateTimeProvider)
         {
             _dateTimeProvider = dateTimeProvider;
@@ -35,7 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
-            var reportGeneratedAt = "Report generated at: " + dateTimeNowUk.ToString(ReportGeneratedTimeStringFormat);
+            var reportGeneratedAt = "Report generated at: " + FormatReportGeneratedAtDateTime(dateTimeNowUk);
 
             // Header
             model.ProviderName = organisationName;
@@ -78,7 +78,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             model.LargeEmployerData = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            model.FilePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
+            model.FilePreparationDate = FormatFilePreparationDate(message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
 
             return model;
         }
