@@ -1,17 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
-using Autofac.Features.Indexed;
 using ESFA.DC.ILR.Desktop.Interface;
-using ESFA.DC.ILR.Model;
-using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
-using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
 using Moq;

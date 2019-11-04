@@ -3,8 +3,8 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.Model.Loose.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.MetaData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Reports.Validation;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
@@ -32,7 +32,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
 
             var message = Mock.Of<ILooseMessage>();
 
-            var validationErrorsMetadata = new List<ReferenceDataService.Model.MetaData.ValidationError>();
+            var validationErrorsMetadata = new List<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError>();
 
             var referenceDataRoot = new ReferenceDataRoot()
             {

@@ -1,18 +1,17 @@
 ﻿using System;
-using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
-using ESFA.DC.ILR.ReportService.Reports.Model;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 {
@@ -175,7 +174,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
             if (easLastUpdate != null)
             {
-                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("dd/MM/yyyy HH:mm:ss");
+                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).LongDateStringFormat();
             }
 
             return new Dictionary<string, string>()
@@ -191,7 +190,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         private IDictionary<string, string> BuildFooterData(IReportServiceContext reportServiceContext, IMessage message, ReferenceDataRoot referenceDataRoot)
         {
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
+            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ShortDateStringFormat();
             var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
@@ -201,7 +200,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
-            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
+            var reportGeneratedAt = dateTimeNowUk.TimeOfDayOnDateStringFormat();
 
             return new Dictionary<string, string>()
             {

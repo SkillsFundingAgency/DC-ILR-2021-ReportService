@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
+using ESFA.DC.ILR.ReportService.Models.EAS;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model;
@@ -19,7 +20,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     public class DevolvedAdultEducationFundingSummaryReportModelBuilder : AbstractReportModelBuilder, IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
 
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
@@ -43,6 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+            var easFundingLines = reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>();
 
             var sofCodeDictionary = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups.Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)).ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
 
@@ -58,7 +59,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
 
             if (easLastUpdate != null)
             {
-                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).ToString("dd/MM/yyyy HH:mm:ss");
+                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).LongDateStringFormat(); ;
             }
 
             var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate;
@@ -66,7 +67,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
-            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
+            var reportGeneratedAt = FormatReportGeneratedAtDateTime(dateTimeNowUk);
 
             var reportCurrentPeriod = reportServiceContext.ReturnPeriod > 12 ? 12 : reportServiceContext.ReturnPeriod;
 
@@ -80,7 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 var periodisedValues = new PeriodisedValuesLookup
                 {
                     [FundingDataSources.FM35] = BuildPeriodisedValuesDictionary(fm35, learningDeliveries),
-                    [FundingDataSources.EAS] = BuildEASDictionary(referenceDataRoot, mgaClaSof?.SofCode)
+                    [FundingDataSources.EAS] = BuildEASDictionary(easFundingLines, mgaClaSof?.SofCode)
                 };
 
                 models.Add(new DevolvedAdultEducationFundingSummaryReportModel(
@@ -179,12 +180,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(ReferenceDataRoot referenceDataRoot, string sofCode)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(IReadOnlyCollection<EasFundingLine> easFundingLines, string sofCode)
         {
             int.TryParse(sofCode, out var sofCodeInt);
 
-            return referenceDataRoot?
-                       .EasFundingLines?
+            return easFundingLines?
                        .GroupBy(fl => fl.FundLine, StringComparer.OrdinalIgnoreCase)
                        .ToDictionary(k => k.Key,
                            v => v.SelectMany(ld => ld.EasSubmissionValues)

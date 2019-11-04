@@ -1,8 +1,4 @@
 ﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.Output;
-using ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.Output;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
@@ -11,15 +7,17 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Models.EAS;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.Fm99;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 {
     public class AdultFundingClaimReportModelBuilder : AbstractReportModelBuilder, IModelBuilder<AdultFundingClaimReportModel>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
-        private const string LastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
-
+        
         private const int MidYearMonths = 6;
         private const int YearEndMonths = 10;
         private const int FinalMonths = 12;
@@ -57,6 +55,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             var fm35Global = reportServiceDependentData.Get<FM35Global>();
             var albGlobal = reportServiceDependentData.Get<ALBGlobal>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
+            var easFundingLines = reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>();
+
             string organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
             var model = new AdultFundingClaimReportModel();
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
@@ -71,7 +71,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             //Body
             var fm35LearningDeliveryPeriodisedValues = GetFM35LearningDeliveryPeriodisedValues(fm35Global);
             var albLearningDeliveryPeriodisedValues = GetAlbLearningDeliveryPeriodisedValues(albGlobal);
-            var easFundingLines = referenceDataRoot?.EasFundingLines;
 
             model.AEBProgrammeFunding = new ActualEarnings()
             {
@@ -123,13 +122,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             };
 
             // Footer
-            model.ReportGeneratedAt = "Report generated at: " + dateTimeNowUk.ToString(ReportGeneratedTimeStringFormat);
+            model.ReportGeneratedAt = "Report generated at: " + FormatReportGeneratedAtDateTime(dateTimeNowUk);
             model.ApplicationVersion = reportServiceContext.ServiceReleaseVersion;
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.OrganisationData = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CampusIdentifierVersion.Version;
-            model.LastEASFileUpdate = _dateTimeProvider.ConvertUtcToUk(referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault()).ToString(LastSubmittedIlrFileDateStringFormat);
+            model.LastEASFileUpdate = _dateTimeProvider.ConvertUtcToUk(referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault()).LongDateStringFormat();
             model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
             return model;
         }

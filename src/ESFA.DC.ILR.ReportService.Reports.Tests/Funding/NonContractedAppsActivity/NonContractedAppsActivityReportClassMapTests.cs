@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using CsvHelper;
-using ESFA.DC.ILR.ReferenceDataService.Model.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
-using ESFA.DC.ILR.ReportService.Reports.Model;
-using ESFA.DC.ILR.Tests.Model;
 using FluentAssertions;
 using Xunit;
 

@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReferenceDataService.Model.EAS;
+using ESFA.DC.ILR.ReportService.Models.EAS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
 using FluentAssertions;
 using Xunit;
@@ -44,46 +40,43 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedAdultEducation
                 }
             };
 
-            var referenceDataRoot = new ReferenceDataRoot
+            var easFundingLines = new List<EasFundingLine>
             {
-                EasFundingLines = new List<EasFundingLine>
+                new EasFundingLine
                 {
-                    new EasFundingLine
+                    FundLine = "FundLine1",
+                    EasSubmissionValues = new List<EasSubmissionValue>
                     {
-                        FundLine = "FundLine1",
-                        EasSubmissionValues = new List<EasSubmissionValue>
+                        new EasSubmissionValue
                         {
-                            new EasSubmissionValue
+                            AdjustmentTypeName = "AdjustmentTypeName1",
+                            PaymentName = "PaymentName1",
+                            Period1 = new List<EasPaymentValue>()
+                        },
+                        new EasSubmissionValue
+                        {
+                            AdjustmentTypeName = "AdjustmentTypeName2",
+                            PaymentName = "PaymentName2",
+                            Period1 = new List<EasPaymentValue>
                             {
-                                AdjustmentTypeName = "AdjustmentTypeName1",
-                                PaymentName = "PaymentName1",
-                                Period1 = new List<EasPaymentValue>()
-                            },
-                            new EasSubmissionValue
+                                new EasPaymentValue(1m, 101)
+                            }
+                        },
+                        new EasSubmissionValue
+                        {
+                            AdjustmentTypeName = "AdjustmentTypeName3",
+                            PaymentName = "PaymentName3",
+                           Period1 = new List<EasPaymentValue>
                             {
-                                AdjustmentTypeName = "AdjustmentTypeName2",
-                                PaymentName = "PaymentName2",
-                                Period1 = new List<EasPaymentValue>
-                                {
-                                    new EasPaymentValue(1m, 101)
-                                }
-                            },
-                            new EasSubmissionValue
-                            {
-                                AdjustmentTypeName = "AdjustmentTypeName3",
-                                PaymentName = "PaymentName3",
-                               Period1 = new List<EasPaymentValue>
-                                {
-                                    new EasPaymentValue(1m, 101),
-                                    new EasPaymentValue(1m, 105),
-                                }
+                                new EasPaymentValue(1m, 101),
+                                new EasPaymentValue(1m, 105),
                             }
                         }
                     }
                 }
             };
 
-            NewBuilder().BuildEASDictionary(referenceDataRoot, "105").Should().BeEquivalentTo(expectedOutput);
+            NewBuilder().BuildEASDictionary(easFundingLines, "105").Should().BeEquivalentTo(expectedOutput);
         }
 
         public DevolvedAdultEducationFundingSummaryReportModelBuilder NewBuilder(IDateTimeProvider dateTimeProvider = null)

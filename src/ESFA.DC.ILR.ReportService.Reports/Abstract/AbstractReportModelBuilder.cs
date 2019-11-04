@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Linq;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -8,17 +9,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 {
     public abstract class AbstractReportModelBuilder
     {
-        private const string lastSubmittedIlrFileDateStringFormat = "dd/MM/yyyy HH:mm:ss";
-        private const string ilrFileNameDateTimeParseFormat = "yyyyMMdd-HHmmss";
-        protected const string reportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
-
         public string ExtractDisplayDateTimeFromFileName(string ilrFileName)
         {
             var ilrFilenameDateTime = ExtractFileName(ilrFileName).Substring(18, 15);
 
-            return DateTime.TryParseExact(ilrFilenameDateTime, ilrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime) 
-                ? parseDateTime.ToString(lastSubmittedIlrFileDateStringFormat) 
+            return DateTime.TryParseExact(ilrFilenameDateTime, FormattingConstants.IlrFileNameDateTimeParseFormat, CultureInfo.InvariantCulture, DateTimeStyles.None, out var parseDateTime) 
+                ? parseDateTime.LongDateStringFormat() 
                 : string.Empty;
+        }
+
+        public string FormatFilePreparationDate(DateTime filePreparationDate)
+        {
+            return filePreparationDate.ShortDateStringFormat();
+        }
+
+        public string FormatFilePreparationDate(DateTime? filePreparationDate)
+        {
+            return filePreparationDate == null ? null : filePreparationDate.Value.ShortDateStringFormat();
+        }
+
+        public string FormatReportGeneratedAtDateTime(DateTime reportGeneratedAt)
+        {
+            return reportGeneratedAt.TimeOfDayOnDateStringFormat();
         }
 
         public string ExtractFileName(string ilrFileName)

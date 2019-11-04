@@ -7,7 +7,10 @@
   <ItemGroup>
     <PackageReference Include="Aspose.Cells" Version="19.9.0" />
     <PackageReference Include="CsvHelper" Version="12.1.2" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model" Version="0.0.245" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Models\ESFA.DC.ILR.ReportService.Models.csproj" />
   </ItemGroup>
 
 </Project>

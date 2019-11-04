@@ -10,6 +10,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Interface
         IEnumerable<ValidationErrorRow> Build(
             IEnumerable<ValidationError> ilrValidationErrors,
             ILooseMessage message,
-            IReadOnlyCollection<ReferenceDataService.Model.MetaData.ValidationError> validationErrorsMetadata);
+            IReadOnlyCollection<Models.ReferenceData.MetaData.ValidationError> validationErrorsMetadata);
     }
 }

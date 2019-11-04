@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
-using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using FluentAssertions;
 using Xunit;

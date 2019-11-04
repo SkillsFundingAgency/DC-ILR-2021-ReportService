@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Autofac.Features.Indexed;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
 using Moq;
