@@ -189,7 +189,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         private IDictionary<string, string> BuildFooterData(IReportServiceContext reportServiceContext, IMessage message, ReferenceDataRoot referenceDataRoot)
         {
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString();
+            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.Date.ToString(shortDateStringFormat);
             var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
