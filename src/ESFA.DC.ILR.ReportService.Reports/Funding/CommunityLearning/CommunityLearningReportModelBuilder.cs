@@ -177,7 +177,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
 
         public IDictionary<string, string> BuildFooterData(IReportServiceContext reportServiceContext, IMessage message, ReferenceDataRoot referenceDataRoot)
         {
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.Date.ToString(shortDateStringFormat);
+            var filePreparationDate = FormatFilePreparationDate(message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
             var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
@@ -186,7 +186,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
-            var reportGeneratedAt = dateTimeNowUk.ToString(reportGeneratedTimeStringFormat);
+            var reportGeneratedAt = FormatReportGeneratedAtDateTime(dateTimeNowUk);
 
             return new Dictionary<string, string>()
             {

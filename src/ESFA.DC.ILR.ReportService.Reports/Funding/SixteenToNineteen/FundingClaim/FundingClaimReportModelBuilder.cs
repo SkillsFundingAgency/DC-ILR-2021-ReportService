@@ -17,7 +17,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
     public class FundingClaimReportModelBuilder : AbstractSixteenToNineteenReportModelBuilder , IModelBuilder<FundingClaimReportModel>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private const string ReportGeneratedTimeStringFormat = "HH:mm:ss on dd/MM/yyyy";
 
         public FundingClaimReportModelBuilder(IDateTimeProvider dateTimeProvider)
         {
@@ -41,7 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
-            var reportGeneratedAt = "Report generated at: " + dateTimeNowUk.ToString(ReportGeneratedTimeStringFormat);
+            var reportGeneratedAt = "Report generated at: " + FormatReportGeneratedAtDateTime(dateTimeNowUk);
 
             // Header
             model.ProviderName = organisationName;
@@ -49,7 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             model.IlrFile = IlrFilename(reportServiceContext.OriginalFilename);
             model.Year = ReportingConstants.Year;
             model.CofRemoval = -cofRemoval.GetValueOrDefault();
-            model.ReferenceDate = referenceDateFilter.HasValue ? referenceDateFilter.Value.ToString("dd/MM/yyyy") : "(ALL)";
+            model.ReferenceDate = referenceDateFilter.HasValue ? referenceDateFilter.Value.ShortDateStringFormat() : "(ALL)";
 
             // Body
             var applicableLearners = FilterLearners(learners);
@@ -97,7 +96,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             model.LargeEmployerData = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            model.FilePreparationDate = message?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ToString("dd/MM/yyyy");
+            model.FilePreparationDate = FormatFilePreparationDate(message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
             model.CofRemovalData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CoFVersion.Version;
 
             return model;
