@@ -13,5 +13,7 @@
     <Parameter Name="ServiceReleaseVersion" Value="__ServiceReleaseVersion__" />
     <Parameter Name="ReportingSubscriptionName" Value="__ReportingSubscriptionName__" />
     <Parameter Name="ProcessingServicePlacementConstraints" Value="__ProcessingServicePlacementConstraints__" />
+    <Parameter Name="EasDbConnectionString" Value="__EasDbConnectionString__" />
+    <Parameter Name="IlrDbConnectionString" Value="__IlrDbConnectionString__" />
   </Parameters>
 </Application>

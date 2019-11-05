@@ -69,7 +69,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             containerBuilder.RegisterType<FileNameService>().As<IFileNameService>();
 
             containerBuilder.RegisterModule<OrchestrationModule>();
-            containerBuilder.RegisterModule<DataModule>();
             containerBuilder.RegisterModule<ReportsModule>();
 
             return containerBuilder;
