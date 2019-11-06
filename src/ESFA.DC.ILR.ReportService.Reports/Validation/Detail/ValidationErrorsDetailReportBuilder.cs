@@ -21,10 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
         {
             List<ValidationErrorRow> validationErrorModels = new List<ValidationErrorRow>();
 
-            var learnerDictionary = message
-                .Learners?
-                .GroupBy(l => l.LearnRefNumber, StringComparer.OrdinalIgnoreCase)
-                .ToDictionary(l => l.Key, l => l.FirstOrDefault(), StringComparer.OrdinalIgnoreCase);
+            var learnerDictionary = BuildLearnerDictionary(message);
 
             foreach (ValidationError validationError in ilrValidationErrors)
             {
@@ -56,6 +53,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
 
             validationErrorModels.Sort(ValidationErrorsModelComparer);
             return validationErrorModels;
+        }
+
+        public IDictionary<string, ILooseLearner> BuildLearnerDictionary(ILooseMessage message)
+        {
+            return message?
+                .Learners?
+                .Where(l => l.LearnRefNumber != null)
+                .GroupBy(l => l.LearnRefNumber, StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(l => l.Key, l => l.FirstOrDefault(), StringComparer.OrdinalIgnoreCase)
+                ?? new Dictionary<string, ILooseLearner>();
         }
 
         private string GetValidationErrorParameters(List<ValidationErrorParameter> validationErrorParameters)

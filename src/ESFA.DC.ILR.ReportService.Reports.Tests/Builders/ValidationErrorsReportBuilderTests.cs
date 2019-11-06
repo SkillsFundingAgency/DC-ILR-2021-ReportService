@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
@@ -55,6 +56,72 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
             result.ElementAt(2).RuleName.Should().Be("EPAOrgID_01");
             result.ElementAt(2).SWSupAimId.Should().Be("6406d4f6-f38a-45a9-9b9a-f956728ce540");
             result.ElementAt(2).Severity.Should().Be("W");
+        }
+
+
+        [Fact]
+        public void BuildLearnerDictionary()
+        {
+            var learnerOne = MockExtensions.NewMock<ILooseLearner>()
+                .With(l => l.LearnRefNumber, "One")
+                .Object;
+
+            var learnerTwo = MockExtensions.NewMock<ILooseLearner>()
+                .With(l => l.LearnRefNumber, "Two")
+                .Object;
+
+            var message = MockExtensions.NewMock<ILooseMessage>()
+                .With(m => m.Learners, new List<ILooseLearner>()
+                {
+                    learnerOne, learnerTwo
+                })
+                .Object;
+
+            var dictionary = NewBuilder().BuildLearnerDictionary(message);
+
+            dictionary.Should().HaveCount(2);
+            dictionary.Should().ContainKey("One");
+            dictionary.Should().ContainKey("Two");
+        }
+
+        [Fact]
+        public void BuildLearnerDictionary_NullLearnRefNumber()
+        {
+            var learnerOne = MockExtensions.NewMock<ILooseLearner>()
+                .With(l => l.LearnRefNumber, "One")
+                .Object;
+
+            var learnerTwo = MockExtensions.NewMock<ILooseLearner>()
+                .With(l => l.LearnRefNumber, null)
+                .Object;
+
+            var message = MockExtensions.NewMock<ILooseMessage>()
+                .With(m => m.Learners, new List<ILooseLearner>()
+                {
+                    learnerOne, learnerTwo
+                })
+                .Object;
+
+            var dictionary = NewBuilder().BuildLearnerDictionary(message);
+
+            dictionary.Should().HaveCount(1);
+            dictionary.Should().ContainKey("One");
+        }
+
+        [Fact]
+        public void BuildLearnerDictionary_NullMessage()
+        {
+            NewBuilder().BuildLearnerDictionary(null).Should().BeEmpty();
+        }
+
+        [Fact]
+        public void BuildLearnerDictionary_NullLearners()
+        {
+            var message = MockExtensions.NewMock<ILooseMessage>()
+                .With(m => m.Learners, null)
+                .Object;
+
+            NewBuilder().BuildLearnerDictionary(message).Should().BeEmpty();
         }
 
         private IReadOnlyCollection<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError> BuildIlrValidationErrorsMetadata()
@@ -208,6 +275,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
             };
 
             return ilrValidationErrors;
+        }
+
+        private ValidationErrorsDetailReportBuilder NewBuilder()
+        {
+            return new ValidationErrorsDetailReportBuilder();
         }
     }
 }
