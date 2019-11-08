@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Tests
             _testOutputHelper = testOutputHelper;
         }
 
-        [Fact]
+        [Fact(Skip = "Local performance test")]
         public async Task ProvideAsync()
         {
             var connectionString = ConfigurationManager.AppSettings["IlrDbConnectionString"];
