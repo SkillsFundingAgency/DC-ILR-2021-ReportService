@@ -14,6 +14,8 @@ using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
 using ESFA.DC.ILR1920.DataStore.EF;
 using ESFA.DC.ILR1920.DataStore.EF.Interface;
+using ESFA.DC.ILR1920.DataStore.EF.Valid;
+using ESFA.DC.ILR1920.DataStore.EF.Valid.Interface;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
 using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
@@ -119,6 +121,11 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         c.Register(container => new DbContextOptionsBuilder<ILR1920_DataStoreEntities>()
                             .UseSqlServer(databaseConfiguration.IlrDbConnectionString)
                             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<ILR1920_DataStoreEntities>>().SingleInstance();
+
+                        c.RegisterType<ILR1920_DataStoreEntitiesValid>().As<IILR1920_DataStoreEntitiesValid>();
+                        c.Register(container => new DbContextOptionsBuilder<ILR1920_DataStoreEntitiesValid>()
+                            .UseSqlServer(databaseConfiguration.IlrDbConnectionString)
+                            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<ILR1920_DataStoreEntitiesValid>>().SingleInstance();
                         break;
                 }
             });

@@ -10,7 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<IlrReferenceDataProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.ReferenceData);
-            builder.RegisterType<Data.Providers.ValidIlrFileServiceProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.ValidIlr);
+            builder.RegisterType<ValidIlrProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.ValidIlr);
             builder.RegisterType<Fm25Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm25);
             builder.RegisterType<Fm35Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm35);
             builder.RegisterType<Fm36Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm36);
