@@ -8,6 +8,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Interface
 {
     public interface IFrontEndValidationReport
     {
-        Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrors,bool isSchemaError, CancellationToken cancellationToken);
+        Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrors, bool isSchemaError, CancellationToken cancellationToken);
     }
 }
