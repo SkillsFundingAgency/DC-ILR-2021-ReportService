@@ -31,7 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
             _logger = logger;
         }
 
-        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrorDtos, CancellationToken cancellationToken)
+        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrorDtos, bool isSchemaError, CancellationToken cancellationToken)
         {
             var validationErrorDtosList = validationErrorDtos.ToList();
 
@@ -51,6 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
                 ErrorMessage = validationErrorDtosList
                     .FirstOrDefault(x => string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase))
                     ?.ErrorMessage,
+                IsSchemaError = isSchemaError
                 //TotalDataMatchErrors = _validationStageOutputCache.DataMatchProblemCount,
                 //TotalDataMatchLearners = _validationStageOutputCache.DataMatchProblemLearnersCount
             };
