@@ -175,6 +175,7 @@
     <Compile Include="Service\CsvServiceTests.cs" />
     <Compile Include="Service\ExcelServiceTests.cs" />
     <Compile Include="Service\FileNameServiceTests.cs" />
+    <Compile Include="Service\ZipServiceTests.cs" />
     <Compile Include="Stubs\FileServiceStub.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
