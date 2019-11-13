@@ -8,7 +8,7 @@ using ESFA.DC.EAS1920.EF.Interface;
 using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Modules;
-using ESFA.DC.ILR.ReportService.Service;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
@@ -101,11 +101,11 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 
                 switch (jobContextMessage.KeyValuePairs["CollectionName"].ToString())
                 {
-                    case "ILR1920":
+                    case CollectionConstants.IlrCollectionName:
                         c.RegisterModule<DataModule>();
                         break;
 
-                    case "EAS":
+                    case CollectionConstants.EasCollectionName:
                         c.RegisterModule<EasDataModule>();
 
                         // register Eas database
