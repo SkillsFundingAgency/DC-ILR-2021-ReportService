@@ -101,7 +101,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 
                 switch (jobContextMessage.KeyValuePairs["CollectionName"].ToString())
                 {
-                    case "ILR":
+                    case "ILR1920":
                         c.RegisterModule<DataModule>();
                         break;
 
