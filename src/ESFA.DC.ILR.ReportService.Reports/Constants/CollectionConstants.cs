@@ -4,6 +4,6 @@
     {
         public const string IlrCollectionName = "ILR1920";
 
-        public const string EasCollectionName = "EAS";
+        public const string EasCollectionName = "EAS1920";
     }
 }
