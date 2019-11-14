@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
                 {
                     HeaderEntity = new MessageHeader()
                     {
-                        CollectionDetails = await context.CollectionDetails
+                        CollectionDetailsEntity = await context.CollectionDetails
                             .Where(x => x.UKPRN == reportServiceContext.Ukprn)
                             .OrderByDescending(d => d.FilePreparationDate)
                             .Select(cd => new MessageHeaderCollectionDetails()
