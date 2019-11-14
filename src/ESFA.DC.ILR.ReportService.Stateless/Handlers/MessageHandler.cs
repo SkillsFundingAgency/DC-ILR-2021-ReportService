@@ -21,6 +21,8 @@ using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.ReferenceData.Postcodes.Model;
+using ESFA.DC.ReferenceData.Postcodes.Model.Interface;
 using ESFA.DC.ServiceFabric.Common.Config;
 using ESFA.DC.ServiceFabric.Common.Config.Interface;
 using Microsoft.EntityFrameworkCore;
@@ -108,7 +110,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                     case CollectionConstants.EasCollectionName:
                         c.RegisterModule<EasDataModule>();
 
-                        // register Eas database
                         IServiceFabricConfigurationService serviceFabricConfigurationService = new ServiceFabricConfigurationService();
                         var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DatabaseConfiguration>("DatabaseConfiguration");
 
@@ -116,6 +117,11 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         c.Register(container => new DbContextOptionsBuilder<EasContext>()
                             .UseSqlServer(databaseConfiguration.EasDbConnectionString)
                             .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<EasContext>>().SingleInstance();
+
+                        c.RegisterType<PostcodesContext>().As<IPostcodesContext>();
+                        c.Register(container => new DbContextOptionsBuilder<PostcodesContext>()
+                            .UseSqlServer(databaseConfiguration.PostcodesDbConnectionString)
+                            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<PostcodesContext>>().SingleInstance();
 
                         c.RegisterType<ILR1920_DataStoreEntities>().As<IILR1920_DataStoreEntities>();
                         c.Register(container => new DbContextOptionsBuilder<ILR1920_DataStoreEntities>()
