@@ -52,6 +52,9 @@
     <Reference Include="ESFA.DC.ILR1920.DataStore.EF.Valid, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.DataStore.EF.Valid.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.ReferenceData.Postcodes.Model, Version=0.2.210.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ReferenceData.Postcodes.Model.0.2.210\lib\netstandard2.0\ESFA.DC.ReferenceData.Postcodes.Model.dll</HintPath>
+    </Reference>
     <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
       <HintPath>..\packages\FluentAssertions.5.9.0\lib\net45\FluentAssertions.dll</HintPath>
     </Reference>

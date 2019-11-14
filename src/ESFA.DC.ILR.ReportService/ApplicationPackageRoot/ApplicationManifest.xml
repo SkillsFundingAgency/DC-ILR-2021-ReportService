@@ -20,6 +20,7 @@
     <Parameter Name="ReportingSubscriptionName" DefaultValue="Reports" />
     <Parameter Name="EasDbConnectionString" DefaultValue="" />
     <Parameter Name="IlrDbConnectionString" DefaultValue="" />
+    <Parameter Name="PostcodesDbConnectionString" DefaultValue="" />
   </Parameters>
   <!-- Import the ServiceManifest from the ServicePackage. The ServiceManifestName and ServiceManifestVersion 
        should match the Name and Version attributes of the ServiceManifest element defined in the 
@@ -51,6 +52,7 @@
           <Section Name="DatabaseConfiguration">
             <Parameter Name="EasDbConnectionString" Value="[EasDbConnectionString]" />
             <Parameter Name="IlrDbConnectionString" Value="[IlrDbConnectionString]" />
+            <Parameter Name="PostcodesDbConnectionString" Value="[PostcodesDbConnectionString]" />
           </Section>
         </Settings>
       </ConfigOverride>

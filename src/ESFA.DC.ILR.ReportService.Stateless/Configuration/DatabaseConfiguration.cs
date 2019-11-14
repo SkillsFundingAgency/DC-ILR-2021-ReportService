@@ -5,5 +5,7 @@
         public string EasDbConnectionString { get; set; }
 
         public string IlrDbConnectionString { get; set; }
+
+        public string PostcodesDbConnectionString { get; set; }
     }
 }
