@@ -15,6 +15,6 @@
     <Parameter Name="ProcessingServicePlacementConstraints" Value="__ProcessingServicePlacementConstraints__" />
     <Parameter Name="EasDbConnectionString" Value="__Eas1920ConnectionString__" />
     <Parameter Name="IlrDbConnectionString" Value="__ILR1920DbConnectionString__" />
-    <Parameter Name="PostcodesDbConnectionString" Value="__PostcodesDbConnectionString__" />
+    <Parameter Name="PostcodesDbConnectionString" Value="__PostcodesConnectionString_EFCore_RO__" />
   </Parameters>
 </Application>
