@@ -324,7 +324,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             var looseLearner = MockExtensions.NewMock<ILooseLearner>()
                 .With(l => l.LearnRefNumber, "LearnRefNumber1").Build();
 
-            return new List<ILooseLearner>(){ looseLearner};
+            return new List<ILooseLearner>(){ looseLearner };
         }
 
         private static List<ILooseLearner> BuildLearners()
