@@ -1,6 +1,8 @@
-﻿namespace ESFA.DC.ILR.ReportService.Stateless.Configuration
+﻿using ESFA.DC.ILR.ReportService.Service.Interface;
+
+namespace ESFA.DC.ILR.ReportService.Stateless.Configuration
 {
-    public class DatabaseConfiguration
+    public class DatabaseConfiguration : IDatabaseConfiguration
     {
         public string EasDbConnectionString { get; set; }
 
