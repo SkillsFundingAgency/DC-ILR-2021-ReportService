@@ -65,6 +65,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless
             // register MessageHandler
             containerBuilder.RegisterType<MessageHandler>().As<IMessageHandler<JobContextMessage>>().InstancePerLifetimeScope();
 
+            containerBuilder.RegisterType<DatabaseConfiguration>().As<IDatabaseConfiguration>();
+
             containerBuilder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>().InstancePerLifetimeScope();
 
             containerBuilder.RegisterType<FileNameService>().As<IFileNameService>();

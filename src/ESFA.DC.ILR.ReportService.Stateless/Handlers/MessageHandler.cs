@@ -108,30 +108,10 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         break;
 
                     case CollectionConstants.EasCollectionName:
-                        c.RegisterModule<EasDataModule>();
-
                         IServiceFabricConfigurationService serviceFabricConfigurationService = new ServiceFabricConfigurationService();
-                        var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DatabaseConfiguration>("DatabaseConfiguration");
+                        var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<IDatabaseConfiguration>("DatabaseConfiguration");
 
-                        c.RegisterType<EasContext>().As<IEasdbContext>();
-                        c.Register(container => new DbContextOptionsBuilder<EasContext>()
-                            .UseSqlServer(databaseConfiguration.EasDbConnectionString)
-                            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<EasContext>>().SingleInstance();
-
-                        c.RegisterType<PostcodesContext>().As<IPostcodesContext>();
-                        c.Register(container => new DbContextOptionsBuilder<PostcodesContext>()
-                            .UseSqlServer(databaseConfiguration.PostcodesDbConnectionString)
-                            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<PostcodesContext>>().SingleInstance();
-
-                        c.RegisterType<ILR1920_DataStoreEntities>().As<IILR1920_DataStoreEntities>();
-                        c.Register(container => new DbContextOptionsBuilder<ILR1920_DataStoreEntities>()
-                            .UseSqlServer(databaseConfiguration.IlrDbConnectionString)
-                            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<ILR1920_DataStoreEntities>>().SingleInstance();
-
-                        c.RegisterType<ILR1920_DataStoreEntitiesValid>().As<IILR1920_DataStoreEntitiesValid>();
-                        c.Register(container => new DbContextOptionsBuilder<ILR1920_DataStoreEntitiesValid>()
-                            .UseSqlServer(databaseConfiguration.IlrDbConnectionString)
-                            .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<ILR1920_DataStoreEntitiesValid>>().SingleInstance();
+                        c.RegisterModule(new EasDataModule(databaseConfiguration));
                         break;
                 }
             });
