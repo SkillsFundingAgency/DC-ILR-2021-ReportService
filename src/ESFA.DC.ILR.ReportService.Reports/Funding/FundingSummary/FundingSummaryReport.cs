@@ -33,11 +33,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         public virtual IEnumerable<Type> DependsOn
             => new[] 
             {
+                DependentDataCatalog.ValidIlr,
                 DependentDataCatalog.Fm25,
                 DependentDataCatalog.Fm35,
                 DependentDataCatalog.Fm36,
                 DependentDataCatalog.Fm81,
                 DependentDataCatalog.Fm99,
+                DependentDataCatalog.Eas,
                 DependentDataCatalog.ReferenceData,
             };
 
