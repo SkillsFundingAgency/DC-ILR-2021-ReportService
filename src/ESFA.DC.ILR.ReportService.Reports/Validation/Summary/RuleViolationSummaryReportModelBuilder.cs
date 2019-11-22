@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             model.TotalNoOfLearners = looseLearners.DistinctByCount(x => x.LearnRefNumber);
             model.TotalNoOfLearnersWithWarnings = learnRefNumbersWithWarnings.Count(l => !learnRefNumbersWithErrors.Contains(l));
             
-            var learningDeliveries = looseLearners.SelectMany(x => x.LearningDeliveries).ToList();
+            var learningDeliveries = looseLearners.Where(x => x.LearningDeliveries != null).SelectMany(x => x.LearningDeliveries).ToList();
 
             model.FullyValidLearners = new RuleViolationsTotalModel
             {

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
@@ -73,6 +74,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
 
             containerBuilder.RegisterType<CsvService>().As<ICsvService>();
             containerBuilder.RegisterType<ExcelService>().As<IExcelService>();
+
+            containerBuilder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
         }
 
         private void RegisterValidationReports(ContainerBuilder containerBuilder)

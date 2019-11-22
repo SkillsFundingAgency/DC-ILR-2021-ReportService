@@ -27,9 +27,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
         {
             var zipName = _fileNameService.GetFilename(reportServiceContext, "Reports", OutputTypes.Zip, false);
 
-            using (var writeStream = await _fileService.OpenWriteStreamAsync(zipName, container, cancellationToken))
+            using (Stream memoryStream = new MemoryStream())
             {
-                using (var zipArchive = new ZipArchive(writeStream, ZipArchiveMode.Create, true))
+                if (await _fileService.ExistsAsync(zipName, container, cancellationToken))
+                {
+                    using (var readStream = await _fileService.OpenReadStreamAsync(zipName, container, cancellationToken))
+                    {
+                        await readStream.CopyToAsync(memoryStream);
+                    }
+                }
+
+                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Update, true))
                 {
                     foreach (var fileName in fileNames.Where(f => !string.IsNullOrWhiteSpace(f)))
                     {
@@ -43,6 +51,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
                             }
                         }
                     }
+                }
+
+                using (var writeStream = await _fileService.OpenWriteStreamAsync(zipName, container, cancellationToken))
+                {
+                    memoryStream.Position = 0;
+
+                    await memoryStream.CopyToAsync(writeStream);
                 }
             }
         }

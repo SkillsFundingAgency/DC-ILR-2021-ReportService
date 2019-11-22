@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
-using ESFA.DC.ILR.ReportService.Service;
+using ESFA.DC.ILR.ReportService.Modules;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
@@ -14,6 +15,8 @@ using ESFA.DC.JobContextManager.Interface;
 using ESFA.DC.JobContextManager.Model;
 using ESFA.DC.JobContextManager.Model.Interface;
 using ESFA.DC.Logging.Interfaces;
+using ESFA.DC.ServiceFabric.Common.Config;
+using ESFA.DC.ServiceFabric.Common.Config.Interface;
 using ExecutionContext = ESFA.DC.Logging.ExecutionContext;
 
 namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
@@ -88,6 +91,20 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         azureBlobStorageOptions.AzureBlobConnectionString,
                         jobContextMessage.KeyValuePairs[ILRContextKeys.Container].ToString()))
                     .As<IAzureStorageKeyValuePersistenceServiceConfig>();
+
+                switch (jobContextMessage.KeyValuePairs["CollectionName"].ToString())
+                {
+                    case CollectionConstants.IlrCollectionName:
+                        c.RegisterModule<DataModule>();
+                        break;
+
+                    case CollectionConstants.EasCollectionName:
+                        IServiceFabricConfigurationService serviceFabricConfigurationService = new ServiceFabricConfigurationService();
+                        var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<IDatabaseConfiguration>("DatabaseConfiguration");
+
+                        c.RegisterModule(new EasDataModule(databaseConfiguration));
+                        break;
+                }
             });
         }
     }

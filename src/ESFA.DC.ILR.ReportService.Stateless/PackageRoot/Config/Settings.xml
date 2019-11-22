@@ -24,4 +24,10 @@
     <Parameter Name="ServiceReleaseVersion" Value="" />
   </Section>
 
+  <Section Name="DatabaseConfiguration">
+    <Parameter Name="EasDbConnectionString" Value="" />
+    <Parameter Name="IlrDbConnectionString" Value="" />
+    <Parameter Name="PostcodesDbConnectionString" Value="" />
+  </Section>
+
 </Settings>

@@ -52,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
 
             await _csvService.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrorRows, fileName, reportServiceContext.Container, cancellationToken);
             
-            await _frontEndValidationReport.GenerateAsync(reportServiceContext, validationErrorRows, cancellationToken);
+            await _frontEndValidationReport.GenerateAsync(reportServiceContext, validationErrorRows, false, cancellationToken);
 
             return new[] { fileName };
         }
