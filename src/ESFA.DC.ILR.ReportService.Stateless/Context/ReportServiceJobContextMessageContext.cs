@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Constants;
-using ESFA.DC.ILR.ReportService.Interface.Context;
+using ESFA.DC.ILR.ReportService.Interface.Configuration;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.JobContextManager.Model;
 
 namespace ESFA.DC.ILR.ReportService.Stateless.Context
@@ -10,10 +11,12 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
     public sealed class ReportServiceJobContextMessageContext : IReportServiceContext
     {
         private readonly JobContextMessage _jobContextMessage;
+        private readonly IVersionInfo _versionInfo;
 
-        public ReportServiceJobContextMessageContext(JobContextMessage jobContextMessage)
+        public ReportServiceJobContextMessageContext(JobContextMessage jobContextMessage, IVersionInfo versionInfo)
         {
             _jobContextMessage = jobContextMessage;
+            _versionInfo = versionInfo;
         }
 
         public int Ukprn => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
@@ -58,12 +61,26 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public IEnumerable<string> Tasks => _jobContextMessage.Topics[_jobContextMessage.TopicPointer].Tasks.SelectMany(x => x.Tasks);
 
-        public string InvalidLearnRefNumbersKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.ValidLearnRefNumbers].ToString();
+        public string InvalidLearnRefNumbersKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.InvalidLearnRefNumbers].ToString();
 
         public string CollectionName => _jobContextMessage.KeyValuePairs["CollectionName"].ToString();
 
         public int ReturnPeriod => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
 
+        public string IlrReferenceDataKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
+
+        public string ReportOutputFileNames
+        {
+            get => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString();
+            set => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
+        }
+
         public long JobId => _jobContextMessage.JobId;
+
+        public string ServiceReleaseVersion => _versionInfo.ServiceReleaseVersion;
+
+        public IEnumerable<IReportFilterQuery> ReportFilters => Enumerable.Empty<IReportFilterQuery>();
+
+        public string CollectionYear => _jobContextMessage.KeyValuePairs[ILRContextKeys.CollectionYear].ToString();
     }
 }

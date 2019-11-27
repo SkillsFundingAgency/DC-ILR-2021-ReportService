@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Service.Interface
+﻿namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
     public static class ReportTaskNameConstants
     {
@@ -25,9 +21,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
         public const string FundingClaim1619Report = "TaskGenerateFundingClaim1619Report";
         public const string TrailblazerAppsOccupancyReport = "TaskGenerateTrailblazerAppsOccupancyReport";
         public const string HNSReport = "TaskGenerateHNSReport";
-        public const string SummaryOfFM35FundingReport = "TaskGenerateSummaryOfFM35FundingReport";
         public const string NonContractedAppsActivityReport = "TaskGenerateNonContractedAppsActivityReport";
         public const string ILRDataQualityReport = "TaskGenerateILRDataQualityReport";
         public const string HNSSummaryReport = "TaskGenerateHNSSummaryReport";
+        public const string DevolvedAdultEducationOccupancyReport = "TaskGenerateDevolvedAdultEducationOccupancyReport";
+        public const string DevolvedAdultEducationFundingSummaryReport ="TaskGenerateDevolvedAdultEducationFundingSummaryReport";
+        public const string SummaryOfFundingByStudentReport = "TaskGenerateSummaryOfFundingByStudentReport";
+        public const string SummaryOfFm35FundingReport = "TaskGenerateSummaryOfFm35FundingReport";
+        public const string RuleViolationSummaryReport = "TaskGenerateRuleViolationSummaryReport";
+        public const string CommunityLearningReport = "TaskGenerateCommunityLearningReport";
     }
 }

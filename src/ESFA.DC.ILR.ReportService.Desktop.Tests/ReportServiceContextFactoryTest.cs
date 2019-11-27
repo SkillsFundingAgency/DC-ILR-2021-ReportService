@@ -1,7 +1,6 @@
 ﻿using System;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
-using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
 using Moq;

@@ -11,13 +11,14 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
     {
         private readonly IDesktopContext _desktopContext;
 
-        public ReportServiceJobContextDesktopContext(IDesktopContext desktopContext)
+        public ReportServiceJobContextDesktopContext(IDesktopContext desktopContext, IEnumerable<IReportFilterQuery> reportFilters)
         {
             _desktopContext = desktopContext;
+            ReportFilters = reportFilters;
         }
 
         public long JobId { get; }
-        public int Ukprn { get; set; }
+        public int Ukprn => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
         public string Filename => _desktopContext.KeyValuePairs[ILRContextKeys.Filename].ToString();
         
         public string OriginalFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
@@ -46,7 +47,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         {
             get
             {
-                var tasks = _desktopContext.KeyValuePairs[ILRContextKeys.ReportTasks].ToString().Split('|').ToList();
+                var tasks = _desktopContext.KeyValuePairs[ILRContextKeys.ReportTasks].ToString().Split(new [] { '|' }, StringSplitOptions.RemoveEmptyEntries).ToList();
                 return tasks;
             }
         }
@@ -54,6 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public string InvalidLearnRefNumbersKey => _desktopContext.KeyValuePairs[ILRContextKeys.InvalidLearnRefNumbers].ToString();
         public string CollectionName { get; }
         public int ReturnPeriod => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
+        public string CollectionYear => _desktopContext.KeyValuePairs[ILRContextKeys.CollectionYear].ToString();
         public string IlrReferenceDataKey => _desktopContext.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
 
         public string ReportOutputFileNames
@@ -61,5 +63,9 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
             get => _desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString();
             set => _desktopContext.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
         }
+
+        public string ServiceReleaseVersion => _desktopContext.KeyValuePairs[ILRContextKeys.ServiceReleaseVersion].ToString();
+
+        public IEnumerable<IReportFilterQuery> ReportFilters { get; }
     }
 }

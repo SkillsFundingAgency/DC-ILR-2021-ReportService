@@ -4,26 +4,28 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>ESFA.DC.ILR.1920.ReportService.Desktop</PackageId>
-    <Version>0.0.3</Version>
+    <Version>0.0.1</Version>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <Authors>DC</Authors>
     <Company>ESFA</Company>
     <Product>ESFA.DC.ILR.1920.ReportService.Desktop</Product>
+    <PackageTags>report</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="4.9.2" />
-    <PackageReference Include="CsvHelper" Version="7.1.0" />
+    <PackageReference Include="Autofac" Version="4.9.4" />
+    <PackageReference Include="CsvHelper" Version="12.1.2" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Constants" Version="0.1.8-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Desktop.Interface" Version="0.1.0-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.1920.Constants" Version="0.2.0-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.1920.Desktop.Interface" Version="1.0.4.8" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR1920.ReferenceDataService.Model" Version="0.0.64" />
     <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.6-beta0001" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Data\ESFA.DC.ILR.ReportService.Data.csproj" PrivateAssets="all" />
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Modules\ESFA.DC.ILR.ReportService.Modules.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Reports\ESFA.DC.ILR.ReportService.Reports.csproj" PrivateAssets="all" />
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Interface\ESFA.DC.ILR.ReportService.Service.Interface.csproj" PrivateAssets="all" />
   </ItemGroup>

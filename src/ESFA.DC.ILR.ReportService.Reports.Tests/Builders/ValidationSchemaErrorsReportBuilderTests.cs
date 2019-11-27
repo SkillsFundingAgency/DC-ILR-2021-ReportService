@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using ESFA.DC.ILR.ReportService.Reports.Builders;
+using ESFA.DC.ILR.ReportService.Reports.Validation;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 using FluentAssertions;
 using Xunit;

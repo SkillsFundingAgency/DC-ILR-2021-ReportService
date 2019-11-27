@@ -20,56 +20,8 @@
     <Parameter Name="AzureBlobContainerName" Value="" />
   </Section>
 
-  <Section Name="SoftwareLicenceSection">
-    <Parameter Name="AsposeLicence" Value="" />
-  </Section>
-
   <Section Name="VersionSection">
     <Parameter Name="ServiceReleaseVersion" Value="" />
   </Section>
 
-  <Section Name="TopicAndTaskSection">
-    <Parameter Name="TopicValidation" Value="" />
-    <Parameter Name="TopicFunding" Value="" />
-    <Parameter Name="TopicDeds" Value="" />
-    <Parameter Name="TopicReports" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateValidationReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateAllbOccupancyReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateFundingSummaryReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateAdultFundingClaimReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateSummaryOfFunding1619Report" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateMathsAndEnglishReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateMainOccupancyReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateDataMatchReport" Value="" />
-    <Parameter Name="TopicDeds_TaskPersistDataToDeds" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateAppsIndicativeEarningsReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateAppsCoInvestmentContributionsReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateAppsMonthlyPaymentReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateAppsDataMatchMonthEndReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateFundingSummaryPeriodEndReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateAppsAdditionalPaymentsReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateNonContractedAppsActivityReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateILRDataQualityReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateTrailblazerEmployerIncentivesReport" Value=""/>
-    <Parameter Name="TopicReports_TaskGenerateFundingClaim1619Report" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateTrailblazerAppsOccupancyReport" Value=""/>
-    <Parameter Name="TopicReports_TaskGenerateHNSReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateSummaryOfFM35FundingReport" Value="" />
-    <Parameter Name="TopicReports_TaskGenerateHNSSummaryReport" Value="" />
-  </Section>
-
-  <Section Name="ReportServiceConfiguration">
-    <Parameter Name="LarsConnectionString" Value="" />
-    <Parameter Name="FCSConnectionString" Value="" />
-    <Parameter Name="DASPaymentsConnectionString" Value="" />
-    <Parameter Name="OrgConnectionString" Value=""/>
-    <Parameter Name="DasCommitmentsConnectionString" Value="" />
-    <Parameter Name="CollectionsManagementConnectionString" Value="" />
-    <Parameter Name="EasConnectionString" Value="asdf" />
-    <Parameter Name="PostcodeConnectionString" Value="" />
-    <Parameter Name="LargeEmployerConnectionString" Value="" />
-    <Parameter Name="IlrValidationErrorsConnectionString" Value="" />
-    <Parameter Name="ILRDataStoreConnectionString" Value="" />
-    <Parameter Name="ILRDataStoreValidConnectionString" Value="" />
-  </Section>
 </Settings>

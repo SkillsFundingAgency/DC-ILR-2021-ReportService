@@ -3,18 +3,20 @@ using Autofac;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
+using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
+using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
-using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Tests.Stubs;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports;
-using ESFA.DC.ILR.ReportService.Reports.Builders;
-using ESFA.DC.ILR.ReportService.Reports.Providers;
-using ESFA.DC.ILR.ReportService.Reports.Reports;
+using ESFA.DC.ILR.ReportService.Reports.Service;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
+using ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Builders;
-using ESFA.DC.ILR.ReportService.Service.Interface.Providers;
+using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.Logging.Interfaces;
 using ESFA.DC.Serialization.Interfaces;
 using ESFA.DC.Serialization.Json;
@@ -29,22 +31,45 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var builder = new ContainerBuilder();
             builder.RegisterType<EntryPoint>().As<IEntryPoint>();
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
-            builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory>();
+            builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory<IDesktopContext>>();
             builder.RegisterType<FileSystemFileService>().As<IFileService>();
-            builder.RegisterType<IlrFileServiceProvider>().As<IFileProviderService<IMessage>>().InstancePerLifetimeScope();
-            builder.RegisterType<IlrReferenceDataProviderService>().As<IFileProviderService<ReferenceDataRoot>>().InstancePerLifetimeScope();
-            builder.RegisterType<IlrValidationErrorsProvider>().As<IFileProviderService<List<ValidationErrors.Interface.Models.ValidationError>>>().InstancePerLifetimeScope();
-            builder.RegisterType<ValidationErrorsReportBuilder>().As<IValidationErrorsReportBuilder>().InstancePerLifetimeScope();
-            builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>().InstancePerLifetimeScope();
+            
+            builder.RegisterType<IlrReferenceDataProviderService>()
+                .Keyed<IExternalDataProvider>(typeof(ReferenceDataRoot))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<ValidIlrFileServiceProvider>()
+                .Keyed<IExternalDataProvider>(typeof(IMessage))
+                .InstancePerLifetimeScope();
+
+            builder.RegisterType<IlrValidationErrorsProvider>()
+                .Keyed<IExternalDataProvider>(typeof(List<ValidationErrors.Interface.Models.ValidationError>))
+                .InstancePerLifetimeScope();
+            
+            builder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
+
             builder.RegisterType<JsonSerializationService>().As<IJsonSerializationService>();
             builder.RegisterType<XmlSerializationService>().As<IXmlSerializationService>();
             builder.RegisterType<DateTimeProvider.DateTimeProvider>().As<IDateTimeProvider>();
-            builder.RegisterType<ValueProvider>().As<IValueProvider>();
+
+            builder.RegisterType<ReportServiceDependentData>().As<IReportServiceDependentData>();
+            builder.RegisterType<FileNameService>().As<IFileNameService>();
+
             builder.RegisterType<LoggerStub>().As<ILogger>();
 
+            // Builders 
+            builder.RegisterType<ValidationErrorsDetailReportBuilder>().As<IValidationErrorsReportBuilder>();
+            builder.RegisterType<ValidationSchemaErrorsReportBuilder>().As<IValidationSchemaErrorsReportBuilder>();
+
             //Reports
-            builder.RegisterType<ValidationErrorsReport>().As<IReport>().InstancePerLifetimeScope();
-            builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>().InstancePerLifetimeScope();
+            builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
+            builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
+
+            builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
+
+            builder.RegisterType<CsvService>().As<ICsvService>();
+            builder.RegisterType<ExcelService>().As<IExcelService>();
+            builder.RegisterType<ZipService>().As<IZipService>();
 
             return builder;
         }

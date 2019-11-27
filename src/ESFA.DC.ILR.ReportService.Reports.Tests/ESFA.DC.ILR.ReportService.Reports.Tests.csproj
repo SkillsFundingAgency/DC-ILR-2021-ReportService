@@ -34,14 +34,38 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ESFA.DC.ILR.Model, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.0.1.7-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
+    <Reference Include="Aspose.Cells, Version=19.9.0.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+      <HintPath>..\packages\Aspose.Cells.19.9.0\lib\net40\Aspose.Cells.dll</HintPath>
+    </Reference>
+    <Reference Include="Autofac, Version=4.9.4.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
+      <HintPath>..\packages\Autofac.4.9.4\lib\net45\Autofac.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
+      <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=12.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <HintPath>..\packages\CsvHelper.12.1.2\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.DateTimeProvider.Interface, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.DateTimeProvider.Interface.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.FileService.Interface, Version=0.1.18.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.FileService.Interface.0.1.18-beta0001\lib\netstandard2.0\ESFA.DC.FileService.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.Desktop.Interface, Version=1.0.4.8, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.Desktop.Interface.1.0.4.8\lib\netstandard2.0\ESFA.DC.ILR.Desktop.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model, Version=0.0.230.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM70.FundingOutput.Model.0.0.230\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.Model, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.0.64.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.0.64\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Loose.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.Tests.Model, Version=0.1.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Tests.Model.0.1.7-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Tests.Model.dll</HintPath>
@@ -49,16 +73,23 @@
     <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="FluentAssertions, Version=5.7.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
-      <HintPath>..\packages\FluentAssertions.5.7.0\lib\net45\FluentAssertions.dll</HintPath>
+    <Reference Include="FluentAssertions, Version=5.9.0.0, Culture=neutral, PublicKeyToken=33f2691a05b67b6a, processorArchitecture=MSIL">
+      <HintPath>..\packages\FluentAssertions.5.9.0\lib\net45\FluentAssertions.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq, Version=4.13.0.0, Culture=neutral, PublicKeyToken=69f491c39445e920, processorArchitecture=MSIL">
+      <HintPath>..\packages\Moq.4.13.0\lib\net45\Moq.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
-    <Reference Include="System.ValueTuple, Version=4.0.2.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.4.0\lib\net461\System.ValueTuple.dll</HintPath>
-      <Private>True</Private>
-      <Private>True</Private>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.5.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.6.0\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.3\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -80,26 +111,103 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Abstract\AbstractCsvClassMapTests.cs" />
     <Compile Include="Builders\ValidationSchemaErrorsReportBuilderTests.cs" />
+    <Compile Include="DependentDataCatalogTests.cs" />
+    <Compile Include="Extensions\IDictionaryExtensionsTests.cs" />
+    <Compile Include="Extensions\IEnumerableExtensionsTests.cs" />
+    <Compile Include="Extensions\StringExtensionsTests.cs" />
+    <Compile Include="FileNameServiceTests.cs" />
+    <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
+    <Compile Include="Funding\CommunityLearning\CommunityLearningReportModelBuilderTests.cs" />
+    <Compile Include="Funding\CommunityLearning\CommunityLearningReportTests.cs" />
+    <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportClassMapTests.cs" />
+    <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportModelBuilderTests.cs" />
+    <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportTests.cs" />
+    <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportClassMapTests.cs" />
+    <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportModelBuilderTests.cs" />
+    <Compile Include="Funding\SummaryOfFM35Funding\SummaryOfFM35FundingReportTests.cs" />
+    <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\AllbOccupancy\AllbOccupancyReportTests.cs" />
+    <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportClassMapTests.cs" />
+    <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportModelBuilderTests.cs" />
+    <Compile Include="Funding\AppsIndicativeEarnings\AppsIndicativeEarningsReportTests.cs" />
+    <Compile Include="Funding\DevolvedAdultEducation\DevolvedAdultEducationFundingSummaryReportModelBuilderTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\DevolvedFundingSummaryreportRenderServiceTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\DevolvedFundingSummaryReportTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\Model\FundLineGroupTests.cs" />
+    <Compile Include="Funding\DevolvedFunding\Model\FundLineTests.cs" />
+    <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\DevolvedOccupancy\DevolvedAdultEducationOccupancyReportTests.cs" />
+    <Compile Include="Funding\FundingClaim1619\FundingClaim1619ReportModelBuilderTests.cs" />
+    <Compile Include="Funding\FundingSummary\DesktopFundingSummaryReportTests.cs" />
+    <Compile Include="Funding\FundingSummary\FundingSummaryReportModelBuilderTests.cs" />
+    <Compile Include="Funding\FundingSummary\FundingSummaryReportRenderServiceTests.cs" />
+    <Compile Include="Funding\FundingSummary\FundingSummaryReportTests.cs" />
+    <Compile Include="Funding\FundingSummary\Model\FundingSubCategoryTests.cs" />
+    <Compile Include="Funding\FundingSummary\Model\FundLineGroupTests.cs" />
+    <Compile Include="Funding\FundingSummary\Model\FundLineTests.cs" />
+    <Compile Include="Funding\HighNeedsStudentDetail\HighNeedsStudentDetailReportClassMapTests.cs" />
+    <Compile Include="Funding\HighNeedsStudentDetail\HighNeedsStudentDetailReportModelBuilderTests.cs" />
+    <Compile Include="Funding\HighNeedsStudentSummary\HighNeedsStudentSummaryReportModelBuilderTests.cs" />
+    <Compile Include="Funding\SummaryOfFundingByStudent\SummaryOfFundingByStudentReportClassMapTests.cs" />
+    <Compile Include="Funding\SummaryOfFundingByStudent\SummaryOfFundingByStudentReportModelBuilderTests.cs" />
+    <Compile Include="Funding\MathsAndEnglish\MathsAndEnglishReportClassMapTests.cs" />
+    <Compile Include="Funding\MathsAndEnglish\MathsAndEnglishReportModelBuilderTests.cs" />
+    <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportTests.cs" />
+    <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportClassMapTests.cs" />
+    <Compile Include="Funding\MainOccupancy\MainOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\MainOccupancy\MainOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\PeriodisedValuesLookupProviderTests.cs" />
+    <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\TrailblazerOccupancy\TrailblazerOccupancyReportTests.cs" />
+    <Compile Include="MockExtensions.cs" />
+    <Compile Include="Funding\TrailblazerEmployerIncentives\TrailblazerEmployerIncentivesReportModelBuilderTests.cs" />
+    <Compile Include="Model\IlrModelMapperTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Builders\ValidationErrorsReportBuilderTests.cs" />
+    <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
+    <Compile Include="Service\AcademicYearServiceTests.cs" />
+    <Compile Include="Service\Converters\IlrBooleanConverterTests.cs" />
+    <Compile Include="Service\CsvServiceTests.cs" />
+    <Compile Include="Service\ExcelServiceTests.cs" />
+    <Compile Include="Service\FileNameServiceTests.cs" />
+    <Compile Include="Stubs\FileServiceStub.cs" />
+    <Compile Include="ValidationErrorDetailReportTests.cs" />
+    <Compile Include="ValidationSchemaErrorsReportTests.cs" />
+    <Compile Include="Validation\RuleViolationSummaryModelBuilderTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="packages.config" />
+    <None Include="app.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Desktop\ESFA.DC.ILR.ReportService.Desktop.csproj">
+      <Project>{1FBAB247-ADF1-4A86-9D1F-7126E086CF5C}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Desktop</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Models\ESFA.DC.ILR.ReportService.Models.csproj">
+      <Project>{e3bb3cee-ca7d-422d-bcd7-aa7008f6982c}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Models</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Reports\ESFA.DC.ILR.ReportService.Reports.csproj">
       <Project>{0f1ea521-4ae8-4e4a-96b9-99dc4dc3c78d}</Project>
       <Name>ESFA.DC.ILR.ReportService.Reports</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Model\ESFA.DC.ILR.ReportService.Service.Model.csproj">
-      <Project>{3FD0C9F9-3D83-4EC8-9FA6-1A96A5E465BB}</Project>
-      <Name>ESFA.DC.ILR.ReportService.Service.Model</Name>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Interface\ESFA.DC.ILR.ReportService.Service.Interface.csproj">
+      <Project>{C547D956-67C7-4A79-B197-4664CBCA0BE1}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Service.Interface</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

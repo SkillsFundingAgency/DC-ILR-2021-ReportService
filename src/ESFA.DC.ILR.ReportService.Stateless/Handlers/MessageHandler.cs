@@ -6,6 +6,7 @@ using Autofac;
 using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Service;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -46,13 +47,22 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                 using (var childLifeTimeScope = GetChildLifeTimeScope(jobContextMessage))
                 {
                     var executionContext = (ExecutionContext)childLifeTimeScope.Resolve<IExecutionContext>();
+                    var versionInfo = childLifeTimeScope.Resolve<IVersionInfo>();
+
                     executionContext.JobId = jobContextMessage.JobId.ToString();
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
-                    var entryPoint = childLifeTimeScope.Resolve<EntryPoint>();
-                    var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
-                    logger.LogDebug($"Completed Report Service with result-{result}");
-                    return result;
+
+                    ////Legacy
+                    //var entryPoint = childLifeTimeScope.Resolve<LegacyEntryPoint>();
+                    //var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
+
+                    var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
+
+                    var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
+
+                    logger.LogDebug($"Completed Report Service");
+                    return true;
                 }
             }
             catch (OutOfMemoryException oom)
@@ -78,7 +88,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         azureBlobStorageOptions.AzureBlobConnectionString,
                         jobContextMessage.KeyValuePairs[ILRContextKeys.Container].ToString()))
                     .As<IAzureStorageKeyValuePersistenceServiceConfig>();
-                DIComposition.RegisterServicesByCollectionName(jobContextMessage.KeyValuePairs["CollectionName"].ToString(), c);
             });
         }
     }

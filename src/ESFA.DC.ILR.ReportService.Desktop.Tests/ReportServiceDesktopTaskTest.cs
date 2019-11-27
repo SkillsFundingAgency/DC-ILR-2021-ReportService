@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Autofac;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
-using ESFA.DC.ILR.ReportService.Desktop.Context.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
 using Moq;
@@ -23,7 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var cancellationToken = CancellationToken.None;
 
             var desktopContextMock = new Mock<IDesktopContext>();
-            var reportServiceContextFactoryMock = new Mock<IReportServiceContextFactory>();
+            var reportServiceContextFactoryMock = new Mock<IReportServiceContextFactory<IDesktopContext>>();
             var reportServiceContextMock = new Mock<IReportServiceContext>();
             var entryPointMock = new Mock<IEntryPoint>();
 
@@ -74,7 +72,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 06, 25));
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
 
-            var reportServiceJobContextDesktopContext = new ReportServiceJobContextDesktopContext(mockDesktopContext.Object);
+            var reportServiceJobContextDesktopContext = new ReportServiceJobContextDesktopContext(mockDesktopContext.Object, Enumerable.Empty<IReportFilterQuery>());
 
             var reportOutputFileNames = await entryPoint.Callback(reportServiceJobContextDesktopContext, cancellationToken);
 
@@ -84,11 +82,9 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             reportServiceJobContextDesktopContext.ReportOutputFileNames.Split('|').ToArray().Length.Should().Be(1);
         }
 
-        private ReportServiceDesktopTask NewTask(IEntryPoint entryPoint = null, IReportServiceContextFactory reportServiceContextFactory = null)
+        private ReportServiceDesktopTask NewTask(IEntryPoint entryPoint = null, IReportServiceContextFactory<IDesktopContext> reportServiceContextFactory = null)
         {
-            return new ReportServiceDesktopTask(reportServiceContextFactory ?? new Mock<IReportServiceContextFactory>().Object, entryPoint ?? Mock.Of<IEntryPoint>());
+            return new ReportServiceDesktopTask(reportServiceContextFactory ?? new Mock<IReportServiceContextFactory<IDesktopContext>>().Object, entryPoint ?? Mock.Of<IEntryPoint>());
         }
     }
-
-   
 }

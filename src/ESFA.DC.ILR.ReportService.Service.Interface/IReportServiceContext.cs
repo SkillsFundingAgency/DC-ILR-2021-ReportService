@@ -8,7 +8,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
     {
         long JobId { get; }
 
-        int Ukprn { get; set; }
+        int Ukprn { get; }
 
         string Filename { get; }
 
@@ -54,9 +54,14 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         int ReturnPeriod { get; }
 
+        string CollectionYear { get;  }
+
         string IlrReferenceDataKey { get; }
 
         string ReportOutputFileNames { get; set; }
 
+        string ServiceReleaseVersion { get; }
+
+        IEnumerable<IReportFilterQuery> ReportFilters { get; }
     }
 }
