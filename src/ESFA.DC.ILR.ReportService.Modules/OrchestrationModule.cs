@@ -11,7 +11,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<EntryPoint>().As<IEntryPoint>();
-            builder.RegisterType<ZipService>().As<IZipService>();
+            builder.RegisterType<CreateZipService>().As<IZipService>();
         }
     }
 }

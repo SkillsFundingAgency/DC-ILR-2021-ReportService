@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
@@ -12,12 +10,12 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Service
 {
-    public class ZipService : IZipService
+    public class CreateZipService : IZipService
     {
         private readonly IFileNameService _fileNameService;
         private readonly IFileService _fileService;
 
-        public ZipService(IFileNameService fileNameService, IFileService fileService)
+        public CreateZipService(IFileNameService fileNameService, IFileService fileService)
         {
             _fileNameService = fileNameService;
             _fileService = fileService;
@@ -27,17 +25,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
         {
             var zipName = _fileNameService.GetFilename(reportServiceContext, "Reports", OutputTypes.Zip, false);
 
-            using (Stream memoryStream = new MemoryStream())
+            using (var writeStream = await _fileService.OpenWriteStreamAsync(zipName, container, cancellationToken))
             {
-                if (await _fileService.ExistsAsync(zipName, container, cancellationToken))
-                {
-                    using (var readStream = await _fileService.OpenReadStreamAsync(zipName, container, cancellationToken))
-                    {
-                        await readStream.CopyToAsync(memoryStream);
-                    }
-                }
-
-                using (var zipArchive = new ZipArchive(memoryStream, ZipArchiveMode.Update, true))
+                using (var zipArchive = new ZipArchive(writeStream, ZipArchiveMode.Create, true))
                 {
                     foreach (var fileName in fileNames.Where(f => !string.IsNullOrWhiteSpace(f)))
                     {
@@ -52,14 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
                         }
                     }
                 }
-
-                using (var writeStream = await _fileService.OpenWriteStreamAsync(zipName, container, cancellationToken))
-                {
-                    memoryStream.Position = 0;
-
-                    await memoryStream.CopyToAsync(writeStream);
-                }
             }
-        }
+        }        
     }
 }
