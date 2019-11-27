@@ -69,7 +69,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             builder.RegisterType<CsvService>().As<ICsvService>();
             builder.RegisterType<ExcelService>().As<IExcelService>();
-            builder.RegisterType<ZipService>().As<IZipService>();
+            builder.RegisterType<CreateZipService>().As<IZipService>();
 
             return builder;
         }

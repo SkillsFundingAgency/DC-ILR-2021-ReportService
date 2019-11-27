@@ -43,9 +43,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
             fileNameServiceMock.VerifyAll();
         }
 
-        private ZipService NewService(IFileNameService fileNameService = null, IFileService fileService = null)
+        private CreateZipService NewService(IFileNameService fileNameService = null, IFileService fileService = null)
         {
-            return new ZipService(fileNameService, fileService);
+            return new CreateZipService(fileNameService, fileService);
         }
     }
 }

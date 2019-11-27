@@ -7,7 +7,9 @@ using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Modules;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -102,6 +104,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         IServiceFabricConfigurationService serviceFabricConfigurationService = new ServiceFabricConfigurationService();
                         var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<IDatabaseConfiguration>("DatabaseConfiguration");
 
+                        c.RegisterType<UpdateZipService>().As<IZipService>();
                         c.RegisterModule(new EasDataModule(databaseConfiguration));
                         break;
                 }
