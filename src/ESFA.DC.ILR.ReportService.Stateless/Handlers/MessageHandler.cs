@@ -102,7 +102,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 
                     case CollectionConstants.EasCollectionName:
                         IServiceFabricConfigurationService serviceFabricConfigurationService = new ServiceFabricConfigurationService();
-                        var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<IDatabaseConfiguration>("DatabaseConfiguration");
+                        var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DatabaseConfiguration>("DatabaseConfiguration");
 
                         c.RegisterType<UpdateZipService>().As<IZipService>();
                         c.RegisterModule(new EasDataModule(databaseConfiguration));
