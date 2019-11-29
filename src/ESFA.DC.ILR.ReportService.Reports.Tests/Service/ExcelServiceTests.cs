@@ -9,7 +9,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
 {
     public class ExcelServiceTests
     {
-        [Fact]
+        [Fact(Skip = "License Applied Globally, conflicts with other tests")]
         public void ApplyLicense()
         {
             var workbook = new Workbook();

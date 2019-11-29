@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -154,7 +155,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
-            var fileName = "FundingSummaryReport.xlsx";
+            var fileName = $"FundingSummaryReport {Guid.NewGuid()}.xlsx";
             fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel, true)).Returns(fileName);
 
             var fundingSummaryReportRenderService = new FundingSummaryReportRenderService();
@@ -170,6 +171,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             excelService.ApplyLicense();
             
             await report.GenerateAsync(reportServiceContextMock.Object, reportServiceDependentDataMock.Object, cancellationToken);
+
+            File.Exists(Path.Combine(container, fileName)).Should().BeTrue();
         }
 
         private FundingSummaryReport NewReport(
