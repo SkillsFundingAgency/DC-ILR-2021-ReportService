@@ -16,6 +16,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Stubs
 
         public async Task<Stream> OpenWriteStreamAsync(string fileReference, string container, CancellationToken cancellationToken)
         {
+            Directory.CreateDirectory(container);
+
             return await Task.FromResult(File.OpenWrite(Path.Combine(container, fileReference)) as Stream);
         }
 
