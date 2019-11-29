@@ -17,12 +17,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
     {
         private readonly IIlrModelMapper _ilrModelMapper;
         private const decimal _defaultDecimal = 0;
-        private static readonly AppsIndicativeEarningsModelComparer AppsIndicativeEarningsModelComparer = new AppsIndicativeEarningsModelComparer();
 
         public AppsIndicativeEarningsReportModelBuilder(IIlrModelMapper ilrModelMapper)
         {
             _ilrModelMapper = ilrModelMapper;
         }
+
         public IEnumerable<AppsIndicativeEarningsReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
 
@@ -38,12 +38,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
             {
                 FM36Learner fm36Learner = fm36Learners.GetValueOrDefault(learner.LearnRefNumber);
 
-                foreach (ILearningDelivery learningDelivery in learner.LearningDeliveries)
+                foreach (var learningDelivery in learner.LearningDeliveries ?? Enumerable.Empty<ILearningDelivery>())
                 {
-                    if (learningDelivery.FundModel != 36)
+                    if (learningDelivery.FundModel != FundModelConstants.FM36)
                     {
                         continue;
                     }
+
                     LARSLearningDelivery larsDelivery = larsLearningDeliveries.GetValueOrDefault(learningDelivery.LearnAimRef);
                     LearningDelivery fm36LearningDelivery = fm36Learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumber == learningDelivery.AimSeqNumber);
                     string larsStandard = null;
@@ -52,51 +53,49 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
                     {
                         larsStandard = larsStandards.GetValueOrDefault(learningDelivery.StdCodeNullable.Value)?.NotionalEndLevel ??"NA";
                     }
+
                     if (fm36Learner?.PriceEpisodes.Any() ?? false)
                     {
                         List<PriceEpisode> episodesInRange = fm36Learner.PriceEpisodes
                             .Where(p => p.PriceEpisodeValues.EpisodeStartDate >= ReportingConstants.BeginningOfYear &&
-                                        p.PriceEpisodeValues.EpisodeStartDate <= ReportingConstants.EndOfYear
-                                        && learningDelivery.AimSeqNumber == p.PriceEpisodeValues.PriceEpisodeAimSeqNumber).ToList();
+                                        p.PriceEpisodeValues.EpisodeStartDate <= ReportingConstants.EndOfYear &&
+                                        learningDelivery.AimSeqNumber == p.PriceEpisodeValues.PriceEpisodeAimSeqNumber)
+                            .ToList();
 
                         if (episodesInRange.Any())
                         {
                             DateTime earliestEpisodeDate = episodesInRange.Select(x => x.PriceEpisodeValues.EpisodeStartDate ?? DateTime.MaxValue).Min();
-                            bool earliestEpisode = false;
+                            
                             foreach (PriceEpisode episodeAttribute in episodesInRange)
                             {
-                                if (episodeAttribute.PriceEpisodeValues.EpisodeStartDate == earliestEpisodeDate)
-                                {
-                                    earliestEpisode = true;
-                                }
                                 appsIndicativeEarningsModels.Add(BuildLineModel(learner,
                                                                                 learningDelivery,
                                                                                 fm36LearningDelivery,
                                                                                 episodeAttribute,
                                                                                 larsDelivery,
                                                                                 larsStandard,
-                                                                                earliestEpisode,
+                                                                                episodeAttribute.PriceEpisodeValues.EpisodeStartDate == earliestEpisodeDate,
                                                                                 true));
-
-                                earliestEpisode = false;
-
                             }
                             continue;
                         }
-                        appsIndicativeEarningsModels.Add(BuildLineModel(learner,
-                                                            learningDelivery,
-                                                            fm36LearningDelivery,
-                                                            null,
-                                                            larsDelivery,
-                                                            larsStandard,
-                                                            false,
-                                                            false));
                     }
+
+                    appsIndicativeEarningsModels.Add(BuildLineModel(learner,
+                        learningDelivery,
+                        fm36LearningDelivery,
+                        null,
+                        larsDelivery,
+                        larsStandard,
+                        false,
+                        false));
                 }
             }
 
-            appsIndicativeEarningsModels.Sort(AppsIndicativeEarningsModelComparer);
-            return appsIndicativeEarningsModels;
+            return appsIndicativeEarningsModels
+                .OrderBy(x => x.LearnRefNumber)
+                .ThenByDescending(x => x.AimSeqNumber)
+                .ThenByDescending(x => x.PriceEpisodeStartDate);
         }
 
         public IDictionary<string, LARSLearningDelivery> BuildLarsLearningDeliveryDictionary(ReferenceDataRoot referenceDataRoot)
@@ -144,6 +143,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
                 PriceEpisodeValues = fm36EpisodeAttribute?.PriceEpisodeValues,
                 StandardNotionalEndLevel = notionalEndLevel
             };
+
             model.EmpStatusMonitoringSmallEmployer = model.EmploymentStatus?.EmploymentStatusMonitorings
                 ?.FirstOrDefault(x => string.Equals(x.ESMType, ReportingConstants.EmploymentStatusMonitoringTypeSEM,
                     StringComparison.OrdinalIgnoreCase))?.ESMCode;
