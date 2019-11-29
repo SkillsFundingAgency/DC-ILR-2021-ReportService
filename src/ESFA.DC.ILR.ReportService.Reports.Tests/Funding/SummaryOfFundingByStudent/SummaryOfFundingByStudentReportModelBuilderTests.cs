@@ -125,6 +125,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
                 {
                     new TestLearningDelivery()
                     {
+                        FundModel = 25,
                         LearningDeliveryFAMs = new List<ILearningDeliveryFAM>()
                         {
                             new TestLearningDeliveryFAM()
@@ -188,6 +189,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
                         {
                             new TestLearningDelivery()
                             {
+                                FundModel = 25,
                                 LearningDeliveryFAMs = new List<ILearningDeliveryFAM>()
                                 {
                                     new TestLearningDeliveryFAM()
