@@ -2,6 +2,7 @@
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -25,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfF
 
                 if (Filter(learner, fm25Learner))
                 {
-                    var totalPlannedHours = learner.PlanLearnHoursNullable ?? 0 + learner.PlanEEPHoursNullable ?? 0;
+                    var totalPlannedHours = (learner.PlanLearnHoursNullable ?? 0) + (learner.PlanEEPHoursNullable ?? 0);
 
                     models.Add(new SummaryOfFundingByStudentReportModel()
                     {
@@ -37,6 +38,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfF
             }
 
             return Order(models);
+        }
+
+        public override bool Filter(ILearner learner, FM25Learner fm25Learner)
+        {
+            return learner != null 
+                   && fm25Learner != null
+                   && FilterFundLine(fm25Learner.FundLine)
+                   && learner.LearningDeliveries?.Any(ld =>
+                       ld.FundModel == FundModelConstants.FM25 &&
+                       ld.LearningDeliveryFAMs?.Any(FilterSOF) == true) == true;
         }
     }
 }

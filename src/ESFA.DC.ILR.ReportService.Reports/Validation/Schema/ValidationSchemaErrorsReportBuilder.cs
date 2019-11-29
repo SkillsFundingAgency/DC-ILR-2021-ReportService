@@ -9,8 +9,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
 {
     public class ValidationSchemaErrorsReportBuilder : IValidationSchemaErrorsReportBuilder
     {
-        private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
-
         public IEnumerable<ValidationErrorRow> Build(IEnumerable<ValidationError> ilrValidationErrors)
         {
             return ilrValidationErrors
@@ -24,7 +22,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
                     LearnerReferenceNumber = e.LearnerReferenceNumber,
                     RuleName = e.RuleName,
                     Severity = e.Severity
-                }).OrderBy(v => v, ValidationErrorsModelComparer);
+                })
+                .OrderBy(e => e.Severity)
+                .ThenBy(e => e.RuleName);
         }
 
         private string GetValidationErrorParameters(IEnumerable<ValidationErrorParameter> validationErrorParameters)
