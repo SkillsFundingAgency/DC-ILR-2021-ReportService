@@ -104,7 +104,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                         IServiceFabricConfigurationService serviceFabricConfigurationService = new ServiceFabricConfigurationService();
                         var databaseConfiguration = serviceFabricConfigurationService.GetConfigSectionAs<DatabaseConfiguration>("DatabaseConfiguration");
 
-                        c.RegisterType<UpdateZipService>().As<IZipService>();
                         c.RegisterModule(new EasDataModule(databaseConfiguration));
                         break;
                 }
