@@ -44,6 +44,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
                     {
                         FundLine = "FundLine"
                     },
+                    DerivedFundline = "FundLine",
                     StudentsWithAnEhcp = true,
                     StudentsWithoutAnEhcp = true,
                     HighNeedsStudentsWithoutAnEhcp = true,
