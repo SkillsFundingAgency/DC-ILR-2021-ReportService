@@ -92,15 +92,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
         [Fact]
         public void Order()
         {
-            var one = BuildModelFor("14-16 Direct Funded Students", "A");
-            var two = BuildModelFor("16-19 Students (excluding High Needs Students)", "A");
-            var three = BuildModelFor("16-19 High Needs Students", "A");
-            var four = BuildModelFor("19-24 Students with an EHCP", "A");
-            var five = BuildModelFor("19-24 Students with an EHCP", "B");
-            var six = BuildModelFor("19+ Continuing Students (excluding EHCP)", "A");
-            var seven = BuildModelFor("Anything else that should not be in the list really but will go to the end of the report", "A");
+            var one = BuildModelFor("14-16 Direct Funded Students", "14-16 Direct Funded Students", "A");
+            var two = BuildModelFor("16-19 Students (excluding High Needs Students)", "16-19 Students (including High Needs Students)", "A");
+            var three = BuildModelFor("16-19 High Needs Students", "16-19 Students (including High Needs Students)", "A");
+            var four = BuildModelFor("19-24 Students with an EHCP", "19-24 Students with an EHCP", "A");
+            var five = BuildModelFor("19-24 Students with an EHCP", "19-24 Students with an EHCP", "B");
+            var six = BuildModelFor("19+ Continuing Students (excluding EHCP)", "19+ Continuing Students (excluding EHCP)", "A");
+            var seven = BuildModelFor("Anything else that should not be in the list really but will go to the end of the report", "Any", "A");
 
-            var models = new List<AbstractSixteenToNineteenModel>()
+            var models = new List<HighNeedsStudentDetailReportModel>()
             {
                 four,
                 one,
@@ -177,6 +177,76 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
 
             models[0].Learner.Should().Be(learner);
             models[0].FM25Learner.Should().Be(fm25Learner);
+            models[0].DerivedFundline.Should().Be(fm25Learner.FundLine);
+            models[0].StudentsWithAnEhcp.Should().BeTrue();
+            models[0].StudentsWithoutAnEhcp.Should().BeFalse();
+            models[0].HighNeedsStudentsWithoutAnEhcp.Should().BeFalse();
+            models[0].StudentsWithAnEhcpAndHns.Should().BeTrue();
+            models[0].StudentWithAnEhcpAndNotHns.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Build_One_1619()
+        {
+            var learner = new TestLearner()
+            {
+                LearnRefNumber = "LearnRefNumber",
+                LearningDeliveries = new List<ILearningDelivery>()
+                {
+                    new TestLearningDelivery()
+                    {
+                        LearningDeliveryFAMs = new List<ILearningDeliveryFAM>()
+                        {
+                            new TestLearningDeliveryFAM()
+                            {
+                                LearnDelFAMType = "SOF",
+                                LearnDelFAMCode = "107",
+                            }
+                        }
+                    }
+                },
+                LearnerFAMs = new List<ILearnerFAM>()
+                {
+                    new TestLearnerFAM() { LearnFAMType = "EHC", LearnFAMCode = 1 },
+                    new TestLearnerFAM() { LearnFAMType = "HNS", LearnFAMCode = 1 }
+                }
+            };
+
+            var fm25Learner = new FM25Learner()
+            {
+                LearnRefNumber = "LearnRefNumber",
+                StartFund = true,
+                FundLine = "16-19 Students (excluding High Needs Students)",
+            };
+
+            var message = new TestMessage()
+            {
+                Learners = new List<ILearner>()
+                {
+                    learner
+                }
+            };
+
+            var fm25Global = new FM25Global()
+            {
+                Learners = new List<FM25Learner>()
+                {
+                    fm25Learner
+                }
+            };
+
+            var dependentDataMock = new Mock<IReportServiceDependentData>();
+
+            dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
+            dependentDataMock.Setup(d => d.Get<FM25Global>()).Returns(fm25Global);
+
+            var models = NewBuilder().Build(null, dependentDataMock.Object).ToList();
+
+            models.Should().HaveCount(1);
+
+            models[0].Learner.Should().Be(learner);
+            models[0].FM25Learner.Should().Be(fm25Learner);
+            models[0].DerivedFundline.Should().Be("16-19 Students (including High Needs Students)");
             models[0].StudentsWithAnEhcp.Should().BeTrue();
             models[0].StudentsWithoutAnEhcp.Should().BeFalse();
             models[0].HighNeedsStudentsWithoutAnEhcp.Should().BeFalse();
@@ -305,7 +375,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
         }
 
 
-        private HighNeedsStudentDetailReportModel BuildModelFor(string fundLine, string learnRefNumber)
+        private HighNeedsStudentDetailReportModel BuildModelFor(string fundLine, string derivedFundLine, string learnRefNumber)
         {
             return new HighNeedsStudentDetailReportModel()
             {
@@ -316,7 +386,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
                 FM25Learner = new FM25Learner()
                 {
                     FundLine = fundLine
-                }
+                },
+                DerivedFundline = derivedFundLine
             };
         }
 
