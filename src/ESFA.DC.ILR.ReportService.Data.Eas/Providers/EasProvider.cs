@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
                                 Period11 = d.Where(f => f.CollectionPeriod == 11).Select(g => new EasPaymentValue(g.PaymentValue, g.DevolvedAreaSoF)).ToList(),
                                 Period12 = d.Where(f => f.CollectionPeriod == 12).Select(g => new EasPaymentValue(g.PaymentValue, g.DevolvedAreaSoF)).ToList(),
                             }).ToList()
-                    }) as IReadOnlyCollection<EasFundingLine>;
+                    }).ToList();
             }
         }
     }

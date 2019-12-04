@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
             return MapData(easFundingLines);
         }
 
-        private IReadOnlyCollection<EasFundingLine> MapData(IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine> fundingLine)
+        private IEnumerable<EasFundingLine> MapData(IEnumerable<ReferenceDataService.Model.EAS.EasFundingLine> fundingLine)
         {
             return fundingLine?.Select(MapFundingLine).ToList();
         }

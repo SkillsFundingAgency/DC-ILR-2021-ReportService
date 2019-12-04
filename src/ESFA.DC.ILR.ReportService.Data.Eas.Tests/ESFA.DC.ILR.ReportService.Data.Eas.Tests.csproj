@@ -38,6 +38,9 @@
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="ESFA.DC.EAS1920.EF, Version=0.0.91.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.EAS1920.EF.0.0.91\lib\netstandard2.0\ESFA.DC.EAS1920.EF.dll</HintPath>
+    </Reference>
     <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
     </Reference>
@@ -170,6 +173,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="EasProviderTests.cs" />
     <Compile Include="Fm25ProviderTests.cs" />
     <Compile Include="Fm35ProviderTests.cs" />
     <Compile Include="Fm36ProviderTests.cs" />
@@ -182,6 +186,10 @@
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Data.Eas\ESFA.DC.ILR.ReportService.Data.Eas.csproj">
       <Project>{b426a355-6c62-4455-8fa5-71dc9cb573df}</Project>
       <Name>ESFA.DC.ILR.ReportService.Data.Eas</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Models\ESFA.DC.ILR.ReportService.Models.csproj">
+      <Project>{e3bb3cee-ca7d-422d-bcd7-aa7008f6982c}</Project>
+      <Name>ESFA.DC.ILR.ReportService.Models</Name>
     </ProjectReference>
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Service.Interface\ESFA.DC.ILR.ReportService.Service.Interface.csproj">
       <Project>{c547d956-67c7-4a79-b197-4664cbca0be1}</Project>
