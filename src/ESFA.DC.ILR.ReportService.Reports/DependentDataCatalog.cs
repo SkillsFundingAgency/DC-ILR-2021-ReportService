@@ -33,6 +33,6 @@ namespace ESFA.DC.ILR.ReportService.Reports
 
         public static readonly Type Fm99 = typeof(ALBGlobal);
 
-        public static readonly Type Eas = typeof(IReadOnlyCollection<EasFundingLine>);
+        public static readonly Type Eas = typeof(IEnumerable<EasFundingLine>);
     }
 }
