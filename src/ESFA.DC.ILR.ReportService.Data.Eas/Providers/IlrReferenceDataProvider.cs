@@ -84,10 +84,24 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
         {
             using (var postcodesContext = _postcodesContext())
             {
-                return await postcodesContext.McaglaSofs?.Select(m => new McaGlaSofLookup()
+                var mcaGlaFullNames = await postcodesContext.McaglaFullNames?
+                           .Where(e => e.EffectiveTo == null)
+                           .ToDictionaryAsync(
+                           k => k.McaglaShortCode,
+                           v => v.FullName,
+                           StringComparer.OrdinalIgnoreCase,
+                           cancellationToken);
+
+                var mcaGlaSofCodes = await postcodesContext.McaglaSofs?.ToListAsync(cancellationToken);
+
+                return mcaGlaSofCodes.Select(m => new McaGlaSofLookup
                 {
-                    SofCode = m.SofCode
-                }).ToListAsync(cancellationToken);
+                    SofCode = m.SofCode,
+                    McaGlaShortCode = m.McaglaShortCode,
+                    McaGlaFullName = mcaGlaFullNames.TryGetValue(m.McaglaShortCode, out var fullname) ? fullname : string.Empty,
+                    EffectiveFrom = m.EffectiveFrom,
+                    EffectiveTo = m.EffectiveTo
+                }).ToList();
             }
         }
     }
