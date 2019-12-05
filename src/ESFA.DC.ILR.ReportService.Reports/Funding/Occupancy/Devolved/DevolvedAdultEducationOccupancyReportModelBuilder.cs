@@ -4,6 +4,7 @@ using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract;
@@ -24,12 +25,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority,
             LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority,
         };
-        
+
+        private readonly IAcademicYearService _academicYearService;
+
         private const decimal _defaultDecimal = 0;
 
-        public DevolvedAdultEducationOccupancyReportModelBuilder(IIlrModelMapper ilrModelMapper)
+        public DevolvedAdultEducationOccupancyReportModelBuilder(IIlrModelMapper ilrModelMapper, IAcademicYearService academicYearService)
             : base(ilrModelMapper)
         {
+            _academicYearService = academicYearService;
         }
 
         public IEnumerable<DevolvedAdultEducationOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
@@ -38,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var sofCodesDictionary = referenceData.DevolvedPostocdes?.McaGlaSofLookups?.Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)).ToDictionary(s => s.SofCode, s => s.McaGlaShortCode, StringComparer.OrdinalIgnoreCase);
+            var sofCodesDictionary = BuildSofDictionary(referenceData.DevolvedPostocdes.McaGlaSofLookups);
 
             var larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
             var fm35LearningDeliveries = BuildFm35LearningDeliveryDictionary(fm35);
@@ -84,6 +88,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                         ldfam.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.SOF)
                            && _sofLearnDelFamCodes.Contains(ldfam.LearnDelFAMCode))
                 ?? false;
+        }
+
+        public IDictionary<string, string> BuildSofDictionary(IEnumerable<McaGlaSofLookup> mcaGlaSofLookups)
+        {
+            return mcaGlaSofLookups
+               .Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)
+                && s.EffectiveFrom <= _academicYearService.YearStart
+                && (!s.EffectiveTo.HasValue || _academicYearService.YearEnd.Date <= s.EffectiveTo))
+               .ToDictionary(s => s.SofCode, s => s.McaGlaShortCode, StringComparer.OrdinalIgnoreCase);
         }
     }
 }
