@@ -55,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             var fm35Global = reportServiceDependentData.Get<FM35Global>();
             var albGlobal = reportServiceDependentData.Get<ALBGlobal>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
-            var easFundingLines = reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>();
+            var easFundingLines = reportServiceDependentData.Get<List<EasFundingLine>>();
 
             string organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
             var model = new AdultFundingClaimReportModel();
@@ -134,7 +134,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         }
         
         private decimal CalculateAEBClaims(int months, List<FM35LearningDeliveryValues> fm35LearningDeliveryPeriodisedValues,
-                                            IReadOnlyCollection<EasFundingLine> easFundingLines,
+                                            List<EasFundingLine> easFundingLines,
                                             string[] attributes,
                                             string[] fundlines,
                                             string[] easAttributes,
@@ -145,7 +145,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         }
 
         private decimal CalculateALBClaims(int months, List<ALBLearningDeliveryValues> albLearningDeliveryPeriodisedValues,
-            IReadOnlyCollection<EasFundingLine> easFundingLines,
+            List<EasFundingLine> easFundingLines,
             string[] attributes,
             string[] fundlines,
             string[] easAttributes,
@@ -283,7 +283,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 
         private decimal EasValues(
             int forMonths,
-            IReadOnlyCollection<EasFundingLine> easFundlines,
+            List<EasFundingLine> easFundlines,
             string[] attributes,
             string[] fundLines)
         {

@@ -49,7 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
 
             if (fundingDataSources.Contains(FundingDataSources.EAS))
             {
-                periodisedValuesLookup[FundingDataSources.EAS] = BuildEASDictionary(reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>());
+                periodisedValuesLookup[FundingDataSources.EAS] = BuildEASDictionary(reportServiceDependentData.Get<List<EasFundingLine>>());
             }
             
             return periodisedValuesLookup;
@@ -232,7 +232,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(IReadOnlyCollection<EasFundingLine> easFundingLines)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(List<EasFundingLine> easFundingLines)
         {
             return easFundingLines?
                        .GroupBy(fl => fl.FundLine, StringComparer.OrdinalIgnoreCase)
