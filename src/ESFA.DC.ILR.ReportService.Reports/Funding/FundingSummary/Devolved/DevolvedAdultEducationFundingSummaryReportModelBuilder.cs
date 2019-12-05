@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
-            var easFundingLines = reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>();
+            var easFundingLines = reportServiceDependentData.Get<List<EasFundingLine>>();
 
             var sofCodeDictionary = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups.Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)).ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
 
@@ -180,7 +180,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
         }
 
-        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(IReadOnlyCollection<EasFundingLine> easFundingLines, string sofCode)
+        public Dictionary<string, Dictionary<string, decimal?[][]>> BuildEASDictionary(List<EasFundingLine> easFundingLines, string sofCode)
         {
             int.TryParse(sofCode, out var sofCodeInt);
 
