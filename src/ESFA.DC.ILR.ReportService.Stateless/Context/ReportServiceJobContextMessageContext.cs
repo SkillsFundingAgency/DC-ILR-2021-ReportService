@@ -71,7 +71,9 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public string ReportOutputFileNames
         {
-            get => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString();
+            get => _jobContextMessage.KeyValuePairs.ContainsKey(ILRContextKeys.ReportOutputFileNames)
+                ? _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString()
+                : string.Empty;
             set => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
         }
 
