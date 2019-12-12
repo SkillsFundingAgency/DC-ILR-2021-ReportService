@@ -46,24 +46,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
            
             // Body
             // test for applicable learning deliveries
-            var applicableLearners = learners.Where(x => x.LearningDeliveries.Any(ld =>
-                ld.FundModel == 25 &&
-                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.SOF)) &&
-                ld.LearningDeliveryFAMs.Any(fam => fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619))))?.ToList();
+            var applicableLearners = learners.Where(LearnerFilter).ToList();
 
+            var applicablefm25Learners = fm25Data.Learners?.Where(x => x.StartFund == true).ToList();
 
-            var applicablefm25Learners =
-                fm25Data.Learners?.Where(x => x.StartFund.HasValue && x.StartFund.Value)?.ToList();
-
-            var validLearnersForFundlineA = applicablefm25Learners?
-                .Where(x => x.FundLine == FundLineConstants.DirectFundedStudents1416).Select(x => x.LearnRefNumber)?.ToArray();
-            var validLearnersForFundlineB = applicablefm25Learners?
-                .Where(x => x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
-                            x.FundLine == FundLineConstants.HighNeedsStudents1619).Select(x => x.LearnRefNumber)?.ToArray();
-            var validLearnersForFundlineC = applicablefm25Learners?
-                .Where(x => x.FundLine == FundLineConstants.StudentsWithEHCP1924).Select(x => x.LearnRefNumber)?.ToArray();
-            var validLearnersForFundlineD = applicablefm25Learners?
-                .Where(x => x.FundLine == FundLineConstants.ContinuingStudents19Plus).Select(x => x.LearnRefNumber)?.ToArray();
+            var validLearnersForFundlineA = LearnRefNumbersWithFundLine(applicablefm25Learners, FundLineConstants.DirectFundedStudents1416)?.ToArray();
+            var validLearnersForFundlineB = 
+                LearnRefNumbersWithFundLine(
+                    applicablefm25Learners,
+                    FundLineConstants.StudentsExcludingHighNeeds1619,
+                    FundLineConstants.HighNeedsStudents1619)?.ToArray();
+            var validLearnersForFundlineC = LearnRefNumbersWithFundLine(applicablefm25Learners, FundLineConstants.StudentsWithEHCP1924)?.ToArray();
+            var validLearnersForFundlineD = LearnRefNumbersWithFundLine(applicablefm25Learners, FundLineConstants.ContinuingStudents19Plus)?.ToArray();
 
             model.DirectFunded1416StudentsTotal =  BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineA, applicableLearners);
             model.IncludingHNS1619StudentsTotal =  BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineB, applicableLearners);
@@ -78,18 +72,39 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             model.LargeEmployerData = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            model.FilePreparationDate = FormatFilePreparationDate(message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
+            model.FilePreparationDate = FormatFilePreparationDate(message?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
 
             return model;
         }
 
-        private FundingLineReportingBandStudentNumbers BuildFundlineReportingBandStudentNumberModel(string[] validLearnersForFundline, List<ILearner> applicableLearners)
+        private IEnumerable<string> LearnRefNumbersWithFundLine(IEnumerable<FM25Learner> learners, params string[] fundLine)
+        {
+            var fundLinesHashSet = new HashSet<string>(fundLine, StringComparer.OrdinalIgnoreCase);
+
+            return learners?.Where(x => fundLinesHashSet.Contains(x.FundLine)).Select(x => x.LearnRefNumber);
+        }
+
+        private bool LearnerFilter(ILearner learner)
+        {
+            return learner
+                .LearningDeliveries?
+                .Any(ld =>
+                    ld.FundModel == FundModelConstants.FM25 &&
+                    (ld.LearningDeliveryFAMs ?? Enumerable.Empty<ILearningDeliveryFAM>())
+                        .Any(fam => 
+                            fam.LearnDelFAMType.CaseInsensitiveEquals(LearnerFAMTypeConstants.SOF) &&
+                            fam.LearnDelFAMCode.CaseInsensitiveEquals(LearningDeliveryFAMCodeConstants.SOF_ESFA_1619)))
+                   ?? false;
+
+        }
+
+        private FundingLineReportingBandStudentNumbers BuildFundlineReportingBandStudentNumberModel(IEnumerable<string> validLearnersForFundline, IEnumerable<ILearner> applicableLearners)
         {
             var model = new FundingLineReportingBandStudentNumbers();
+
             if (validLearnersForFundline != null)
             {
-                var validApplicableLearners =
-                    applicableLearners.Where(x => validLearnersForFundline.Contains(x.LearnRefNumber)).ToList();
+                var validApplicableLearners = applicableLearners.Where(x => validLearnersForFundline.Contains(x.LearnRefNumber)).ToList();
 
                 model =  new FundingLineReportingBandStudentNumbers()
                 {
@@ -101,44 +116,32 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
                     TotalFundineStudents = validApplicableLearners.Count
                 };
             }
+
             return model;
         }
 
-        public bool WithEHCP(ILearner learner)
-        {
-            return HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.EHC, 1);
-        }
+        public bool WithEHCP(ILearner learner) => 
+            HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.EHC, 1);
 
-        public bool  WithoutEhcp(ILearner learner)
-        {
-            return !HasLearnerFAMType(learner, LearnerFAMTypeConstants.EHC);
-        }
+        public bool  WithoutEhcp(ILearner learner) => 
+            !HasLearnerFAMType(learner, LearnerFAMTypeConstants.EHC);
 
-        public bool HNSWithoutEHCP(ILearner learner)
-        {
-            return HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.HNS, 1) &&
-                    !HasLearnerFAMType(learner, LearnerFAMTypeConstants.EHC);
-        }
+        public bool HNSWithoutEHCP(ILearner learner) =>
+            HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.HNS, 1) &&
+            !HasLearnerFAMType(learner, LearnerFAMTypeConstants.EHC);
 
-        public bool HNSWithEHCP(ILearner learner)
-        {
-            return HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.HNS, 1) &&
-                   HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.EHC, 1);
-        }
-        public bool EHCPWithoutHNS(ILearner learner)
-        {
-            return !HasLearnerFAMType(learner, LearnerFAMTypeConstants.HNS) &&
-                   HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.EHC, 1);
-        }
+        public bool HNSWithEHCP(ILearner learner) =>
+            HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.HNS, 1) &&
+            HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.EHC, 1);
 
-        public bool HasLearnerFAMType(ILearner learner, string famType)
-        {
-            return learner?.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType));
-        }
+        public bool EHCPWithoutHNS(ILearner learner) =>
+            !HasLearnerFAMType(learner, LearnerFAMTypeConstants.HNS) &&
+            HasLearnerFAMTypeAndCode(learner, LearnerFAMTypeConstants.EHC, 1);
 
-        public bool HasLearnerFAMTypeAndCode(ILearner learner, string famType, int code)
-        {
-            return learner?.LearnerFAMs != null && learner.LearnerFAMs.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType) && x.LearnFAMCode == code);
-        }
+        public bool HasLearnerFAMType(ILearner learner, string famType) =>
+            learner?.LearnerFAMs?.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType)) ?? false;
+
+        public bool HasLearnerFAMTypeAndCode(ILearner learner, string famType, int code) => 
+            learner?.LearnerFAMs?.Any(x => x.LearnFAMType.CaseInsensitiveEquals(famType) && x.LearnFAMCode == code) ?? false;
     }
 }

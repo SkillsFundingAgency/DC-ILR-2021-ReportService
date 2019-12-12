@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 
         public string FormatFilePreparationDate(DateTime? filePreparationDate)
         {
-            return filePreparationDate == null ? null : filePreparationDate.Value.ShortDateStringFormat();
+            return filePreparationDate?.ShortDateStringFormat();
         }
 
         public string FormatReportGeneratedAtDateTime(DateTime reportGeneratedAt)
