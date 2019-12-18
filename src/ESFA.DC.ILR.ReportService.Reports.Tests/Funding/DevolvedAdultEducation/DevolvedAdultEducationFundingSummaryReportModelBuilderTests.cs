@@ -3,6 +3,7 @@ using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;
 using Xunit;
 
@@ -79,9 +80,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedAdultEducation
             NewBuilder().BuildEASDictionary(easFundingLines, "105").Should().BeEquivalentTo(expectedOutput);
         }
 
-        public DevolvedAdultEducationFundingSummaryReportModelBuilder NewBuilder(IDateTimeProvider dateTimeProvider = null)
+        private DevolvedAdultEducationFundingSummaryReportModelBuilder NewBuilder(IDateTimeProvider dateTimeProvider = null, IAcademicYearService academicYearService = null)
         {
-            return new DevolvedAdultEducationFundingSummaryReportModelBuilder(dateTimeProvider);
+            return new DevolvedAdultEducationFundingSummaryReportModelBuilder(dateTimeProvider, academicYearService);
         }
     }
 }

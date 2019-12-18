@@ -6,6 +6,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
@@ -20,6 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     public class DevolvedAdultEducationFundingSummaryReportModelBuilder : AbstractReportModelBuilder, IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>>
     {
         private readonly IDateTimeProvider _dateTimeProvider;
+        private readonly IAcademicYearService _academicYearService;
 
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
@@ -32,9 +34,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority,
         };
 
-        public DevolvedAdultEducationFundingSummaryReportModelBuilder(IDateTimeProvider dateTimeProvider)
+        public DevolvedAdultEducationFundingSummaryReportModelBuilder(IDateTimeProvider dateTimeProvider, IAcademicYearService academicYearService)
         {
             _dateTimeProvider = dateTimeProvider;
+            _academicYearService = academicYearService;
         }
 
         public IEnumerable<DevolvedAdultEducationFundingSummaryReportModel> Build(IReportServiceContext reportServiceContext,
@@ -45,7 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
             var easFundingLines = reportServiceDependentData.Get<List<EasFundingLine>>();
 
-            var sofCodeDictionary = referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups.Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)).ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
+            var sofCodeDictionary = BuildSofDictionary(referenceDataRoot.DevolvedPostocdes.McaGlaSofLookups);
 
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
 
@@ -208,6 +211,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                                    StringComparer.OrdinalIgnoreCase),
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, Dictionary<string, decimal?[][]>>();
+        }
+
+        public IDictionary<string, McaGlaSofLookup> BuildSofDictionary(IEnumerable<McaGlaSofLookup> mcaGlaSofLookups)
+        {
+            return mcaGlaSofLookups
+               .Where(s => _sofLearnDelFamCodes.Contains(s.SofCode)
+                && s.EffectiveFrom <= _academicYearService.YearStart
+                && (!s.EffectiveTo.HasValue || _academicYearService.YearEnd.Date <= s.EffectiveTo))
+               .ToDictionary(s => s.SofCode, s => s, StringComparer.OrdinalIgnoreCase);
         }
 
         private decimal? GetPeriodValue(List<EasPaymentValue> easPaymentValues, int sofCode)
