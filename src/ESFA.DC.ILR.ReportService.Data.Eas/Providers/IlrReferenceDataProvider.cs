@@ -29,54 +29,56 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
         {
             using (var ilrContext = _ilrContext())
             {
-                return await ilrContext.FileDetails
+                var latestFileDetails = await ilrContext.FileDetails
                     .Where(fd => fd.UKPRN == reportServiceContext.Ukprn)
                     .OrderByDescending(d => d.SubmittedTime)
-                    .Select(x => new ReferenceDataRoot()
+                    .FirstOrDefaultAsync(cancellationToken);
+
+                return new ReferenceDataRoot()
+                {
+                    MetaDatas = new MetaData()
                     {
-                        MetaDatas = new MetaData()
+                        ReferenceDataVersions = new ReferenceDataVersion()
                         {
-                            ReferenceDataVersions = new ReferenceDataVersion()
+                            CampusIdentifierVersion = new CampusIdentifierVersion()
                             {
-                                CampusIdentifierVersion = new CampusIdentifierVersion()
-                                {
-                                    Version = x.CampusIdentifierVersion
-                                },
-                                Employers = new EmployersVersion()
-                                {
-                                    Version = x.EmployersVersion
-                                },
-                                LarsVersion = new LarsVersion()
-                                {
-                                    Version = x.LarsVersion
-                                },
-                                OrganisationsVersion = new OrganisationsVersion()
-                                {
-                                    Version = x.OrgVersion
-                                },
-                                PostcodesVersion = new PostcodesVersion()
-                                {
-                                    Version = x.PostcodesVersion
-                                },
-                                EasUploadDateTime = new EasUploadDateTime()
-                                {
-                                    UploadDateTime = x.EasUploadDateTime
-                                }
-                            }
-                        },
-                        Organisations = new List<Organisation>()
-                        {
-                            new Organisation()
+                                Version = latestFileDetails?.CampusIdentifierVersion
+                            },
+                            Employers = new EmployersVersion()
                             {
-                                UKPRN = x.UKPRN,
-                                Name = x.OrgName
+                                Version = latestFileDetails?.EmployersVersion
+                            },
+                            LarsVersion = new LarsVersion()
+                            {
+                                Version = latestFileDetails?.LarsVersion
+                            },
+                            OrganisationsVersion = new OrganisationsVersion()
+                            {
+                                Version = latestFileDetails?.OrgVersion
+                            },
+                            PostcodesVersion = new PostcodesVersion()
+                            {
+                                Version = latestFileDetails?.PostcodesVersion
+                            },
+                            EasUploadDateTime = new EasUploadDateTime()
+                            {
+                                UploadDateTime = latestFileDetails?.EasUploadDateTime
                             }
-                        },
-                        DevolvedPostocdes = new DevolvedPostcodes()
-                        {
-                            McaGlaSofLookups = BuildMcaglaSofLookups(cancellationToken).Result
                         }
-                    }).FirstOrDefaultAsync(cancellationToken) ?? new ReferenceDataRoot();
+                    },
+                    Organisations = new List<Organisation>()
+                    {
+                        new Organisation()
+                        {
+                            UKPRN = reportServiceContext.Ukprn,
+                            Name = latestFileDetails?.OrgName
+                        }
+                    },
+                    DevolvedPostocdes = new DevolvedPostcodes()
+                    {
+                        McaGlaSofLookups = BuildMcaglaSofLookups(cancellationToken).Result
+                    }
+                };
             }
         }
 
