@@ -109,7 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             worksheet.Cells.ImportTwoDimensionArray(new object[,]
             {
                 { ApplicationVersion, fundingSummaryReport.ApplicationVersion },
-                { FilePreparationDate, fundingSummaryReport.FilePreparationDate.ToString(DateFormat) },
+                { FilePreparationDate, fundingSummaryReport.FilePreparationDate?.ToString(DateFormat) },
                 { LARSVersion, fundingSummaryReport.LARSVersion },
                 { PostcodeVersion, fundingSummaryReport.PostcodeVersion },
                 { OrganisationVersion, fundingSummaryReport.OrganisationVersion },

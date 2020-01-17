@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).LongDateStringFormat(); ;
             }
 
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate;
+            var filePreparationDate = message?.HeaderEntity?.CollectionDetailsEntity?.FilePreparationDate;
 
             DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
             DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);

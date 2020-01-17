@@ -18,7 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
 
         string EasLastUpdated { get; }
 
-        DateTime FilePreparationDate { get; }
+        DateTime? FilePreparationDate { get; }
 
         string OrganisationVersion { get; }
 

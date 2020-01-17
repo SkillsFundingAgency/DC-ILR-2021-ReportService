@@ -13,7 +13,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
             string providerName, 
             string ilrFile, 
             string lastSubmittedIlrFileName, 
-            DateTime filePreparationDate,
+            DateTime? filePreparationDate,
             string easLastUpdated,
             string organisationVersion,
             string larsVersion,
@@ -51,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
 
         public string EasLastUpdated { get; }
 
-        public DateTime FilePreparationDate { get; }
+        public DateTime? FilePreparationDate { get; }
 
         public string OrganisationVersion { get; }
 
