@@ -7,9 +7,7 @@ using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Modules;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
-using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -27,22 +25,26 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
     {
         private readonly ILifetimeScope _parentLifeTimeScope;
         private readonly StatelessServiceContext _context;
+        private readonly IJobContextMessageKeysMutator _jobContextMessageKeysMutator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandler"/> class.
         /// Simple constructor for use by AutoFac testing, don't want to have to fake a @see StatelessServiceContext
         /// </summary>
         /// <param name="parentLifeTimeScope">AutoFac scope</param>
-        public MessageHandler(ILifetimeScope parentLifeTimeScope)
+        /// <param name="jobContextMessageKeysMutator">jobContextMessageKeysMutator</param>
+        public MessageHandler(ILifetimeScope parentLifeTimeScope, IJobContextMessageKeysMutator jobContextMessageKeysMutator)
         {
             _parentLifeTimeScope = parentLifeTimeScope;
+            _jobContextMessageKeysMutator = jobContextMessageKeysMutator;
             _context = null;
         }
 
-        public MessageHandler(ILifetimeScope parentLifeTimeScope, StatelessServiceContext context)
+        public MessageHandler(ILifetimeScope parentLifeTimeScope, StatelessServiceContext context, IJobContextMessageKeysMutator jobContextMessageKeysMutator)
         {
             _parentLifeTimeScope = parentLifeTimeScope;
             _context = context;
+            _jobContextMessageKeysMutator = jobContextMessageKeysMutator;
         }
 
         public async Task<bool> HandleAsync(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
@@ -58,11 +60,9 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
 
-                    ////Legacy
-                    //var entryPoint = childLifeTimeScope.Resolve<LegacyEntryPoint>();
-                    //var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
-
                     var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
+
+                    jobContextMessage.KeyValuePairs = await _jobContextMessageKeysMutator.Mutate(jobContextMessage.KeyValuePairs, cancellationToken);
 
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
 

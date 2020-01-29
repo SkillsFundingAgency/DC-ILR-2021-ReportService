@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using ESFA.DC.EAS1920.EF;
 using ESFA.DC.EAS1920.EF.Interface;
+using ESFA.DC.ILR.ReportService.Data.Eas;
 using ESFA.DC.ILR.ReportService.Data.Eas.Providers;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -35,6 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<Fm81Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm81);
             builder.RegisterType<Fm99Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm99);
             builder.RegisterType<EasProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Eas);
+            builder.RegisterType<JobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
         }
 
         private void RegisterDatabases(ContainerBuilder containerBuilder)

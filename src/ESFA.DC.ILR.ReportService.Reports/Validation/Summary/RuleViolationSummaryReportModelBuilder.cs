@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             // Header
             model.ProviderName = $"Provider: {organisationName}";
             model.Ukprn = $"UKPRN: {reportServiceContext.Ukprn}";
-            model.IlrFile =$"ILR File: {ExtractFileName(reportServiceContext.OriginalFilename)}";
+            model.IlrFile =$"ILR File: {ExtractFileName(reportServiceContext.IlrReportingFilename)}";
             model.Year = ReportingConstants.Year;
 
             // body

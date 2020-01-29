@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public int Ukprn => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
         public string Filename => _desktopContext.KeyValuePairs[ILRContextKeys.Filename].ToString();
         
-        public string OriginalFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
+        public string IlrReportingFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
 
         public string Container => _desktopContext.KeyValuePairs[ILRContextKeys.Container].ToString();
 

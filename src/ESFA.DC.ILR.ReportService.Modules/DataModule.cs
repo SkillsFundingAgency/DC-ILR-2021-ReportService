@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using ESFA.DC.ILR.ReportService.Data;
 using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -19,6 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<Fm81Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm81);
             builder.RegisterType<Fm99Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm99);
             builder.RegisterType<EasProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Eas);
+            builder.RegisterType<JobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
         }
     }
 }

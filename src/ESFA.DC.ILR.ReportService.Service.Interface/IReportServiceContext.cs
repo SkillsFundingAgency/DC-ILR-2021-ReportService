@@ -12,7 +12,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string Filename { get; }
 
-        string OriginalFilename { get; }
+        string IlrReportingFilename { get; }
 
         string Container { get; }
 

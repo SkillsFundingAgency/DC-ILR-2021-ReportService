@@ -148,7 +148,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             var reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.Setup(c => c.Container).Returns(container);
             reportServiceContextMock.Setup(c => c.Ukprn).Returns(ukprn);
-            reportServiceContextMock.Setup(c => c.OriginalFilename).Returns("ILR-11111111-1920-20190507-152000-01");
+            reportServiceContextMock.Setup(c => c.IlrReportingFilename).Returns("ILR-11111111-1920-20190507-152000-01");
             reportServiceContextMock.Setup(c => c.ServiceReleaseVersion).Returns("ServiceReleaseVersion");
 
             var excelService = new ExcelService(new FileServiceStub());

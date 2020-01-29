@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
 
         public async Task<object> ProvideAsync(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            return await ProvideXmlAsync<Message>(reportServiceContext.OriginalFilename, reportServiceContext.Container, cancellationToken) as Message;
+            return await ProvideXmlAsync<Message>(reportServiceContext.IlrReportingFilename, reportServiceContext.Container, cancellationToken) as Message;
         }
 
         private async Task<object> ProvideXmlAsync<T>(string fileName, string container, CancellationToken cancellationToken)
