@@ -17,8 +17,8 @@ namespace ESFA.DC.ILR.ReportService.Data
 
         private async Task AddIlrReportingFilename(IDictionary<string, object> keyValuePairs)
         {
-            var ilrReportingFilename = keyValuePairs.ContainsKey("OriginalFilename")
-                ? keyValuePairs["OriginalFilename"].ToString()
+            var ilrReportingFilename = keyValuePairs.ContainsKey(ILRContextKeys.OriginalFilename)
+                ? keyValuePairs[ILRContextKeys.OriginalFilename].ToString()
                 : keyValuePairs[ILRContextKeys.Filename].ToString();
 
             keyValuePairs.Add("IlrReportingFilename", ilrReportingFilename);
