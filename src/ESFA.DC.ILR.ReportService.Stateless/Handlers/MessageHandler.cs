@@ -25,7 +25,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
     {
         private readonly ILifetimeScope _parentLifeTimeScope;
         private readonly StatelessServiceContext _context;
-        private readonly IJobContextMessageKeysMutator _jobContextMessageKeysMutator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandler"/> class.
@@ -33,18 +32,16 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
         /// </summary>
         /// <param name="parentLifeTimeScope">AutoFac scope</param>
         /// <param name="jobContextMessageKeysMutator">jobContextMessageKeysMutator</param>
-        public MessageHandler(ILifetimeScope parentLifeTimeScope, IJobContextMessageKeysMutator jobContextMessageKeysMutator)
+        public MessageHandler(ILifetimeScope parentLifeTimeScope)
         {
             _parentLifeTimeScope = parentLifeTimeScope;
-            _jobContextMessageKeysMutator = jobContextMessageKeysMutator;
             _context = null;
         }
 
-        public MessageHandler(ILifetimeScope parentLifeTimeScope, StatelessServiceContext context, IJobContextMessageKeysMutator jobContextMessageKeysMutator)
+        public MessageHandler(ILifetimeScope parentLifeTimeScope, StatelessServiceContext context)
         {
             _parentLifeTimeScope = parentLifeTimeScope;
             _context = context;
-            _jobContextMessageKeysMutator = jobContextMessageKeysMutator;
         }
 
         public async Task<bool> HandleAsync(JobContextMessage jobContextMessage, CancellationToken cancellationToken)
@@ -62,7 +59,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 
                     var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
 
-                    jobContextMessage.KeyValuePairs = await _jobContextMessageKeysMutator.Mutate(jobContextMessage.KeyValuePairs, cancellationToken);
+                    var mutator = childLifeTimeScope.Resolve<IJobContextMessageKeysMutator>();
+                    await mutator.Mutate(jobContextMessage.KeyValuePairs, cancellationToken);
 
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
 
