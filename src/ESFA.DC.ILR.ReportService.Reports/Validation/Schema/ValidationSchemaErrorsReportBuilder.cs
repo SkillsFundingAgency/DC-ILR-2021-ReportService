@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
@@ -37,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
                 .Select(e => new ValidationErrorRow()
                 {
                     AimSequenceNumber = e.AimSequenceNumber,
-                    ErrorMessage = _errorMessageLookup.TryGetValue(e.RuleName, out var description) ? description : string.Empty,
+                    ErrorMessage = _errorMessageLookup.GetValueOrDefault(e.RuleName),
                     FieldValues = e.ValidationErrorParameters == null
                         ? string.Empty
                         : GetValidationErrorParameters(e.ValidationErrorParameters),
