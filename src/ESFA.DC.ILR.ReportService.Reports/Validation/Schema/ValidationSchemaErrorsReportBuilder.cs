@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
                 .Select(e => new ValidationErrorRow()
                 {
                     AimSequenceNumber = e.AimSequenceNumber,
-                    ErrorMessage = _errorMessageLookup.GetValueOrDefault(e.RuleName),
+                    ErrorMessage = _errorMessageLookup.GetValueOrDefault(e.RuleName, string.Empty),
                     FieldValues = e.ValidationErrorParameters == null
                         ? string.Empty
                         : GetValidationErrorParameters(e.ValidationErrorParameters),
