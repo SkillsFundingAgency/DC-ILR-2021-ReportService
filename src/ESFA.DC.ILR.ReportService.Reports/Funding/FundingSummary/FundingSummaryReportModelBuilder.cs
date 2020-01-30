@@ -168,7 +168,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         {
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
             var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime;
-            var fileName = ExtractFileName(reportServiceContext.OriginalFilename);
+            var fileName = ExtractFileName(reportServiceContext.IlrReportingFilename);
 
             string easLastUpdateUk = null;
 
@@ -182,7 +182,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 {SummaryPageConstants.ProviderName, organisationName},
                 {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
                 {SummaryPageConstants.ILRFile, fileName},
-                {SummaryPageConstants.LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename)},
+                {SummaryPageConstants.LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename)},
                 {SummaryPageConstants.LastEASUpdate, easLastUpdateUk},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };

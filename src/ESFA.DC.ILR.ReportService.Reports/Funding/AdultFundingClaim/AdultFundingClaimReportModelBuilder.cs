@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             // Header
             model.ProviderName = organisationName;
             model.Ukprn = reportServiceContext.Ukprn.ToString();
-            model.IlrFile = ExtractFileName(reportServiceContext.OriginalFilename);
+            model.IlrFile = ExtractFileName(reportServiceContext.IlrReportingFilename);
             model.Year = ReportingConstants.Year;
 
             //Body
@@ -129,7 +129,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CampusIdentifierVersion.Version;
             model.LastEASFileUpdate = _dateTimeProvider.ConvertUtcToUk(referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault()).LongDateStringFormat();
-            model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
+            model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename);
             return model;
         }
         

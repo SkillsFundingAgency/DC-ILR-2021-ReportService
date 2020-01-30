@@ -7,9 +7,7 @@ using ESFA.DC.ILR.Constants;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Modules;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
-using ESFA.DC.ILR.ReportService.Reports.Service;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Context;
 using ESFA.DC.IO.AzureStorage.Config.Interfaces;
@@ -33,6 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
         /// Simple constructor for use by AutoFac testing, don't want to have to fake a @see StatelessServiceContext
         /// </summary>
         /// <param name="parentLifeTimeScope">AutoFac scope</param>
+        /// <param name="jobContextMessageKeysMutator">jobContextMessageKeysMutator</param>
         public MessageHandler(ILifetimeScope parentLifeTimeScope)
         {
             _parentLifeTimeScope = parentLifeTimeScope;
@@ -58,11 +57,10 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                     var logger = childLifeTimeScope.Resolve<ILogger>();
                     logger.LogDebug("Started Report Service");
 
-                    ////Legacy
-                    //var entryPoint = childLifeTimeScope.Resolve<LegacyEntryPoint>();
-                    //var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage), cancellationToken);
-
                     var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
+
+                    var mutator = childLifeTimeScope.Resolve<IJobContextMessageKeysMutator>();
+                    await mutator.MutateAsync(jobContextMessage.KeyValuePairs, cancellationToken);
 
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
 

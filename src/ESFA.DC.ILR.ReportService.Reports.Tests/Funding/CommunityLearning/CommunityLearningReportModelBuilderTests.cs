@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         {
             var reportServiceContextMock = new Mock<IReportServiceContext>();
 
-            reportServiceContextMock.Setup(r => r.OriginalFilename).Returns("10000000/ILR-1920-20190801-090000.xml");
+            reportServiceContextMock.Setup(r => r.IlrReportingFilename).Returns("10000000/ILR-1920-20190801-090000.xml");
             reportServiceContextMock.Setup(r => r.Ukprn).Returns(1);
             reportServiceContextMock.Setup(r => r.CollectionYear).Returns("1920");
 
