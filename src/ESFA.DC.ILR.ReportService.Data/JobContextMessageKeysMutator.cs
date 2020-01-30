@@ -8,20 +8,15 @@ namespace ESFA.DC.ILR.ReportService.Data
 {
     public class JobContextMessageKeysMutator : IJobContextMessageKeysMutator
     {
-        public async Task<IDictionary<string, object>> Mutate(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken)
-        {
-            await AddIlrReportingFilename(keyValuePairs);
-
-            return keyValuePairs;
-        }
-
-        private async Task AddIlrReportingFilename(IDictionary<string, object> keyValuePairs)
+        public Task<IDictionary<string, object>> MutateAsync(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken)
         {
             var ilrReportingFilename = keyValuePairs.ContainsKey(ILRContextKeys.OriginalFilename)
                 ? keyValuePairs[ILRContextKeys.OriginalFilename].ToString()
                 : keyValuePairs[ILRContextKeys.Filename].ToString();
 
             keyValuePairs.Add("IlrReportingFilename", ilrReportingFilename);
+
+            return Task.FromResult(keyValuePairs);
         }
     }
 }

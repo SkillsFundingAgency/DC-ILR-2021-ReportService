@@ -6,6 +6,6 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
     public interface IJobContextMessageKeysMutator
     {
-        Task<IDictionary<string, object>> Mutate(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken);
+        Task<IDictionary<string, object>> MutateAsync(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken);
     }
 }

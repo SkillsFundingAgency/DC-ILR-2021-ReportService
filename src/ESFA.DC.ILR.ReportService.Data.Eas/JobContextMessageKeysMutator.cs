@@ -20,7 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas
             _ilrContext = ilrContext;
         }
 
-        public async Task<IDictionary<string, object>> Mutate(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken)
+        public async Task<IDictionary<string, object>> MutateAsync(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken)
         {
             await AddIlrReportingFilename(keyValuePairs, cancellationToken);
             

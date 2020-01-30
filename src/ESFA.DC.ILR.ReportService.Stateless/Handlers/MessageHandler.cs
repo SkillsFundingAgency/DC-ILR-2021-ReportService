@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                     var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
 
                     var mutator = childLifeTimeScope.Resolve<IJobContextMessageKeysMutator>();
-                    await mutator.Mutate(jobContextMessage.KeyValuePairs, cancellationToken);
+                    await mutator.MutateAsync(jobContextMessage.KeyValuePairs, cancellationToken);
 
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
 
