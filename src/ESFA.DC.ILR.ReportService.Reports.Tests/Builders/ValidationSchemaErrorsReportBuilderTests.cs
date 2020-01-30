@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Builders
             result.First().FieldValues.Should().Be("Line=1|Property=23|Message=InvalidCharacter|");
             result.First().LearnerReferenceNumber.Should().Be("0AchDt03");
             result.First().RuleName.Should().Be("Schema");
-            result.First().ErrorMessage.Should().Be(string.Empty);
+            result.First().ErrorMessage.Should().Be("The XML is not well formed.");
             result.First().Severity.Should().Be("E");
         }
 
