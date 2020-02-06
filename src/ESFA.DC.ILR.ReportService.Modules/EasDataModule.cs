@@ -1,5 +1,4 @@
-﻿using System;
-using Autofac;
+﻿using Autofac;
 using ESFA.DC.EAS1920.EF;
 using ESFA.DC.EAS1920.EF.Interface;
 using ESFA.DC.ILR.ReportService.Data.Eas;
@@ -13,8 +12,6 @@ using ESFA.DC.ILR1920.DataStore.EF.Valid.Interface;
 using ESFA.DC.ReferenceData.Postcodes.Model;
 using ESFA.DC.ReferenceData.Postcodes.Model.Interface;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Internal;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
