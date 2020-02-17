@@ -29,6 +29,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
                 validationErrorModels.Add(new ValidationErrorRow()
                 {
                     AimSequenceNumber = validationError.AimSequenceNumber,
+                    ULN = learner?.ULNNullable,
+                    FamilyName = learner?.FamilyName,
+                    GivenNames= learner?.GivenNames,
                     ErrorMessage = validationErrorsMetadata.FirstOrDefault(x => x.RuleName.CaseInsensitiveEquals(validationError.RuleName))?.Message,
                     FieldValues = validationError.ValidationErrorParameters == null
                         ? string.Empty

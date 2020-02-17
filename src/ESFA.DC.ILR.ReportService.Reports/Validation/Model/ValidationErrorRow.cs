@@ -35,6 +35,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Model
 
         public string ErrorMessage { get; set; }
 
+        public long? ULN { get; set; }
+
+        public string FamilyName { get; set; }
+
+        public string GivenNames { get; set; }
+
         public string LearnerReferenceNumber { get; set; }
 
         public string FieldValues { get; set; }

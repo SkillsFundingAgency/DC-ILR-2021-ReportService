@@ -9,6 +9,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation
         {
             Map(m => m.Severity).Index(0).Name(@"Error\Warning");
             Map(m => m.LearnerReferenceNumber).Index(1).Name(@"Learner Ref");
+            Map(m => m.ULN).Index(2).Name(@"Unique Learner Number");
+            Map(m => m.FamilyName).Index(2).Name(@"Family Name");
+            Map(m => m.GivenNames).Index(2).Name(@"Given Names");
             Map(m => m.RuleName).Index(2).Name(@"Rule Name");
             Map(m => m.FieldValues).Index(3).Name(@"Field Values");
             Map(m => m.ErrorMessage).Index(4).Name(@"Error Message");
