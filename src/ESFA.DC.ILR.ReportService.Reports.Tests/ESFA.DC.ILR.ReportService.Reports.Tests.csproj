@@ -181,6 +181,7 @@
     <Compile Include="Service\FileNameServiceTests.cs" />
     <Compile Include="Service\ZipServiceTests.cs" />
     <Compile Include="Stubs\FileServiceStub.cs" />
+    <Compile Include="ValidationErrorDetailReportTestsV2.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
     <Compile Include="Validation\RuleViolationSummaryModelBuilderTests.cs" />
