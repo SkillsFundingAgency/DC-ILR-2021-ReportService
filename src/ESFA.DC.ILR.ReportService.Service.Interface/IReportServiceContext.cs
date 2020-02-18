@@ -46,6 +46,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string ValidLearnRefNumbersKey { get; }
 
+        string FrmReferenceDataOutputKey { get; }
+
         IEnumerable<string> Tasks { get; }
 
         string InvalidLearnRefNumbersKey { get; }

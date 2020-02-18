@@ -43,6 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public string FundingALBOutputKey => _desktopContext.KeyValuePairs[ILRContextKeys.FundingAlbOutput].ToString();
         public string ValidLearnRefNumbersKey => _desktopContext.KeyValuePairs[ILRContextKeys.ValidLearnRefNumbers].ToString();
 
+        public string FrmReferenceDataOutputKey => throw new NotImplementedException();
+
         public IEnumerable<string> Tasks
         {
             get
