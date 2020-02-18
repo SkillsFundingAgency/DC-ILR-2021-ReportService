@@ -28,7 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
-            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Non Contract Devolved Adult Education Occupancy Report", OutputTypes.Csv, true)).Returns(fileName);
+            fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Non-Contracted Devolved Adult Education Activity Report", OutputTypes.Csv, true)).Returns(fileName);
 
             var modelBuilderMock = new Mock<IModelBuilder<IEnumerable<NonContractDevolvedAdultEducationOccupancyReportModel>>>();
 

@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                 nonContractDevolvedAdultEducationOccupancyReportModelBuilder,
                 csvService,
                 ReportTaskNameConstants.NonContractDevolvedAdultEducationOccupancyReport,
-                "Non Contract Devolved Adult Education Occupancy Report")
+                "Non-Contracted Devolved Adult Education Activity Report")
         {
         }
     }
