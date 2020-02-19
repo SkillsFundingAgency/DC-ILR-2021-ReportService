@@ -12,13 +12,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 
         public string OrgName { get; set; }
 
-        public string PartnerUKPRN { get; set; } 
+        public long? PartnerUKPRN { get; set; } 
 
         public string PartnerOrgName { get; set; }
 
-        public string PrevUKPRN { get; set; }
+        public long? PrevUKPRN { get; set; }
 
-        public string PMUKPRN { get; set; }
+        public long? PMUKPRN { get; set; }
 
         public long ULN { get; set; }
 
@@ -32,13 +32,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 
         public string LearnAimTitle { get; set; }
 
-        public string StdCode { get; set; }
+        public int? StdCode { get; set; }
 
-        public string FworkCode { get; set; }
+        public int? FworkCode { get; set; }
 
-        public string PwayCode { get; set; }
+        public int? PwayCode { get; set; }
 
-        public string ProgType { get; set; }
+        public int? ProgType { get; set; }
 
         public string AdvancedLoansIndicator { get; set; }
 
@@ -56,13 +56,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 
         public string ResIndicator { get; set; }
 
-        public string PriorLearnFundAdj { get; set; }
+        public int? PriorLearnFundAdj { get; set; }
 
-        public string OtherFundAdj { get; set; }
+        public int? OtherFundAdj { get; set; }
 
         public int CompStatus { get; set; }
 
-        public string Outcome { get; set; }
+        public int? Outcome { get; set; }
         
         public string FundingStream { get; set; }
     }

@@ -55,10 +55,10 @@ namespace ESFA.DC.ILR.ReportService.Models.FRM
 
         public int? Outcome { get; set; }
 
-        public IEnumerable<LearningDeliveryFAM> LearningDeliveryFAMs { get; set; }
+        public IReadOnlyCollection<LearningDeliveryFAM> LearningDeliveryFAMs { get; set; }
 
-        public IEnumerable<ProviderSpecLearnerMonitoring> ProviderSpecLearnerMonitorings { get; set; }
+        public IReadOnlyCollection<ProviderSpecLearnerMonitoring> ProviderSpecLearnerMonitorings { get; set; }
 
-        public IEnumerable<ProviderSpecDeliveryMonitoring> ProvSpecDeliveryMonitorings { get; set; }
+        public IReadOnlyCollection<ProviderSpecDeliveryMonitoring> ProvSpecDeliveryMonitorings { get; set; }
     }
 }

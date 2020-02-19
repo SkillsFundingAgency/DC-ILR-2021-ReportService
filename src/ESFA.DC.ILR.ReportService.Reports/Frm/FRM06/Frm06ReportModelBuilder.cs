@@ -31,6 +31,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             var message = reportServiceDependentData.Get<IMessage>();
             var currentLearnersHashSet = BuildCurrentYearLearnerHashSet(message);
 
+            var returnPeriod = $"R{reportServiceContext.ReturnPeriod:D2}";
+
             foreach (var learner in frmLearners?.Frm06Learners ?? Enumerable.Empty<FrmLearner>())
             {
                 var key = new FrmLearnerKey
@@ -45,37 +47,37 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 
                 if (!currentLearnersHashSet.Contains(key, _frmEqualityComparer))
                 {
-                    var advancedLoansIndicator = learner.LearningDeliveryFAMs.FirstOrDefault(fam => fam.LearnDelFAMType == ADLLearnDelFamType)?.LearnDelFAMCode ?? string.Empty;
-
-                    var devolvedIndicator = learner.LearningDeliveryFAMs.FirstOrDefault(fam => fam.LearnDelFAMType == SOFLearnDelFamType)?.LearnDelFAMCode ?? string.Empty;
+                    var advancedLoansIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, ADLLearnDelFamType);
+                    var devolvedIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
+                    var resIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, RESLearnDelFamType);
 
                     models.Add(new Frm06ReportModel
                     {
                         UKPRN = learner.UKPRN,
-                        Return = $"R{reportServiceContext.ReturnPeriod:D2}",
+                        Return = returnPeriod,
                         OrgName = learner.OrgName,
-                        FworkCode = learner.FworkCodeNullable?.ToString() ?? string.Empty,
+                        FworkCode = learner.FworkCodeNullable,
                         LearnAimRef = learner.LearnAimRef,
                         LearnRefNumber = learner.LearnRefNumber,
                         LearnStartDate = learner.LearnStartDate,
-                        ProgType = learner.ProgTypeNullable?.ToString() ?? string.Empty,
-                        StdCode = learner.StdCodeNullable?.ToString() ?? string.Empty,
+                        ProgType = learner.ProgTypeNullable,
+                        StdCode = learner.StdCodeNullable,
                         ULN = learner.ULN,
                         AdvancedLoansIndicator = advancedLoansIndicator,
                         AimSeqNumber = learner.AimSeqNumber,
                         CompStatus = learner.CompStatus,
                         LearnActEndDate = learner.LearnActEndDate,
                         LearnPlanEndDate = learner.LearnPlanEndDate,
-                        OtherFundAdj = learner.OtherFundAdj?.ToString() ?? string.Empty,
-                        Outcome = learner.Outcome?.ToString() ?? string.Empty,
-                        PMUKPRN = learner.PMUKPRN?.ToString() ?? string.Empty,
-                        PartnerUKPRN = learner.PartnerUKPRN?.ToString() ?? string.Empty,
+                        OtherFundAdj = learner.OtherFundAdj,
+                        Outcome = learner.Outcome,
+                        PMUKPRN = learner.PMUKPRN,
+                        PartnerUKPRN = learner.PartnerUKPRN,
                         PartnerOrgName = learner.PartnerOrgName,
-                        PriorLearnFundAdj = learner.PriorLearnFundAdj?.ToString() ?? string.Empty,
+                        PriorLearnFundAdj = learner.PriorLearnFundAdj,
                         PrevLearnRefNumber = learner.PrevLearnRefNumber,
-                        PrevUKPRN = learner.PrevUKPRN?.ToString() ?? string.Empty,
-                        PwayCode = learner.PwayCodeNullable?.ToString() ?? string.Empty,
-                        ResIndicator = learner.LearningDeliveryFAMs.FirstOrDefault(fam => fam.LearnDelFAMType == RESLearnDelFamType)?.LearnDelFAMCode ?? string.Empty,
+                        PrevUKPRN = learner.PrevUKPRN,
+                        PwayCode = learner.PwayCodeNullable,
+                        ResIndicator = resIndicator,
                         SWSupAimId = learner.SWSupAimId,
                         ProvSpecLearnDelMon = string.Join(";", learner.ProvSpecDeliveryMonitorings.Select(x => x.ProvSpecDelMon)),
                         ProvSpecDelMon = string.Join(";", learner.ProviderSpecLearnerMonitorings.Select(x => x.ProvSpecLearnMon)),
@@ -100,6 +102,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     ProgTypeNullable = ld.ProgTypeNullable,
                     StdCodeNullable = ld.StdCodeNullable
                 })) ?? Enumerable.Empty<FrmLearnerKey>());
+        }
+
+        private string RetrieveFamCodeForType(IEnumerable<LearningDeliveryFAM> deliveryFams, string learnDelFamType)
+        {
+            return deliveryFams.FirstOrDefault(f => f.LearnDelFAMType == learnDelFamType)?.LearnDelFAMCode ?? string.Empty;
         }
 
         private string CalculateFundingStream(FrmLearner learner, string advancedLearnerLoansIndicator, string devolvedIndicator)
