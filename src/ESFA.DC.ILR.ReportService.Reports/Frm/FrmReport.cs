@@ -41,6 +41,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
                     frmReport.Generate(workbook, reportServiceContext, reportsDependentData, cancellationToken);
                 }
 
+                if (!workbook.Worksheets.Any())
+                {
+                    return Enumerable.Empty<string>();
+                }
+
                 await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             }
 
