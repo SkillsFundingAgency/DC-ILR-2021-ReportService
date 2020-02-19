@@ -27,7 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
             _fundingRuleMonitoringReportModelBuilder = fundingRulesMonitoringModelBuilder;
         }
 
-        public virtual void GenerateAsync(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
+        public virtual void Generate(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
             var fundingReportMonitoringModels = _fundingRuleMonitoringReportModelBuilder.Build(reportServiceContext, reportsDependentData).ToList();
 

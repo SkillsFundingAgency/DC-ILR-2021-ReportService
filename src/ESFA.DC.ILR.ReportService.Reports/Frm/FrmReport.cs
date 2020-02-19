@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
 
                 foreach (var frmReport in reportsToBeGenerated)
                 {
-                    frmReport.GenerateAsync(workbook, reportServiceContext, reportsDependentData, cancellationToken);
+                    frmReport.Generate(workbook, reportServiceContext, reportsDependentData, cancellationToken);
                 }
 
                 await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
