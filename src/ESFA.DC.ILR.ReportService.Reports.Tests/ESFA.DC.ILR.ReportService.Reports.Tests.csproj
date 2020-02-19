@@ -119,7 +119,6 @@
     <Compile Include="Extensions\IEnumerableExtensionsTests.cs" />
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
-    <Compile Include="Frm\FRM06\Frm06ModelBuilderTests.cs" />
     <Compile Include="Frm\FRM06\Frm06ReportRenderServiceTests.cs" />
     <Compile Include="Frm\FRM06\Frm06ReportTests.cs" />
     <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
