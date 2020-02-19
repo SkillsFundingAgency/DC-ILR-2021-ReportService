@@ -3,6 +3,7 @@ using ESFA.DC.EAS1920.EF;
 using ESFA.DC.EAS1920.EF.Interface;
 using ESFA.DC.ILR.ReportService.Data.Eas;
 using ESFA.DC.ILR.ReportService.Data.Eas.Providers;
+using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR1920.DataStore.EF;
@@ -12,6 +13,12 @@ using ESFA.DC.ILR1920.DataStore.EF.Valid.Interface;
 using ESFA.DC.ReferenceData.Postcodes.Model;
 using ESFA.DC.ReferenceData.Postcodes.Model.Interface;
 using Microsoft.EntityFrameworkCore;
+using EasProvider = ESFA.DC.ILR.ReportService.Data.Eas.Providers.EasProvider;
+using Fm25Provider = ESFA.DC.ILR.ReportService.Data.Eas.Providers.Fm25Provider;
+using Fm35Provider = ESFA.DC.ILR.ReportService.Data.Eas.Providers.Fm35Provider;
+using Fm36Provider = ESFA.DC.ILR.ReportService.Data.Eas.Providers.Fm36Provider;
+using Fm81Provider = ESFA.DC.ILR.ReportService.Data.Eas.Providers.Fm81Provider;
+using Fm99Provider = ESFA.DC.ILR.ReportService.Data.Eas.Providers.Fm99Provider;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -36,6 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<Fm81Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm81);
             builder.RegisterType<Fm99Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm99);
             builder.RegisterType<EasProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Eas);
+            builder.RegisterType<FrmReferenceDataProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Frm);
             builder.RegisterType<JobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
         }
 

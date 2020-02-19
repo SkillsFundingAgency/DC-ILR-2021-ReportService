@@ -8,6 +8,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.Fm36;
 using ESFA.DC.ILR.ReportService.Models.Fm81;
 using ESFA.DC.ILR.ReportService.Models.Fm99;
+using ESFA.DC.ILR.ReportService.Models.FRM;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
 
@@ -34,5 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
         public static readonly Type Fm99 = typeof(ALBGlobal);
 
         public static readonly Type Eas = typeof(List<EasFundingLine>);
+
+        public static readonly Type Frm = typeof(FrmReferenceData);
     }
 }

@@ -20,6 +20,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             builder.RegisterType<Fm81Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm81);
             builder.RegisterType<Fm99Provider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Fm99);
             builder.RegisterType<EasProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Eas);
+            builder.RegisterType<FrmReferenceDataProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.Frm);
             builder.RegisterType<JobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
         }
     }
