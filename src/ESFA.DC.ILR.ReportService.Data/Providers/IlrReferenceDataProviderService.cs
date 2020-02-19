@@ -8,6 +8,7 @@ using ESFA.DC.ILR.ReportService.Data.Providers.Abstract;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.FCS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MCAGLA;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -39,6 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 FCSContractAllocations = MapData(root.FCSContractAllocations),
                 LARSLearningDeliveries = MapData(root.LARSLearningDeliveries),
                 LARSStandards = MapData(root.LARSStandards),
+                McaDevolvedContracts = MapData(root.McaDevolvedContracts),
                 Organisations = MapData(root.Organisations),
                 DevolvedPostocdes = MapData(root.DevolvedPostocdes)
             };
@@ -249,6 +251,23 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 SofCode = mcaGlaSofLookup.SofCode,
                 EffectiveTo = mcaGlaSofLookup.EffectiveTo,
                 EffectiveFrom = mcaGlaSofLookup.EffectiveFrom
+            };
+        }
+
+        // Mca data Mapper
+        private IReadOnlyCollection<McaDevolvedContract> MapData(IEnumerable<ReferenceDataService.Model.McaContracts.McaDevolvedContract> mcaContracts)
+        {
+            return mcaContracts?.Select(MapMcaDevolvedContract).ToList();
+        }
+
+        private McaDevolvedContract MapMcaDevolvedContract(ReferenceDataService.Model.McaContracts.McaDevolvedContract contract)
+        {
+            return new McaDevolvedContract()
+            {
+                McaGlaShortCode = contract.McaGlaShortCode,
+                Ukprn = contract.Ukprn,
+                EffectiveFrom = contract.EffectiveFrom,
+                EffectiveTo = contract.EffectiveTo
             };
         }
     }

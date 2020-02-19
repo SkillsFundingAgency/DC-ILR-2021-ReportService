@@ -49,24 +49,24 @@ namespace ESFA.DC.ILR.ReportService.Modules
 
         private void RegisterDatabases(ContainerBuilder containerBuilder)
         {
-            containerBuilder.RegisterType<EasContext>().As<IEasdbContext>();
+            containerBuilder.RegisterType<EasContext>().As<IEasdbContext>();            
             containerBuilder.Register(container => new DbContextOptionsBuilder<EasContext>()
-                .UseSqlServer(_databaseConfiguration.EasDbConnectionString)
+                .UseSqlServer(_databaseConfiguration.EasDbConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(600))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<EasContext>>().SingleInstance();
 
             containerBuilder.RegisterType<PostcodesContext>().As<IPostcodesContext>();
             containerBuilder.Register(container => new DbContextOptionsBuilder<PostcodesContext>()
-                .UseSqlServer(_databaseConfiguration.PostcodesDbConnectionString)
+                .UseSqlServer(_databaseConfiguration.PostcodesDbConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(600))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<PostcodesContext>>().SingleInstance();
 
             containerBuilder.RegisterType<ILR1920_DataStoreEntities>().As<IILR1920_DataStoreEntities>();
             containerBuilder.Register(container => new DbContextOptionsBuilder<ILR1920_DataStoreEntities>()
-                .UseSqlServer(_databaseConfiguration.IlrDbConnectionString)
+                .UseSqlServer(_databaseConfiguration.IlrDbConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(600))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<ILR1920_DataStoreEntities>>().SingleInstance();
 
             containerBuilder.RegisterType<ILR1920_DataStoreEntitiesValid>().As<IILR1920_DataStoreEntitiesValid>();
             containerBuilder.Register(container => new DbContextOptionsBuilder<ILR1920_DataStoreEntitiesValid>()
-                .UseSqlServer(_databaseConfiguration.IlrDbConnectionString)
+                .UseSqlServer(_databaseConfiguration.IlrDbConnectionString, sqlServerOptions => sqlServerOptions.CommandTimeout(600))
                 .UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking).Options).As<DbContextOptions<ILR1920_DataStoreEntitiesValid>>().SingleInstance();
         }
     }

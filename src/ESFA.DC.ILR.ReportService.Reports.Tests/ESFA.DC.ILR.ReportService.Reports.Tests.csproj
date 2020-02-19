@@ -124,6 +124,9 @@
     <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
     <Compile Include="Funding\CommunityLearning\CommunityLearningReportModelBuilderTests.cs" />
     <Compile Include="Funding\CommunityLearning\CommunityLearningReportTests.cs" />
+    <Compile Include="Funding\NonContractDevolvedOccupancy\NonContractDevolvedAdultEducationOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\NonContractDevolvedOccupancy\NonContractDevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\NonContractDevolvedOccupancy\NonContractDevolvedAdultEducationOccupancyReportTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportClassMapTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportModelBuilderTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportTests.cs" />
@@ -180,6 +183,7 @@
     <Compile Include="Service\FileNameServiceTests.cs" />
     <Compile Include="Service\ZipServiceTests.cs" />
     <Compile Include="Stubs\FileServiceStub.cs" />
+    <Compile Include="ValidationErrorDetailReportTestsV2.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
     <Compile Include="Validation\RuleViolationSummaryModelBuilderTests.cs" />
