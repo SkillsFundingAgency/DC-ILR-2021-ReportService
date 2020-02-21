@@ -552,6 +552,34 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
             result.Should().BeTrue();
         }
 
+        [Fact]
+        public void HasValidContractTrue_AcademicYearNotLessThanEffectiveTo()
+        {
+            var learningDelivery = new TestLearningDelivery()
+            {
+                LearnStartDate = new DateTime(2019, 10, 01),
+                LearnPlanEndDate = new DateTime(2021, 06, 30)
+            };
+
+            var contracts = new List<McaDevolvedContract>()
+            {
+                new McaDevolvedContract()
+                {
+                    Ukprn = 123456789,
+                    McaGlaShortCode = "GMCA",
+                    EffectiveFrom = new DateTime(2019, 08, 18),
+                    EffectiveTo = new DateTime(2020, 07, 31)
+                }
+            };
+
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
+            academicYearServiceMock.Setup(ay => ay.YearEnd).Returns(new DateTime(2020, 07, 31));
+
+            var result = NewBuilder(academicYearService: academicYearServiceMock.Object).HasValidContract(learningDelivery, contracts);
+
+            result.Should().BeTrue();
+        }
+
         private NonContractDevolvedAdultEducationOccupancyReportModelBuilder NewBuilder(IIlrModelMapper ilrModelMapper = null, IAcademicYearService academicYearService = null)
         {
             return new NonContractDevolvedAdultEducationOccupancyReportModelBuilder(ilrModelMapper, academicYearService);
