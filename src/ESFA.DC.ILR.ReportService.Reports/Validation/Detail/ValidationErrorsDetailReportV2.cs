@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
             ICsvService csvService,
             IFrontEndValidationReport frontEndValidationReport,
             IFileNameService fileNameService)
-            : base(ReportTaskNameConstants.ValidationReport, "Rule Violation Report V2")
+            : base(ReportTaskNameConstants.ValidationReportV2, "Rule Violation Report V2")
         {
             _validationErrorsReportBuilder = validationErrorsReportBuilder;
             _csvService = csvService;
