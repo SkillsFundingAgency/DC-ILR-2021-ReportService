@@ -86,7 +86,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
         [Fact]
         public void TaskName()
         {
-            NewReport().TaskName.Should().Be("TaskGenerateValidationReport");
+            NewReport().TaskName.Should().Be("TaskGenerateValidationReportV2");
         }
 
         private ValidationErrorsDetailReportV2 NewReport(
