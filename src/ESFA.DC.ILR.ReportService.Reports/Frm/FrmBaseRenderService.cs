@@ -2,16 +2,18 @@
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
+namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
-    public class Frm06ReportRenderService : IRenderService<IEnumerable<Frm06ReportModel>>
+    public class FrmBaseRenderService<T> : IRenderService<IEnumerable<T>> where T : FrmBaseReportModel
     {
-        private const string ReportID = "FRM06";
+        private readonly string _reportID;
         private readonly Style _defaultStyle;
         private readonly Style _dateTimeStyle;
 
-        public Frm06ReportRenderService()
+        public FrmBaseRenderService(string reportId)
         {
+            _reportID = reportId;
+
             var cellsFactory = new CellsFactory();
 
             _defaultStyle = cellsFactory.CreateStyle();
@@ -20,7 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             ConfigureStyles();
         }
 
-        public Worksheet Render(IEnumerable<Frm06ReportModel> models, Worksheet worksheet)
+        public Worksheet Render(IEnumerable<T> models, Worksheet worksheet)
         {
             worksheet.Workbook.DefaultStyle = _defaultStyle;
 
@@ -37,11 +39,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             return worksheet;
         }
 
-        private Worksheet RenderReportRow(Worksheet worksheet, int row, Frm06ReportModel model)
+        private Worksheet RenderReportRow(Worksheet worksheet, int row, T model)
         {
             worksheet.Cells.ImportObjectArray(new object[]
             {
-                ReportID,
+                _reportID,
                 model.Return,
                 model.UKPRN,
                 model.OrgName,
@@ -114,7 +116,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                 "Completion Status Code",
                 "Learning Outcome Code",
                 "Funding Stream"
-            }, row, 0, false );
+            }, row, 0, false);
 
             return worksheet;
         }

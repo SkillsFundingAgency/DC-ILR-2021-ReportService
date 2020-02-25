@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Linq;
 using Aspose.Cells;
+using ESFA.DC.ILR.ReportService.Reports.Frm;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM06;
 using Xunit;
 
@@ -27,9 +28,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM06
             workbook.Save("Output/FundingRuleMonitoringReport.xlsx");
         }
 
-        private Frm06ReportRenderService NewService()
+        private FrmBaseRenderService<Frm06ReportModel> NewService()
         {
-            return new Frm06ReportRenderService();
+            return new FrmBaseRenderService<Frm06ReportModel>("FRM06");
         }
     }
 }
