@@ -4,13 +4,13 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
-    public class FrmBaseRenderService<T> : IRenderService<IEnumerable<T>> where T : FrmBaseReportModel
+    public abstract class FrmBaseRenderService<T> : IRenderService<IEnumerable<T>> where T : FrmBaseReportModel
     {
         private readonly string _reportID;
         private readonly Style _defaultStyle;
         private readonly Style _dateTimeStyle;
 
-        public FrmBaseRenderService(string reportId)
+        protected FrmBaseRenderService(string reportId)
         {
             _reportID = reportId;
 
@@ -22,7 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
             ConfigureStyles();
         }
 
-        public Worksheet Render(IEnumerable<T> models, Worksheet worksheet)
+        public virtual Worksheet Render(IEnumerable<T> models, Worksheet worksheet)
         {
             worksheet.Workbook.DefaultStyle = _defaultStyle;
 

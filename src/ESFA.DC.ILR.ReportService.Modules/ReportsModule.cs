@@ -203,24 +203,16 @@ namespace ESFA.DC.ILR.ReportService.Modules
 
         private void RegisterFrmReports(ContainerBuilder containerBuilder)
         {
-            string reportIdParameterName = "reportId";
-
             containerBuilder.RegisterType<FrmReport>().As<IReport>();
+            containerBuilder.RegisterType<FrmLearnerComparer>().As<IEqualityComparer<FrmLearnerKey>>();
+
             containerBuilder.RegisterType<Frm06Report>().As<IWorksheetReport>();
             containerBuilder.RegisterType<Frm06ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm06ReportModel>>>();
-
-            containerBuilder.RegisterType<FrmBaseRenderService<Frm06ReportModel>>()
-                .WithParameter(reportIdParameterName, "FRM06")
-                .As<IRenderService<IEnumerable<Frm06ReportModel>>>();
-
-            containerBuilder.RegisterType<FrmLearnerComparer>().As<IEqualityComparer<FrmLearnerKey>>();
+            containerBuilder.RegisterType<Frm06ReportRenderService>().As<IRenderService<IEnumerable<Frm06ReportModel>>>();
 
             containerBuilder.RegisterType<Frm08Report>().As<IWorksheetReport>();
             containerBuilder.RegisterType<Frm08ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm08ReportModel>>>();
-
-            containerBuilder.RegisterType<FrmBaseRenderService<Frm08ReportModel>>()
-                .WithParameter(reportIdParameterName, "FRM08")
-                .As<IRenderService<IEnumerable<Frm08ReportModel>>>();
+            containerBuilder.RegisterType<Frm08ReportRenderService>().As<IRenderService<IEnumerable<Frm08ReportModel>>>();
         }
 
         protected virtual void RegisterAdultFundingClaimReport(ContainerBuilder containerBuilder)

@@ -5,7 +5,7 @@ using ESFA.DC.ILR.ReportService.Reports.Constants;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
-    public class FrmBaseModelBuilder
+    public abstract class FrmBaseModelBuilder
     {
         protected const string ADLLearnDelFamType = "ADL";
         protected const string SOFLearnDelFamType = "SOF";
