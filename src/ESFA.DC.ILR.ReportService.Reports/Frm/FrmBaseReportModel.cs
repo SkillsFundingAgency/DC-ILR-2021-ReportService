@@ -2,7 +2,7 @@
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
-    public class FrmBaseReportModel
+    public abstract class FrmBaseReportModel
     {
         public string Return { get; set; }
 
