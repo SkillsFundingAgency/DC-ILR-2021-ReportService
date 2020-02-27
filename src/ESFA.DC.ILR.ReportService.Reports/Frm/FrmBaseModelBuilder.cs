@@ -41,17 +41,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
                 return FundingStreamConstants.Apprenticeships;
             }
 
-            if (fundModel == 25 && progTypeNullable.HasValue && progTypeNullable.Value == 24)
+            if (fundModel == 25 && progTypeNullable == 24)
             {
                 return FundingStreamConstants.Traineeships1618;
             }
 
-            if (fundModel == 35 && progTypeNullable.HasValue && progTypeNullable.Value == 24)
+            if (fundModel == 35 && progTypeNullable == 24)
             {
                 return FundingStreamConstants.Traineeships1924;
             }
 
-            if (fundModel == 25 && progTypeNullable.HasValue && progTypeNullable.Value != 24)
+            if (fundModel == 25 && progTypeNullable != 24)
             {
                 return FundingStreamConstants.SixteenToNineteen;
             }

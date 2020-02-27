@@ -4,12 +4,14 @@ using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 {
     public class Frm08ReportModelBuilder : FrmBaseModelBuilder, IModelBuilder<IEnumerable<Frm08ReportModel>>
     {
+        private readonly int _pausedCompStatus = 6;
         private readonly int _excludedAimType = 3;
         private readonly HashSet<int> _excludedFundModel = new HashSet<int> { 25, 99 };
         private readonly HashSet<int> _excludedCategories = new HashSet<int> { 23, 24, 27, 28, 29, 34, 35, 36 };
@@ -22,11 +24,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
             var message = reportServiceDependentData.Get<IMessage>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var orgName = referenceData.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name;
+            var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
+
+            var orgName = organisationNameDictionary.GetValueOrDefault(reportServiceContext.Ukprn);
 
             var pausedDeliveries = message.Learners
                                         .SelectMany(l => l.LearningDeliveries.Where(ld => 
-                                            ld.CompStatus == 6 
+                                            ld.CompStatus == _pausedCompStatus 
                                             && !ExcludedDelivery(ld, referenceData.LARSLearningDeliveries)
                                             && ld.AimType != _excludedAimType
                                             && !_excludedFundModel.Contains(ld.FundModel))
@@ -51,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
                     var devolvedIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, SOFLearnDelFamType);
                     var resIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, RESLearnDelFamType);
 
-                    var partnerOrgName = referenceData.Organisations.FirstOrDefault(o => o.UKPRN == delivery.LearningDelivery.PartnerUKPRNNullable)?.Name;
+                    var partnerOrgName = organisationNameDictionary.GetValueOrDefault(delivery.LearningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
 
                     models.Add(new Frm08ReportModel
                     {
@@ -93,7 +97,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 
         private ILearningDelivery GetRestartDelivery(ILearningDelivery breakLearningDelivery, ILearner learner)
         {
-            return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef == breakLearningDelivery.LearnAimRef
+            return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef.Equals(breakLearningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)
                                                                    && ld.ProgTypeNullable == breakLearningDelivery.ProgTypeNullable
                                                                    && ld.StdCodeNullable == breakLearningDelivery.StdCodeNullable
                                                                    && ld.FworkCodeNullable == breakLearningDelivery.FworkCodeNullable
@@ -103,7 +107,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 
         private bool HasRestartFAM(IReadOnlyCollection<ILearningDeliveryFAM> learningDeliveryFams)
         {
-            return learningDeliveryFams.Any(f => f.LearnDelFAMType == RESLearnDelFamType);
+            return learningDeliveryFams.Any(f => f.LearnDelFAMType.Equals(RESLearnDelFamType, StringComparison.OrdinalIgnoreCase));
         }
 
         private bool WithMatchingStartDates(ILearningDelivery breakLearningDelivery, ILearningDelivery learningDelivery)
