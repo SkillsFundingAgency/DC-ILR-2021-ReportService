@@ -17,5 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS
         public int? FrameworkCommonComponent { get; set; }
 
         public Decimal? SectorSubjectAreaTier2 { get; set; }
+
+        public IReadOnlyCollection<LARSLearningDeliveryCategory> LARSLearningDeliveryCategories { get; set; }
     }
 }

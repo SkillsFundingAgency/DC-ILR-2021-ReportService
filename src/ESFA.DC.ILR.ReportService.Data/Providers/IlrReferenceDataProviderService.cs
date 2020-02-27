@@ -86,7 +86,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
         {
             return new IlrCollectionDates()
             {
-                CensusDates = ilrCollectionDates.CensusDates.Select(MapCensusDate).ToList()
+                CensusDates = ilrCollectionDates.CensusDates.Select(MapCensusDate).ToList(),
+                ReturnPeriods = ilrCollectionDates.ReturnPeriods.Select(MapReturnPeriod).ToList()
             };
         }
 
@@ -97,6 +98,17 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 Period = censusDate.Period,
                 Start = censusDate.Start,
                 End = censusDate.End
+            };
+        }
+
+        private ReturnPeriod MapReturnPeriod(ReferenceDataService.Model.MetaData.CollectionDates.ReturnPeriod returnPeriod)
+        {
+            return new ReturnPeriod
+            {
+                Name = returnPeriod.Name,
+                Period = returnPeriod.Period,
+                Start = returnPeriod.Start,
+                End = returnPeriod.End
             };
         }
 
@@ -187,6 +199,24 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 NotionalNVQLevelv2 = larsLearningDelivery.NotionalNVQLevelv2,
                 FrameworkCommonComponent = larsLearningDelivery.FrameworkCommonComponent,
                 SectorSubjectAreaTier2 = larsLearningDelivery.SectorSubjectAreaTier2,
+                LARSLearningDeliveryCategories = MapLarsLearningDeliveryCategories(larsLearningDelivery.LARSLearningDeliveryCategories)
+            };
+        }
+
+        private IReadOnlyCollection<LARSLearningDeliveryCategory> MapLarsLearningDeliveryCategories(IEnumerable<ReferenceDataService.Model.LARS.LARSLearningDeliveryCategory> larsLearningDeliveryCategories)
+        {
+            return larsLearningDeliveryCategories?.Select(MapLarsLearningDeliveryCategory).ToList();
+        }
+
+        private LARSLearningDeliveryCategory MapLarsLearningDeliveryCategory(
+            ReferenceDataService.Model.LARS.LARSLearningDeliveryCategory larsLearningDeliveryCategory)
+        {
+            return new LARSLearningDeliveryCategory
+            {
+                LearnAimRef = larsLearningDeliveryCategory.LearnAimRef,
+                CategoryRef = larsLearningDeliveryCategory.CategoryRef,
+                EffectiveFrom = larsLearningDeliveryCategory.EffectiveFrom,
+                EffectiveTo = larsLearningDeliveryCategory.EffectiveTo
             };
         }
 

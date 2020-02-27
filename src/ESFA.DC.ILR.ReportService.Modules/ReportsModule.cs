@@ -3,6 +3,7 @@ using Autofac;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Frm;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM06;
+using ESFA.DC.ILR.ReportService.Reports.Frm.FRM08;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
@@ -39,6 +40,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -202,12 +204,15 @@ namespace ESFA.DC.ILR.ReportService.Modules
         private void RegisterFrmReports(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<FrmReport>().As<IReport>();
+            containerBuilder.RegisterType<FrmLearnerComparer>().As<IEqualityComparer<FrmLearnerKey>>();
+
             containerBuilder.RegisterType<Frm06Report>().As<IWorksheetReport>();
             containerBuilder.RegisterType<Frm06ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm06ReportModel>>>();
-            containerBuilder.RegisterType<Frm06ReportRenderService>()
-                .As<IRenderService<IEnumerable<Frm06ReportModel>>>();
+            containerBuilder.RegisterType<Frm06ReportRenderService>().As<IRenderService<IEnumerable<Frm06ReportModel>>>();
 
-            containerBuilder.RegisterType<FrmLearnerComparer>().As<IEqualityComparer<FrmLearnerKey>>();
+            containerBuilder.RegisterType<Frm08Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm08ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm08ReportModel>>>();
+            containerBuilder.RegisterType<Frm08ReportRenderService>().As<IRenderService<IEnumerable<Frm08ReportModel>>>();
         }
 
         protected virtual void RegisterAdultFundingClaimReport(ContainerBuilder containerBuilder)
