@@ -97,7 +97,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 
         private ILearningDelivery GetRestartDelivery(ILearningDelivery breakLearningDelivery, ILearner learner)
         {
-            return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef.Equals(breakLearningDelivery.LearnAimRef, StringComparison.OrdinalIgnoreCase)
+            return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef.CaseInsensitiveEquals(breakLearningDelivery.LearnAimRef)
                                                                    && ld.ProgTypeNullable == breakLearningDelivery.ProgTypeNullable
                                                                    && ld.StdCodeNullable == breakLearningDelivery.StdCodeNullable
                                                                    && ld.FworkCodeNullable == breakLearningDelivery.FworkCodeNullable
@@ -125,7 +125,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
         private bool ExcludedDelivery(ILearningDelivery learner, IReadOnlyCollection<LARSLearningDelivery> larsLearningDeliveries)
         {
             return larsLearningDeliveries
-                .Any(x => string.Equals(x.LearnAimRef, learner.LearnAimRef, StringComparison.OrdinalIgnoreCase)
+                .Any(x => x.LearnAimRef.CaseInsensitiveEquals(learner.LearnAimRef)
                           && x.LARSLearningDeliveryCategories.Any(ldc => _excludedCategories.Contains(ldc.CategoryRef)));
         }
 
