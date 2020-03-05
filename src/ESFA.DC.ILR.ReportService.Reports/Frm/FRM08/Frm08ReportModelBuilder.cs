@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
             var orgName = organisationNameDictionary.GetValueOrDefault(reportServiceContext.Ukprn);
 
             var pausedDeliveries = message.Learners
-                                        .SelectMany(l => l.LearningDeliveries.Where(ld => 
+                                        ?.SelectMany(l => l.LearningDeliveries.Where(ld => 
                                             ld.CompStatus == _pausedCompStatus 
                                             && !ExcludedDelivery(ld, referenceData.LARSLearningDeliveries)
                                             && ld.AimType != _excludedAimType
@@ -39,6 +39,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
             var currentReturnEndDate = referenceData.MetaDatas.CollectionDates.ReturnPeriods.FirstOrDefault(d =>
                                                                                     reportServiceContext.SubmissionDateTimeUtc >= d.Start 
                                                                                     && reportServiceContext.SubmissionDateTimeUtc <= d.End).End;
+
+            if (pausedDeliveries == null)
+            {
+                return Enumerable.Empty<Frm08ReportModel>();
+            }
 
             foreach (var delivery in pausedDeliveries)
             {
