@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM06
             NewService().Render(frm06ReportModels, worksheet);
 
             Directory.CreateDirectory("Output");
-            workbook.Save("Output/FundingRuleMonitoringReport.xlsx");
+            workbook.Save("Output/FRM06_FundingRuleMonitoringReport.xlsx");
         }
 
         private Frm06ReportRenderService NewService()
