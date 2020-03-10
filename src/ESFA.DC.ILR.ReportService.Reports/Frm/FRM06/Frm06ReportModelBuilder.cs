@@ -38,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     StdCodeNullable = learner.StdCodeNullable
                 };
 
-                if (!currentLearnersHashSet.Contains(key, _frmEqualityComparer))
+                if (!currentLearnersHashSet.Contains(key))
                 {
                     var advancedLoansIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, ADLLearnDelFamType);
                     var devolvedIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
@@ -94,7 +94,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     LearnStartDate = ld.LearnStartDate,
                     ProgTypeNullable = ld.ProgTypeNullable,
                     StdCodeNullable = ld.StdCodeNullable
-                })) ?? Enumerable.Empty<FrmLearnerKey>());
+                })) ?? Enumerable.Empty<FrmLearnerKey>(), _frmEqualityComparer);
         }
     }
 }
