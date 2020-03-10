@@ -90,8 +90,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
                         PwayCode = delivery.LearningDelivery.PwayCodeNullable,
                         ResIndicator = resIndicator,
                         SWSupAimId = delivery.LearningDelivery.SWSupAimId,
-                        ProvSpecLearnDelMon = string.Join(";", delivery.LearningDelivery.ProviderSpecDeliveryMonitorings.Select(x => x.ProvSpecDelMon)),
-                        ProvSpecDelMon = string.Join(";", delivery.Learner.ProviderSpecLearnerMonitorings.Select(x => x.ProvSpecLearnMon)),
+                        ProvSpecLearnDelMon = ProviderSpecDeliveryMonitorings(delivery.LearningDelivery.ProviderSpecDeliveryMonitorings),
+                        ProvSpecDelMon = ProviderSpecLearningMonitorings(delivery.Learner.ProviderSpecLearnerMonitorings),
                         FundingStream = CalculateFundingStream(delivery.LearningDelivery.FundModel, delivery.LearningDelivery.ProgTypeNullable, advancedLoansIndicator, devolvedIndicator)
                     });
                 }
@@ -100,6 +100,25 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
             return models;
         }
 
+        private string ProviderSpecDeliveryMonitorings(IReadOnlyCollection<IProviderSpecDeliveryMonitoring> providerSpecDeliveryMonitorings)
+        {
+            if (providerSpecDeliveryMonitorings == null || !providerSpecDeliveryMonitorings.Any())
+            {
+                return null;
+            }
+
+            return string.Join(";", providerSpecDeliveryMonitorings?.Select(x => x.ProvSpecDelMon));
+        }
+
+        private string ProviderSpecLearningMonitorings(IReadOnlyCollection<IProviderSpecLearnerMonitoring> providerSpecLearnerMonitorings)
+        {
+            if (providerSpecLearnerMonitorings == null || !providerSpecLearnerMonitorings.Any())
+            {
+                return null;
+            }
+
+            return string.Join(";", providerSpecLearnerMonitorings?.Select(x => x.ProvSpecLearnMon));
+        }
         private ILearningDelivery GetRestartDelivery(ILearningDelivery breakLearningDelivery, ILearner learner)
         {
             return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef.CaseInsensitiveEquals(breakLearningDelivery.LearnAimRef)
