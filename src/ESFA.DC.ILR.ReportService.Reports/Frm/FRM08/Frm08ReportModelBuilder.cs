@@ -26,6 +26,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 
             var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
 
+            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x.LearnAimRefTitle, StringComparer.OrdinalIgnoreCase);
+
             var orgName = organisationNameDictionary.GetValueOrDefault(reportServiceContext.Ukprn);
 
             var pausedDeliveries = message.Learners
@@ -61,6 +63,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
                     var resIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, RESLearnDelFamType);
 
                     var partnerOrgName = organisationNameDictionary.GetValueOrDefault(delivery.LearningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
+                    var learnAimTitle = learnAimDictionary.GetValueOrDefault(delivery.LearningDelivery.LearnAimRef);
 
                     models.Add(new Frm08ReportModel
                     {
@@ -69,6 +72,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
                         OrgName = orgName,
                         FworkCode = delivery.LearningDelivery.FworkCodeNullable,
                         LearnAimRef = delivery.LearningDelivery.LearnAimRef,
+                        LearnAimTitle = learnAimTitle,
                         LearnRefNumber = delivery.Learner.LearnRefNumber,
                         LearnStartDate = delivery.LearningDelivery.LearnStartDate,
                         ProgType = delivery.LearningDelivery.ProgTypeNullable,
