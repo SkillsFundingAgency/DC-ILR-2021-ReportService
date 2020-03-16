@@ -7,20 +7,24 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
     {
         public bool Equals(FrmLearnerKey x, FrmLearnerKey y)
         {
-            return x?.GetHashCode() == y?.GetHashCode();
+            return GetHashCode(x) == GetHashCode(y);
         }
 
         public int GetHashCode(FrmLearnerKey obj)
         {
-            return new
+            if (obj == null)
             {
-                LearnRefNumber = obj.LearnRefNumber.ToLowerInvariant(),
-                FworkCodeNullable = obj.FworkCodeNullable,
-                LearnAimRef = obj.LearnAimRef.ToLowerInvariant(),
-                LearnStartDate = obj.LearnStartDate,
-                ProgTypeNullable = obj.ProgTypeNullable,
-                StdCodeNullable = obj.StdCodeNullable
-            }.GetHashCode();
+                return 0;
+            }
+
+            return (
+                obj.LearnRefNumber = obj.LearnRefNumber.ToLowerInvariant(),
+                obj.FworkCodeNullable = obj.FworkCodeNullable,
+                obj.LearnAimRef = obj.LearnAimRef.ToLowerInvariant(),
+                obj.LearnStartDate = obj.LearnStartDate,
+                obj.ProgTypeNullable = obj.ProgTypeNullable,
+                obj.StdCodeNullable = obj.StdCodeNullable
+            ).GetHashCode();
         }
     }
 }
