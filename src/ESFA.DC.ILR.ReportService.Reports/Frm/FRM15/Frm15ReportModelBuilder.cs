@@ -22,7 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
         public IEnumerable<Frm15ReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var models = new List<Frm15ReportModel>();
-            var returnPeriod = $"R{reportServiceContext.ReturnPeriod:D2}";
+            var returnPeriod = reportServiceContext.ReturnPeriodName;
 
             var message = reportServiceDependentData.Get<IMessage>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
