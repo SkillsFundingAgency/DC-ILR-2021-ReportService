@@ -1,16 +1,17 @@
-﻿using System.Collections.Generic;
-using Aspose.Cells;
-using ESFA.DC.ILR.ReportService.Service.Interface;
+﻿using Aspose.Cells;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Frm
+namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
 {
-    public abstract class FrmBaseRenderService<T> : IRenderService<IEnumerable<T>> where T : FrmBaseReportModel
+    public class Frm15ReportRenderService : FrmBaseRenderService<Frm15ReportModel>
     {
-        private readonly string _reportID;
-        private readonly Style _defaultStyle;
-        private readonly Style _dateTimeStyle;
+        private const string ReportId = "FRM15";
 
-        protected virtual object[] ColumnNames
+        public Frm15ReportRenderService() 
+            : base(ReportId)
+        {
+        }
+
+        protected override object[] ColumnNames
             => new object[]
             {
                 "Report ID",
@@ -41,45 +42,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
                 "Restart Indicator",
                 "Prior Learning Funding Adjustment",
                 "Other Funding Adjustment",
+                "End Point Assessment Organisation Identifier",
                 "Completion Status Code",
                 "Learning Outcome Code",
-                "Funding Stream"
+                "Funding Stream",
+                "Total Negotiated Assessment Price",
+                "Assessment Payments Received"
             };
 
-        protected FrmBaseRenderService(string reportId)
-        {
-            _reportID = reportId;
-
-            var cellsFactory = new CellsFactory();
-
-            _defaultStyle = cellsFactory.CreateStyle();
-            _dateTimeStyle = cellsFactory.CreateStyle();
-
-            ConfigureStyles();
-        }
-
-        public virtual Worksheet Render(IEnumerable<T> models, Worksheet worksheet)
-        {
-            worksheet.Workbook.DefaultStyle = _defaultStyle;
-
-            RenderTitleRow(worksheet);
-
-            foreach (var model in models)
-            {
-                var row = NextRow(worksheet);
-                RenderReportRow(worksheet, row, model);
-            }
-
-            worksheet.AutoFitColumn(0);
-
-            return worksheet;
-        }
-
-        protected virtual Worksheet RenderReportRow(Worksheet worksheet, int row, T model)
+        protected override Worksheet RenderReportRow(Worksheet worksheet, int row, Frm15ReportModel model)
         {
             worksheet.Cells.ImportObjectArray(new object[]
             {
-                _reportID,
+                ReportId,
                 model.Return,
                 model.UKPRN,
                 model.OrgName,
@@ -107,36 +82,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
                 model.ResIndicator,
                 model.PriorLearnFundAdj,
                 model.OtherFundAdj,
+                model.EPAOrgId,
                 model.CompStatus,
                 model.Outcome,
-                model.FundingStream
+                model.FundingStream,
+                model.TotalNegotiatedAssessmentPrice,
+                model.AssessmentPaymentReceived
             }, row, 0, false);
 
             return worksheet;
-        }
-
-        private Worksheet RenderTitleRow(Worksheet worksheet)
-        {
-            var row = NextRow(worksheet);
-
-            worksheet.Cells.ImportObjectArray(ColumnNames, row, 0, false);
-
-            return worksheet;
-        }
-
-        private int NextRow(Worksheet worksheet)
-        {
-            return worksheet.Cells.MaxRow + 1;
-        }
-
-        private void ConfigureStyles()
-        {
-            _defaultStyle.Font.Size = 10;
-            _defaultStyle.Font.Name = "Arial";
-
-            _dateTimeStyle.Font.Size = 10;
-            _dateTimeStyle.Font.Name = "Arial";
-            _dateTimeStyle.SetCustom("yyyy-MM-dd", false);
         }
     }
 }

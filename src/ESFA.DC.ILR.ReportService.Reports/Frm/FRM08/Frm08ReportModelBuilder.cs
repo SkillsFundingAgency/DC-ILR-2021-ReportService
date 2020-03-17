@@ -19,7 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
         public IEnumerable<Frm08ReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var models = new List<Frm08ReportModel>();
-            var returnPeriod = $"R{reportServiceContext.ReturnPeriod:D2}";
+            var returnPeriod = reportServiceContext.ReturnPeriodName;
 
             var message = reportServiceDependentData.Get<IMessage>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
@@ -104,25 +104,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
             return models;
         }
 
-        private string ProviderSpecDeliveryMonitorings(IReadOnlyCollection<IProviderSpecDeliveryMonitoring> providerSpecDeliveryMonitorings)
-        {
-            if (providerSpecDeliveryMonitorings == null || !providerSpecDeliveryMonitorings.Any())
-            {
-                return null;
-            }
-
-            return string.Join(";", providerSpecDeliveryMonitorings?.Select(x => x.ProvSpecDelMon));
-        }
-
-        private string ProviderSpecLearningMonitorings(IReadOnlyCollection<IProviderSpecLearnerMonitoring> providerSpecLearnerMonitorings)
-        {
-            if (providerSpecLearnerMonitorings == null || !providerSpecLearnerMonitorings.Any())
-            {
-                return null;
-            }
-
-            return string.Join(";", providerSpecLearnerMonitorings?.Select(x => x.ProvSpecLearnMon));
-        }
         private ILearningDelivery GetRestartDelivery(ILearningDelivery breakLearningDelivery, ILearner learner)
         {
             return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef.CaseInsensitiveEquals(breakLearningDelivery.LearnAimRef)

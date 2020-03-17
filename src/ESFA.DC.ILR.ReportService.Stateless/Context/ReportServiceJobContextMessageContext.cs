@@ -67,6 +67,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public int ReturnPeriod => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
 
+        public string ReturnPeriodName => $"R{ReturnPeriod:D2}";
+
         public string IlrReferenceDataKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
 
         public string ReportOutputFileNames

@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             var message = reportServiceDependentData.Get<IMessage>();
             var currentLearnersHashSet = BuildCurrentYearLearnerHashSet(message);
 
-            var returnPeriod = $"R{reportServiceContext.ReturnPeriod:D2}";
+            var returnPeriod = reportServiceContext.ReturnPeriodName;
 
             foreach (var learner in frmLearners?.Frm06Learners ?? Enumerable.Empty<FrmLearner>())
             {
