@@ -80,10 +80,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM15
                         {
                             new MessageLearnerLearningDelivery
                             {
-                                CompStatus = 6,
+                                CompStatus = 4,
                                 AimSeqNumber = 2,
                                 LearnAimRef = "aimref",
-                                FundModel = 30,
+                                FundModel = 36,
                                 LearningDeliveryFAM = new MessageLearnerLearningDeliveryLearningDeliveryFAM[]
                                 {
                                     new MessageLearnerLearningDeliveryLearningDeliveryFAM

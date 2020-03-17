@@ -40,9 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                                             && ld.AimType == _includedAimType
                                             && ld.EPAOrgID == null).Select(ld => new { Learner = l, LearningDelivery = ld }));
 
-            var currentReturnEndDate = referenceData.MetaDatas.CollectionDates.ReturnPeriods.FirstOrDefault(d =>
-                                                                                    reportServiceContext.SubmissionDateTimeUtc >= d.Start 
-                                                                                    && reportServiceContext.SubmissionDateTimeUtc <= d.End).End;
+            var currentReturnEndDate = referenceData.MetaDatas.CollectionDates.ReturnPeriods.FirstOrDefault(d => reportServiceContext.SubmissionDateTimeUtc >= d.Start && reportServiceContext.SubmissionDateTimeUtc <= d.End).End;
 
             if (deliveries == null)
             {
@@ -53,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
             {
                 if ((delivery.LearningDelivery.LearnPlanEndDate > currentReturnEndDate && DaysBetween(delivery.LearningDelivery.LearnPlanEndDate, currentReturnEndDate) < 90) || currentReturnEndDate > delivery.LearningDelivery.LearnPlanEndDate)
                 {
-                    var AFinAmount = delivery.LearningDelivery.AppFinRecords
+                    var aFinAmount = delivery.LearningDelivery.AppFinRecords
                         ?.OrderByDescending(afr => afr.AFinDate).FirstOrDefault(afr => afr.AFinType == AFinTypeTNP && afr.AFinCode == AFinCode)?.AFinAmount;
 
                     var paymentsReceived = delivery.LearningDelivery.AppFinRecords
@@ -100,7 +98,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                         ProvSpecLearnDelMon = ProviderSpecDeliveryMonitorings(delivery.LearningDelivery.ProviderSpecDeliveryMonitorings),
                         ProvSpecDelMon = ProviderSpecLearningMonitorings(delivery.Learner.ProviderSpecLearnerMonitorings),
                         FundingStream = CalculateFundingStream(delivery.LearningDelivery.FundModel, delivery.LearningDelivery.ProgTypeNullable, advancedLoansIndicator, devolvedIndicator),
-                        TotalNegotiatedAssessmentPrice = AFinAmount,
+                        TotalNegotiatedAssessmentPrice = aFinAmount,
                         AssessmentPaymentReceived = paymentsReceived
                     });
                 }
