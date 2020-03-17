@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.FRM;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 
@@ -72,6 +73,26 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
             }
 
             return FundingStreamConstants.Other;
+        }
+
+        protected string ProviderSpecDeliveryMonitorings(IReadOnlyCollection<IProviderSpecDeliveryMonitoring> providerSpecDeliveryMonitorings)
+        {
+            if (providerSpecDeliveryMonitorings == null || !providerSpecDeliveryMonitorings.Any())
+            {
+                return null;
+            }
+
+            return string.Join(";", providerSpecDeliveryMonitorings?.Select(x => x.ProvSpecDelMon));
+        }
+
+        protected string ProviderSpecLearningMonitorings(IReadOnlyCollection<IProviderSpecLearnerMonitoring> providerSpecLearnerMonitorings)
+        {
+            if (providerSpecLearnerMonitorings == null || !providerSpecLearnerMonitorings.Any())
+            {
+                return null;
+            }
+
+            return string.Join(";", providerSpecLearnerMonitorings?.Select(x => x.ProvSpecLearnMon));
         }
     }
 }

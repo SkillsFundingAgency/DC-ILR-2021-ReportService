@@ -107,26 +107,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
             return models;
         }
 
-        private string ProviderSpecDeliveryMonitorings(IReadOnlyCollection<IProviderSpecDeliveryMonitoring> providerSpecDeliveryMonitorings)
-        {
-            if (providerSpecDeliveryMonitorings == null || !providerSpecDeliveryMonitorings.Any())
-            {
-                return null;
-            }
-
-            return string.Join(";", providerSpecDeliveryMonitorings?.Select(x => x.ProvSpecDelMon));
-        }
-
-        private string ProviderSpecLearningMonitorings(IReadOnlyCollection<IProviderSpecLearnerMonitoring> providerSpecLearnerMonitorings)
-        {
-            if (providerSpecLearnerMonitorings == null || !providerSpecLearnerMonitorings.Any())
-            {
-                return null;
-            }
-
-            return string.Join(";", providerSpecLearnerMonitorings?.Select(x => x.ProvSpecLearnMon));
-        }
-
         private double DaysBetween(DateTime start, DateTime end)
         {
             return (end - start).TotalDays;
