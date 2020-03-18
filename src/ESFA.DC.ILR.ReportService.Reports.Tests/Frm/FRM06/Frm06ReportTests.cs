@@ -21,10 +21,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM06
         {
             var dependsOn = NewReport().DependsOn.ToList();
 
-            dependsOn.Should().HaveCount(2);
+            dependsOn.Should().HaveCount(3);
 
             dependsOn.Should().Contain(DependentDataCatalog.Frm);
             dependsOn.Should().Contain(DependentDataCatalog.ValidIlr);
+            dependsOn.Should().Contain(DependentDataCatalog.ReferenceData);
         }
 
         [Fact]
