@@ -23,7 +23,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             => new[]
             {
                 DependentDataCatalog.ValidIlr,
-                DependentDataCatalog.Frm
+                DependentDataCatalog.Frm,
+                DependentDataCatalog.ReferenceData
             };
     }
 }
