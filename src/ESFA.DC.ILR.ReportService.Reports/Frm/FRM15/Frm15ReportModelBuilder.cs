@@ -49,7 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
 
             foreach (var delivery in deliveries)
             {
-                if ((delivery.LearningDelivery.LearnPlanEndDate > currentReturnEndDate && DaysBetween(delivery.LearningDelivery.LearnPlanEndDate, currentReturnEndDate) < 90) || currentReturnEndDate > delivery.LearningDelivery.LearnPlanEndDate)
+                if ((delivery.LearningDelivery.LearnPlanEndDate > currentReturnEndDate && DaysBetween(currentReturnEndDate, delivery.LearningDelivery.LearnPlanEndDate) <= 90) || currentReturnEndDate > delivery.LearningDelivery.LearnPlanEndDate)
                 {
                     var aFinAmount = delivery.LearningDelivery.AppFinRecords
                         ?.OrderByDescending(afr => afr.AFinDate).FirstOrDefault(afr => afr.AFinType == AFinTypeTNP && afr.AFinCode == AFinCode)?.AFinAmount;
