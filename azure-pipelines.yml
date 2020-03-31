@@ -36,7 +36,6 @@ stages:
       #- ServiceFabricSDK      
       #- ServiceFabricSDKVersion -equals 65
       
-
     steps:
 #********************************************************************************
 # Copy Application Parameters Local Node xml files
@@ -206,22 +205,6 @@ stages:
                   Write-Host "##vso[task.setvariable variable=PublishArtifact_NugetPackages]$(Test-Path '$(build.artifactstagingdirectory)\Nuget' -PathType Any)";
                   Write-Host "##vso[task.setvariable variable=PublishArtifact_Databases]$(Test-Path '$(build.artifactstagingdirectory)\Databases' -PathType Any)";
       enabled: true
-      
-#********************************************************************************
-# CodeSign Script body
-# Application Signing execution begins here
-#********************************************************************************
-    - task: PowerShell@2
-      displayName: 'CodeSign DfE DesktopApplications'
-      enabled: true  
-      condition: and(succeeded(), eq(variables['PublishArtifact_DesktopApplication'], 'True'))
-      env:
-        CODESIGNPASSWORD: $(CodeSignPwdDfE)
-        CODESIGNCERT: $(CodeSignCertificatePFX)
-      inputs:
-        filePath: 'DFE_Code_Signing.ps1'
-        arguments: '-StartFolder "$(build.ArtifactStagingDirectory)\DesktopApplication"'
-        workingDirectory: '$(Build.SourcesDirectory)'
 
 #********************************************************************************
 # Run Unit Tests
@@ -244,7 +227,6 @@ stages:
          !**\packages\**
          !**\obj\**
         configuration: '$(Build.Configuration)'
-
 
 #********************************************************************************
 # Publish Artifacts
@@ -280,12 +262,3 @@ stages:
       inputs:
         ArtifactName: Databases
         PathtoPublish: '$(build.artifactstagingdirectory)\Databases'
-
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: DesktopApplication'
-      enabled: true
-      condition: and(succeeded(), eq(variables['PublishArtifact_DesktopApplication'], 'True'))
-      inputs:
-        ArtifactName: DesktopApplication
-        PathtoPublish: '$(build.artifactstagingdirectory)\DesktopApplication'
-    
