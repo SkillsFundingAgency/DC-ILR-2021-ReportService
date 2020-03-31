@@ -6,13 +6,10 @@ resources:
   fetchDepth: 15
 
 variables:
-- group: 'CodeSign KV'
 - name: VersionNumberMajor 
   value: '0'
 - name: VersionNumberMinor 
   value: '1'
-- name: ConsoleTool 
-  value: 'zz Not Used'
 
 stages:
 - stage: Build
@@ -41,6 +38,17 @@ stages:
       
 
     steps:
+#********************************************************************************
+# Copy Application Parameters Local Node xml files
+#********************************************************************************   
+    - powershell: |
+           $Filter = "ApplicationParameters";
+           $ApplicationParametersFolder = Get-ChildItem -Directory -recurse   | Where {$_.Name.ToLower() -eq $Filter.ToLower() };
+           Copy-Item "$($ApplicationParametersFolder.FullName)\Cloud.xml" "$($ApplicationParametersFolder.FullName)\Local.1Node.xml" -Force;
+           Copy-Item "$($ApplicationParametersFolder.FullName)\Cloud.xml" "$($ApplicationParametersFolder.FullName)\Local.5Node.xml" -Force;
+ 
+      workingDirectory: '$(build.sourcesdirectory)\src'
+      displayName: 'Generate Fake Application Parameters Node Config Files'
 #********************************************************************************
 # Install and setup tools needed
 #********************************************************************************   
@@ -185,16 +193,6 @@ stages:
         applicationPackagePath: '$(build.artifactstagingdirectory)\ServiceFabric\ApplicationPackage '
         versionBehavior: Replace
 
-    #********************************************************************************
-    # Copy Desktop Application files
-    #********************************************************************************          
-    - task: CopyFiles@2
-      displayName: 'Copy Console Application File to Artifact Folder'
-      inputs:
-        SourceFolder: 'src\$(ConsoleTool)\bin\$(Build.Configuration)'  
-        Contents: '**\!(*.pdb)'
-        TargetFolder: '$(build.ArtifactStagingDirectory)\DesktopApplication'
-
 #********************************************************************************
 # Count Artifact Files to decide what to Publish
 #********************************************************************************    
@@ -207,7 +205,6 @@ stages:
                   Write-Host "##vso[task.setvariable variable=PublishArtifact_ServiceFabric]$(Test-Path '$(build.artifactstagingdirectory)\ServiceFabric' -PathType Any)";
                   Write-Host "##vso[task.setvariable variable=PublishArtifact_NugetPackages]$(Test-Path '$(build.artifactstagingdirectory)\Nuget' -PathType Any)";
                   Write-Host "##vso[task.setvariable variable=PublishArtifact_Databases]$(Test-Path '$(build.artifactstagingdirectory)\Databases' -PathType Any)";
-                  Write-Host "##vso[task.setvariable variable=PublishArtifact_DesktopApplication]$(Test-Path '$(build.artifactstagingdirectory)\DesktopApplication' -PathType Any)";
       enabled: true
       
 #********************************************************************************
