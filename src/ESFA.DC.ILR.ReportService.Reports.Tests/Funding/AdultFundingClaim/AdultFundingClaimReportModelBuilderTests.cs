@@ -89,7 +89,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
             dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
             dependentDataMock.Setup(d => d.Get<ALBGlobal>()).Returns(albGlobal);
-            dependentDataMock.Setup(d => d.Get<IReadOnlyCollection<EasFundingLine>>()).Returns(easFundingLines);
+            dependentDataMock.Setup(d => d.Get<List<EasFundingLine>>()).Returns(easFundingLines);
 
             var submissionDateTime = new DateTime(2019, 1, 1, 1, 1, 1);
             var ukDateTime = new DateTime(2020, 1, 1, 1, 1, 1);
@@ -99,7 +99,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
             
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);

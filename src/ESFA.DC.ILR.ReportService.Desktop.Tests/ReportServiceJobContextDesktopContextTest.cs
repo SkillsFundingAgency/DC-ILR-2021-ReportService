@@ -48,7 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var context = NewContext(mockDesktopContext.Object, reportFilterQueries);
 
             context.Filename.Should().Be("someilr.xml");
-            context.OriginalFilename.Should().Be("mtheoriginal.xml");
+            context.IlrReportingFilename.Should().Be("mtheoriginal.xml");
             context.FileSizeInBytes.Should().Be(128);
             context.Container.Should().Be("ilr-files");
             context.ValidationErrorsKey.Should().Be("ValidationErrors");

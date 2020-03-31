@@ -23,9 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public string Filename => _jobContextMessage.KeyValuePairs[ILRContextKeys.Filename].ToString();
 
-        public string OriginalFilename => _jobContextMessage.KeyValuePairs.ContainsKey("OriginalFilename")
-            ? _jobContextMessage.KeyValuePairs["OriginalFilename"].ToString()
-            : _jobContextMessage.KeyValuePairs[ILRContextKeys.Filename].ToString();
+        public string IlrReportingFilename => _jobContextMessage.KeyValuePairs["IlrReportingFilename"].ToString();
 
         public string Container => _jobContextMessage.KeyValuePairs[ILRContextKeys.Container].ToString();
 
@@ -59,6 +57,8 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public string ValidLearnRefNumbersKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.ValidLearnRefNumbers].ToString();
 
+        public string FrmReferenceDataOutputKey => _jobContextMessage.KeyValuePairs["FrmReferenceData"].ToString();
+
         public IEnumerable<string> Tasks => _jobContextMessage.Topics[_jobContextMessage.TopicPointer].Tasks.SelectMany(x => x.Tasks);
 
         public string InvalidLearnRefNumbersKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.InvalidLearnRefNumbers].ToString();
@@ -67,11 +67,15 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public int ReturnPeriod => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
 
+        public string ReturnPeriodName => $"R{ReturnPeriod:D2}";
+
         public string IlrReferenceDataKey => _jobContextMessage.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
 
         public string ReportOutputFileNames
         {
-            get => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString();
+            get => _jobContextMessage.KeyValuePairs.ContainsKey(ILRContextKeys.ReportOutputFileNames)
+                ? _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames].ToString()
+                : string.Empty;
             set => _jobContextMessage.KeyValuePairs[ILRContextKeys.ReportOutputFileNames] = value;
         }
 

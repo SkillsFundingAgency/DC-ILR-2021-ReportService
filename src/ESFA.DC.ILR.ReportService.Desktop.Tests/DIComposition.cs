@@ -63,13 +63,14 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             //Reports
             builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
+            builder.RegisterType<ValidationErrorsDetailReportV2>().As<IReport>();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
 
             builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
 
             builder.RegisterType<CsvService>().As<ICsvService>();
             builder.RegisterType<ExcelService>().As<IExcelService>();
-            builder.RegisterType<ZipService>().As<IZipService>();
+            builder.RegisterType<CreateZipService>().As<IZipService>();
 
             return builder;
         }

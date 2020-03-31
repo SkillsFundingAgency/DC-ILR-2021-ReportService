@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public int Ukprn => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
         public string Filename => _desktopContext.KeyValuePairs[ILRContextKeys.Filename].ToString();
         
-        public string OriginalFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
+        public string IlrReportingFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
 
         public string Container => _desktopContext.KeyValuePairs[ILRContextKeys.Container].ToString();
 
@@ -43,6 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public string FundingALBOutputKey => _desktopContext.KeyValuePairs[ILRContextKeys.FundingAlbOutput].ToString();
         public string ValidLearnRefNumbersKey => _desktopContext.KeyValuePairs[ILRContextKeys.ValidLearnRefNumbers].ToString();
 
+        public string FrmReferenceDataOutputKey => throw new NotImplementedException();
+
         public IEnumerable<string> Tasks
         {
             get
@@ -55,6 +57,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         public string InvalidLearnRefNumbersKey => _desktopContext.KeyValuePairs[ILRContextKeys.InvalidLearnRefNumbers].ToString();
         public string CollectionName { get; }
         public int ReturnPeriod => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.ReturnPeriod].ToString());
+        public string ReturnPeriodName => $"R{ReturnPeriod:D2}";
         public string CollectionYear => _desktopContext.KeyValuePairs[ILRContextKeys.CollectionYear].ToString();
         public string IlrReferenceDataKey => _desktopContext.KeyValuePairs[ILRContextKeys.IlrReferenceData].ToString();
 

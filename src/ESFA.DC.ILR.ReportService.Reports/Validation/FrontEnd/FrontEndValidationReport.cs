@@ -31,28 +31,29 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
             _logger = logger;
         }
 
-        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrorDtos, CancellationToken cancellationToken)
+        public async Task GenerateAsync(IReportServiceContext reportServiceContext, IEnumerable<ValidationErrorRow> validationErrorDtos, bool isSchemaError, CancellationToken cancellationToken)
         {
             var validationErrorDtosList = validationErrorDtos.ToList();
 
             var errors = validationErrorDtosList.Where(x =>
-                string.Equals(x.Severity, "E", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase)).ToArray();
+                x.Severity.CaseInsensitiveEquals("E") ||
+                x.Severity.CaseInsensitiveEquals("F"))
+                .ToArray();
+
             var warnings = validationErrorDtosList
-                .Where(x => string.Equals(x.Severity, "W", StringComparison.OrdinalIgnoreCase)).ToArray();
+                .Where(x => x.Severity.CaseInsensitiveEquals("W")).ToArray();
 
             var ilrValidationResult = new FileValidationResult
             {
                 TotalLearners = GetNumberOfLearners(reportServiceContext),
                 TotalErrors = errors.Length,
                 TotalWarnings = warnings.Length,
-                TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber),
-                TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber),
+                TotalWarningLearners = warnings.DistinctByCount(x => x.LearnerReferenceNumber?.Trim()),
+                TotalErrorLearners = errors.DistinctByCount(x => x.LearnerReferenceNumber?.Trim()),
                 ErrorMessage = validationErrorDtosList
-                    .FirstOrDefault(x => string.Equals(x.Severity, "F", StringComparison.OrdinalIgnoreCase))
+                    .FirstOrDefault(x => x.Severity.CaseInsensitiveEquals("F"))
                     ?.ErrorMessage,
-                //TotalDataMatchErrors = _validationStageOutputCache.DataMatchProblemCount,
-                //TotalDataMatchLearners = _validationStageOutputCache.DataMatchProblemLearnersCount
+                IsSchemaError = isSchemaError
             };
 
             var fileName = _fileNameService.GetFilename(reportServiceContext, "Rule Violation Report", OutputTypes.Json);
@@ -66,6 +67,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd
         private int GetNumberOfLearners(IReportServiceContext reportServiceContext)
         {
             int ret = 0;
+
             try
             {
                 ret = reportServiceContext.ValidLearnRefNumbersCount;

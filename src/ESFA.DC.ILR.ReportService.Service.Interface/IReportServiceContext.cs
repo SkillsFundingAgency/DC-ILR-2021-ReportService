@@ -12,7 +12,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string Filename { get; }
 
-        string OriginalFilename { get; }
+        string IlrReportingFilename { get; }
 
         string Container { get; }
 
@@ -46,6 +46,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string ValidLearnRefNumbersKey { get; }
 
+        string FrmReferenceDataOutputKey { get; }
+
         IEnumerable<string> Tasks { get; }
 
         string InvalidLearnRefNumbersKey { get; }
@@ -53,6 +55,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
         string CollectionName { get; }
 
         int ReturnPeriod { get; }
+
+        string ReturnPeriodName { get; }
 
         string CollectionYear { get;  }
 

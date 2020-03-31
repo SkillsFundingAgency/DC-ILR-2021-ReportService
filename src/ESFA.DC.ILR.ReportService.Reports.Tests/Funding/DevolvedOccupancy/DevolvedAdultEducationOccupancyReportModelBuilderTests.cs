@@ -244,12 +244,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             };
 
             var ilrModelMapperMock = new Mock<IIlrModelMapper>();
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
 
             ilrModelMapperMock.Setup(m => m.MapLearningDeliveryFAMs(learningDeliveryFams)).Returns(learningDeliveryFamsModel);
             ilrModelMapperMock.Setup(m => m.MapProviderSpecDeliveryMonitorings(providerSpecDeliveryMonitorings)).Returns(providerSpecDeliveryMonitoringModel);
             ilrModelMapperMock.Setup(m => m.MapProviderSpecLearnerMonitorings(providerSpecLearnerMonitorings)).Returns(providerSpecLearnerMonitoringModel);
 
-            var result = NewBuilder(ilrModelMapperMock.Object).Build(reportServiceContext, dependentDataMock.Object).ToList();   
+            var result = NewBuilder(ilrModelMapperMock.Object, academicYearServiceMock.Object).Build(reportServiceContext, dependentDataMock.Object).ToList();   
 
             result.Should().HaveCount(1);
 
@@ -275,6 +276,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             var dependentDataMock = new Mock<IReportServiceDependentData>();
 
             var ilrModelMapperMock = new Mock<IIlrModelMapper>();
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
 
             var providerSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel();
             var providerSpecLearnMonitoring = new ProviderSpecLearnerMonitoringModel();
@@ -312,6 +314,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                         }).ToList()
             };
 
+            var mcaGlaSofLookup = new McaGlaSofLookup()
+            {
+                SofCode = "110",
+                McaGlaShortCode = "GMCA",
+                McaGlaFullName = "GMCA Full",
+            };
+
             var referenceDataRoot = new ReferenceDataRoot()
             {
                 LARSLearningDeliveries = Enumerable.Range(0, learnerCount)
@@ -319,7 +328,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                     new LARSLearningDelivery()
                     {
                         LearnAimRef = "learnAimRef" + ld
-                    }).ToList()
+                    }).ToList(),
+                DevolvedPostocdes = new DevolvedPostcodes
+                {
+                    McaGlaSofLookups = new List<McaGlaSofLookup>
+                    {
+                        mcaGlaSofLookup
+                    }
+                }
             };
             
             var fm35Global = new FM35Global()
@@ -354,14 +370,60 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
             dependentDataMock.Setup(d => d.Get<FM35Global>()).Returns(fm35Global);
 
-            var result = NewBuilder(ilrModelMapperMock.Object).Build(reportServiceContext, dependentDataMock.Object).ToList();
+            var result = NewBuilder(ilrModelMapperMock.Object, academicYearServiceMock.Object).Build(reportServiceContext, dependentDataMock.Object).ToList();
 
             result.Should().HaveCount(learnerCount);
         }
 
-        private DevolvedAdultEducationOccupancyReportModelBuilder NewBuilder(IIlrModelMapper ilrModelMapper = null)
+        [Fact]
+        public void BuildSofDictionary()
         {
-            return new DevolvedAdultEducationOccupancyReportModelBuilder(ilrModelMapper);
+            var mcaSofList = new List<McaGlaSofLookup>
+            {
+                new McaGlaSofLookup
+                {
+                    SofCode = "10",
+                    McaGlaShortCode = "Code1",
+                    EffectiveFrom = new System.DateTime(2017, 8, 1)
+                },
+                new McaGlaSofLookup
+                {
+                    SofCode = "110",
+                    McaGlaShortCode = "Code1",
+                    EffectiveFrom = new System.DateTime(2018, 8, 1)
+                },
+                new McaGlaSofLookup
+                {
+                    SofCode = "120",
+                    McaGlaShortCode = "Code2",
+                    EffectiveFrom = new System.DateTime(2020, 8, 1),
+                    EffectiveTo = new System.DateTime(2021, 7, 31)
+                },
+                new McaGlaSofLookup
+                {
+                    SofCode = "115",
+                    McaGlaShortCode = "Code3",
+                    EffectiveFrom = new System.DateTime(2019, 8, 1),
+                    EffectiveTo = new System.DateTime(2020, 7, 31)
+                }
+            };
+
+            var expectedDictionary = new Dictionary<string, string>
+            {
+                { "110", "Code1"},
+                { "115", "Code3"},
+            };
+
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
+            academicYearServiceMock.Setup(am => am.YearStart).Returns(new System.DateTime(2019, 8, 1));
+            academicYearServiceMock.Setup(am => am.YearEnd).Returns(new System.DateTime(2020, 7, 31, 23, 59, 59));
+
+            NewBuilder(academicYearService: academicYearServiceMock.Object).BuildSofDictionary(mcaSofList).Should().BeEquivalentTo(expectedDictionary);
+        }
+
+        private DevolvedAdultEducationOccupancyReportModelBuilder NewBuilder(IIlrModelMapper ilrModelMapper = null, IAcademicYearService academicYearService = null)
+        {
+            return new DevolvedAdultEducationOccupancyReportModelBuilder(ilrModelMapper, academicYearService);
         } 
 
         private LearningDeliveryPeriodisedValue BuildPeriodisedValuesForAttribute(string attribute)

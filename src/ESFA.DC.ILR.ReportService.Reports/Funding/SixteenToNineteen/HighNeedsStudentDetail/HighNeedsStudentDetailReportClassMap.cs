@@ -9,7 +9,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
         {
             var index = 0;
             
-            Map(m => m.FM25Learner.FundLine).Name(@"Funding line type").Index(++index);
+            Map(m => m.DerivedFundline).Name(@"Funding line type").Index(++index);
             Map(m => m.Learner.LearnRefNumber).Name(@"Learner reference number").Index(++index);
             Map(m => m.Learner.FamilyName).Name(@"Family name").Index(++index);
             Map(m => m.Learner.GivenNames).Name(@"Given names").Index(++index);

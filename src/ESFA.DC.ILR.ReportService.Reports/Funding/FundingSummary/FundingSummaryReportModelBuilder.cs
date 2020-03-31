@@ -168,7 +168,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         {
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
             var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime;
-            var fileName = ExtractFileName(reportServiceContext.OriginalFilename);
+            var fileName = ExtractFileName(reportServiceContext.IlrReportingFilename);
 
             string easLastUpdateUk = null;
 
@@ -182,7 +182,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                 {SummaryPageConstants.ProviderName, organisationName},
                 {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
                 {SummaryPageConstants.ILRFile, fileName},
-                {SummaryPageConstants.LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename)},
+                {SummaryPageConstants.LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename)},
                 {SummaryPageConstants.LastEASUpdate, easLastUpdateUk},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
@@ -190,7 +190,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
 
         private IDictionary<string, string> BuildFooterData(IReportServiceContext reportServiceContext, IMessage message, ReferenceDataRoot referenceDataRoot)
         {
-            var filePreparationDate = message.HeaderEntity.CollectionDetailsEntity.FilePreparationDate.ShortDateStringFormat();
+            var filePreparationDate = message?.HeaderEntity?.CollectionDetailsEntity?.FilePreparationDate.ShortDateStringFormat();
             var orgVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;

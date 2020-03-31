@@ -12,8 +12,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
 {
     public class ValidationErrorsDetailReportBuilder : IValidationErrorsReportBuilder
     {
-        private static readonly ValidationErrorsModelComparer ValidationErrorsModelComparer = new ValidationErrorsModelComparer();
-
         public IEnumerable<ValidationErrorRow> Build(
             IEnumerable<ValidationError> ilrValidationErrors,
             ILooseMessage message,
@@ -21,50 +19,62 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
         {
             List<ValidationErrorRow> validationErrorModels = new List<ValidationErrorRow>();
 
-            var learnerDictionary = message
-                .Learners?
-                .GroupBy(l => l.LearnRefNumber, StringComparer.OrdinalIgnoreCase)
-                .ToDictionary(l => l.Key, l => l.FirstOrDefault(), StringComparer.OrdinalIgnoreCase);
+            var learnerDictionary = BuildLearnerDictionary(message);
 
             foreach (ValidationError validationError in ilrValidationErrors)
             {
-                ILooseLearner learner = learnerDictionary?.GetValueOrDefault(validationError.LearnerReferenceNumber);
+                ILooseLearner learner = learnerDictionary?.GetValueOrDefault(validationError.LearnerReferenceNumber?.Trim());
                 ILooseLearningDelivery learningDelivery = learner?.LearningDeliveries?.FirstOrDefault(x => x.AimSeqNumberNullable == validationError.AimSequenceNumber);
 
                 validationErrorModels.Add(new ValidationErrorRow()
                 {
                     AimSequenceNumber = validationError.AimSequenceNumber,
-                    ErrorMessage = validationErrorsMetadata.FirstOrDefault(x => string.Equals(x.RuleName, validationError.RuleName, StringComparison.OrdinalIgnoreCase))?.Message,
+                    ULN = learner?.ULNNullable,
+                    FamilyName = learner?.FamilyName,
+                    GivenNames= learner?.GivenNames,
+                    ErrorMessage = validationErrorsMetadata.FirstOrDefault(x => x.RuleName.CaseInsensitiveEquals(validationError.RuleName))?.Message,
                     FieldValues = validationError.ValidationErrorParameters == null
                         ? string.Empty
-                        : GetValidationErrorParameters(validationError.ValidationErrorParameters.ToList()),
+                        : GetValidationErrorParameters(validationError.ValidationErrorParameters),
                     FundModel = learningDelivery?.FundModelNullable,
                     LearnAimRef = learningDelivery?.LearnAimRef,
                     LearnerReferenceNumber = validationError.LearnerReferenceNumber,
                     PartnerUKPRN = learningDelivery?.PartnerUKPRNNullable,
-                    ProviderSpecDelOccurA = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                    ProviderSpecDelOccurB = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                    ProviderSpecDelOccurC = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "C", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                    ProviderSpecDelOccurD = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecDelMonOccur, "D", StringComparison.OrdinalIgnoreCase))?.ProvSpecDelMon,
-                    ProviderSpecLearnOccurA = learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "A", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
-                    ProviderSpecLearnOccurB = learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => string.Equals(x.ProvSpecLearnMonOccur, "B", StringComparison.OrdinalIgnoreCase))?.ProvSpecLearnMon,
+                    ProviderSpecDelOccurA = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur.CaseInsensitiveEquals("A"))?.ProvSpecDelMon,
+                    ProviderSpecDelOccurB = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur.CaseInsensitiveEquals("B"))?.ProvSpecDelMon,
+                    ProviderSpecDelOccurC = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur.CaseInsensitiveEquals("C"))?.ProvSpecDelMon,
+                    ProviderSpecDelOccurD = learningDelivery?.ProviderSpecDeliveryMonitorings?.FirstOrDefault(x => x.ProvSpecDelMonOccur.CaseInsensitiveEquals("D"))?.ProvSpecDelMon,
+                    ProviderSpecLearnOccurA = learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => x.ProvSpecLearnMonOccur.CaseInsensitiveEquals("A"))?.ProvSpecLearnMon,
+                    ProviderSpecLearnOccurB = learner?.ProviderSpecLearnerMonitorings?.FirstOrDefault(x => x.ProvSpecLearnMonOccur.CaseInsensitiveEquals("B"))?.ProvSpecLearnMon,
                     RuleName = validationError.RuleName,
                     SWSupAimId = learningDelivery?.SWSupAimId,
                     Severity = validationError.Severity
                 });
             }
 
-            validationErrorModels.Sort(ValidationErrorsModelComparer);
-            return validationErrorModels;
+            return validationErrorModels
+                .OrderBy(e => e.Severity)
+                .ThenBy(e => e.RuleName);
+        }
+        
+        public IDictionary<string, ILooseLearner> BuildLearnerDictionary(ILooseMessage message)
+        {
+            return message?
+                .Learners?
+                .Where(l => l.LearnRefNumber != null)
+                .GroupBy(l => l.LearnRefNumber.Trim(), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(l => l.Key, l => l.FirstOrDefault(), StringComparer.OrdinalIgnoreCase)
+                ?? new Dictionary<string, ILooseLearner>();
         }
 
-        private string GetValidationErrorParameters(List<ValidationErrorParameter> validationErrorParameters)
+        private string GetValidationErrorParameters(IEnumerable<ValidationErrorParameter> validationErrorParameters)
         {
             StringBuilder result = new StringBuilder();
-            validationErrorParameters.ForEach(x =>
+
+            foreach (var validationErrorParameter in validationErrorParameters)
             {
-                result.Append($"{x.PropertyName}={x.Value}|");
-            });
+                result.Append($"{validationErrorParameter.PropertyName}={validationErrorParameter.Value}|");
+            }
 
             return result.ToString();
         }

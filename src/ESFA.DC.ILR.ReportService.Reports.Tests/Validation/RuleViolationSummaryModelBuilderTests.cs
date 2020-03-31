@@ -36,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
             dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
@@ -137,7 +137,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
             dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
@@ -164,7 +164,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             result.Errors.Count.Should().Be(0);
             result.Warnings.Count.Should().Be(0);
-            
+
             result.FullyValidLearners.Apprenticeships.Should().Be(0);
             result.FullyValidLearners.Funded1619.Should().Be(0);
             result.FullyValidLearners.AdultSkilledFunded.Should().Be(0);
@@ -200,6 +200,46 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             result.LearnerDestinationProgressionSummary.Total.Should().Be(0);
         }
 
+        [Fact]
+        public void Build_WithNoLearningDeliveries()
+        {
+            var referenceDataRoot = BuildReferenceDataRoot();
+
+            var message = MockExtensions.NewMock<ILooseMessage>()
+                .With(h => h.HeaderEntity.CollectionDetailsEntity.FilePreparationDate, new DateTime(2019, 11, 06))
+                .With(m => m.Learners, BuildLearnersWithoutLearningDeliveries())
+                .With(l => l.LearnerDestinationAndProgressions, BuildLearnerDesintationAndProgressions()).Build();
+
+            var validationErrors = new List<ValidationError>();
+
+            var dependentDataMock = new Mock<IReportServiceDependentData>();
+            dependentDataMock.Setup(d => d.Get<ILooseMessage>()).Returns(message);
+            dependentDataMock.Setup(d => d.Get<ReferenceDataRoot>()).Returns(referenceDataRoot);
+            dependentDataMock.Setup(d => d.Get<List<ValidationError>>()).Returns(validationErrors);
+
+            var dateTimeProvider = new Mock<IDateTimeProvider>();
+            var reportServiceContextMock = new Mock<IReportServiceContext>();
+            var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
+
+            result.TotalNoOfErrors.Should().Be(0);
+            result.TotalNoOfLearners.Should().Be(1);
+            result.TotalNoOfWarnings.Should().Be(0);
+            result.TotalNoOfLearnersWithWarnings.Should().Be(0);
+
+            result.LearningDeliveries.Apprenticeships.Should().Be(0);
+            result.LearningDeliveries.Funded1619.Should().Be(0);
+            result.LearningDeliveries.AdultSkilledFunded.Should().Be(0);
+            result.LearningDeliveries.CommunityLearningFunded.Should().Be(0);
+            result.LearningDeliveries.ESFFunded.Should().Be(0);
+            result.LearningDeliveries.OtherAdultFunded.Should().Be(0);
+            result.LearningDeliveries.Other1619Funded.Should().Be(0);
+            result.LearningDeliveries.NonFunded.Should().Be(0);
+            result.LearningDeliveries.Total.Should().Be(0);
+
+            result.LearnerDestinationProgressionSummary.ValidLearnerDestinationProgressions.Should().Be(8);
+            result.LearnerDestinationProgressionSummary.InValidLearnerDestinationProgressions.Should().Be(0);
+            result.LearnerDestinationProgressionSummary.Total.Should().Be(8);
+        }
         private ReferenceDataRoot BuildReferenceDataRoot()
         {
             var referenceDataRoot = new ReferenceDataRoot()
@@ -231,7 +271,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
                         CampusIdentifierVersion = new CampusIdentifierVersion { Version = "5.5.5.5" },
                         CoFVersion = new CoFVersion { Version = "6.6.6.6" }
                     },
-                    ValidationErrors =new List<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError>()
+                    ValidationErrors = new List<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError>()
                     {
                         new ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError()
                         {
@@ -262,7 +302,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
         {
             return MockExtensions.NewMock<ILooseMessage>()
                 .With(h => h.HeaderEntity.CollectionDetailsEntity.FilePreparationDate, new DateTime(2019, 11, 06))
-                .With(m => m.Learners,BuildLearners())
+                .With(m => m.Learners, BuildLearners())
                 .With(l => l.LearnerDestinationAndProgressions, BuildLearnerDesintationAndProgressions()).Build();
         }
 
@@ -279,13 +319,21 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             return list;
         }
 
+        private static List<ILooseLearner> BuildLearnersWithoutLearningDeliveries()
+        {
+            var looseLearner = MockExtensions.NewMock<ILooseLearner>()
+                .With(l => l.LearnRefNumber, "LearnRefNumber1").Build();
+
+            return new List<ILooseLearner>(){ looseLearner };
+        }
+
         private static List<ILooseLearner> BuildLearners()
         {
             var looseLearners = new List<ILooseLearner>();
             for (int i = 1; i <= 10; i++)
             {
                 var looseLearner = MockExtensions.NewMock<ILooseLearner>()
-                    .With(l => l.LearnRefNumber, "LearnRefNumber"+i)
+                    .With(l => l.LearnRefNumber, "LearnRefNumber" + i)
                     .With(l => l.LearningDeliveries, BuildLearningDeliveries()).Build();
                 looseLearners.Add(looseLearner);
             }
@@ -296,7 +344,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
         private static List<ILooseLearningDelivery> BuildLearningDeliveries()
         {
             var looseLearningDeliveries = new List<ILooseLearningDelivery>();
-            var fundModels = new List<int> {36, 25, 35, 10, 70, 81, 82, 99};
+            var fundModels = new List<int> { 36, 25, 35, 10, 70, 81, 82, 99 };
             foreach (var fundModel in fundModels)
             {
                 for (int i = 1; i <= 10; i++)

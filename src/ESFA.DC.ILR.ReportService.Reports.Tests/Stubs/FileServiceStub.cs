@@ -16,6 +16,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Stubs
 
         public async Task<Stream> OpenWriteStreamAsync(string fileReference, string container, CancellationToken cancellationToken)
         {
+            Directory.CreateDirectory(container);
+
             return await Task.FromResult(File.OpenWrite(Path.Combine(container, fileReference)) as Stream);
         }
 
@@ -26,7 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Stubs
 
         public Task<bool> ExistsAsync(string fileReference, string container, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return Task.FromResult(File.Exists(Path.Combine(container, fileReference)));
         }
     }
 }

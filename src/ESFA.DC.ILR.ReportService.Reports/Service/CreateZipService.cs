@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.FileService.Interface;
@@ -12,12 +10,12 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Service
 {
-    public class ZipService : IZipService
+    public class CreateZipService : IZipService
     {
         private readonly IFileNameService _fileNameService;
         private readonly IFileService _fileService;
 
-        public ZipService(IFileNameService fileNameService, IFileService fileService)
+        public CreateZipService(IFileNameService fileNameService, IFileService fileService)
         {
             _fileNameService = fileNameService;
             _fileService = fileService;
@@ -45,6 +43,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Service
                     }
                 }
             }
-        }
+        }        
     }
 }

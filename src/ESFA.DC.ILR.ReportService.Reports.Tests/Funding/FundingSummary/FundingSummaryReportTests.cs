@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -33,13 +34,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
         {
             var dependsOn = NewReport().DependsOn.ToList();
 
-            dependsOn.Should().HaveCount(6);
+            dependsOn.Should().HaveCount(8);
 
+            dependsOn.Should().Contain(DependentDataCatalog.ValidIlr);
             dependsOn.Should().Contain(DependentDataCatalog.Fm25);
             dependsOn.Should().Contain(DependentDataCatalog.Fm35);
             dependsOn.Should().Contain(DependentDataCatalog.Fm36);
             dependsOn.Should().Contain(DependentDataCatalog.Fm81);
             dependsOn.Should().Contain(DependentDataCatalog.Fm99);
+            dependsOn.Should().Contain(DependentDataCatalog.Eas);
             dependsOn.Should().Contain(DependentDataCatalog.ReferenceData);
         }
 
@@ -145,14 +148,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             var reportServiceContextMock = new Mock<IReportServiceContext>();
             reportServiceContextMock.Setup(c => c.Container).Returns(container);
             reportServiceContextMock.Setup(c => c.Ukprn).Returns(ukprn);
-            reportServiceContextMock.Setup(c => c.OriginalFilename).Returns("ILR-11111111-1920-20190507-152000-01");
+            reportServiceContextMock.Setup(c => c.IlrReportingFilename).Returns("ILR-11111111-1920-20190507-152000-01");
             reportServiceContextMock.Setup(c => c.ServiceReleaseVersion).Returns("ServiceReleaseVersion");
 
             var excelService = new ExcelService(new FileServiceStub());
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
-            var fileName = "FundingSummaryReport.xlsx";
+            var fileName = $"FundingSummaryReport {Guid.NewGuid()}.xlsx";
             fileNameServiceMock.Setup(s => s.GetFilename(reportServiceContextMock.Object, "Funding Summary Report", OutputTypes.Excel, true)).Returns(fileName);
 
             var fundingSummaryReportRenderService = new FundingSummaryReportRenderService();
@@ -168,6 +171,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
             excelService.ApplyLicense();
             
             await report.GenerateAsync(reportServiceContextMock.Object, reportServiceDependentDataMock.Object, cancellationToken);
+
+            File.Exists(Path.Combine(container, fileName)).Should().BeTrue();
         }
 
         private FundingSummaryReport NewReport(

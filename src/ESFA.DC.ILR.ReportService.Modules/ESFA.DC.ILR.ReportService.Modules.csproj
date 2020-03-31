@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Data.Eas\ESFA.DC.ILR.ReportService.Data.Eas.csproj" />
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Data\ESFA.DC.ILR.ReportService.Data.csproj" />
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Models\ESFA.DC.ILR.ReportService.Models.csproj" />
     <ProjectReference Include="..\ESFA.DC.ILR.ReportService.Reports\ESFA.DC.ILR.ReportService.Reports.csproj" />

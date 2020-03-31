@@ -2,13 +2,14 @@
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Desktop
 {
     public class DesktopDevolvedAdultEducationFundingSummaryModelBuilder : DevolvedAdultEducationFundingSummaryReportModelBuilder
     {
-        public DesktopDevolvedAdultEducationFundingSummaryModelBuilder(IDateTimeProvider dateTimeProvider) 
-            : base(dateTimeProvider)
+        public DesktopDevolvedAdultEducationFundingSummaryModelBuilder(IDateTimeProvider dateTimeProvider, IAcademicYearService academicYearService) 
+            : base(dateTimeProvider, academicYearService)
         {
         }
 

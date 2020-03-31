@@ -21,7 +21,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
                   [FundLineConstants.ContinuingStudents19Plus] = 4,
               };
 
-        public bool Filter(ILearner learner, FM25Learner fm25Learner)
+        public virtual bool Filter(ILearner learner, FM25Learner fm25Learner)
         {
             return learner != null && fm25Learner != null
                    && FilterStartFund(fm25Learner.StartFund)

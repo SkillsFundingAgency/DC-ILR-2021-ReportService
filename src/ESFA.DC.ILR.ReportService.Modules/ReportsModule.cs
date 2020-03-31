@@ -1,5 +1,10 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using ESFA.DC.ILR.ReportService.Reports;
+using ESFA.DC.ILR.ReportService.Reports.Frm;
+using ESFA.DC.ILR.ReportService.Reports.Frm.FRM06;
+using ESFA.DC.ILR.ReportService.Reports.Frm.FRM08;
+using ESFA.DC.ILR.ReportService.Reports.Frm.FRM15;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
@@ -35,6 +40,8 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -45,6 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterValidationReports(containerBuilder);
           
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
+            RegisterNonContractDevolvedAdultEducationOccupancyReport(containerBuilder);
             RegisterMainOccupancyReport(containerBuilder);
             RegisterAllbOccupancyReport(containerBuilder);
 
@@ -68,16 +76,21 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterFundingClaim1619Report(containerBuilder);
             RegisterAdultFundingClaimReport(containerBuilder);
 
+            RegisterFrmReports(containerBuilder);
+
             containerBuilder.RegisterType<AcademicYearService>().As<IAcademicYearService>();
             containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
             containerBuilder.RegisterType<CsvService>().As<ICsvService>();
             containerBuilder.RegisterType<ExcelService>().As<IExcelService>();
+
+            containerBuilder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
         }
 
         private void RegisterValidationReports(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
+            containerBuilder.RegisterType<ValidationErrorsDetailReportV2>().As<IReport>();
             containerBuilder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
             containerBuilder.RegisterType<RuleViolationSummaryReport>().As<IReport>();
             containerBuilder.RegisterType<RuleViolationSummaryReportModelBuilder>().As<IModelBuilder<RuleViolationSummaryReportModel>>();
@@ -90,6 +103,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReport>().As<IReport>();
             containerBuilder.RegisterType<DevolvedAdultEducationOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<DevolvedAdultEducationOccupancyReportModel>>>();
+        }
+
+        private void RegisterNonContractDevolvedAdultEducationOccupancyReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<NonContractDevolvedAdultEducationOccupancyReport>().As<IReport>();
+            containerBuilder.RegisterType<NonContractDevolvedAdultEducationOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<NonContractDevolvedAdultEducationOccupancyReportModel>>>();
         }
 
         private void RegisterMainOccupancyReport(ContainerBuilder containerBuilder)
@@ -182,6 +201,25 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingClaimReport>().As<IReport>().As<IFilteredReport>();
             containerBuilder.RegisterType<FundingClaimReportModelBuilder>().As<IModelBuilder<FundingClaimReportModel>>();
         }
+
+        private void RegisterFrmReports(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<FrmReport>().As<IReport>();
+            containerBuilder.RegisterType<FrmLearnerComparer>().As<IEqualityComparer<FrmLearnerKey>>();
+
+            containerBuilder.RegisterType<Frm06Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm06ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm06ReportModel>>>();
+            containerBuilder.RegisterType<Frm06ReportRenderService>().As<IRenderService<IEnumerable<Frm06ReportModel>>>();
+
+            containerBuilder.RegisterType<Frm08Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm08ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm08ReportModel>>>();
+            containerBuilder.RegisterType<Frm08ReportRenderService>().As<IRenderService<IEnumerable<Frm08ReportModel>>>();
+
+            containerBuilder.RegisterType<Frm15Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm15ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm15ReportModel>>>();
+            containerBuilder.RegisterType<Frm15ReportRenderService>().As<IRenderService<IEnumerable<Frm15ReportModel>>>();
+        }
+
         protected virtual void RegisterAdultFundingClaimReport(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<AdultFundingClaimReport>().As<IReport>();

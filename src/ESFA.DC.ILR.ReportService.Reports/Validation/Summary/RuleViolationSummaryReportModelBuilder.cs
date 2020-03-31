@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             // Header
             model.ProviderName = $"Provider: {organisationName}";
             model.Ukprn = $"UKPRN: {reportServiceContext.Ukprn}";
-            model.IlrFile =$"ILR File: {ExtractFileName(reportServiceContext.OriginalFilename)}";
+            model.IlrFile =$"ILR File: {ExtractFileName(reportServiceContext.IlrReportingFilename)}";
             model.Year = ReportingConstants.Year;
 
             // body
@@ -64,7 +64,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
 
             model.TotalNoOfLearners = looseLearners.DistinctByCount(x => x.LearnRefNumber);
             model.TotalNoOfLearnersWithWarnings = learnRefNumbersWithWarnings.Count(l => !learnRefNumbersWithErrors.Contains(l));
-
+            
             var learningDeliveries = looseLearners.Where(x => x.LearningDeliveries != null).SelectMany(x => x.LearningDeliveries).ToList();
 
             model.FullyValidLearners = new RuleViolationsTotalModel

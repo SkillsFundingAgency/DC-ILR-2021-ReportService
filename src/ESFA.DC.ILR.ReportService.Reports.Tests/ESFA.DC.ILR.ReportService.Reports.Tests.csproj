@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props" Condition="Exists('..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props')" />
   <Import Project="..\packages\xunit.core.2.4.1\build\xunit.core.props" Condition="Exists('..\packages\xunit.core.2.4.1\build\xunit.core.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -118,9 +119,18 @@
     <Compile Include="Extensions\IEnumerableExtensionsTests.cs" />
     <Compile Include="Extensions\StringExtensionsTests.cs" />
     <Compile Include="FileNameServiceTests.cs" />
+    <Compile Include="Frm\FRM06\Frm06ReportRenderServiceTests.cs" />
+    <Compile Include="Frm\FRM06\Frm06ReportTests.cs" />
+    <Compile Include="Frm\FRM08\Frm08ReportRenderServiceTests.cs" />
+    <Compile Include="Frm\FRM08\Frm08ReportTests.cs" />
+    <Compile Include="Frm\FRM15\Frm15ReportRenderServiceTests.cs" />
+    <Compile Include="Frm\FRM15\Frm15ReportTests.cs" />
     <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
     <Compile Include="Funding\CommunityLearning\CommunityLearningReportModelBuilderTests.cs" />
     <Compile Include="Funding\CommunityLearning\CommunityLearningReportTests.cs" />
+    <Compile Include="Funding\NonContractDevolvedOccupancy\NonContractDevolvedAdultEducationOccupancyReportClassMapTests.cs" />
+    <Compile Include="Funding\NonContractDevolvedOccupancy\NonContractDevolvedAdultEducationOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\NonContractDevolvedOccupancy\NonContractDevolvedAdultEducationOccupancyReportTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportClassMapTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportModelBuilderTests.cs" />
     <Compile Include="Funding\NonContractedAppsActivity\NonContractedAppsActivityReportTests.cs" />
@@ -175,7 +185,9 @@
     <Compile Include="Service\CsvServiceTests.cs" />
     <Compile Include="Service\ExcelServiceTests.cs" />
     <Compile Include="Service\FileNameServiceTests.cs" />
+    <Compile Include="Service\ZipServiceTests.cs" />
     <Compile Include="Stubs\FileServiceStub.cs" />
+    <Compile Include="ValidationErrorDetailReportTestsV2.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
     <Compile Include="Validation\RuleViolationSummaryModelBuilderTests.cs" />
@@ -215,6 +227,7 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\xunit.core.2.4.1\build\xunit.core.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.1\build\xunit.core.props'))" />
     <Error Condition="!Exists('..\packages\xunit.core.2.4.1\build\xunit.core.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.core.2.4.1\build\xunit.core.targets'))" />
+    <Error Condition="!Exists('..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\xunit.runner.visualstudio.2.4.1\build\net20\xunit.runner.visualstudio.props'))" />
   </Target>
   <Import Project="..\packages\xunit.core.2.4.1\build\xunit.core.targets" Condition="Exists('..\packages\xunit.core.2.4.1\build\xunit.core.targets')" />
 </Project>

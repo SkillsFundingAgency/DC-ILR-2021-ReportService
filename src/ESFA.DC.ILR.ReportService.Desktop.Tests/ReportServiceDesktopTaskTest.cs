@@ -36,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             entryPointMock.VerifyAll();
         }
 
-        [Theory]
+        [Theory(Skip = "This needs review, not really a unit test")]
         [InlineData("TaskGenerateValidationReport")]
         [InlineData("TaskGenerateValidationSchemaErrorsReport")]
         public async Task TestValidationReports_EndToEnd(string validationReportName)

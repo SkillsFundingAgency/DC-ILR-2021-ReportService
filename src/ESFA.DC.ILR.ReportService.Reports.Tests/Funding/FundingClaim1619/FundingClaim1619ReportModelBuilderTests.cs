@@ -108,7 +108,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
             dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
@@ -251,7 +251,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.OriginalFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
 
             dateTimeProvider.Setup(p => p.ConvertUtcToUk(submissionDateTime)).Returns(ukDateTime);
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);

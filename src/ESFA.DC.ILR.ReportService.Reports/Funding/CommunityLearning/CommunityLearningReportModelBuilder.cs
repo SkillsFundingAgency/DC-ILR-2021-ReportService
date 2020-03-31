@@ -203,7 +203,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
         public IDictionary<string, string> BuildHeaderData(IReportServiceContext reportServiceContext, ReferenceDataRoot referenceDataRoot)
         {
             var organisationName = referenceDataRoot.Organisations?.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name;
-            var fileName = ExtractFileName(reportServiceContext.OriginalFilename);
+            var fileName = ExtractFileName(reportServiceContext.IlrReportingFilename);
 
             return new Dictionary<string, string>()
             {

@@ -34,6 +34,11 @@ namespace ESFA.DC.ILR.ReportService.Reports
         {
             List<string> reportOutputFilenames = new List<string>();
 
+            if (!string.IsNullOrWhiteSpace(reportServiceContext.ReportOutputFileNames))
+            {
+                reportOutputFilenames.AddRange(reportServiceContext.ReportOutputFileNames.Split('|').ToList());
+            }
+
             _logger.LogDebug("Inside ReportService callback");
 
             try

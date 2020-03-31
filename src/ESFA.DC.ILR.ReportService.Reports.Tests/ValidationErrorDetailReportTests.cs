@@ -73,7 +73,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
             result.Should().HaveCount(1);
             result.First().Should().Be(fileName);
 
-            frontEndValidationReportMock.Verify(r => r.GenerateAsync(reportServiceContext.Object, validationErrorRows, cancellationToken));
+            frontEndValidationReportMock.Verify(r => r.GenerateAsync(reportServiceContext.Object, validationErrorRows, false, cancellationToken));
             csvServiceMock.Verify(s => s.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrorRows, fileName, container, cancellationToken));
         }
 

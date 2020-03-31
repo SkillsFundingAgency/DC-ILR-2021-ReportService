@@ -55,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             var fm35Global = reportServiceDependentData.Get<FM35Global>();
             var albGlobal = reportServiceDependentData.Get<ALBGlobal>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
-            var easFundingLines = reportServiceDependentData.Get<IReadOnlyCollection<EasFundingLine>>();
+            var easFundingLines = reportServiceDependentData.Get<List<EasFundingLine>>();
 
             string organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
             var model = new AdultFundingClaimReportModel();
@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             // Header
             model.ProviderName = organisationName;
             model.Ukprn = reportServiceContext.Ukprn.ToString();
-            model.IlrFile = ExtractFileName(reportServiceContext.OriginalFilename);
+            model.IlrFile = ExtractFileName(reportServiceContext.IlrReportingFilename);
             model.Year = ReportingConstants.Year;
 
             //Body
@@ -129,12 +129,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CampusIdentifierVersion.Version;
             model.LastEASFileUpdate = _dateTimeProvider.ConvertUtcToUk(referenceDataRoot.MetaDatas.ReferenceDataVersions.EasUploadDateTime.UploadDateTime.GetValueOrDefault()).LongDateStringFormat();
-            model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.OriginalFilename);
+            model.LastILRFileUpdate = ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename);
             return model;
         }
         
         private decimal CalculateAEBClaims(int months, List<FM35LearningDeliveryValues> fm35LearningDeliveryPeriodisedValues,
-                                            IReadOnlyCollection<EasFundingLine> easFundingLines,
+                                            List<EasFundingLine> easFundingLines,
                                             string[] attributes,
                                             string[] fundlines,
                                             string[] easAttributes,
@@ -145,7 +145,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
         }
 
         private decimal CalculateALBClaims(int months, List<ALBLearningDeliveryValues> albLearningDeliveryPeriodisedValues,
-            IReadOnlyCollection<EasFundingLine> easFundingLines,
+            List<EasFundingLine> easFundingLines,
             string[] attributes,
             string[] fundlines,
             string[] easAttributes,
@@ -283,7 +283,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 
         private decimal EasValues(
             int forMonths,
-            IReadOnlyCollection<EasFundingLine> easFundlines,
+            List<EasFundingLine> easFundlines,
             string[] attributes,
             string[] fundLines)
         {
