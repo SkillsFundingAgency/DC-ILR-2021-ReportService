@@ -31,9 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM06
         [Fact]
         public void GenerateAsync()
         {
-            var container = "Container";
             var sheetName = "FRM06";
-            var fileName = "fileName";
             
             var cancellationToken = CancellationToken.None;
 

@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <PackageReference Include="ESFA.DC.EAS1920.EF" Version="0.0.91" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Constants" Version="0.2.0-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Model" Version="0.1.8-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Constants" Version="0.1.0-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Model" Version="0.1.0-beta0001" />
     <PackageReference Include="ESFA.DC.ILR1920.Database.EF" Version="0.0.454" />
     <PackageReference Include="ESFA.DC.ReferenceData.Postcodes.Model" Version="0.2.210" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.4" />

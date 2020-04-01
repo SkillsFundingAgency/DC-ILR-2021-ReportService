@@ -84,6 +84,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                         LearnActEndDate = delivery.LearningDelivery.LearnActEndDateNullable,
                         LearnPlanEndDate = delivery.LearningDelivery.LearnPlanEndDate,
                         OtherFundAdj = delivery.LearningDelivery.OtherFundAdjNullable,
+                        OtjActHours = delivery.LearningDelivery.OtjActHoursNullable,
                         Outcome = delivery.LearningDelivery.OutcomeNullable,
                         PMUKPRN = delivery.Learner.PMUKPRNNullable,
                         PartnerUKPRN = delivery.LearningDelivery.PartnerUKPRNNullable,

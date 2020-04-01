@@ -5,6 +5,10 @@ using ESFA.DC.FileService.Config;
 using ESFA.DC.FileService.Config.Interface;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
+using ESFA.DC.ILR.ReportService.Modules;
+using ESFA.DC.ILR.ReportService.Reports;
+using ESFA.DC.ILR.ReportService.Reports.Service;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Stateless.Configuration;
 using ESFA.DC.ILR.ReportService.Stateless.Handlers;
 using ESFA.DC.IO.AzureStorage;
@@ -17,10 +21,6 @@ using ESFA.DC.Mapping.Interface;
 using ESFA.DC.ServiceFabric.Common.Config.Interface;
 using ESFA.DC.ServiceFabric.Common.Modules;
 using VersionInfo = ESFA.DC.ILR.ReportService.Stateless.Configuration.VersionInfo;
-using ESFA.DC.ILR.ReportService.Modules;
-using ESFA.DC.ILR.ReportService.Reports;
-using ESFA.DC.ILR.ReportService.Reports.Service;
-using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Stateless
 {

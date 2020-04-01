@@ -58,6 +58,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
 
         public int? OtherFundAdj { get; set; }
 
+        public int? OtjActHours { get; set; }
+
         public int CompStatus { get; set; }
 
         public int? Outcome { get; set; }
