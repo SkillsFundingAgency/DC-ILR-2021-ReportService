@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ESFA.DC.ILR.ReportService.Stateless
 {
-    [EventSource(Name = "MyCompany-ESFA.DC.ILR1920.ReportService-ESFA.DC.ILR1920.ReportService.Stateless")]
+    [EventSource(Name = "MyCompany-ESFA.DC.ILR2021.ReportService-ESFA.DC.ILR2021.ReportService.Stateless")]
     internal sealed class ServiceEventSource : EventSource
     {
         public static readonly ServiceEventSource Current = new ServiceEventSource();

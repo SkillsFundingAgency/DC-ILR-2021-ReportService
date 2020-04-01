@@ -99,7 +99,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-1920-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-2021-20191005-151322-01.xml");
 
             
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
@@ -112,8 +112,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
 
             result.ProviderName.Should().Be("Provider XYZ");
             result.Ukprn.Should().Be("987654321");
-            result.IlrFile.Should().Be("ILR-12345678-1920-20191005-151322-01.xml");
-            result.Year.Should().Be("2019/20");
+            result.IlrFile.Should().Be("ILR-12345678-2021-20191005-151322-01.xml");
+            result.Year.Should().Be("2020/21");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
             result.LarsData.Should().Be("3.3.3.3");

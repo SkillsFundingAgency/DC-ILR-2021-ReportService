@@ -23,9 +23,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         {
             var reportServiceContextMock = new Mock<IReportServiceContext>();
 
-            reportServiceContextMock.Setup(r => r.IlrReportingFilename).Returns("10000000/ILR-1920-20190801-090000.xml");
+            reportServiceContextMock.Setup(r => r.IlrReportingFilename).Returns("10000000/ILR-2021-20190801-090000.xml");
             reportServiceContextMock.Setup(r => r.Ukprn).Returns(1);
-            reportServiceContextMock.Setup(r => r.CollectionYear).Returns("1920");
+            reportServiceContextMock.Setup(r => r.CollectionYear).Returns("2021");
 
             var referenceDataRoot = new ReferenceDataRoot
             {
@@ -43,8 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             {
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
-                {SummaryPageConstants.ILRFile, "ILR-1920-20190801-090000.xml"},
-                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.ILRFile, "ILR-2021-20190801-090000.xml"},
+                {SummaryPageConstants.Year, "2021"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
 
@@ -342,7 +342,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
                 {SummaryPageConstants.ILRFile, "Filename"},
-                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.Year, "2021"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
 
@@ -464,7 +464,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
                 {SummaryPageConstants.ILRFile, "Filename"},
-                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.Year, "2021"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
 
