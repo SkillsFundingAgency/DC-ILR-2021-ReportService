@@ -1,12 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Funding;
+﻿using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Model;
-using FluentAssertions;
-using Xunit;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
 {

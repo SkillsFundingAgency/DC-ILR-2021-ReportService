@@ -41,7 +41,6 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {

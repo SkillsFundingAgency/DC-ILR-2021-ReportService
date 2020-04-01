@@ -5,7 +5,6 @@ using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using FluentAssertions;

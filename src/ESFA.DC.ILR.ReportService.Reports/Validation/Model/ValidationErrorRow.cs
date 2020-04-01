@@ -1,6 +1,4 @@
-﻿using ESFA.DC.ILR.ValidationErrors.Interface.Models;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Validation.Model
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Validation.Model
 {
     public sealed class ValidationErrorRow
     {
