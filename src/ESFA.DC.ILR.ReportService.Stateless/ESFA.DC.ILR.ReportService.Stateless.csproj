@@ -7,7 +7,7 @@
     <ProjectGuid>{920FC933-1FD0-47A2-854E-4D49990B3942}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ESFA.DC.ILR.ReportService.Stateless</RootNamespace>
-    <AssemblyName>ESFA.DC.ILR1920.ReportService.Stateless</AssemblyName>
+    <AssemblyName>ESFA.DC.ILR2021.ReportService.Stateless</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
