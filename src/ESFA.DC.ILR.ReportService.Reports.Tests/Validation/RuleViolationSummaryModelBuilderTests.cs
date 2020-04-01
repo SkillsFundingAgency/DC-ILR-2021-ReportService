@@ -45,7 +45,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             result.ProviderName.Should().Be("Provider: Provider XYZ");
             result.Ukprn.Should().Be("UKPRN: 987654321");
-            result.Year.Should().Be("2019/20");
+            result.Year.Should().Be("2020/21");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
             result.OrganisationData.Should().Be("1.1.1.1");
             result.LargeEmployerData.Should().Be("2.2.2.2");
@@ -146,7 +146,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
 
             result.ProviderName.Should().Be("Provider: Provider XYZ");
             result.Ukprn.Should().Be("UKPRN: 987654321");
-            result.Year.Should().Be("2019/20");
+            result.Year.Should().Be("2020/21");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
             result.OrganisationData.Should().Be("1.1.1.1");
             result.LargeEmployerData.Should().Be("2.2.2.2");

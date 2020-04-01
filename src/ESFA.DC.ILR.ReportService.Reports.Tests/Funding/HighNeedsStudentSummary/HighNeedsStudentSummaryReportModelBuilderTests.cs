@@ -145,7 +145,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
             result.Continuing19PlusExcludingEHCPStudentsTotal.TotalFundineStudents.Should().Be(2);
 
             result.Ukprn.Should().Be("987654321");
-            result.Year.Should().Be("2019/20");
+            result.Year.Should().Be("2020/21");
         }
 
         private List<ILearner> BuildLearners(TestLearningDelivery learningDelivery)
