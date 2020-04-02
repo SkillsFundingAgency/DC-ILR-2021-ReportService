@@ -15,7 +15,7 @@
     <PackageReference Include="ESFA.DC.ILR.2021.Model" Version="0.1.0-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.2021.Model.Loose" Version="0.1.0-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR1920.ReferenceDataService.Model" Version="0.1.19" />
+    <PackageReference Include="ESFA.DC.ILR.2021.ReferenceDataService.Model" Version="0.1.69" />
     <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.6-beta0001" />
   </ItemGroup>
 

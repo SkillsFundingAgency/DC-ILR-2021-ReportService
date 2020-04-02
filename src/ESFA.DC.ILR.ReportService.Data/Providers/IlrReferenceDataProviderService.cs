@@ -42,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 LARSStandards = MapData(root.LARSStandards),
                 McaDevolvedContracts = MapData(root.McaDevolvedContracts),
                 Organisations = MapData(root.Organisations),
-                DevolvedPostocdes = MapData(root.DevolvedPostocdes)
+                DevolvedPostocdes = MapData(root.DevolvedPostcodes)
             };
         }
 
