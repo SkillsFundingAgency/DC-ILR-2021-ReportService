@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary.Model
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary.Model
 {
     public class LearnerDestinationProgressionSummary
     {

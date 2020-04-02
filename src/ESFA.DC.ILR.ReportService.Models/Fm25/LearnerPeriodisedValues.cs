@@ -1,5 +1,4 @@
-﻿using System;
-using ESFA.DC.ILR.ReportService.Models.Abstract;
+﻿using ESFA.DC.ILR.ReportService.Models.Abstract;
 
 namespace ESFA.DC.ILR.ReportService.Models.Fm25
 {

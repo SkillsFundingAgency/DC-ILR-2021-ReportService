@@ -1,5 +1,4 @@
-﻿using System.Dynamic;
-using ESFA.DC.ILR.Model.Interface;
+﻿using ESFA.DC.ILR.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Models.Ilr
 {

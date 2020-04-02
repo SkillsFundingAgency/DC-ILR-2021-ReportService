@@ -2,8 +2,8 @@
 {
     public static class CollectionConstants
     {
-        public const string IlrCollectionName = "ILR1920";
+        public const string IlrCollectionName = "ILR2021";
 
-        public const string EasCollectionName = "EAS1920";
+        public const string EasCollectionName = "EAS2021";
     }
 }

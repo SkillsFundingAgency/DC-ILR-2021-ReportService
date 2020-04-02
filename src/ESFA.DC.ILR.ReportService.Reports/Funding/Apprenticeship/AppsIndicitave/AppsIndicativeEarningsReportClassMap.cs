@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using CsvHelper.Configuration;
+﻿using CsvHelper.Configuration;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave
 {

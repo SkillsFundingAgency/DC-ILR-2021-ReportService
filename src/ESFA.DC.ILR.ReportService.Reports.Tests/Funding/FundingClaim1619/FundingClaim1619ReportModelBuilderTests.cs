@@ -128,7 +128,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
             result.Ukprn.Should().Be("987654321");
-            result.Year.Should().Be("2019/20");
+            result.Year.Should().Be("2020/21");
             result.CofRemoval.Should().Be((decimal)-4500.12);
             result.ReferenceDate.Should().Be("(ALL)");
 
@@ -271,7 +271,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
             result.Ukprn.Should().Be("987654321");
-            result.Year.Should().Be("2019/20");
+            result.Year.Should().Be("2020/21");
             result.CofRemoval.Should().Be((decimal)-4500.12);
         }
         [Theory]

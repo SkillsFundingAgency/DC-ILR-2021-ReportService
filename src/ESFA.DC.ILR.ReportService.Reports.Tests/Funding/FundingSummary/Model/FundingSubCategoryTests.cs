@@ -1,9 +1,4 @@
 ﻿using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using FluentAssertions;
 using Moq;

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using Aspose.Cells;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM06;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -31,9 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM06
         [Fact]
         public void GenerateAsync()
         {
-            var container = "Container";
             var sheetName = "FRM06";
-            var fileName = "fileName";
             
             var cancellationToken = CancellationToken.None;
 

@@ -15,7 +15,6 @@ using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using FluentAssertions;
 using Moq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM15
 {
@@ -35,9 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM15
         [Fact]
         public void GenerateAsync()
         {
-            var container = "Container";
             var sheetName = "FRM15";
-            var fileName = "fileName";
             
             var cancellationToken = CancellationToken.None;
 

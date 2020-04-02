@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using ESFA.DC.ILR.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Model.Interface

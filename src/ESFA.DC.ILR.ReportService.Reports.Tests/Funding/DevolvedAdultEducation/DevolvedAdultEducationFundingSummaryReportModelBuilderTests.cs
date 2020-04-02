@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Models.EAS;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using FluentAssertions;

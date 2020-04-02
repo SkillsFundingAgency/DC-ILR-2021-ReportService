@@ -23,9 +23,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         {
             var reportServiceContextMock = new Mock<IReportServiceContext>();
 
-            reportServiceContextMock.Setup(r => r.IlrReportingFilename).Returns("10000000/ILR-1920-20190801-090000.xml");
+            reportServiceContextMock.Setup(r => r.IlrReportingFilename).Returns("10000000/ILR-2021-20190801-090000.xml");
             reportServiceContextMock.Setup(r => r.Ukprn).Returns(1);
-            reportServiceContextMock.Setup(r => r.CollectionYear).Returns("1920");
+            reportServiceContextMock.Setup(r => r.CollectionYear).Returns("2021");
 
             var referenceDataRoot = new ReferenceDataRoot
             {
@@ -43,8 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             {
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
-                {SummaryPageConstants.ILRFile, "ILR-1920-20190801-090000.xml"},
-                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.ILRFile, "ILR-2021-20190801-090000.xml"},
+                {SummaryPageConstants.Year, "2021"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
 
@@ -153,20 +153,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
         }
 
         [Theory]
-        [InlineData(2019, 8, 1)]
-        [InlineData(2019, 9, 1)]
-        [InlineData(2020, 2, 1)]
-        [InlineData(2020, 7, 31)]
+        [InlineData(2020, 8, 1)]
+        [InlineData(2020, 9, 1)]
+        [InlineData(2021, 2, 1)]
+        [InlineData(2021, 7, 31)]
         public void LearnStartDateIsWithinYear_True(int year, int month, int day)
         {
             NewBuilder().LearnStartDateIsWithinYear(new DateTime(year, month, day)).Should().BeTrue();
         }
 
         [Theory]
-        [InlineData(2019, 7, 1)]
-        [InlineData(2019, 7, 31)]
-        [InlineData(2020, 8, 1)]
-        [InlineData(2020, 12, 31)]
+        [InlineData(2020, 7, 1)]
+        [InlineData(2020, 7, 31)]
+        [InlineData(2021, 8, 1)]
+        [InlineData(2021, 12, 31)]
         public void LearnStartDateIsWithinYear_False(int year, int month, int day)
         {
             NewBuilder().LearnStartDateIsWithinYear(new DateTime(year, month, day)).Should().BeFalse();
@@ -219,7 +219,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner1",
                     AimSeqNumber = 1,
-                    LearnStartDate = new DateTime(2019, 8, 1),
+                    LearnStartDate = new DateTime(2020, 8, 1),
                     EarliestStartDate = true,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = false,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
@@ -237,7 +237,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner1",
                     AimSeqNumber = 2,
-                    LearnStartDate = new DateTime(2019, 10, 1),
+                    LearnStartDate = new DateTime(2020, 10, 1),
                     EarliestStartDate = false,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = false,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
@@ -255,7 +255,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner2",
                     AimSeqNumber = 1,
-                    LearnStartDate = new DateTime(2019, 8, 1),
+                    LearnStartDate = new DateTime(2020, 8, 1),
                     EarliestStartDate = true,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
@@ -273,7 +273,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner3",
                     AimSeqNumber = 1,
-                    LearnStartDate = new DateTime(2019, 6, 1),
+                    LearnStartDate = new DateTime(2020, 6, 1),
                     EarliestStartDate = true,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
@@ -309,7 +309,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                             {
                                 AimSeqNumber = 1,
                                 FundModel = 35,
-                                LearnStartDate = new DateTime(2019, 8, 1),
+                                LearnStartDate = new DateTime(2020, 8, 1),
                                 LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
                                 {
                                     new TestLearningDeliveryFAM
@@ -342,19 +342,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
                 {SummaryPageConstants.ILRFile, "Filename"},
-                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.Year, "2021"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
 
             var footerDictionary = new Dictionary<string, string>
             {
                 { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
-                { SummaryPageConstants.FilePreparationDate, "01/08/2019 00:00:00" },
+                { SummaryPageConstants.FilePreparationDate, "01/08/2020 00:00:00" },
                 { SummaryPageConstants.LARSVersion, "1" },
                 { SummaryPageConstants.PostcodeVersion, "1" },
                 { SummaryPageConstants.OrganisationVersion, "1" },
                 { SummaryPageConstants.LargeEmployersVersion, "1" },
-                { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2019" }
+                { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2020" }
             };
 
             var categoryData = new List<CommunityLearningData>
@@ -363,7 +363,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner1",
                     AimSeqNumber = 1,
-                    LearnStartDate = new DateTime(2019, 8, 1),
+                    LearnStartDate = new DateTime(2020, 8, 1),
                     EarliestStartDate = true,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
@@ -381,7 +381,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner1",
                     AimSeqNumber = 2,
-                    LearnStartDate = new DateTime(2019, 10, 1),
+                    LearnStartDate = new DateTime(2020, 10, 1),
                     EarliestStartDate = false,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = false,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = false,
@@ -399,7 +399,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner2",
                     AimSeqNumber = 1,
-                    LearnStartDate = new DateTime(2019, 8, 1),
+                    LearnStartDate = new DateTime(2020, 8, 1),
                     EarliestStartDate = true,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
@@ -417,7 +417,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {
                     LearnerRefNumber = "Learner3",
                     AimSeqNumber = 1,
-                    LearnStartDate = new DateTime(2019, 6, 1),
+                    LearnStartDate = new DateTime(2020, 6, 1),
                     EarliestStartDate = true,
                     EarliestStartDatePersonalAndCommunityDevelopmentLearning = true,
                     EarliestStartDateNeighbourhoodLearningInDeprivedCommunities = true,
@@ -464,19 +464,19 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 {SummaryPageConstants.ProviderName, "OrgName"},
                 {SummaryPageConstants.UKPRN, "1"},
                 {SummaryPageConstants.ILRFile, "Filename"},
-                {SummaryPageConstants.Year, "1920"},
+                {SummaryPageConstants.Year, "2021"},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
 
             var footerDictionary = new Dictionary<string, string>
             {
                 { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
-                { SummaryPageConstants.FilePreparationDate, "01/08/2019 00:00:00" },
+                { SummaryPageConstants.FilePreparationDate, "01/08/2020 00:00:00" },
                 { SummaryPageConstants.LARSVersion, "1" },
                 { SummaryPageConstants.PostcodeVersion, "1" },
                 { SummaryPageConstants.OrganisationVersion, "1" },
                 { SummaryPageConstants.LargeEmployersVersion, "1" },
-                { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2019" }
+                { SummaryPageConstants.ReportGeneratedAt, "00:00:00 on 01/08/2020" }
             };
 
             var categoryData = new List<CommunityLearningData>();
@@ -511,14 +511,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 new TestLearner
                 {
                     LearnRefNumber = "Learner1",
-                    DateOfBirthNullable = new DateTime(2000, 9, 1),
+                    DateOfBirthNullable = new DateTime(2001, 9, 1),
                     LearningDeliveries = new TestLearningDelivery[]
                     {
                         new TestLearningDelivery
                         {
                             AimSeqNumber = 1,
                             FundModel = 10,
-                            LearnStartDate = new DateTime(2019, 8, 1),
+                            LearnStartDate = new DateTime(2020, 8, 1),
                             LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
                             {
                                 new TestLearningDeliveryFAM
@@ -537,7 +537,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                         {
                             AimSeqNumber = 2,
                             FundModel = 10,
-                            LearnStartDate = new DateTime(2019, 10, 1),
+                            LearnStartDate = new DateTime(2020, 10, 1),
                             LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
                             {
                                 new TestLearningDeliveryFAM
@@ -557,14 +557,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 new TestLearner
                 {
                     LearnRefNumber = "Learner2",
-                    DateOfBirthNullable = new DateTime(2000, 9, 1),
+                    DateOfBirthNullable = new DateTime(2001, 9, 1),
                     LearningDeliveries = new TestLearningDelivery[]
                     {
                         new TestLearningDelivery
                         {
                             AimSeqNumber = 1,
                             FundModel = 10,
-                            LearnStartDate = new DateTime(2019, 8, 1),
+                            LearnStartDate = new DateTime(2020, 8, 1),
                             LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
                             {
                                 new TestLearningDeliveryFAM
@@ -584,14 +584,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 new TestLearner
                 {
                     LearnRefNumber = "Learner3",
-                    DateOfBirthNullable = new DateTime(1990, 9, 1),
+                    DateOfBirthNullable = new DateTime(1991, 9, 1),
                     LearningDeliveries = new TestLearningDelivery[]
                     {
                         new TestLearningDelivery
                         {
                             AimSeqNumber = 1,
                             FundModel = 10,
-                            LearnStartDate = new DateTime(2019, 6, 1),
+                            LearnStartDate = new DateTime(2020, 6, 1),
                             LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
                             {
                                 new TestLearningDeliveryFAM
@@ -611,14 +611,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                 new TestLearner
                 {
                     LearnRefNumber = "Learner4",
-                    DateOfBirthNullable = new DateTime(1990, 9, 1),
+                    DateOfBirthNullable = new DateTime(1991, 9, 1),
                     LearningDeliveries = new TestLearningDelivery[]
                     {
                         new TestLearningDelivery
                         {
                             AimSeqNumber = 1,
                             FundModel = 10,
-                            LearnStartDate = new DateTime(2019, 6, 1),
+                            LearnStartDate = new DateTime(2020, 6, 1),
                             LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
                             {
                                 new TestLearningDeliveryFAM
@@ -638,14 +638,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
                  new TestLearner
                 {
                     LearnRefNumber = "Learner5",
-                    DateOfBirthNullable = new DateTime(1990, 9, 1),
+                    DateOfBirthNullable = new DateTime(1991, 9, 1),
                     LearningDeliveries = new TestLearningDelivery[]
                     {
                         new TestLearningDelivery
                         {
                             AimSeqNumber = 1,
                             FundModel = 70,
-                            LearnStartDate = new DateTime(2019, 6, 1),
+                            LearnStartDate = new DateTime(2020, 6, 1),
                             LearningDeliveryFAMs = new TestLearningDeliveryFAM[]
                             {
                                 new TestLearningDeliveryFAM
