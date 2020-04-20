@@ -38,23 +38,26 @@
     <Reference Include="Castle.Core, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.EAS1920.EF, Version=0.0.91.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.EAS1920.EF.0.0.91\lib\netstandard2.0\ESFA.DC.EAS1920.EF.dll</HintPath>
+    <Reference Include="ESFA.DC.EAS2021.EF, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.EAS2021.EF.0.1.12\lib\netstandard2.0\ESFA.DC.EAS2021.EF.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.2021.Database.EF, Version=0.1.30.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.30\lib\netstandard2.0\ESFA.DC.ILR.2021.Database.EF.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Interface.0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.Database.EF, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.Database.EF.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR2021.DataStore.EF, Version=0.1.30.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.30\lib\netstandard2.0\ESFA.DC.ILR2021.DataStore.EF.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.DataStore.EF, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.DataStore.EF.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR2021.DataStore.EF.Invalid, Version=0.1.30.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.30\lib\netstandard2.0\ESFA.DC.ILR2021.DataStore.EF.Invalid.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.DataStore.EF.Invalid, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.DataStore.EF.Invalid.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR2021.DataStore.EF.StoredProc, Version=0.1.30.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.30\lib\netstandard2.0\ESFA.DC.ILR2021.DataStore.EF.StoredProc.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.DataStore.EF.Valid, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.DataStore.EF.Valid.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR2021.DataStore.EF.Valid, Version=0.1.30.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.30\lib\netstandard2.0\ESFA.DC.ILR2021.DataStore.EF.Valid.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ReferenceData.Postcodes.Model, Version=0.2.210.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ReferenceData.Postcodes.Model.0.2.210\lib\netstandard2.0\ESFA.DC.ReferenceData.Postcodes.Model.dll</HintPath>

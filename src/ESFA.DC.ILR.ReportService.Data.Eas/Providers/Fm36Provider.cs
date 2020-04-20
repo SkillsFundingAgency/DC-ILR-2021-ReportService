@@ -4,16 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Models.Fm36;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR1920.DataStore.EF.Interface;
+using ESFA.DC.ILR2021.DataStore.EF.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
 {
     public class Fm36Provider : IExternalDataProvider
     {
-        private readonly Func<IILR1920_DataStoreEntities> _ilrContext;
+        private readonly Func<IILR2021_DataStoreEntities> _ilrContext;
 
-        public Fm36Provider(Func<IILR1920_DataStoreEntities> ilrContext)
+        public Fm36Provider(Func<IILR2021_DataStoreEntities> ilrContext)
         {
             _ilrContext = ilrContext;
         }
