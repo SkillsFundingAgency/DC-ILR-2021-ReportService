@@ -4,16 +4,16 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Models.Ilr;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR1920.DataStore.EF.Valid.Interface;
+using ESFA.DC.ILR2021.DataStore.EF.Valid.Interface;
 using Microsoft.EntityFrameworkCore;
 
 namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
 {
     public class ValidIlrProvider : IExternalDataProvider
     {
-        private readonly Func<IILR1920_DataStoreEntitiesValid> _ilrContext;
+        private readonly Func<IILR2021_DataStoreEntitiesValid> _ilrContext;
 
-        public ValidIlrProvider(Func<IILR1920_DataStoreEntitiesValid> ilrContext)
+        public ValidIlrProvider(Func<IILR2021_DataStoreEntitiesValid> ilrContext)
         {
             _ilrContext = ilrContext;
         }
