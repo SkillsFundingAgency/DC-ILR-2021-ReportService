@@ -102,8 +102,8 @@
     <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.ALB.FundingOutput.Model.0.1.29\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM25.FundingOutput.Model.0.1.29\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model, Version=0.1.34.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM25.FundingOutput.Model.0.1.34\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.1.29.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM35.FundingOutput.Model.0.1.29\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>

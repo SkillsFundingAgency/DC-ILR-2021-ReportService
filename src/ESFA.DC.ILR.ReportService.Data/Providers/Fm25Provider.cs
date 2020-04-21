@@ -58,6 +58,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 PrvRetentFactHist = learner.PrvRetentFactHist,
                 RateBand = learner.RateBand,
                 StartFund = learner.StartFund,
+                TLevelStudent = learner.TLevelStudent,
                 LearnerPeriodisedValues = learner.LearnerPeriodisedValues?.Select(MapLearnerPeriodisedValues).ToList()
             };
         }

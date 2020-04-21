@@ -37,6 +37,8 @@ namespace ESFA.DC.ILR.ReportService.Models.Fm25
 
         public bool? StartFund { get; set; }
 
+        public bool? TLevelStudent { get; set; }
+
         public List<LearnerPeriodisedValues> LearnerPeriodisedValues { get; set; }
     }
 }
