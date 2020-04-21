@@ -17,6 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
             "Learner reference number",
             "Family name",
             "Given names",
+            "T Level Student",
             "Campus identifier",
             "A - Students with an EHCP",
             "B - Students without an EHCP",
@@ -42,7 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
                     },
                     FM25Learner = new FM25Learner()
                     {
-                        FundLine = "FundLine"
+                        FundLine = "FundLine",
+                        TLevelStudent = true
                     },
                     DerivedFundline = "FundLine",
                     StudentsWithAnEhcp = true,
@@ -59,13 +61,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
             output[1].Should().Be("LearnRefNumber");
             output[2].Should().Be("FamilyName");
             output[3].Should().Be("GivenNames");
-            output[4].Should().Be("CampId");
-            output[5].Should().Be("Y");
+            output[4].Should().Be("Y");
+            output[5].Should().Be("CampId");
             output[6].Should().Be("Y");
             output[7].Should().Be("Y");
             output[8].Should().Be("Y");
             output[9].Should().Be("Y");
-            output[10].Should().Be(string.Empty);
+            output[10].Should().Be("Y");
+            output[11].Should().Be(string.Empty);
         }
     }
 }
