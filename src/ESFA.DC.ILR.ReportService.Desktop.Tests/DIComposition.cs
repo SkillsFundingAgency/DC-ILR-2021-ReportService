@@ -63,7 +63,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             //Reports
             builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
-            builder.RegisterType<ValidationErrorsDetailReportV2>().As<IReport>();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
 
             builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
