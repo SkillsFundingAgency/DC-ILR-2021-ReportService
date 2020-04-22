@@ -89,7 +89,6 @@ namespace ESFA.DC.ILR.ReportService.Modules
         private void RegisterValidationReports(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
-            containerBuilder.RegisterType<ValidationErrorsDetailReportV2>().As<IReport>();
             containerBuilder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
             containerBuilder.RegisterType<RuleViolationSummaryReport>().As<IReport>();
             containerBuilder.RegisterType<RuleViolationSummaryReportModelBuilder>().As<IModelBuilder<RuleViolationSummaryReportModel>>();
