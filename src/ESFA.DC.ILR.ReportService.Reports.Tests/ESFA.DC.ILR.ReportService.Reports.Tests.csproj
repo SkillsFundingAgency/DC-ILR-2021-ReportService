@@ -45,13 +45,19 @@
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=12.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.12.1.2\lib\net45\CsvHelper.dll</HintPath>
+      <HintPath>..\packages\CsvHelper.12.1.3\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.CsvService, Version=0.1.36.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.CsvService.0.1.36-beta0001\lib\netstandard2.0\ESFA.DC.CsvService.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.DateTimeProvider.Interface, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.DateTimeProvider.Interface.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.FileService.Interface, Version=0.1.18.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.FileService.Interface.0.1.18-beta0001\lib\netstandard2.0\ESFA.DC.FileService.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.ExcelService, Version=0.1.36.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ExcelService.0.1.36-beta0001\lib\netstandard2.0\ESFA.DC.ExcelService.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.FileService.Interface, Version=0.1.35.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.FileService.Interface.0.1.35-beta0001\lib\netstandard2.0\ESFA.DC.FileService.Interface.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.Desktop.Interface, Version=0.1.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.2021.Desktop.Interface.0.1.0.1\lib\netstandard2.0\ESFA.DC.ILR.Desktop.Interface.dll</HintPath>
@@ -182,11 +188,8 @@
     <Compile Include="ReportsDependentDataPopulationServiceTests.cs" />
     <Compile Include="Service\AcademicYearServiceTests.cs" />
     <Compile Include="Service\Converters\IlrBooleanConverterTests.cs" />
-    <Compile Include="Service\CsvServiceTests.cs" />
-    <Compile Include="Service\ExcelServiceTests.cs" />
     <Compile Include="Service\FileNameServiceTests.cs" />
     <Compile Include="Service\ZipServiceTests.cs" />
-    <Compile Include="Stubs\FileServiceStub.cs" />
     <Compile Include="ValidationErrorDetailReportTestsV2.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />

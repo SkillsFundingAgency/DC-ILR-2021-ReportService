@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.Model.Loose.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
@@ -16,13 +17,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Detail
     public sealed class ValidationErrorsDetailReportV2 : AbstractReport, IReport
     {
         private readonly IValidationErrorsReportBuilder _validationErrorsReportBuilder;
-        private readonly ICsvService _csvService;
+        private readonly ICsvFileService _csvService;
         private readonly IFrontEndValidationReport _frontEndValidationReport;
         private readonly IFileNameService _fileNameService;
 
         public ValidationErrorsDetailReportV2(
             IValidationErrorsReportBuilder validationErrorsReportBuilder,
-            ICsvService csvService,
+            ICsvFileService csvService,
             IFrontEndValidationReport frontEndValidationReport,
             IFileNameService fileNameService)
             : base(ReportTaskNameConstants.ValidationReportV2, "Rule Violation Report V2")

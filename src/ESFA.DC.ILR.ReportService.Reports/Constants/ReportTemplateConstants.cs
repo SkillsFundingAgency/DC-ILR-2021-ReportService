@@ -11,6 +11,8 @@
         public const string FundingClaimTemplateName = "FundingClaim1619ReportTemplate.xlsx";
         public const string FundingClaimDataSource = "FundingClaim";
 
+        public const string FundingSummaryDataSource = "FundingSummaryReport";
+
         public const string HNSSummaryTemplateName = "HNSSummaryReportTemplate.xlsx";
         public const string HNSSummaryDataSource = "HNSSummary";
 

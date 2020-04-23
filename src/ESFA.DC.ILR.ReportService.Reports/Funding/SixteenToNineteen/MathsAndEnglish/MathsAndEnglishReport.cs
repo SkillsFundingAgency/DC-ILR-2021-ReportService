@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish
 {
@@ -10,7 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEn
         public MathsAndEnglishReport(
             IFileNameService fileNameService,
             IModelBuilder<IEnumerable<MathsAndEnglishReportModel>> modelBuilder,
-            ICsvService csvService) 
+            ICsvFileService csvService) 
             : base(
                 fileNameService,
                 modelBuilder,

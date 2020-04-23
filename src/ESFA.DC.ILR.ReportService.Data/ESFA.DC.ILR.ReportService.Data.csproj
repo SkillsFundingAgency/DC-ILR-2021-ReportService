@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
+    <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.35-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.2021.Constants" Version="0.1.0-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.2021.FundingService.ALB.FundingOutput.Model" Version="0.1.29" />
     <PackageReference Include="ESFA.DC.ILR.2021.FundingService.FM25.FundingOutput.Model" Version="0.1.34" />
