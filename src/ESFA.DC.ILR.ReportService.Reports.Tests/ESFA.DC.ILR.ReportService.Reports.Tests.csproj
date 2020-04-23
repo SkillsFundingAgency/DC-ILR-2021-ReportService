@@ -190,7 +190,6 @@
     <Compile Include="Service\Converters\IlrBooleanConverterTests.cs" />
     <Compile Include="Service\FileNameServiceTests.cs" />
     <Compile Include="Service\ZipServiceTests.cs" />
-    <Compile Include="ValidationErrorDetailReportTestsV2.cs" />
     <Compile Include="ValidationErrorDetailReportTests.cs" />
     <Compile Include="ValidationSchemaErrorsReportTests.cs" />
     <Compile Include="Validation\RuleViolationSummaryModelBuilderTests.cs" />

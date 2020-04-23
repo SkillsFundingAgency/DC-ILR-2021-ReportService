@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using ESFA.DC.CsvService.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -16,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEn
                 modelBuilder,
                 csvService,
                 ReportTaskNameConstants.MathsAndEnglishReport,
-                "Maths and English Report")
+                ReportNameConstants.MathsAndEnglish)
         {
         }
     }
