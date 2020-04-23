@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
@@ -11,11 +12,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
     public class FrmReport : AbstractReport, IReport
     {
-        private readonly IExcelService _excelService;
+        private readonly IExcelFileService _excelService;
         private readonly IFileNameService _fileNameService;
         private readonly IList<IWorksheetReport> _frmReports;
 
-        public FrmReport(IList<IWorksheetReport> frmReports, IFileNameService fileNameService, IExcelService excelService) 
+        public FrmReport(IList<IWorksheetReport> frmReports, IFileNameService fileNameService, IExcelFileService excelService) 
             : base("TaskGenerateFundingRulesMonitoringReport", "Funding Rules Monitoring Report")
         {
             _frmReports = frmReports;

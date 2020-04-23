@@ -1,8 +1,9 @@
-﻿using ESFA.DC.ILR.ReportService.Reports.Abstract;
-using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using ESFA.DC.CsvService.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave
 {
@@ -11,8 +12,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
         public AppsIndicativeEarningsReport(
             IFileNameService fileNameService,
             IModelBuilder<IEnumerable<AppsIndicativeEarningsReportModel>> appsIndicativeEarningsModelBuilder,
-            ICsvService csvService)
-            : base(fileNameService, appsIndicativeEarningsModelBuilder, csvService, ReportTaskNameConstants.AppsIndicativeEarningsReport, "Apps Indicative Earnings Report")
+            ICsvFileService csvService)
+            : base(fileNameService, appsIndicativeEarningsModelBuilder, csvService, ReportTaskNameConstants.AppsIndicativeEarningsReport, ReportNameConstants.AppsIndicativeEarnings)
         {
         }
 

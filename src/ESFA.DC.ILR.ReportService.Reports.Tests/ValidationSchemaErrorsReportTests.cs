@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
@@ -54,7 +55,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
 
             validationErrorBuilder.Setup(b => b.Build(validationErrors)).Returns(validationErrorRows);
 
-            var csvServiceMock = new Mock<ICsvService>();
+            var csvServiceMock = new Mock<ICsvFileService>();
             
             var frontEndValidationReportMock = new Mock<IFrontEndValidationReport>();
             
@@ -65,7 +66,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
             result.Should().HaveCount(1);
             result.First().Should().Be(fileName);
             
-            csvServiceMock.Verify(s => s.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrorRows, fileName, container, cancellationToken));
+            csvServiceMock.Verify(s => s.WriteAsync<ValidationErrorRow, ValidationErrorMapper>(validationErrorRows, fileName, container, cancellationToken, null, null));
 
             frontEndValidationReportMock.Verify(r => r.GenerateAsync(reportServiceContext.Object, validationErrorRows, true, cancellationToken));
 
@@ -85,7 +86,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests
 
         private ValidationSchemaErrorsReport NewReport(
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder = null,
-            ICsvService csvService = null,
+            ICsvFileService csvService = null,
             IFileNameService fileNameService = null,
             IFrontEndValidationReport frontEndValidationReport = null)
         {

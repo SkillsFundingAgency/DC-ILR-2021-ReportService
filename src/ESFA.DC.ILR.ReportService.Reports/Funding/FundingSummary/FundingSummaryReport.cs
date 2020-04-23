@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
@@ -13,15 +15,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
     {
         private readonly IFileNameService _fileNameService;
         private readonly IModelBuilder<IFundingSummaryReport> _fundingSummaryReportModelBuilder;
-        private readonly IExcelService _excelService;
+        private readonly IExcelFileService _excelService;
         private readonly IRenderService<IFundingSummaryReport> _fundingSummaryReportRenderService;
 
         public FundingSummaryReport(
             IFileNameService fileNameService,
             IModelBuilder<IFundingSummaryReport> fundingSummaryReportModelBuilder,
-            IExcelService excelService,
+            IExcelFileService excelService,
             IRenderService<IFundingSummaryReport> fundingSummaryReportRenderService)
-            : base(ReportTaskNameConstants.FundingSummaryReport, "Funding Summary Report")
+            : base(ReportTaskNameConstants.FundingSummaryReport, ReportNameConstants.FundingSummary)
         {
             _fileNameService = fileNameService;
             _fundingSummaryReportModelBuilder = fundingSummaryReportModelBuilder;
@@ -55,7 +57,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             {
                 workbook.Worksheets.Clear();
 
-                var worksheet = _excelService.GetWorksheetFromWorkbook(workbook, "FundingSummaryReport");
+                var worksheet = _excelService.GetWorksheetFromWorkbook(workbook, ReportTemplateConstants.FundingSummaryDataSource);
 
                 _fundingSummaryReportRenderService.Render(fundingSummaryReportModel, worksheet);
 

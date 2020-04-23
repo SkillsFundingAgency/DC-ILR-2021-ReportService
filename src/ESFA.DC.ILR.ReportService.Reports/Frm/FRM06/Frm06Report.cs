@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 {
     public class Frm06Report : AbstractFundingRulesMonitoringReport<Frm06ReportModel>, IWorksheetReport
     {
         public Frm06Report(
-            IExcelService excelService,
+            IExcelFileService excelService,
             IModelBuilder<IEnumerable<Frm06ReportModel>> fundingMonitoring06ModelBuilder,
             IRenderService<IEnumerable<Frm06ReportModel>> fundingReportMonitoringRenderService) 
             : base(excelService,

@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using CsvHelper.Configuration;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
@@ -12,12 +13,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
     {
         private readonly IFileNameService _fileNameService;
         private readonly IModelBuilder<IEnumerable<TModel>> _modelBuilder;
-        private readonly ICsvService _csvService;
+        private readonly ICsvFileService _csvService;
 
         protected AbstractCsvReport(
             IFileNameService fileNameService,
             IModelBuilder<IEnumerable<TModel>> modelBuilder,
-            ICsvService csvService,
+            ICsvFileService csvService,
             string taskName,
             string fileName) 
             : base(taskName, fileName)
