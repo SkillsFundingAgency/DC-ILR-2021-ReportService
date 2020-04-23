@@ -1,6 +1,10 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using ESFA.DC.CsvService;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ExcelService;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Desktop.Interface;
@@ -67,8 +71,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
 
-            builder.RegisterType<CsvService>().As<ICsvService>();
-            builder.RegisterType<ExcelService>().As<IExcelService>();
+            builder.RegisterType<CsvFileService>().As<ICsvFileService>();
+            builder.RegisterType<ExcelFileService>().As<IExcelFileService>();
             builder.RegisterType<CreateZipService>().As<IZipService>();
 
             return builder;

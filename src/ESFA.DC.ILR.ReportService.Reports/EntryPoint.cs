@@ -5,21 +5,25 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
+using System.Reflection;
 
 namespace ESFA.DC.ILR.ReportService.Reports
 {
     public class EntryPoint : IEntryPoint
     {
+        private const string LicenseResource = "ESFA.DC.ILR.ReportService.Reports.Resources.Aspose.Cells.lic";
+
         private readonly ILogger _logger;
-        private readonly IExcelService _excelService;
+        private readonly IExcelFileService _excelService;
         private readonly IReportsDependentDataPopulationService _reportsDependentDataPopulationService;
         private readonly IZipService _zipService;
         private readonly IList<IReport> _reports;
 
         public EntryPoint(
             ILogger logger,
-            IExcelService excelService,
+            IExcelFileService excelService,
             IReportsDependentDataPopulationService reportsDependentDataPopulationService,
             IZipService zipService,
             IList<IReport> reports)
@@ -43,7 +47,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
 
             try
             {
-                _excelService.ApplyLicense();
+                _excelService.ApplyLicense(Assembly.GetExecutingAssembly().GetManifestResourceStream(LicenseResource));
 
                 if (cancellationToken.IsCancellationRequested)
                 {

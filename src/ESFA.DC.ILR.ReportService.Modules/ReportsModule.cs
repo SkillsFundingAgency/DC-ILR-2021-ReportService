@@ -1,5 +1,9 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using ESFA.DC.CsvService;
+using ESFA.DC.CsvService.Interface;
+using ESFA.DC.ExcelService;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Frm;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM06;
@@ -37,10 +41,10 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
+
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -80,8 +84,8 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<AcademicYearService>().As<IAcademicYearService>();
             containerBuilder.RegisterType<IlrModelMapper>().As<IIlrModelMapper>();
 
-            containerBuilder.RegisterType<CsvService>().As<ICsvService>();
-            containerBuilder.RegisterType<ExcelService>().As<IExcelService>();
+            containerBuilder.RegisterType<CsvFileService>().As<ICsvFileService>();
+            containerBuilder.RegisterType<ExcelFileService>().As<IExcelFileService>();
 
             containerBuilder.RegisterType<ReportsDependentDataPopulationService>().As<IReportsDependentDataPopulationService>();
         }

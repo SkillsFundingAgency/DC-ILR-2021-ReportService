@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive
 {
@@ -17,8 +18,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
         public TrailblazerEmployerIncentivesReport(
             IFileNameService fileNameService, 
             IModelBuilder<IEnumerable<TrailblazerEmployerIncentivesReportModel>> modelBuilder, 
-            ICsvService csvService) 
-            : base(fileNameService, modelBuilder, csvService, ReportTaskNameConstants.TrailblazerEmployerIncentivesReport, "Trailblazer Apprenticeships Employer Incentives Report")
+            ICsvFileService csvService) 
+            : base(fileNameService, modelBuilder, csvService, ReportTaskNameConstants.TrailblazerEmployerIncentivesReport, ReportNameConstants.TrailblazerEmployerIncentives)
         {
         }
     }

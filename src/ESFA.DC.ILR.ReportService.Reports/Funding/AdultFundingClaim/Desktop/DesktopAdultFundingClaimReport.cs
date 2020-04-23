@@ -1,6 +1,5 @@
-﻿using Aspose.Cells;
+﻿using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim.Desktop
 {
@@ -9,12 +8,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim.Desktop
         public DesktopAdultFundingClaimReport(
             IFileNameService fileNameService, 
             IModelBuilder<AdultFundingClaimReportModel> modelBuilder,
-            IExcelService excelService) 
-            : base(fileNameService, modelBuilder, excelService)
-        {
-        }
-
-        public override void RenderIndicativeMessage(Workbook workbook)
+            IExcelFileService excelService) 
+            : base(fileNameService, modelBuilder, excelService, true)
         {
         }
     }

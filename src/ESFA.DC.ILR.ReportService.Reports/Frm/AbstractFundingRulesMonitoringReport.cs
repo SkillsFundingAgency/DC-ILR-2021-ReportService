@@ -2,20 +2,20 @@
 using System.Linq;
 using System.Threading;
 using Aspose.Cells;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
     public abstract class AbstractFundingRulesMonitoringReport<TModel> : AbstractReport
     {
-        private readonly IExcelService _excelService;
+        private readonly IExcelFileService _excelService;
         private readonly IModelBuilder<IEnumerable<TModel>> _fundingRuleMonitoringReportModelBuilder;
         private readonly IRenderService<IEnumerable<TModel>> _fundingRuleMonitoringRenderService;
 
         protected AbstractFundingRulesMonitoringReport(
-            IExcelService excelService,
+            IExcelFileService excelService,
             IModelBuilder<IEnumerable<TModel>> fundingRulesMonitoringModelBuilder,
             IRenderService<IEnumerable<TModel>> fundingRulesMonitoringRenderService,
             string taskName,

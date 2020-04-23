@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
@@ -34,11 +35,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
 
             modelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData)).Returns(model);
 
-            var csvServiceMock = new Mock<ICsvService>();
+            var csvServiceMock = new Mock<ICsvFileService>();
 
             var result = await NewReport(fileNameServiceMock.Object, modelBuilderMock.Object, csvServiceMock.Object).GenerateAsync(reportServiceContextMock.Object, reportServiceDependentData, cancellationToken);
 
-            csvServiceMock.Verify(s => s.WriteAsync<NonContractDevolvedAdultEducationOccupancyReportModel, NonContractDevolvedAdultEducationOccupancyReportClassMap>(model, fileName, container, cancellationToken));
+            csvServiceMock.Verify(s => s.WriteAsync<NonContractDevolvedAdultEducationOccupancyReportModel, NonContractDevolvedAdultEducationOccupancyReportClassMap>(model, fileName, container, cancellationToken, null, null));
 
             result.First().Should().Be(fileName);
             result.Should().HaveCount(1);
@@ -47,7 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
         private NonContractDevolvedAdultEducationOccupancyReport NewReport(
             IFileNameService fileNameService = null,
             IModelBuilder<IEnumerable<NonContractDevolvedAdultEducationOccupancyReportModel>> devolvedAdultEducationOccupancyReportModelBuilder = null,
-            ICsvService csvService = null)
+            ICsvFileService csvService = null)
         {
             return new NonContractDevolvedAdultEducationOccupancyReport(fileNameService, devolvedAdultEducationOccupancyReportModelBuilder, csvService);
         }

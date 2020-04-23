@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -35,11 +36,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
 
             modelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData)).Returns(model);
 
-            var csvServiceMock = new Mock<ICsvService>();
+            var csvServiceMock = new Mock<ICsvFileService>();
 
             var result = await NewReport(fileNameServiceMock.Object, modelBuilderMock.Object, csvServiceMock.Object).GenerateAsync(reportServiceContextMock.Object, reportServiceDependentData, cancellationToken);
 
-            csvServiceMock.Verify(s => s.WriteAsync<SummaryOfFM35FundingReportModel, SummaryOfFM35FundingReportClassMap>(model, fileName, container, cancellationToken));
+            csvServiceMock.Verify(s => s.WriteAsync<SummaryOfFM35FundingReportModel, SummaryOfFM35FundingReportClassMap>(model, fileName, container, cancellationToken, null, null));
 
             result.First().Should().Be(fileName);
             result.Should().HaveCount(1);
@@ -48,7 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFM35Funding
         private SummaryOfFM35FundingReport NewReport(
             IFileNameService fileNameService = null,
             IModelBuilder<IEnumerable<SummaryOfFM35FundingReportModel>> modelBuilder = null,
-            ICsvService csvService = null)
+            ICsvFileService csvService = null)
         {
             return new SummaryOfFM35FundingReport(fileNameService, modelBuilder, csvService);
         }

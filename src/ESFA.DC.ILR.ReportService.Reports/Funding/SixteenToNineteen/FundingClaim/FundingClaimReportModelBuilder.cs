@@ -1,13 +1,13 @@
-﻿using ESFA.DC.DateTimeProvider.Interface;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             var fm25Data = reportServiceDependentData.Get<FM25Global>();
             var referenceDataRoot = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var referenceDateFilter = RetrieveReportFilterValueFromContext<DateTime?>(reportServiceContext, FundingClaimReport.ReportNameConstant, FundingClaimReport.ReferenceDateFilterPropertyName);
+            var referenceDateFilter = RetrieveReportFilterValueFromContext<DateTime?>(reportServiceContext, ReportNameConstants.SixteenNineteenFundingClaim, ReportingConstants.ReferenceDateFilterPropertyName);
 
             var organisation = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn);
             var organisationName = organisation?.Name ?? string.Empty;

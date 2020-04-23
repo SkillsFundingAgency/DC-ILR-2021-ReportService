@@ -18,5 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
 
         public static readonly DateTime BeginningOfYear = new DateTime(2020, 8, 1);
         public static readonly DateTime EndOfYear = new DateTime(2021, 7, 31, 23, 59, 59);
+
+        public const string ReferenceDateFilterPropertyName = @"Reference Date";
     }
 }
