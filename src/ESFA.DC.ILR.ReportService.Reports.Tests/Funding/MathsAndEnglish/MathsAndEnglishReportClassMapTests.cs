@@ -17,6 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
             "Learner reference number",
             "Family name",
             "Given names",
+            "T Level Student",
             "Date of birth",
             "Campus identifier",
             "Maths GCSE status",
