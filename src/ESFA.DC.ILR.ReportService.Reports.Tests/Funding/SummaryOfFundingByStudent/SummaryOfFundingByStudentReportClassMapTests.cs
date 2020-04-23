@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
             output[2].Should().Be("FamilyName");
             output[3].Should().Be("GivenNames");
             output[4].Should().Be("Y");
-            output[5].Should().Be("01/01/2002 00:00:00");
+            output[5].Should().Be("01/01/2002");
             output[6].Should().Be("123");
             output[7].Should().Be("1");
             output[8].Should().Be("2");
