@@ -126,8 +126,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Validation.Summary
             model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             model.FilePreparationDate = FormatFilePreparationDate(looseMessage?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
             model.CampusIdData = referenceDataRoot.MetaDatas.ReferenceDataVersions.CampusIdentifierVersion.Version;
-            //Todo: 
-            //model.DevolvedPostcodesData
+            model.DevolvedPostcodesData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
             return model;
         }
 
