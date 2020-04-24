@@ -52,6 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             result.LarsData.Should().Be("3.3.3.3");
             result.PostcodeData.Should().Be("4.4.4.4");
             result.CampusIdData.Should().Be("5.5.5.5");
+            result.DevolvedPostcodesData.Should().Be("7.7.7.7");
             result.FilePreparationDate.Should().Be("06/11/2019");
             result.IlrFile.Should().Be("ILR File: ILR-12345678-1920-20191005-151322-01.xml");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
@@ -153,6 +154,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
             result.LarsData.Should().Be("3.3.3.3");
             result.PostcodeData.Should().Be("4.4.4.4");
             result.CampusIdData.Should().Be("5.5.5.5");
+            result.DevolvedPostcodesData.Should().Be("7.7.7.7");
             result.FilePreparationDate.Should().Be("06/11/2019");
             result.IlrFile.Should().Be("ILR File: ILR-12345678-1920-20191005-151322-01.xml");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
@@ -269,7 +271,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Validation
                         LarsVersion = new LarsVersion { Version = "3.3.3.3" },
                         PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
                         CampusIdentifierVersion = new CampusIdentifierVersion { Version = "5.5.5.5" },
-                        CoFVersion = new CoFVersion { Version = "6.6.6.6" }
+                        CoFVersion = new CoFVersion { Version = "6.6.6.6" },
+                        DevolvedPostcodesVersion = new DevolvedPostcodesVersion { Version = "7.7.7.7"}
                     },
                     ValidationErrors = new List<ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData.ValidationError>()
                     {
