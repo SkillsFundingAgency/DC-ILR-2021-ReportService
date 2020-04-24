@@ -14,6 +14,8 @@
 
         public PostcodesVersion PostcodesVersion { get; set; }
 
+        public DevolvedPostcodesVersion DevolvedPostcodesVersion { get; set; }
+
         public EasUploadDateTime EasUploadDateTime { get; set; }
     }
 }
