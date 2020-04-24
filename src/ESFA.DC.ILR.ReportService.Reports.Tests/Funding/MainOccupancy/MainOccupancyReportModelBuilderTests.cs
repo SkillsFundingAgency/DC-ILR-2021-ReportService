@@ -106,7 +106,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
 
             NewBuilder().FundModelLearningDeliveryFilter(learningDeliveryMock.Object, fundModel).Should().BeTrue();
         }
-        
+
         private MainOccupancyReportModelBuilder NewBuilder(IIlrModelMapper ilrModelMapper = null)
         {
             return new MainOccupancyReportModelBuilder(ilrModelMapper);
