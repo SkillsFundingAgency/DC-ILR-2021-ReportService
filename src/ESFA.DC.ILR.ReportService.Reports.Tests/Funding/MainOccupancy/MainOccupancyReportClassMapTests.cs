@@ -22,6 +22,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
             {
                 "Learner reference number",
                 "Unique learner number",
+                "Family name",
+                "Given names",
                 "Date of birth",
                 "Postcode prior to enrolment",
                 "Pre-merger UKPRN",
@@ -185,7 +187,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(137);
+                        header.Should().HaveCount(139);
                     }
                 }
             }

@@ -117,15 +117,35 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             if (learningDelivery != null)
             {
                 return learningDelivery.FundModel == fundModel
-                       && learningDelivery
-                           .LearningDeliveryFAMs?
-                           .Any(
-                               f =>
-                                   f.LearnDelFAMType == LearningDeliveryFAMTypeConstants.SOF
-                                   && f.LearnDelFAMCode == LearningDeliveryFAMCodeConstants.SOF_ESFA) == true;
+                       && Sof105LearningDeliveryFilter(learningDelivery)
+                       && !LdmLearningDeliveryFilter(learningDelivery);
             }
 
             return false;
+        }
+
+        private bool Sof105LearningDeliveryFilter(ILearningDelivery learningDelivery)
+        {
+            return learningDelivery
+                .LearningDeliveryFAMs?
+                .Any(
+                    f =>
+                    f.LearnDelFAMType == LearningDeliveryFAMTypeConstants.SOF
+                    && f.LearnDelFAMCode == LearningDeliveryFAMCodeConstants.SOF_ESFA) == true;
+        }
+
+        // Story 99613 - LDM codes still TBC for filter. Followed up on another story.
+        // Return default to allow data through. 
+        // Unit Test updates required when filter is known.
+        private bool LdmLearningDeliveryFilter(ILearningDelivery learningDelivery)
+        {
+            return false;
+            //return learningDelivery
+            //    .LearningDeliveryFAMs?
+            //    .Any(
+            //        f =>
+            //        f.LearnDelFAMType == LearningDeliveryFAMTypeConstants.LDM
+            //        && f.LearnDelFAMCode == "") == true;
         }
     }
 }
