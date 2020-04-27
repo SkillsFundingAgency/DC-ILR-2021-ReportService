@@ -24,7 +24,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority,
             LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority,
             LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority,
-            LearningDeliveryFAMCodeConstants.SOF_117,
+            LearningDeliveryFAMCodeConstants.SOF_NorthOfTyneCombinedAuhority,
         };
 
         private readonly IAcademicYearService _academicYearService;
