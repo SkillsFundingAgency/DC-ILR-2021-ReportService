@@ -10,6 +10,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB
 
             Map(m => m.Learner.LearnRefNumber).Name(@"Learner reference number").Index(++index);
             Map(m => m.Learner.ULN).Name(@"Unique learner number").Index(++index);
+            Map(m => m.Learner.FamilyName).Name(@"Family name").Index(++index);
+            Map(m => m.Learner.GivenNames).Name(@"Given names").Index(++index);
             Map(m => m.Learner.DateOfBirthNullable).Name(@"Date of birth").Index(++index);
             Map(m => m.Learner.PMUKPRNNullable).Name(@"Pre-merger UKPRN").Index(++index);
             Map(m => m.Learner.CampId).Name(@"Campus identifier").Index(++index);
