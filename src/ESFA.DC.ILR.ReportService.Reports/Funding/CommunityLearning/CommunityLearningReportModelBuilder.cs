@@ -190,7 +190,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
 
             return new Dictionary<string, string>()
             {
-                {SummaryPageConstants.ApplicationVersion, reportServiceContext.ServiceReleaseVersion},
                 {SummaryPageConstants.FilePreparationDate, filePreparationDate},
                 {SummaryPageConstants.LARSVersion, larsVersion},
                 {SummaryPageConstants.PostcodeVersion, postcodesVersion},

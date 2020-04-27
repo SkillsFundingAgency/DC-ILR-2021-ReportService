@@ -63,8 +63,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
 
             var reportServiceContextMock = new Mock<IReportServiceContext>();
 
-            reportServiceContextMock.Setup(r => r.ServiceReleaseVersion).Returns("ReleaseVersion");
-
             IMessage message = new TestMessage
             {
                 HeaderEntity = new TestHeader
@@ -92,8 +90,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
 
             var expectedDictionary = new Dictionary<string, string>
             {
-
-                { SummaryPageConstants.ApplicationVersion, "ReleaseVersion" },
                 { SummaryPageConstants.FilePreparationDate, "01/08/2019" },
                 { SummaryPageConstants.LARSVersion, "1" },
                 { SummaryPageConstants.PostcodeVersion, "1" },
