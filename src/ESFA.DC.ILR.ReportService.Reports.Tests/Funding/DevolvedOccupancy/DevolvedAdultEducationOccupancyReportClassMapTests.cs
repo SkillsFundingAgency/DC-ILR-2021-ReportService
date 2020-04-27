@@ -22,6 +22,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             {
                 "Learner reference number",
                 "Unique learner number",
+                "Family name",
+                "Given names",
                 "Date of birth",
                 "Postcode prior to enrolment",
                 "Pre-merger UKPRN",
@@ -65,6 +67,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Learning delivery funding and monitoring type - devolved area monitoring (B)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (C)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (D)",
+                "Learning delivery funding and monitoring type - devolved area monitoring (E)",
+                "Learning delivery funding and monitoring type - devolved area monitoring (F)",
                 "Learning delivery funding and monitoring type - restart indicator",
                 "Provider specified delivery monitoring (A)",
                 "Provider specified delivery monitoring (B)",
@@ -176,7 +180,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(128);
+                        header.Should().HaveCount(132);
                     }
                 }
             }
