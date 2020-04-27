@@ -20,5 +20,6 @@
         public const string MathsAndEnglish = "Maths and English Report";
         public const string HighNeedsStudentDetail = "High Needs Students Detail Report";
         public const string SummaryOfFundingByStudent = "16-19 Summary of Funding by Student Report";
+        public const string DevolvedAdultEducationFundingSummary = "Devolved Adult Education Funding Summary Report";
     }
 }

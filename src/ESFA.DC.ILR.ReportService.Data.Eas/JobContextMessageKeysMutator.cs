@@ -23,7 +23,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas
         public async Task<IDictionary<string, object>> MutateAsync(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken)
         {
             await AddIlrReportingFilename(keyValuePairs, cancellationToken);
-            
+            await AddEasReportingFilename(keyValuePairs, cancellationToken);
+
             return keyValuePairs;
         }
 
@@ -40,8 +41,17 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas
 
                 var ilrReportingFilename = Path.GetFileName(fileDetails?.Filename);
 
-                keyValuePairs.Add("IlrReportingFilename", ilrReportingFilename);
+                keyValuePairs.Add(ReportServiceConstants.IlrReportingFilename, ilrReportingFilename);
             }
+        }
+
+        private async Task AddEasReportingFilename(IDictionary<string, object> keyValuePairs, CancellationToken cancellationToken)
+        {
+            var easReportingFilename = keyValuePairs.ContainsKey(ILRContextKeys.OriginalFilename)
+                ? keyValuePairs[ILRContextKeys.OriginalFilename].ToString()
+                : keyValuePairs[ILRContextKeys.Filename].ToString();
+
+            keyValuePairs.Add(ReportServiceConstants.EasReportingFilename, easReportingFilename);
         }
     }
 }

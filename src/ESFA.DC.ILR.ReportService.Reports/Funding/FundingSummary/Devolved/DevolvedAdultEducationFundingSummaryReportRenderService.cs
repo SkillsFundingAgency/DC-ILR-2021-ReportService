@@ -10,7 +10,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     {
         private const string ProviderName = "Provider Name:";
         private const string UKPRN = "UKPRN:";
-        private const string ILRFile = "ILR File:";
         private const string LastILRFileUpdate = "Last ILR File Update:";
         private const string LastEASUpdate = "Last EAS Update:";
         private const string SourceOfFunding = "Source of Funding:";
@@ -24,8 +23,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
         private const string LargeEmployersVersion = "Large Employers Data";
         private const string ReportGeneratedAt = "Report Generated at";
 
-        private const int StartYear = 2019;
-        private const int EndYear = 2020;
+        private const string StartYear = ReportingConstants.ShortYearStart;
+        private const string EndYear = ReportingConstants.ShortYearEnd;
 
         private const string NotApplicable = "N/A";
         private const string DecimalFormat = "#,##0.00";
@@ -92,9 +91,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             {
                 { ProviderName, fundingSummaryReport.ProviderName },
                 { UKPRN, fundingSummaryReport.Ukprn.ToString() },
-                { ILRFile, fundingSummaryReport.IlrFile },
                 { LastILRFileUpdate, fundingSummaryReport.LastSubmittedIlrFileName },
-                { LastEASUpdate, fundingSummaryReport.EasLastUpdated },
+                { LastEASUpdate, fundingSummaryReport.LatestEasFileName },
                 { SourceOfFunding, fundingSummaryReport.SofLookup.McaGlaFullName },
                 { SecurityClassification, ReportingConstants.OfficialSensitive }
             },row,0 );
