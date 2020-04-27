@@ -13,6 +13,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string IlrReportingFilename { get; }
 
+        string EasReportingFilename { get; }
+
         string Container { get; }
 
         DateTime SubmissionDateTimeUtc { get; }
