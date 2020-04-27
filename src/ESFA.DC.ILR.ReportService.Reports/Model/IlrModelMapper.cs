@@ -35,7 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
             var famDictionary = learningDeliveryFams.GroupBy(fam => fam.LearnDelFAMType).ToDictionary(g => g.Key, g => g.ToArray(), StringComparer.OrdinalIgnoreCase);
 
             var ldmsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.LDM).ToFixedLengthArray(6);
-            var damsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.DAM).ToFixedLengthArray(4);
+            var damsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.DAM).ToFixedLengthArray(6);
 
             var lsf = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.LSF);
             var alb = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.ALB);
@@ -61,6 +61,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
                 DAM2 = damsArray[1]?.LearnDelFAMCode,
                 DAM3 = damsArray[2]?.LearnDelFAMCode,
                 DAM4 = damsArray[3]?.LearnDelFAMCode,
+                DAM5 = damsArray[4]?.LearnDelFAMCode,
+                DAM6 = damsArray[5]?.LearnDelFAMCode,
                 RES = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.RES, famDictionary),
                 EEF = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EEF, famDictionary),
             };

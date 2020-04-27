@@ -10,6 +10,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
 
             Map(m => m.Learner.LearnRefNumber).Name(@"Learner reference number").Index(++index);
             Map(m => m.Learner.ULN).Name(@"Unique learner number").Index(++index);
+            Map(m => m.Learner.FamilyName).Name(@"Family name").Index(++index);
+            Map(m => m.Learner.GivenNames).Name(@"Given names").Index(++index);
             Map(m => m.Learner.DateOfBirthNullable).Name(@"Date of birth").Index(++index);
             Map(m => m.Learner.PostcodePrior).Name(@"Postcode prior to enrolment").Index(++index);
             Map(m => m.Learner.PMUKPRNNullable).Name(@"Pre-merger UKPRN").Index(++index);
@@ -53,6 +55,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
             Map(m => m.LearningDeliveryFAMs.DAM2).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (B)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.DAM3).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (C)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.DAM4).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (D)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.DAM5).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (E)").Index(++index);
+            Map(m => m.LearningDeliveryFAMs.DAM6).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (F)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.RES).Name(@"Learning delivery funding and monitoring type - restart indicator").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.A).Name(@"Provider specified delivery monitoring (A)").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.B).Name(@"Provider specified delivery monitoring (B)").Index(++index);

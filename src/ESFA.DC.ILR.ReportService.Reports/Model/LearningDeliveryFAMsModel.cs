@@ -42,6 +42,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
 
         public string DAM4 { get; set; }
 
+        public string DAM5 { get; set; }
+
+        public string DAM6 { get; set; }
+
         public string RES { get; set; }
 
         public string EEF { get; set; }
