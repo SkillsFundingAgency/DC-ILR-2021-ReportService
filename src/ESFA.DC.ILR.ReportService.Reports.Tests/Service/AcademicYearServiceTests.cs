@@ -10,13 +10,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Service
         [Fact]
         public void YearStart()
         {
-            NewService().YearStart.Should().Be(new DateTime(2019, 8, 1));
+            NewService().YearStart.Should().Be(new DateTime(2020, 8, 1));
         }
 
         [Fact]
         public void YearEnd()
         {
-            NewService().YearEnd.Should().Be(new DateTime(2020, 7, 31, 23, 59, 59));
+            NewService().YearEnd.Should().Be(new DateTime(2021, 7, 31, 23, 59, 59));
         }
 
         public AcademicYearService NewService()
