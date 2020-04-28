@@ -15,6 +15,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
 
         // Dates
         public const string Year = "2020/21";
+        public const string ShortYearStart = "2020";
+        public const string ShortYearEnd = "2021";
 
         public static readonly DateTime BeginningOfYear = new DateTime(2020, 8, 1);
         public static readonly DateTime EndOfYear = new DateTime(2021, 7, 31, 23, 59, 59);

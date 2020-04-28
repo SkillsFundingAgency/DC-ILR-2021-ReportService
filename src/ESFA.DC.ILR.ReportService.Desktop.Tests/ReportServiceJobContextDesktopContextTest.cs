@@ -49,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             context.Filename.Should().Be("someilr.xml");
             context.IlrReportingFilename.Should().Be("mtheoriginal.xml");
+            context.EasReportingFilename.Should().BeNullOrEmpty();
             context.FileSizeInBytes.Should().Be(128);
             context.Container.Should().Be("ilr-files");
             context.ValidationErrorsKey.Should().Be("ValidationErrors");

@@ -9,7 +9,6 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
-using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Model;
@@ -32,6 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority,
             LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority,
             LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_NorthOfTyneCombinedAuhority,
         };
 
         public DevolvedAdultEducationFundingSummaryReportModelBuilder(IDateTimeProvider dateTimeProvider, IAcademicYearService academicYearService)
@@ -56,14 +56,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             var larsVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
             var employersVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
             var postcodesVersion = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime;
-
-            string easLastUpdateUk = null;
-
-            if (easLastUpdate != null)
-            {
-                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).LongDateStringFormat(); ;
-            }
 
             var filePreparationDate = message?.HeaderEntity?.CollectionDetailsEntity?.FilePreparationDate;
 
@@ -92,9 +84,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     reportServiceContext.Ukprn,
                     organisationName,
                     ExtractFileName(reportServiceContext.IlrReportingFilename),
-                    ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename),
                     filePreparationDate,
-                    easLastUpdateUk,
+                    reportServiceContext.EasReportingFilename,
                     orgVersion,
                     larsVersion,
                     postcodesVersion,
@@ -131,7 +122,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 .WithFundLine("EAS Excess Learning Support (£)", new [] { AttributeConstants.EasExcessLearningSupport })
                 .WithFundLine("EAS MCA/GLA Defined Adjustment 1 (£)", new [] { AttributeConstants.EasMcaGlaDefinedAdjustment1 })
                 .WithFundLine("EAS MCA/GLA Defined Adjustment 2 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment2 })
-                .WithFundLine("EAS MCA/GLA Defined Adjustment 3 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment3 });
+                .WithFundLine("EAS MCA/GLA Defined Adjustment 3 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment3 })
+                .WithFundLine("EAS MCA/GLA Defined Adjustment 4 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment4 })
+                .WithFundLine("EAS MCA/GLA Defined Adjustment 5 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment5 });
         }
 
         private IDictionary<string, Dictionary<int, ILearningDelivery>> BuildLearningDeliveryDictionary(IMessage message, string sofFamCode)

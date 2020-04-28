@@ -14,7 +14,7 @@
         public const string SOF_TeesValleyCombinedAuthority = "114";
         public const string SOF_CambridgeshireAndPeterboroughCombinedAuthority = "115";
         public const string SOF_GreaterLondonAuthority = "116";
-        public const string SOF_117 = "117"; // Rename once known.
+        public const string SOF_NorthOfTyneCombinedAuhority = "117";
 
         public const string SOF_ESFA = "105";
         public const string SOF_ESFA_1619 = "107";
