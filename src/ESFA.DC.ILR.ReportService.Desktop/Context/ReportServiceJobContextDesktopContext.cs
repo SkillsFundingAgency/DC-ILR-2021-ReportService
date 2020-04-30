@@ -23,7 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
         
         public string IlrReportingFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
 
-        public string EasReportingFilename => string.Empty;
+        public string EasReportingFilename => _desktopContext.KeyValuePairs[ILRContextKeys.EasReportingFilename].ToString();
 
         public string Container => _desktopContext.KeyValuePairs[ILRContextKeys.Container].ToString();
 
