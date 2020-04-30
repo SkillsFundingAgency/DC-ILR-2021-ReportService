@@ -51,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas
                 ? keyValuePairs[ILRContextKeys.OriginalFilename].ToString()
                 : keyValuePairs[ILRContextKeys.Filename].ToString();
 
-            keyValuePairs.Add(ReportServiceConstants.EasReportingFilename, easReportingFilename);
+            keyValuePairs.Add(ILRContextKeys.EasReportingFilename, easReportingFilename);
         }
     }
 }
