@@ -10,8 +10,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     {
         private const string ProviderName = "Provider Name:";
         private const string UKPRN = "UKPRN:";
-        private const string LastILRFileUpdate = "Last ILR File Update:";
-        private const string LastEASUpdate = "Last EAS Update:";
         private const string SourceOfFunding = "Source of Funding:";
         private const string SecurityClassification = "Security Classification:";
 
@@ -91,8 +89,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             {
                 { ProviderName, fundingSummaryReport.ProviderName },
                 { UKPRN, fundingSummaryReport.Ukprn.ToString() },
-                { LastILRFileUpdate, fundingSummaryReport.LastSubmittedIlrFileName },
-                { LastEASUpdate, fundingSummaryReport.LatestEasFileName },
+                { SummaryPageConstants.LastILRFile, fundingSummaryReport.LastSubmittedIlrFileName },
+                { SummaryPageConstants.LastEAS, fundingSummaryReport.LatestEasFileName },
                 { SourceOfFunding, fundingSummaryReport.SofLookup.McaGlaFullName },
                 { SecurityClassification, ReportingConstants.OfficialSensitive }
             },row,0 );

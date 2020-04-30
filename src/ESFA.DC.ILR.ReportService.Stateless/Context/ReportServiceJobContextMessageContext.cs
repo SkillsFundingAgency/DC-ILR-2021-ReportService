@@ -25,7 +25,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public string IlrReportingFilename => _jobContextMessage.KeyValuePairs[ReportServiceConstants.IlrReportingFilename].ToString();
 
-        public string EasReportingFilename => _jobContextMessage.KeyValuePairs[ReportServiceConstants.EasReportingFilename].ToString();
+        public string EasReportingFilename => _jobContextMessage.KeyValuePairs[ILRContextKeys.EasReportingFilename].ToString();
 
         public string Container => _jobContextMessage.KeyValuePairs[ILRContextKeys.Container].ToString();
 

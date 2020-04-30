@@ -52,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
                         LarsVersion = new LarsVersion { Version = "3.3.3.3" },
                         PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
                         CampusIdentifierVersion = new CampusIdentifierVersion() { Version = "5.5.5.5" },
-                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 1, 1, 1, 1, 1) }
+                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2020, 1, 1, 1, 1, 1) }
                     }
                 }
             };
@@ -91,7 +91,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             dependentDataMock.Setup(d => d.Get<ALBGlobal>()).Returns(albGlobal);
             dependentDataMock.Setup(d => d.Get<List<EasFundingLine>>()).Returns(easFundingLines);
 
-            var submissionDateTime = new DateTime(2019, 1, 1, 1, 1, 1);
+            var submissionDateTime = new DateTime(2020, 1, 1, 1, 1, 1);
             var ukDateTime = new DateTime(2020, 1, 1, 1, 1, 1);
             var dateTimeProvider = new Mock<IDateTimeProvider>();
             var reportServiceContextMock = new Mock<IReportServiceContext>();
@@ -99,20 +99,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             reportServiceContextMock.SetupGet(c => c.Ukprn).Returns(987654321);
             reportServiceContextMock.SetupGet(c => c.SubmissionDateTimeUtc).Returns(submissionDateTime);
             reportServiceContextMock.SetupGet(c => c.ServiceReleaseVersion).Returns("11.22.3300.4321");
-            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-2021-20191005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.IlrReportingFilename).Returns("ILR-12345678-2021-20201005-151322-01.xml");
+            reportServiceContextMock.SetupGet(c => c.EasReportingFilename).Returns("EAS-12345678-2021-20201005-151322-01.csv");
 
-            
+
             dateTimeProvider.Setup(p => p.GetNowUtc()).Returns(submissionDateTime);
             dateTimeProvider.SetupSequence(p => p.ConvertUtcToUk(It.IsAny<DateTime>()))
             .Returns(ukDateTime)
-            .Returns(new DateTime(2019, 1, 1, 1, 1, 1));
+            .Returns(new DateTime(2020, 1, 1, 1, 1, 1));
 
 
             var result = NewBuilder(dateTimeProvider.Object).Build(reportServiceContextMock.Object, dependentDataMock.Object);
 
             result.ProviderName.Should().Be("Provider XYZ");
             result.Ukprn.Should().Be("987654321");
-            result.IlrFile.Should().Be("ILR-12345678-2021-20191005-151322-01.xml");
+            result.IlrFile.Should().Be("ILR-12345678-2021-20201005-151322-01.xml");
+            result.EasFile.Should().Be("EAS-12345678-2021-20201005-151322-01.csv");
             result.Year.Should().Be("2020/21");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
             result.ApplicationVersion.Should().Be("11.22.3300.4321");
@@ -120,8 +122,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
             result.OrganisationData.Should().Be("1.1.1.1");
             result.PostcodeData.Should().Be("4.4.4.4");
             result.CampusIdData.Should().Be("5.5.5.5");
-            result.LastEASFileUpdate.Should().Be("01/01/2019 01:01:01");
-            result.LastILRFileUpdate.Should().Be("05/10/2019 15:13:22");
 
             result.AEBProgrammeFunding.MidYearClaims.Should().Be(135.324m);
             result.AEBProgrammeFunding.YearEndClaims.Should().Be(350.384m);

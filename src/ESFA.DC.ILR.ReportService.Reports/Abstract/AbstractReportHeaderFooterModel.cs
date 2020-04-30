@@ -9,6 +9,8 @@
 
         public string IlrFile { get; set; }
 
+        public string EasFile { get; set; }
+
         public string Year { get; set; }
 
         // footer
@@ -31,10 +33,5 @@
         public string CofRemovalData { get; set; }
 
         public string CampusIdData { get; set; }
-
-        public string LastILRFileUpdate { get; set; }
-
-        public string LastEASFileUpdate { get; set; }
-
     }
 }

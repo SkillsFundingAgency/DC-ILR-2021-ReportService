@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Data
         {
             var easReportingFilename = keyValuePairs[ReportServiceConstants.LatestEasFilename]?.ToString();
 
-            keyValuePairs.Add(ReportServiceConstants.EasReportingFilename, easReportingFilename);
+            keyValuePairs.Add(ILRContextKeys.EasReportingFilename, easReportingFilename);
         }
     }
 }
