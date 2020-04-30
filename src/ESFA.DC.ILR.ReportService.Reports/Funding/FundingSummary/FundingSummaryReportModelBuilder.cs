@@ -65,7 +65,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 .WithFundLineGroup(BuildIlrTrailblazerApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship1618 }, periodisedValues))
                                 .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("16-18", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.EasTrailblazerApprenticeship1618 }, periodisedValues)),
                             new FundingSubCategory(@"16-18 Non-Levy Contracted Apprenticeships - Non-procured delivery", reportCurrentPeriod)
-                                .WithFundLineGroup(BuildIlrNonLevyApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship1618, FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues))
+                                .WithFundLineGroup(BuildIlrNonLevyApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues))
                                 .WithFundLineGroup(BuildEasNonLevyApprenticeshipsFundLineGroup("16-18", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship1618NonProcured }, periodisedValues)),
                             new FundingSubCategory(@"19-23 Apprenticeship Frameworks for starts before 1 May 2017", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("19-23", "Apprenticeship Frameworks", reportCurrentPeriod, new [] { FundLineConstants.Apprenticeship1923 }, periodisedValues))
@@ -80,7 +80,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 .WithFundLineGroup(BuildIlrTrailblazerApprenticeshipsFundLineGroup("24+", reportCurrentPeriod, new [] { FundLineConstants.TrailblazerApprenticeship24Plus }, periodisedValues))
                                 .WithFundLineGroup(BuildEasAuthorisedClaimsExcessLearningSupportFundLineGroup("24+", "Trailblazer Apprenticeships", reportCurrentPeriod, new [] { FundLineConstants.EasTrailblazerApprenticeship24Plus }, periodisedValues)),
                             new FundingSubCategory(@"Adult Non-Levy Contracted Apprenticeships - Non-procured delivery", reportCurrentPeriod)
-                                .WithFundLineGroup(BuildIlrNonLevyApprenticeshipsFundLineGroup("Adult", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19Plus, FundLineConstants.NonLevyApprenticeship19PlusNonProcured }, periodisedValues))
+                                .WithFundLineGroup(BuildIlrNonLevyApprenticeshipsFundLineGroup("Adult", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19PlusNonProcured }, periodisedValues))
                                 .WithFundLineGroup(BuildEasNonLevyApprenticeshipsFundLineGroup("Adult", reportCurrentPeriod, new [] { FundLineConstants.NonLevyApprenticeship19PlusNonProcured }, periodisedValues))
                         }),
                     new FundingCategory(
@@ -167,23 +167,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private IDictionary<string, string> BuildHeaderData(IReportServiceContext reportServiceContext, ReferenceDataRoot referenceDataRoot)
         {
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
-            var easLastUpdate = referenceDataRoot.MetaDatas.ReferenceDataVersions?.EasUploadDateTime.UploadDateTime;
+            var easFileName = reportServiceContext.EasReportingFilename;
             var fileName = ExtractFileName(reportServiceContext.IlrReportingFilename);
-
-            string easLastUpdateUk = null;
-
-            if (easLastUpdate != null)
-            {
-                easLastUpdateUk = _dateTimeProvider.ConvertUtcToUk(easLastUpdate.Value).LongDateStringFormat();
-            }
 
             return new Dictionary<string, string>()
             {
                 {SummaryPageConstants.ProviderName, organisationName},
                 {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
-                {SummaryPageConstants.ILRFile, fileName},
-                {SummaryPageConstants.LastILRFileUpdate, ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename)},
-                {SummaryPageConstants.LastEASUpdate, easLastUpdateUk},
+                {SummaryPageConstants.LastILRFile, ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename)},
+                {SummaryPageConstants.LastEAS, easFileName},
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
         }

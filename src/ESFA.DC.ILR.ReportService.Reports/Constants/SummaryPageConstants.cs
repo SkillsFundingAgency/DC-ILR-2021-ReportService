@@ -10,9 +10,9 @@
 
         public const string Year = "Year:";
 
-        public const string LastILRFileUpdate = "Last ILR File Update:";
+        public const string LastILRFile = "Last ILR File:";
 
-        public const string LastEASUpdate = "Last EAS Update:";
+        public const string LastEAS = "Last EAS:";
 
         public const string SecurityClassification = "Security Classification:";
 

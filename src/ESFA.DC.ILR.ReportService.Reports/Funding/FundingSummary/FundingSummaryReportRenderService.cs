@@ -1,5 +1,6 @@
 ﻿using System.Drawing;
 using Aspose.Cells;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -188,18 +189,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             worksheet.Cells.ImportObjectArray(new object[]
             {
                 fundingSubCategory.FundingSubCategoryTitle,
-                $"Aug-{StartYear}",
-                $"Sep-{StartYear}",
-                $"Oct-{StartYear}",
-                $"Nov-{StartYear}",
-                $"Dec-{StartYear}",
-                $"Jan-{EndYear}",
-                $"Feb-{EndYear}",
-                $"Mar-{EndYear}",
-                $"Apr-{EndYear}",
-                $"May-{EndYear}",
-                $"Jun-{EndYear}",
-                $"Jul-{EndYear}",
+                $"Aug-{ReportingConstants.ShortYearStart}",
+                $"Sep-{ReportingConstants.ShortYearStart}",
+                $"Oct-{ReportingConstants.ShortYearStart}",
+                $"Nov-{ReportingConstants.ShortYearStart}",
+                $"Dec-{ReportingConstants.ShortYearStart}",
+                $"Jan-{ReportingConstants.ShortYearEnd}",
+                $"Feb-{ReportingConstants.ShortYearEnd}",
+                $"Mar-{ReportingConstants.ShortYearEnd}",
+                $"Apr-{ReportingConstants.ShortYearEnd}",
+                $"May-{ReportingConstants.ShortYearEnd}",
+                $"Jun-{ReportingConstants.ShortYearEnd}",
+                $"Jul-{ReportingConstants.ShortYearEnd}",
                 "Aug - Mar",
                 "Apr - Jul",
                 "Year To Date",
