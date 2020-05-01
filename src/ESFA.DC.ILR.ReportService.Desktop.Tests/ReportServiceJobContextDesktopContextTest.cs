@@ -39,7 +39,10 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
                 { "ReturnPeriod", 8},
                 { "CollectionYear", 2019},
                 { "ReportTasks", "TaskGenerateValidationReport|TaskGenerateFundingSummaryReport|TaskGenerateAdultFundingClaimReport"},
-                { "EasReportingFilename", "Eas.csv" }
+                { "IlrReportingFilename", "mtheoriginal.xml" },
+                { "EasReportingFilename", "Eas.csv" },
+                { "LastIlrFileUpdate", "01/01/2020 09:00:00" },
+                { "LastEasFileUpdate", "01/01/2020 09:00:00" }
             };
             mockDesktopContext.Setup(x => x.DateTimeUtc).Returns(new DateTime(2019, 10, 10));
             mockDesktopContext.SetupGet(x => x.KeyValuePairs).Returns(keyValuePairs);
@@ -51,6 +54,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             context.Filename.Should().Be("someilr.xml");
             context.IlrReportingFilename.Should().Be("mtheoriginal.xml");
             context.EasReportingFilename.Should().Be("Eas.csv");
+            context.LastEasFileUpdate.Should().Be("01/01/2020 09:00:00");
+            context.LastIlrFileUpdate.Should().Be("01/01/2020 09:00:00");
             context.FileSizeInBytes.Should().Be(128);
             context.Container.Should().Be("ilr-files");
             context.ValidationErrorsKey.Should().Be("ValidationErrors");

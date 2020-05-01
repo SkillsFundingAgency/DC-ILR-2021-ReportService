@@ -89,8 +89,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
             {
                 { ProviderName, fundingSummaryReport.ProviderName },
                 { UKPRN, fundingSummaryReport.Ukprn.ToString() },
-                { SummaryPageConstants.LastILRFile, fundingSummaryReport.LastSubmittedIlrFileName },
-                { SummaryPageConstants.LastEAS, fundingSummaryReport.LatestEasFileName },
+                {SummaryPageConstants.ILRFile, fundingSummaryReport.IlrFile},
+                {SummaryPageConstants.LastILRFileUpdate, fundingSummaryReport.LastIlrFileUpdate},
+                {SummaryPageConstants.EASFile, fundingSummaryReport.EasFile},
+                {SummaryPageConstants.LastEASFileUpdate, fundingSummaryReport.LastEasFileUpdate },
                 { SourceOfFunding, fundingSummaryReport.SofLookup.McaGlaFullName },
                 { SecurityClassification, ReportingConstants.OfficialSensitive }
             },row,0 );

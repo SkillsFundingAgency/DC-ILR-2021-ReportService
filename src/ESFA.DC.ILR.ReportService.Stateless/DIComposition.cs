@@ -4,6 +4,7 @@ using ESFA.DC.FileService;
 using ESFA.DC.FileService.Config;
 using ESFA.DC.FileService.Config.Interface;
 using ESFA.DC.FileService.Interface;
+using ESFA.DC.ILR.ReportService.Data;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Modules;
 using ESFA.DC.ILR.ReportService.Reports.Service;
@@ -70,6 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
             containerBuilder.RegisterModule<OrchestrationModule>();
             containerBuilder.RegisterModule<ReportsModule>();
+            containerBuilder.RegisterType<JobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
 
             return containerBuilder;
         }
