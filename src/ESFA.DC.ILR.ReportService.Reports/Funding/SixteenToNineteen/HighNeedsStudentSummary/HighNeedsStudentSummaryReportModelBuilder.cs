@@ -10,6 +10,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary.Model;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentSummary
 {
@@ -29,52 +30,71 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
 
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
             var learners = message?.Learners ?? Enumerable.Empty<ILearner>();
-            var model = new HighNeedsStudentSummaryReportModel();
+            var model = new HighNeedsStudentSummaryReportModel();        
 
-            DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
-            DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
-
-            var reportGeneratedAt = "Report generated at: " + FormatReportGeneratedAtDateTime(dateTimeNowUk);
+            var applicableLearners = learners.Where(LearnerFilter).ToList();
+            var applicableStudyProgrammeLearners = fm25Data.Learners?.Where(x => x.StartFund == true && StudyProgrammePredicate(x)).ToList();
+            var applicableTLevelLearners = fm25Data.Learners?.Where(x => x.StartFund == true && TLevelPredicate(x)).ToList();
 
             // Header
+            BuildHeader(reportServiceContext, model, organisationName);
+
+            // Body
+            model.StudyProgramme = BuildBody(applicableStudyProgrammeLearners, applicableLearners);
+            model.TLevel = BuildBody(applicableTLevelLearners, applicableLearners);
+
+            // Footer
+            BuildFooter(model, referenceDataRoot.MetaDatas.ReferenceDataVersions, reportServiceContext.ServiceReleaseVersion, message?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
+
+            return model;
+        }
+
+        private void BuildHeader(IReportServiceContext reportServiceContext, HighNeedsStudentSummaryReportModel model, string organisationName)
+        {
             model.ProviderName = organisationName;
             model.Ukprn = reportServiceContext.Ukprn.ToString();
             model.IlrFile = ExtractFileName(reportServiceContext.IlrReportingFilename);
             model.Year = ReportingConstants.Year;
+        }
 
-           
-            // Body
-            // test for applicable learning deliveries
-            var applicableLearners = learners.Where(LearnerFilter).ToList();
+        private void BuildFooter(HighNeedsStudentSummaryReportModel model, ReferenceDataVersion referenceDataVersions, string applicationVersion, DateTime? filePrepDate)
+        {
+            DateTime dateTimeNowUtc = _dateTimeProvider.GetNowUtc();
+            DateTime dateTimeNowUk = _dateTimeProvider.ConvertUtcToUk(dateTimeNowUtc);
 
-            var applicablefm25Learners = fm25Data.Learners?.Where(x => x.StartFund == true).ToList();
+            model.ReportGeneratedAt =  "Report generated at: " + FormatReportGeneratedAtDateTime(dateTimeNowUk);
+            model.ApplicationVersion = applicationVersion;
+            model.ComponentSetVersion = "NA";
+            model.OrganisationData = referenceDataVersions.OrganisationsVersion.Version;
+            model.LargeEmployerData = referenceDataVersions.Employers.Version;
+            model.LarsData = referenceDataVersions.LarsVersion.Version;
+            model.PostcodeData = referenceDataVersions.PostcodesVersion.Version;
+            model.FilePreparationDate = FormatFilePreparationDate(filePrepDate);
+        }
 
-            var validLearnersForFundlineA = LearnRefNumbersWithFundLine(applicablefm25Learners, FundLineConstants.DirectFundedStudents1416)?.ToArray();
-            var validLearnersForFundlineB = 
+        private HNSSummaryLearnerGroup BuildBody(IEnumerable<FM25Learner> fm25Learners, IEnumerable<ILearner> applicableLearners)
+        {
+            var model = new HNSSummaryLearnerGroup();
+
+            var validLearnersForFundlineA = LearnRefNumbersWithFundLine(fm25Learners, FundLineConstants.DirectFundedStudents1416)?.ToArray();
+            var validLearnersForFundlineB =
                 LearnRefNumbersWithFundLine(
-                    applicablefm25Learners,
+                    fm25Learners,
                     FundLineConstants.StudentsExcludingHighNeeds1619,
                     FundLineConstants.HighNeedsStudents1619)?.ToArray();
-            var validLearnersForFundlineC = LearnRefNumbersWithFundLine(applicablefm25Learners, FundLineConstants.StudentsWithEHCP1924)?.ToArray();
-            var validLearnersForFundlineD = LearnRefNumbersWithFundLine(applicablefm25Learners, FundLineConstants.ContinuingStudents19Plus)?.ToArray();
+            var validLearnersForFundlineC = LearnRefNumbersWithFundLine(fm25Learners, FundLineConstants.StudentsWithEHCP1924)?.ToArray();
+            var validLearnersForFundlineD = LearnRefNumbersWithFundLine(fm25Learners, FundLineConstants.ContinuingStudents19Plus)?.ToArray();
 
-            model.DirectFunded1416StudentsTotal =  BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineA, applicableLearners);
-            model.IncludingHNS1619StudentsTotal =  BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineB, applicableLearners);
-            model.EHCP1924StudentsTotal =  BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineC, applicableLearners);
-            model.Continuing19PlusExcludingEHCPStudentsTotal =  BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineD, applicableLearners);
-
-            // Footer
-            model.ReportGeneratedAt = reportGeneratedAt;
-            model.ApplicationVersion = reportServiceContext.ServiceReleaseVersion;
-            model.ComponentSetVersion = "NA";
-            model.OrganisationData = referenceDataRoot.MetaDatas.ReferenceDataVersions.OrganisationsVersion.Version;
-            model.LargeEmployerData = referenceDataRoot.MetaDatas.ReferenceDataVersions.Employers.Version;
-            model.LarsData = referenceDataRoot.MetaDatas.ReferenceDataVersions.LarsVersion.Version;
-            model.PostcodeData = referenceDataRoot.MetaDatas.ReferenceDataVersions.PostcodesVersion.Version;
-            model.FilePreparationDate = FormatFilePreparationDate(message?.HeaderEntity.CollectionDetailsEntity.FilePreparationDate);
+            model.DirectFunded1416StudentsTotal = BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineA, applicableLearners);
+            model.IncludingHNS1619StudentsTotal = BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineB, applicableLearners);
+            model.EHCP1924StudentsTotal = BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineC, applicableLearners);
+            model.Continuing19PlusExcludingEHCPStudentsTotal = BuildFundlineReportingBandStudentNumberModel(validLearnersForFundlineD, applicableLearners);
 
             return model;
         }
+
+        private bool StudyProgrammePredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent.HasValue && fM25Learner.TLevelStudent.Value == false;
+        private bool TLevelPredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent.HasValue && fM25Learner.TLevelStudent.Value == true;
 
         private IEnumerable<string> LearnRefNumbersWithFundLine(IEnumerable<FM25Learner> learners, params string[] fundLine)
         {
