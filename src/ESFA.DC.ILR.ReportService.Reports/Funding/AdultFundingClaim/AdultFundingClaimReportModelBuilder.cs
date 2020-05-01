@@ -66,7 +66,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
             model.ProviderName = organisationName;
             model.Ukprn = reportServiceContext.Ukprn.ToString();
             model.IlrFile = ExtractFileName(reportServiceContext.IlrReportingFilename);
+            model.LastIlrFileUpdate = reportServiceContext.LastIlrFileUpdate;
             model.EasFile = reportServiceContext.EasReportingFilename;
+            model.LastEasFileUpdate = reportServiceContext.LastEasFileUpdate;
             model.Year = ReportingConstants.Year;
 
             //Body
