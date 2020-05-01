@@ -116,33 +116,61 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
             result.ProviderName.Should().Be("Provider XYZ");
             result.ReportGeneratedAt.Should().Be("Report generated at: 01:01:01 on 01/01/2020");
 
-            result.DirectFunded1416StudentsTotal.WithEHCP.Should().Be(2);
-            result.DirectFunded1416StudentsTotal.WithoutEHCP.Should().Be(0);
-            result.DirectFunded1416StudentsTotal.HNSWithoutEHCP.Should().Be(0);
-            result.DirectFunded1416StudentsTotal.EHCPWithHNS.Should().Be(1);
-            result.DirectFunded1416StudentsTotal.EHCPWithoutHNS.Should().Be(1);
-            result.DirectFunded1416StudentsTotal.TotalFundineStudents.Should().Be(2);
+            result.StudyProgramme.DirectFunded1416StudentsTotal.WithEHCP.Should().Be(1);
+            result.StudyProgramme.DirectFunded1416StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.StudyProgramme.DirectFunded1416StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.StudyProgramme.DirectFunded1416StudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.StudyProgramme.DirectFunded1416StudentsTotal.EHCPWithoutHNS.Should().Be(0);
+            result.StudyProgramme.DirectFunded1416StudentsTotal.TotalFundineStudents.Should().Be(1);
 
-            result.IncludingHNS1619StudentsTotal.WithEHCP.Should().Be(2);
-            result.IncludingHNS1619StudentsTotal.WithoutEHCP.Should().Be(0);
-            result.IncludingHNS1619StudentsTotal.HNSWithoutEHCP.Should().Be(0);
-            result.IncludingHNS1619StudentsTotal.EHCPWithHNS.Should().Be(1);
-            result.IncludingHNS1619StudentsTotal.EHCPWithoutHNS.Should().Be(1);
-            result.IncludingHNS1619StudentsTotal.TotalFundineStudents.Should().Be(2);
+            result.StudyProgramme.IncludingHNS1619StudentsTotal.WithEHCP.Should().Be(2);
+            result.StudyProgramme.IncludingHNS1619StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.StudyProgramme.IncludingHNS1619StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.StudyProgramme.IncludingHNS1619StudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.StudyProgramme.IncludingHNS1619StudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.StudyProgramme.IncludingHNS1619StudentsTotal.TotalFundineStudents.Should().Be(2);
 
-            result.EHCP1924StudentsTotal.WithEHCP.Should().Be(2);
-            result.EHCP1924StudentsTotal.WithoutEHCP.Should().Be(0);
-            result.EHCP1924StudentsTotal.HNSWithoutEHCP.Should().Be(0);
-            result.EHCP1924StudentsTotal.EHCPWithHNS.Should().Be(1);
-            result.EHCP1924StudentsTotal.EHCPWithoutHNS.Should().Be(1);
-            result.EHCP1924StudentsTotal.TotalFundineStudents.Should().Be(2);
+            result.StudyProgramme.EHCP1924StudentsTotal.WithEHCP.Should().Be(0);
+            result.StudyProgramme.EHCP1924StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.StudyProgramme.EHCP1924StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.StudyProgramme.EHCP1924StudentsTotal.EHCPWithHNS.Should().Be(0);
+            result.StudyProgramme.EHCP1924StudentsTotal.EHCPWithoutHNS.Should().Be(0);
+            result.StudyProgramme.EHCP1924StudentsTotal.TotalFundineStudents.Should().Be(0);
 
-            result.Continuing19PlusExcludingEHCPStudentsTotal.WithEHCP.Should().Be(2);
-            result.Continuing19PlusExcludingEHCPStudentsTotal.WithoutEHCP.Should().Be(0);
-            result.Continuing19PlusExcludingEHCPStudentsTotal.HNSWithoutEHCP.Should().Be(0);
-            result.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithHNS.Should().Be(1);
-            result.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithoutHNS.Should().Be(1);
-            result.Continuing19PlusExcludingEHCPStudentsTotal.TotalFundineStudents.Should().Be(2);
+            result.StudyProgramme.Continuing19PlusExcludingEHCPStudentsTotal.WithEHCP.Should().Be(0);
+            result.StudyProgramme.Continuing19PlusExcludingEHCPStudentsTotal.WithoutEHCP.Should().Be(0);
+            result.StudyProgramme.Continuing19PlusExcludingEHCPStudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.StudyProgramme.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithHNS.Should().Be(0);
+            result.StudyProgramme.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithoutHNS.Should().Be(0);
+            result.StudyProgramme.Continuing19PlusExcludingEHCPStudentsTotal.TotalFundineStudents.Should().Be(0);
+
+            result.TLevel.DirectFunded1416StudentsTotal.WithEHCP.Should().Be(1);
+            result.TLevel.DirectFunded1416StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.TLevel.DirectFunded1416StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.TLevel.DirectFunded1416StudentsTotal.EHCPWithHNS.Should().Be(0);
+            result.TLevel.DirectFunded1416StudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.TLevel.DirectFunded1416StudentsTotal.TotalFundineStudents.Should().Be(1);
+
+            result.TLevel.IncludingHNS1619StudentsTotal.WithEHCP.Should().Be(0);
+            result.TLevel.IncludingHNS1619StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.TLevel.IncludingHNS1619StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.TLevel.IncludingHNS1619StudentsTotal.EHCPWithHNS.Should().Be(0);
+            result.TLevel.IncludingHNS1619StudentsTotal.EHCPWithoutHNS.Should().Be(0);
+            result.TLevel.IncludingHNS1619StudentsTotal.TotalFundineStudents.Should().Be(0);
+
+            result.TLevel.EHCP1924StudentsTotal.WithEHCP.Should().Be(2);
+            result.TLevel.EHCP1924StudentsTotal.WithoutEHCP.Should().Be(0);
+            result.TLevel.EHCP1924StudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.TLevel.EHCP1924StudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.TLevel.EHCP1924StudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.TLevel.EHCP1924StudentsTotal.TotalFundineStudents.Should().Be(2);
+
+            result.TLevel.Continuing19PlusExcludingEHCPStudentsTotal.WithEHCP.Should().Be(2);
+            result.TLevel.Continuing19PlusExcludingEHCPStudentsTotal.WithoutEHCP.Should().Be(0);
+            result.TLevel.Continuing19PlusExcludingEHCPStudentsTotal.HNSWithoutEHCP.Should().Be(0);
+            result.TLevel.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithHNS.Should().Be(1);
+            result.TLevel.Continuing19PlusExcludingEHCPStudentsTotal.EHCPWithoutHNS.Should().Be(1);
+            result.TLevel.Continuing19PlusExcludingEHCPStudentsTotal.TotalFundineStudents.Should().Be(2);
 
             result.Ukprn.Should().Be("987654321");
             result.Year.Should().Be("2020/21");
@@ -327,49 +355,57 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentSummar
                 {
                     LearnRefNumber = "DirectFundedLearnRef1",
                     StartFund = true,
-                    FundLine = "14-16 Direct Funded Students"
+                    FundLine = "14-16 Direct Funded Students",
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "DirectFundedLearnRef2",
                     StartFund = true,
-                    FundLine = "14-16 Direct Funded Students"
+                    FundLine = "14-16 Direct Funded Students",
+                    TLevelStudent = true
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "FundingLineBLearnRef1",
                     StartFund = true,
-                    FundLine = "16-19 High Needs Students"
+                    FundLine = "16-19 High Needs Students",
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "FundingLineBLearnRef2",
                     StartFund = true,
-                    FundLine = "16-19 Students (excluding High Needs Students)"
+                    FundLine = "16-19 Students (excluding High Needs Students)",
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "FundingLineCLearnRef1",
                     StartFund = true,
-                    FundLine = "19-24 Students with an EHCP"
+                    FundLine = "19-24 Students with an EHCP",
+                    TLevelStudent = true
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "FundingLineCLearnRef2",
                     StartFund = true,
-                    FundLine = "19-24 Students with an EHCP"
+                    FundLine = "19-24 Students with an EHCP",
+                    TLevelStudent = true
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "FundingLineDLearnRef1",
                     StartFund = true,
-                    FundLine = "19+ Continuing Students (excluding EHCP)"
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
+                    TLevelStudent = true
                 },
                 new FM25Learner()
                 {
                     LearnRefNumber = "FundingLineDLearnRef2",
                     StartFund = true,
-                    FundLine = "19+ Continuing Students (excluding EHCP)"
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
+                    TLevelStudent = true
                 }
             };
         }
