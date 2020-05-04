@@ -35,6 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var builder = new ContainerBuilder();
             builder.RegisterType<EntryPoint>().As<IEntryPoint>();
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
+            builder.RegisterType<DesktopJobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
             builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory<IDesktopContext>>();
             builder.RegisterType<FileSystemFileService>().As<IFileService>();
             
