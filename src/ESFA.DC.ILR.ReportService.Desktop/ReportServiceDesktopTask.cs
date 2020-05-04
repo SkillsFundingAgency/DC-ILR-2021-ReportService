@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Autofac;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -7,19 +8,28 @@ namespace ESFA.DC.ILR.ReportService.Desktop
 {
     public class ReportServiceDesktopTask: IDesktopTask
     {
+        private ILifetimeScope _lifeTimeScope;
         private readonly IReportServiceContextFactory<IDesktopContext> _reportServiceContextFactory;
-        private readonly IEntryPoint _entryPoint;
 
-        public ReportServiceDesktopTask(IReportServiceContextFactory<IDesktopContext> reportServiceContextFactory, IEntryPoint entryPoint)
+        public ReportServiceDesktopTask(ILifetimeScope lifeTimeScope, IReportServiceContextFactory<IDesktopContext> reportServiceContextFactory)
         {
+            _lifeTimeScope = lifeTimeScope;
             _reportServiceContextFactory = reportServiceContextFactory;
-            _entryPoint = entryPoint;
         }
+
         public async Task<IDesktopContext> ExecuteAsync(IDesktopContext desktopContext, CancellationToken cancellationToken)
         {
+            var mutator = _lifeTimeScope.Resolve<IJobContextMessageKeysMutator>();
+
+            await mutator.MutateAsync(desktopContext.KeyValuePairs, desktopContext.DateTimeUtc, cancellationToken);
             var reportServiceContext = _reportServiceContextFactory.Build(desktopContext);
 
-            await _entryPoint.Callback(reportServiceContext, cancellationToken);
+            using (var childLifetimeScope = _lifeTimeScope.BeginLifetimeScope())
+            {
+                var entryPoint = childLifetimeScope.Resolve<IEntryPoint>();
+
+                await entryPoint.Callback(reportServiceContext, cancellationToken);
+            }
 
             return desktopContext;
         }
