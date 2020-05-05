@@ -34,8 +34,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
 
         public bool FilterFundLine(string fundLine) => fundLine != null && _fundModelDictionary.ContainsKey(fundLine);
 
-        public bool StudyProgrammePredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent.HasValue && fM25Learner.TLevelStudent.Value == false;
-        public bool TLevelPredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent.HasValue && fM25Learner.TLevelStudent.Value == true;
+        public bool StudyProgrammePredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent == false;
+        public bool TLevelPredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent == true;
 
         public bool FilterSOF(ILearningDeliveryFAM learningDeliveryFam)
             => learningDeliveryFam?.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.SOF) == true
