@@ -12,6 +12,8 @@ using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim.Constants;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim
 {
@@ -33,7 +35,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             var referenceDateFilter = RetrieveReportFilterValueFromContext<DateTime?>(reportServiceContext, ReportNameConstants.SixteenNineteenFundingClaim, ReportingConstants.ReferenceDateFilterPropertyName);
 
             var organisation = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn);
-            var organisationName = organisation?.Name ?? string.Empty;
             var learners = message?.Learners ?? Enumerable.Empty<ILearner>();
 
             var model = new FundingClaimReportModel();
@@ -42,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
             // Header
             var referenceDate = referenceDateFilter.HasValue ? referenceDateFilter.Value.ShortDateStringFormat() : "(ALL)";
-            BuildHeader(reportServiceContext, model, organisationName, referenceDate);
+            BuildHeader(reportServiceContext, model, organisation, referenceDate);
 
             // Body
             BuildBody(model, fm25Data.Learners, applicableLearners, referenceDateFilter);
@@ -53,13 +54,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
             return model;
         }
 
-        private void BuildHeader(IReportServiceContext reportServiceContext, FundingClaimReportModel model, string organisationName, string referenceDate)
+        private void BuildHeader(IReportServiceContext reportServiceContext, FundingClaimReportModel model, Organisation organisation, string referenceDate)
         {
+            var cofRemoval = organisation?.OrganisationCoFRemovals?.OrderByDescending(x => x.EffectiveFrom).FirstOrDefault()?.CoFRemoval;
+            var organisationName = organisation?.Name ?? string.Empty;
+
             model.ProviderName = organisationName;
             model.Ukprn = reportServiceContext.Ukprn.ToString();
             model.IlrFile = ExtractFileName(reportServiceContext.IlrReportingFilename);
             model.Year = ReportingConstants.Year;
             model.ReferenceDate = referenceDate;
+            model.CofRemoval = -cofRemoval.GetValueOrDefault();
         }
 
         private void BuildFooter(FundingClaimReportModel model, ReferenceDataVersion referenceDataVersions, string applicationVersion, DateTime? filePrepDate)

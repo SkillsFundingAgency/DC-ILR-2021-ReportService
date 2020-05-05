@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim.Constants
 {
     public static class SixteenToNineteenFundingClaimConstants
     {

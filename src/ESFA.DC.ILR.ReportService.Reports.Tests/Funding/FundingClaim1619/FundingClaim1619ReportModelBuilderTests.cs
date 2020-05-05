@@ -1,17 +1,17 @@
-﻿using ESFA.DC.DateTimeProvider.Interface;
-using ESFA.DC.ILR.Model;
-using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim;
-using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.Tests.Model;
-using Moq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ILR.Model;
+using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.Tests.Model;
+using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using Moq;
 using FluentAssertions;
 using Xunit;
 
@@ -145,6 +145,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.DirectFundingStudents.Band4aStudentNumbers.Should().Be(1);
             result.DirectFundingStudents.Band4bStudentNumbers.Should().Be(0);
             result.DirectFundingStudents.Band5StudentNumbers.Should().Be(1);
+            result.DirectFundingStudents.Band6StudentNumbers.Should().Be(0);
+            result.DirectFundingStudents.Band7StudentNumbers.Should().Be(0);
+            result.DirectFundingStudents.Band8StudentNumbers.Should().Be(0);
+            result.DirectFundingStudents.Band9StudentNumbers.Should().Be(0);
 
 
             result.StudentsIncludingHNS.Band1StudentNumbers.Should().Be(0);
@@ -159,6 +163,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.StudentsIncludingHNS.Band4bTotalFunding.Should().Be((decimal)2589915.43);
             result.StudentsIncludingHNS.Band5StudentNumbers.Should().Be(0);
             result.StudentsIncludingHNS.Band5TotalFunding.Should().Be(0);
+            result.StudentsIncludingHNS.Band6StudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band6TotalFunding.Should().Be(0);
+            result.StudentsIncludingHNS.Band7StudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band7TotalFunding.Should().Be(0);
+            result.StudentsIncludingHNS.Band8StudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band8TotalFunding.Should().Be(0);
+            result.StudentsIncludingHNS.Band9StudentNumbers.Should().Be(0);
+            result.StudentsIncludingHNS.Band9TotalFunding.Should().Be(0);
 
             result.StudentsWithEHCPlan.Band1StudentNumbers.Should().Be(1);
             result.StudentsWithEHCPlan.Band1TotalFunding.Should().Be((decimal)125.67);
@@ -172,6 +184,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.StudentsWithEHCPlan.Band4bTotalFunding.Should().Be(0);
             result.StudentsWithEHCPlan.Band5StudentNumbers.Should().Be(0);
             result.StudentsWithEHCPlan.Band5TotalFunding.Should().Be(0);
+            result.StudentsWithEHCPlan.Band6StudentNumbers.Should().Be(0);
+            result.StudentsWithEHCPlan.Band6TotalFunding.Should().Be(0);
+            result.StudentsWithEHCPlan.Band7StudentNumbers.Should().Be(1);
+            result.StudentsWithEHCPlan.Band7TotalFunding.Should().Be((decimal)125.67);
+            result.StudentsWithEHCPlan.Band8StudentNumbers.Should().Be(0);
+            result.StudentsWithEHCPlan.Band8TotalFunding.Should().Be(0);
+            result.StudentsWithEHCPlan.Band9StudentNumbers.Should().Be(0);
+            result.StudentsWithEHCPlan.Band9TotalFunding.Should().Be(0);
 
             result.ContinuingStudentsExcludingEHCPlan.Band1StudentNumbers.Should().Be(0);
             result.ContinuingStudentsExcludingEHCPlan.Band1TotalFunding.Should().Be(0);
@@ -185,6 +205,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.ContinuingStudentsExcludingEHCPlan.Band4bTotalFunding.Should().Be(0);
             result.ContinuingStudentsExcludingEHCPlan.Band5StudentNumbers.Should().Be(1);
             result.ContinuingStudentsExcludingEHCPlan.Band5TotalFunding.Should().Be((decimal)56425.99);
+            result.ContinuingStudentsExcludingEHCPlan.Band6StudentNumbers.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band6TotalFunding.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band7StudentNumbers.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band7TotalFunding.Should().Be(0);
+            result.ContinuingStudentsExcludingEHCPlan.Band8StudentNumbers.Should().Be(1);
+            result.ContinuingStudentsExcludingEHCPlan.Band8TotalFunding.Should().Be((decimal)56425.99);
+            result.ContinuingStudentsExcludingEHCPlan.Band9StudentNumbers.Should().Be(1);
+            result.ContinuingStudentsExcludingEHCPlan.Band9TotalFunding.Should().Be((decimal)855.55);
         }
 
         [Fact]
@@ -544,7 +572,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     AreaCostFact1618Hist = (decimal)1,
                     PrvDisadvPropnHist = (decimal)0.345,
                     PrvHistLrgProgPropn = (decimal)0.213,
-                    PrvHistL3ProgMathEngProp = (decimal)0.213
+                    PrvHistL3ProgMathEngProp = (decimal)0.213,
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
@@ -558,7 +587,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     AreaCostFact1618Hist = (decimal)1,
                     PrvDisadvPropnHist = (decimal)0.345,
                     PrvHistLrgProgPropn = (decimal)0.213,
-                    PrvHistL3ProgMathEngProp = (decimal)0.213
+                    PrvHistL3ProgMathEngProp = (decimal)0.213,
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
@@ -571,7 +601,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     ProgWeightHist = (decimal)1.061,
                     AreaCostFact1618Hist = (decimal)1,
                     PrvDisadvPropnHist = (decimal)0.345,
-                    PrvHistLrgProgPropn = (decimal)0.213
+                    PrvHistLrgProgPropn = (decimal)0.213,
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
@@ -580,6 +611,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     FundLine = "16-19 High Needs Students",
                     RateBand = "360 to 449 hours (Band 3)",
                     OnProgPayment = (decimal)25815.43,
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
@@ -588,6 +620,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     FundLine = "19-24 Students with an EHCP",
                     RateBand = "280 to 359 hours (Band 2)",
                     OnProgPayment = (decimal)555.12,
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
@@ -596,6 +629,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     FundLine = "19-24 Students with an EHCP",
                     RateBand = "Up to 279 hours (Band 1)",
                     OnProgPayment = (decimal)125.67,
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
@@ -604,6 +638,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     FundLine = "19+ Continuing Students (excluding EHCP)",
                     RateBand = "540+ hours (Band 5)",
                     OnProgPayment = (decimal)56425.99,
+                    TLevelStudent = false
                 },
                 new FM25Learner()
                 {
@@ -612,6 +647,34 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     FundLine = "19+ Continuing Students (excluding EHCP)",
                     RateBand = "450+ hours (Band 4a)",
                     OnProgPayment = (decimal)855.55,
+                    TLevelStudent = false
+                },
+                 new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineCLearnRef2",
+                    StartFund = true,
+                    FundLine = "19-24 Students with an EHCP",
+                    RateBand = "1300 to 1499 hours (Band 7)",
+                    OnProgPayment = (decimal)125.67,
+                    TLevelStudent = true
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineDLearnRef1",
+                    StartFund = true,
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
+                    RateBand = "1500 to 1649 hours (Band 8)",
+                    OnProgPayment = (decimal)56425.99,
+                    TLevelStudent = true
+                },
+                new FM25Learner()
+                {
+                    LearnRefNumber = "FundingLineDLearnRef2",
+                    StartFund = true,
+                    FundLine = "19+ Continuing Students (excluding EHCP)",
+                    RateBand = "1650+ hours (Band 9)",
+                    OnProgPayment = (decimal)855.55,
+                    TLevelStudent = true
                 }
             };
         }
