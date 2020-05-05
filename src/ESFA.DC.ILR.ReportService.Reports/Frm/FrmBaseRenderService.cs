@@ -6,10 +6,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
     public abstract class FrmBaseRenderService<T> : IRenderService<IEnumerable<T>> where T : FrmBaseReportModel
     {
-        private readonly string _reportID;
         private readonly Style _defaultStyle;
         private readonly Style _dateTimeStyle;
 
+        protected readonly string _reportID;
         protected virtual object[] ColumnNames
             => new object[]
             {

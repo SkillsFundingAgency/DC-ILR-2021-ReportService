@@ -204,6 +204,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
             {
                 LearnAimRef = larsLearningDelivery.LearnAimRef,
                 LearnAimRefTitle = larsLearningDelivery.LearnAimRefTitle,
+                LearnAimRefTypeDesc = larsLearningDelivery.LearnAimRefTypeDesc,
                 NotionalNVQLevel = larsLearningDelivery.NotionalNVQLevel,
                 NotionalNVQLevelv2 = larsLearningDelivery.NotionalNVQLevelv2,
                 FrameworkCommonComponent = larsLearningDelivery.FrameworkCommonComponent,

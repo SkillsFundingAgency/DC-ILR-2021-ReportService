@@ -10,6 +10,8 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS
 
         public string LearnAimRefTitle { get; set; }
 
+        public string LearnAimRefTypeDesc { get; set; }
+
         public string NotionalNVQLevel { get; set; }
 
         public string NotionalNVQLevelv2 { get; set; }
