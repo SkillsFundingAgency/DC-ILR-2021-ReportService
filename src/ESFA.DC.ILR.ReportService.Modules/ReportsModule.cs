@@ -7,6 +7,7 @@ using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports;
 using ESFA.DC.ILR.ReportService.Reports.Frm;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM06;
+using ESFA.DC.ILR.ReportService.Reports.Frm.FRM07;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM08;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM15;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
@@ -212,6 +213,10 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<Frm06Report>().As<IWorksheetReport>();
             containerBuilder.RegisterType<Frm06ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm06ReportModel>>>();
             containerBuilder.RegisterType<Frm06ReportRenderService>().As<IRenderService<IEnumerable<Frm06ReportModel>>>();
+
+            containerBuilder.RegisterType<Frm07Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm07ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm07ReportModel>>>();
+            containerBuilder.RegisterType<Frm07ReportRenderService>().As<IRenderService<IEnumerable<Frm07ReportModel>>>();
 
             containerBuilder.RegisterType<Frm08Report>().As<IWorksheetReport>();
             containerBuilder.RegisterType<Frm08ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm08ReportModel>>>();
