@@ -46,7 +46,24 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
             reportServiceContextMock.Setup(c => c.Container).Returns(container);
 
             var reportServiceDependentData = Mock.Of<IReportServiceDependentData>();
-            var devolvedFundingSummaryReportModel = new List<DevolvedAdultEducationFundingSummaryReportModel> { new DevolvedAdultEducationFundingSummaryReportModel(sofLookup, 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164916-01.xml", DateTime.Now, "EasVersion","OrgVersion", "LarsVersion", "PostcodeVersion", "EmployersVersion", "ApplicationVersion", "ReportGeneratedAt", new List<IDevolvedAdultEducationFundingCategory>())};
+            var devolvedFundingSummaryReportModel = new List<DevolvedAdultEducationFundingSummaryReportModel>
+            {
+                new DevolvedAdultEducationFundingSummaryReportModel(
+                    sofLookup,
+                    1000000,
+                    "Provider ABC",
+                    "ILR-10000000-1920-20191204-164916-01.xml",
+                    "01/01/2020 09:00:00",
+                    DateTime.Now,
+                    "easVersion",
+                    "01/01/2020 09:00:00",
+                    "OrgVersion",
+                    "LarsVersion",
+                    "PostcodeVersion",
+                    "EmployersVersion",
+                    "ApplicationVersion",
+                    "ReportGeneratedAt",
+                    new List<IDevolvedAdultEducationFundingCategory>())};
 
             devolvedFundingSummaryReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData))
                 .Returns(devolvedFundingSummaryReportModel);

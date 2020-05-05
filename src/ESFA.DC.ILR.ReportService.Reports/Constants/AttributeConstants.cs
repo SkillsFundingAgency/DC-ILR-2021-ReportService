@@ -85,5 +85,6 @@
         public const string EasMcaGlaDefinedAdjustment3 = "MCA/GLA Defined Adjustment 3";
         public const string EasMcaGlaDefinedAdjustment4 = "MCA/GLA Defined Adjustment 4";
         public const string EasMcaGlaDefinedAdjustment5 = "MCA/GLA Defined Adjustment 5";
+        public const string EasMcaGlaDefinedAdjustment6 = "MCA/GLA Defined Adjustment 6";
     }
 }

@@ -14,6 +14,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
             builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory<IDesktopContext>>();
             builder.RegisterType<DesktopFileNameService>().As<IFileNameService>();
+            builder.RegisterType<DesktopJobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
 
             builder.RegisterModule<OrchestrationModule>();
             builder.RegisterModule<DataModule>();

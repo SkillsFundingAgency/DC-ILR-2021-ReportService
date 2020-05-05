@@ -13,7 +13,11 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string IlrReportingFilename { get; }
 
+        string LastIlrFileUpdate { get; }
+
         string EasReportingFilename { get; }
+
+        string LastEasFileUpdate { get; }
 
         string Container { get; }
 

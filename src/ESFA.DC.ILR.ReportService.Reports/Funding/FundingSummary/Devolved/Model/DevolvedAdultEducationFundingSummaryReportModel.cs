@@ -11,9 +11,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
             McaGlaSofLookup sofLookup, 
             int ukprn, 
             string providerName, 
-            string lastSubmittedIlrFileName, 
+            string ilrFile, 
+            string lastIlrFileUpdate,
             DateTime? filePreparationDate,
-            string latestEasFileName,
+            string lastEasFileUpdate,
+            string easFile,
             string organisationVersion,
             string larsVersion,
             string postcodeVersion,
@@ -25,8 +27,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
             SofLookup = sofLookup;
             Ukprn = ukprn;
             ProviderName = providerName;
-            LastSubmittedIlrFileName = lastSubmittedIlrFileName;
-            LatestEasFileName = latestEasFileName;
+            IlrFile = ilrFile;
+            EasFile = easFile;
+            LastIlrFileUpdate = lastIlrFileUpdate;
+            LastEasFileUpdate = lastEasFileUpdate;
             FilePreparationDate = filePreparationDate;
             OrganisationVersion = organisationVersion;
             LARSVersion = larsVersion;
@@ -43,9 +47,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
 
         public string ProviderName { get; }
 
-        public string LastSubmittedIlrFileName { get; }
+        public string IlrFile { get; }
 
-        public string LatestEasFileName { get; }
+        public string LastIlrFileUpdate { get; }
+
+        public string EasFile { get; }
+
+        public string LastEasFileUpdate { get; }
 
         public DateTime? FilePreparationDate { get; }
 

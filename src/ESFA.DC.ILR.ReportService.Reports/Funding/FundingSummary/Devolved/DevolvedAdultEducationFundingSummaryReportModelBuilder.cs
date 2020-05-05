@@ -84,8 +84,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                     reportServiceContext.Ukprn,
                     organisationName,
                     ExtractFileName(reportServiceContext.IlrReportingFilename),
+                    reportServiceContext.LastIlrFileUpdate,
                     filePreparationDate,
                     reportServiceContext.EasReportingFilename,
+                    reportServiceContext.LastEasFileUpdate,
                     orgVersion,
                     larsVersion,
                     postcodesVersion,
@@ -117,14 +119,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
         protected virtual IDevolvedAdultEducationFundLineGroup BuildEasFm35FundLineGroup(int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
             return new DevolvedAdultEducationFundLineGroup("EAS Total Earnings Adjustment (£)", currentPeriod, FundingDataSources.EAS, fundLines, periodisedValues)
-                .WithFundLine("EAS Authorised Claims (£)", new [] { AttributeConstants.EasAuthorisedClaims })
-                .WithFundLine("EAS Prince's Trust (£)", new [] { AttributeConstants.EasPrincesTrust })
-                .WithFundLine("EAS Excess Learning Support (£)", new [] { AttributeConstants.EasExcessLearningSupport })
-                .WithFundLine("EAS MCA/GLA Defined Adjustment 1 (£)", new [] { AttributeConstants.EasMcaGlaDefinedAdjustment1 })
+                .WithFundLine("EAS Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaims })
+                .WithFundLine("EAS Prince's Trust (£)", new[] { AttributeConstants.EasPrincesTrust })
+                .WithFundLine("EAS Excess Learning Support (£)", new[] { AttributeConstants.EasExcessLearningSupport })
+                .WithFundLine("EAS MCA/GLA Defined Adjustment 1 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment1 })
                 .WithFundLine("EAS MCA/GLA Defined Adjustment 2 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment2 })
                 .WithFundLine("EAS MCA/GLA Defined Adjustment 3 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment3 })
                 .WithFundLine("EAS MCA/GLA Defined Adjustment 4 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment4 })
-                .WithFundLine("EAS MCA/GLA Defined Adjustment 5 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment5 });
+                .WithFundLine("EAS MCA/GLA Defined Adjustment 5 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment5 })
+                .WithFundLine("EAS MCA/GLA Defined Adjustment 6 (£)", new[] { AttributeConstants.EasMcaGlaDefinedAdjustment6 });
         }
 
         private IDictionary<string, Dictionary<int, ILearningDelivery>> BuildLearningDeliveryDictionary(IMessage message, string sofFamCode)

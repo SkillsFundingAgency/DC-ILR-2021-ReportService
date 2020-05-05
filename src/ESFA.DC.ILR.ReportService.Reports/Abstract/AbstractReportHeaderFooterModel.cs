@@ -9,7 +9,11 @@
 
         public string IlrFile { get; set; }
 
+        public string LastIlrFileUpdate { get; set; }
+
         public string EasFile { get; set; }
+
+        public string LastEasFileUpdate { get; set; }
 
         public string Year { get; set; }
 

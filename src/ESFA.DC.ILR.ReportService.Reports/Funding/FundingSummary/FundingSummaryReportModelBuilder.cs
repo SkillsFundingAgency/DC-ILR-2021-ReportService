@@ -167,15 +167,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         private IDictionary<string, string> BuildHeaderData(IReportServiceContext reportServiceContext, ReferenceDataRoot referenceDataRoot)
         {
             var organisationName = referenceDataRoot.Organisations.FirstOrDefault(o => o.UKPRN == reportServiceContext.Ukprn)?.Name ?? string.Empty;
-            var easFileName = reportServiceContext.EasReportingFilename;
-            var fileName = ExtractFileName(reportServiceContext.IlrReportingFilename);
 
             return new Dictionary<string, string>()
             {
                 {SummaryPageConstants.ProviderName, organisationName},
                 {SummaryPageConstants.UKPRN, reportServiceContext.Ukprn.ToString()},
-                {SummaryPageConstants.LastILRFile, ExtractDisplayDateTimeFromFileName(reportServiceContext.IlrReportingFilename)},
-                {SummaryPageConstants.LastEAS, easFileName},
+                {SummaryPageConstants.ILRFile, reportServiceContext.IlrReportingFilename},
+                {SummaryPageConstants.LastILRFileUpdate, reportServiceContext.LastIlrFileUpdate},
+                {SummaryPageConstants.EASFile, reportServiceContext.EasReportingFilename},
+                {SummaryPageConstants.LastEASFileUpdate, reportServiceContext.LastEasFileUpdate },
                 {SummaryPageConstants.SecurityClassification, ReportingConstants.OfficialSensitive}
             };
         }
