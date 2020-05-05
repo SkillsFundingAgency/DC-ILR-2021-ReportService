@@ -56,6 +56,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 PrvDisadvPropnHist = learner.PrvDisadvPropnHist,
                 PrvHistLrgProgPropn = learner.PrvHistLrgProgPropn,
                 PrvRetentFactHist = learner.PrvRetentFactHist,
+                PrvHistL3ProgMathEngProp = learner.PrvHistL3ProgMathEngProp,
                 RateBand = learner.RateBand,
                 StartFund = learner.StartFund,
                 TLevelStudent = learner.TLevelStudent,

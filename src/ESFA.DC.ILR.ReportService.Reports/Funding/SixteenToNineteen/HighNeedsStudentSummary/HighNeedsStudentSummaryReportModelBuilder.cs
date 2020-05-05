@@ -93,9 +93,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             return model;
         }
 
-        private bool StudyProgrammePredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent.HasValue && fM25Learner.TLevelStudent.Value == false;
-        private bool TLevelPredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent.HasValue && fM25Learner.TLevelStudent.Value == true;
-
         private IEnumerable<string> LearnRefNumbersWithFundLine(IEnumerable<FM25Learner> learners, params string[] fundLine)
         {
             var fundLinesHashSet = new HashSet<string>(fundLine, StringComparer.OrdinalIgnoreCase);
