@@ -654,7 +654,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     LearnRefNumber = "FundingLineCLearnRef2",
                     StartFund = true,
                     FundLine = "19-24 Students with an EHCP",
-                    RateBand = "1300 to 1499 hours (Band 7)",
+                    RateBand = "1300 hours (T Level Band 7)",
                     OnProgPayment = (decimal)125.67,
                     TLevelStudent = true
                 },
@@ -663,7 +663,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     LearnRefNumber = "FundingLineDLearnRef1",
                     StartFund = true,
                     FundLine = "19+ Continuing Students (excluding EHCP)",
-                    RateBand = "1500 to 1649 hours (Band 8)",
+                    RateBand = "1500 hours (T Level Band 8)",
                     OnProgPayment = (decimal)56425.99,
                     TLevelStudent = true
                 },
@@ -672,7 +672,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     LearnRefNumber = "FundingLineDLearnRef2",
                     StartFund = true,
                     FundLine = "19+ Continuing Students (excluding EHCP)",
-                    RateBand = "1650+ hours (Band 9)",
+                    RateBand = "1650 hours (T Level Band 9)",
                     OnProgPayment = (decimal)855.55,
                     TLevelStudent = true
                 }
