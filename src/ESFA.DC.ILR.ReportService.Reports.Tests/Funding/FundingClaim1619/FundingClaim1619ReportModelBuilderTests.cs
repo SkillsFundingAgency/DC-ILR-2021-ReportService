@@ -137,6 +137,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.FundingFactor.AreaCostFact1618Hist.Should().Be("1.00000");
             result.FundingFactor.PrvDisadvPropnHist.Should().Be("0.34500");
             result.FundingFactor.PrvHistLrgProgPropn.Should().Be("0.21300");
+            result.FundingFactor.PrvHistL3ProgMathEngProp.Should().Be("0.21300");
 
             result.DirectFundingStudents.Band1StudentNumbers.Should().Be(0);
             result.DirectFundingStudents.Band2StudentNumbers.Should().Be(0);
@@ -542,7 +543,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     ProgWeightHist = (decimal)1.061,
                     AreaCostFact1618Hist = (decimal)1,
                     PrvDisadvPropnHist = (decimal)0.345,
-                    PrvHistLrgProgPropn = (decimal)0.213
+                    PrvHistLrgProgPropn = (decimal)0.213,
+                    PrvHistL3ProgMathEngProp = (decimal)0.213
                 },
                 new FM25Learner()
                 {
@@ -555,7 +557,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
                     ProgWeightHist = (decimal)1.061,
                     AreaCostFact1618Hist = (decimal)1,
                     PrvDisadvPropnHist = (decimal)0.345,
-                    PrvHistLrgProgPropn = (decimal)0.213
+                    PrvHistLrgProgPropn = (decimal)0.213,
+                    PrvHistL3ProgMathEngProp = (decimal)0.213
                 },
                 new FM25Learner()
                 {

@@ -33,6 +33,8 @@ namespace ESFA.DC.ILR.ReportService.Models.Fm25
 
         public Decimal? PrvRetentFactHist { get; set; }
 
+        public Decimal? PrvHistL3ProgMathEngProp { get; set; }
+
         public string RateBand { get; set; }
 
         public bool? StartFund { get; set; }

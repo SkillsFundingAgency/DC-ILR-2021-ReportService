@@ -11,5 +11,7 @@
         public string PrvDisadvPropnHist { get; set; }
 
         public string PrvHistLrgProgPropn { get; set; }
+
+        public string PrvHistL3ProgMathEngProp { get; set; }
     }
 }
