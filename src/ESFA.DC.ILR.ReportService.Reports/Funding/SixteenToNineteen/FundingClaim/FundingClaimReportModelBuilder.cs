@@ -186,31 +186,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
         private FundingLineReportingBandModel BuildFundlineReprtingBandModelForProgrammes(List<FM25Learner> fm25ProgrammeLearners, List<FM25Learner> fm25TLevelLearners)
         {
-            var programmeOnProgPaymentsLearners = fm25ProgrammeLearners.Where(ValidOnProgPayment).ToList();
-            var tLevelOnProgPaymentsLearners = fm25TLevelLearners.Where(ValidOnProgPayment).ToList();
-
             var model = new FundingLineReportingBandModel()
             {
                 Band9StudentNumbers = fm25TLevelLearners.Count(Band9),
-                Band9TotalFunding = SumOnProgPaymentsForRateBand(tLevelOnProgPaymentsLearners, Band9),
+                Band9TotalFunding = SumOnProgPaymentsForRateBand(fm25TLevelLearners, Band9),
                 Band8StudentNumbers = fm25TLevelLearners.Count(Band8),
-                Band8TotalFunding = SumOnProgPaymentsForRateBand(tLevelOnProgPaymentsLearners, Band8),
+                Band8TotalFunding = SumOnProgPaymentsForRateBand(fm25TLevelLearners, Band8),
                 Band7StudentNumbers = fm25TLevelLearners.Count(Band7),
-                Band7TotalFunding = SumOnProgPaymentsForRateBand(tLevelOnProgPaymentsLearners, Band7),
+                Band7TotalFunding = SumOnProgPaymentsForRateBand(fm25TLevelLearners, Band7),
                 Band6StudentNumbers = fm25TLevelLearners.Count(Band6),
-                Band6TotalFunding = SumOnProgPaymentsForRateBand(tLevelOnProgPaymentsLearners, Band6),
+                Band6TotalFunding = SumOnProgPaymentsForRateBand(fm25TLevelLearners, Band6),
                 Band5StudentNumbers = fm25ProgrammeLearners.Count(Band5),
-                Band5TotalFunding = SumOnProgPaymentsForRateBand(programmeOnProgPaymentsLearners, Band5),
+                Band5TotalFunding = SumOnProgPaymentsForRateBand(fm25ProgrammeLearners, Band5),
                 Band4aStudentNumbers = fm25ProgrammeLearners.Count(Band4a),
-                Band4aTotalFunding = SumOnProgPaymentsForRateBand(programmeOnProgPaymentsLearners, Band4a),
+                Band4aTotalFunding = SumOnProgPaymentsForRateBand(fm25ProgrammeLearners, Band4a),
                 Band4bStudentNumbers = fm25ProgrammeLearners.Count(Band4b),
-                Band4bTotalFunding = SumOnProgPaymentsForRateBand(programmeOnProgPaymentsLearners, Band4b),
+                Band4bTotalFunding = SumOnProgPaymentsForRateBand(fm25ProgrammeLearners, Band4b),
                 Band3StudentNumbers = fm25ProgrammeLearners.Count(Band3),
-                Band3TotalFunding = SumOnProgPaymentsForRateBand(programmeOnProgPaymentsLearners, Band3),
+                Band3TotalFunding = SumOnProgPaymentsForRateBand(fm25ProgrammeLearners, Band3),
                 Band2StudentNumbers = fm25ProgrammeLearners.Count(Band2),
-                Band2TotalFunding = SumOnProgPaymentsForRateBand(programmeOnProgPaymentsLearners, Band2),
+                Band2TotalFunding = SumOnProgPaymentsForRateBand(fm25ProgrammeLearners, Band2),
                 Band1StudentNumbers = fm25ProgrammeLearners.Count(Band1),
-                Band1TotalFunding = SumOnProgPaymentsForRateBand(programmeOnProgPaymentsLearners, Band1),
+                Band1TotalFunding = SumOnProgPaymentsForRateBand(fm25ProgrammeLearners, Band1),
             };
 
             return model;
@@ -218,7 +215,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
 
         private decimal SumOnProgPaymentsForRateBand(List<FM25Learner> learners, Func<FM25Learner, bool> rateBand)
         {
-            return learners.Where(rateBand).Sum(x => x.OnProgPayment.Value);
+            return learners.Where(x => ValidOnProgPayment(x) && rateBand(x)).Sum(x => x.OnProgPayment.Value);
         }
     }
 }
