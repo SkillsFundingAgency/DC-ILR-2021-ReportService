@@ -21,15 +21,17 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public int Ukprn => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
 
+        public string OriginalFilename => _jobContextMessage.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
+
         public string Filename => _jobContextMessage.KeyValuePairs[ILRContextKeys.Filename].ToString();
 
-        public string IlrReportingFilename => _jobContextMessage.KeyValuePairs[ReportServiceConstants.IlrReportingFilename].ToString();
+        public string IlrReportingFilename { get; set; }
 
-        public string LastIlrFileUpdate => _jobContextMessage.KeyValuePairs[ReportServiceConstants.LastIlrFileUpdate].ToString();
+        public string LastIlrFileUpdate { get; set; }
 
-        public string EasReportingFilename => _jobContextMessage.KeyValuePairs[ILRContextKeys.EasReportingFilename].ToString();
+        public string EasReportingFilename { get; set; }
 
-        public string LastEasFileUpdate => _jobContextMessage.KeyValuePairs[ILRContextKeys.LastEasFileUpdate].ToString();
+        public string LastEasFileUpdate { get; set; }
 
         public string Container => _jobContextMessage.KeyValuePairs[ILRContextKeys.Container].ToString();
 

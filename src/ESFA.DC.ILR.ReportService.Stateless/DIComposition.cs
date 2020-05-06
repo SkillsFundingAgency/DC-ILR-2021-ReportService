@@ -71,7 +71,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless
 
             containerBuilder.RegisterModule<OrchestrationModule>();
             containerBuilder.RegisterModule<ReportsModule>();
-            containerBuilder.RegisterType<JobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
 
             return containerBuilder;
         }

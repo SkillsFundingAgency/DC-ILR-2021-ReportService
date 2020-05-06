@@ -68,7 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 LarsVersion = MapLarsVersion(metaDataReferenceDataVersions.LarsVersion),
                 OrganisationsVersion = MapOrganisationsVersion(metaDataReferenceDataVersions.OrganisationsVersion),
                 PostcodesVersion = MapPostcodesVersion(metaDataReferenceDataVersions.PostcodesVersion),
-                EasUploadDateTime = MapEas(metaDataReferenceDataVersions.EasUploadDateTime),
+                EasFileDetails = MapEas(metaDataReferenceDataVersions.EasFileDetails),
                 DevolvedPostcodesVersion = MapDevolvedPostcodesVersion(metaDataReferenceDataVersions.DevolvedPostcodesVersion)
             };
         }
@@ -161,11 +161,12 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
             };
         }
 
-        private EasUploadDateTime MapEas(ReferenceDataService.Model.MetaData.ReferenceDataVersions.EasUploadDateTime easUploadDateTime)
+        private EasFileDetails MapEas(ReferenceDataService.Model.MetaData.ReferenceDataVersions.EasFileDetails easFileDetails)
         {
-            return new EasUploadDateTime()
+            return new EasFileDetails()
             {
-                UploadDateTime = easUploadDateTime.UploadDateTime
+                FileName = easFileDetails.FileName,
+                UploadDateTime = easFileDetails.UploadDateTime
             };
         }
 

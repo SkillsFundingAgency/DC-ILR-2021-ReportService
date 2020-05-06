@@ -59,10 +59,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 
                     var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
 
-                    var mutator = childLifeTimeScope.Resolve<IJobContextMessageKeysMutator>();
-
-                    await mutator.MutateAsync(jobContextMessage.KeyValuePairs, jobContextMessage.SubmissionDateTimeUtc, cancellationToken);
-
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
 
                     logger.LogDebug($"Completed Report Service");

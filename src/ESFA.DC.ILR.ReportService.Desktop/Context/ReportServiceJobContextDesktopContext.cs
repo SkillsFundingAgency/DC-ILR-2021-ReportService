@@ -22,13 +22,15 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
 
         public string Filename => _desktopContext.KeyValuePairs[ILRContextKeys.Filename].ToString();
 
-        public string IlrReportingFilename => _desktopContext.KeyValuePairs[ReportServiceConstants.IlrReportingFilename].ToString();
+        public string OriginalFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
 
-        public string LastIlrFileUpdate => _desktopContext.KeyValuePairs[ReportServiceConstants.LastIlrFileUpdate].ToString();
+        public string IlrReportingFilename { get; set; }
 
-        public string EasReportingFilename => _desktopContext.KeyValuePairs[ILRContextKeys.EasReportingFilename].ToString();
+        public string LastIlrFileUpdate { get; set; }
 
-        public string LastEasFileUpdate => _desktopContext.KeyValuePairs[ILRContextKeys.LastEasFileUpdate].ToString();
+        public string EasReportingFilename { get; set; }
+
+        public string LastEasFileUpdate { get; set; }
 
         public string Container => _desktopContext.KeyValuePairs[ILRContextKeys.Container].ToString();
 

@@ -20,20 +20,24 @@ namespace ESFA.DC.ILR.ReportService.Reports
         private readonly IReportsDependentDataPopulationService _reportsDependentDataPopulationService;
         private readonly IZipService _zipService;
         private readonly IList<IReport> _reports;
+        private readonly IReportServiceContextKeysMutator _reportServiceContextKeysMutator;
 
         public EntryPoint(
             ILogger logger,
             IExcelFileService excelService,
             IReportsDependentDataPopulationService reportsDependentDataPopulationService,
             IZipService zipService,
-            IList<IReport> reports)
+            IList<IReport> reports,
+            IReportServiceContextKeysMutator reportServiceContextKeysMutator)
         {
             _logger = logger;
             _excelService = excelService;
             _reportsDependentDataPopulationService = reportsDependentDataPopulationService;
             _zipService = zipService;
             _reports = reports;
+            _reportServiceContextKeysMutator = reportServiceContextKeysMutator;
         }
+
         public async Task<List<string>> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             List<string> reportOutputFilenames = new List<string>();
@@ -67,6 +71,8 @@ namespace ESFA.DC.ILR.ReportService.Reports
 
                 var reportsDependsOn = reportsToBeGenerated.SelectMany(x => x.DependsOn).Distinct().ToList();
                 var reportsDependentData = await _reportsDependentDataPopulationService.PopulateAsync(reportServiceContext, reportsDependsOn, cancellationToken);
+
+                await _reportServiceContextKeysMutator.MutateAsync(reportServiceContext, reportsDependentData, cancellationToken);
 
                 _logger.LogInfo("Finishing External Data");
 
