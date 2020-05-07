@@ -7,6 +7,8 @@ namespace ESFA.DC.ILR.ReportService.Data
 {
     public class ReportServiceContextKeysMutator : IReportServiceContextKeysMutator
     {
+        private const string _defaultEASValue = "N/A";
+
         public async Task<IReportServiceContext> MutateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData, CancellationToken cancellationToken)
         {
             await AddIlrReportingFilename(reportServiceContext,  cancellationToken);
@@ -27,10 +29,10 @@ namespace ESFA.DC.ILR.ReportService.Data
         {
             var referenceDataEASFile = reportServiceDependentData.Get<ReferenceDataRoot>().MetaDatas.ReferenceDataVersions.EasFileDetails;
 
-            reportServiceContext.EasReportingFilename = referenceDataEASFile?.FileName;
+            reportServiceContext.EasReportingFilename = referenceDataEASFile?.FileName ?? _defaultEASValue;
             reportServiceContext.LastEasFileUpdate =
                 referenceDataEASFile?.UploadDateTime != null ?
-                referenceDataEASFile?.UploadDateTime.Value.ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat) : null;
+                referenceDataEASFile?.UploadDateTime.Value.ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat) : _defaultEASValue;
         }
     }
 }
