@@ -22,7 +22,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             containerBuilder.RegisterMock<ISerializationService>();
             containerBuilder.RegisterMock<IExcelFileService>();
             containerBuilder.RegisterMock<ICsvFileService>();
-            containerBuilder.RegisterMock<IJobContextMessageKeysMutator>();
+            containerBuilder.RegisterMock<IReportServiceContextKeysMutator>();
         }
 
         private static void RegisterMock<T>(this ContainerBuilder containerBuilder)

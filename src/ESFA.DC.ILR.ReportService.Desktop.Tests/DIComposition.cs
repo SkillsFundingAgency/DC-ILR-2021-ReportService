@@ -9,6 +9,7 @@ using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Data;
 using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Tests.Stubs;
@@ -35,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var builder = new ContainerBuilder();
             builder.RegisterType<EntryPoint>().As<IEntryPoint>();
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
-            builder.RegisterType<DesktopJobContextMessageKeysMutator>().As<IJobContextMessageKeysMutator>();
+            builder.RegisterType<ReportServiceContextKeysMutator>().As<IReportServiceContextKeysMutator>();
             builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory<IDesktopContext>>();
             builder.RegisterType<FileSystemFileService>().As<IFileService>();
             

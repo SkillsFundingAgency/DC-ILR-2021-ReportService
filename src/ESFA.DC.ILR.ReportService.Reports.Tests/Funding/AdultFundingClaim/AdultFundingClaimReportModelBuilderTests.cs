@@ -52,7 +52,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AdultFundingClaim
                         LarsVersion = new LarsVersion { Version = "3.3.3.3" },
                         PostcodesVersion = new PostcodesVersion { Version = "4.4.4.4" },
                         CampusIdentifierVersion = new CampusIdentifierVersion() { Version = "5.5.5.5" },
-                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2020, 1, 1, 1, 1, 1) }
+                        EasFileDetails = new EasFileDetails { UploadDateTime = new DateTime(2020, 1, 1, 1, 1, 1) }
                     }
                 }
             };

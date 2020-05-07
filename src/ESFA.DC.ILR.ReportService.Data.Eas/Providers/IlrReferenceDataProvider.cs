@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
                             {
                                 Version = latestFileDetails?.PostcodesVersion
                             },
-                            EasUploadDateTime = new EasUploadDateTime()
+                            EasFileDetails = new EasFileDetails()
                             {
                                 UploadDateTime = latestFileDetails?.EasUploadDateTime
                             }

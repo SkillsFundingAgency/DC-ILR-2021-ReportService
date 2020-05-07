@@ -10,6 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
     {
         protected override void Load(ContainerBuilder builder)
         {
+            builder.RegisterType<ReportServiceContextKeysMutator>().As<IReportServiceContextKeysMutator>();
             builder.RegisterType<IlrReferenceDataProviderService>().Keyed<IExternalDataProvider>(DependentDataCatalog.ReferenceData);
             builder.RegisterType<ValidIlrFileServiceProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.ValidIlr);
             builder.RegisterType<InputIlrFileServiceProvider>().Keyed<IExternalDataProvider>(DependentDataCatalog.InputIlr);

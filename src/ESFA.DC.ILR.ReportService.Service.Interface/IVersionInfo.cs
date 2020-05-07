@@ -1,4 +1,4 @@
-﻿namespace ESFA.DC.ILR.ReportService.Interface.Configuration
+﻿namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
     public interface IVersionInfo
     {

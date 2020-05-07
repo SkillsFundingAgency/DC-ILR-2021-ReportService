@@ -135,8 +135,8 @@
     <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Loose.0.1.3-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.1.197.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.2021.ReferenceDataService.Model.0.1.197\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.1.206.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.ReferenceDataService.Model.0.1.206\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
@@ -463,7 +463,6 @@
     <Compile Include="Configuration\AzureStorageOptions.cs" />
     <Compile Include="Configuration\DatabaseConfiguration.cs" />
     <Compile Include="Configuration\Interface\IAzureStorageOptions.cs" />
-    <Compile Include="Configuration\Interface\IVersionInfo.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContext.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContextFactory.cs" />

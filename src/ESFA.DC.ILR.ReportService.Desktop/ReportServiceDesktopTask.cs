@@ -19,9 +19,6 @@ namespace ESFA.DC.ILR.ReportService.Desktop
 
         public async Task<IDesktopContext> ExecuteAsync(IDesktopContext desktopContext, CancellationToken cancellationToken)
         {
-            var mutator = _lifeTimeScope.Resolve<IJobContextMessageKeysMutator>();
-
-            await mutator.MutateAsync(desktopContext.KeyValuePairs, desktopContext.DateTimeUtc, cancellationToken);
             var reportServiceContext = _reportServiceContextFactory.Build(desktopContext);
 
             using (var childLifetimeScope = _lifeTimeScope.BeginLifetimeScope())

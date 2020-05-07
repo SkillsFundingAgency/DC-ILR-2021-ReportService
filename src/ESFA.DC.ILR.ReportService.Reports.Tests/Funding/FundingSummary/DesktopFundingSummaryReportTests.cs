@@ -63,7 +63,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingSummary
                     ReferenceDataVersions = new ReferenceDataVersion()
                     {
                         OrganisationsVersion = new OrganisationsVersion { Version = "orgVersion" },
-                        EasUploadDateTime = new EasUploadDateTime { UploadDateTime = new DateTime(2019, 01, 01)},
+                        EasFileDetails = new EasFileDetails { UploadDateTime = new DateTime(2019, 01, 01)},
                         LarsVersion = new LarsVersion { Version = "larsVersion" },
                         PostcodesVersion = new PostcodesVersion { Version = "postcodeVersion" },
                         Employers = new EmployersVersion { Version = "employersVersion" }

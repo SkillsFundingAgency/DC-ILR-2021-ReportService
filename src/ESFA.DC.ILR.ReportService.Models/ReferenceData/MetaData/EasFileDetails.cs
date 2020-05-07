@@ -2,8 +2,10 @@
 
 namespace ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData
 {
-    public class EasUploadDateTime
+    public class EasFileDetails
     {
+        public string FileName { get; set; }
+
         public DateTime? UploadDateTime { get; set; }
     }
 }
