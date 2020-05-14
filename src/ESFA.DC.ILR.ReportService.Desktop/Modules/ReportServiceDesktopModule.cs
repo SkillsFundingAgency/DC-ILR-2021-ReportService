@@ -9,6 +9,8 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 {
     public class ReportServiceDesktopModule : Module
     {
+        private readonly bool _fm36Switch = false;
+
         protected override void Load(ContainerBuilder builder)
         {
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
@@ -16,7 +18,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             builder.RegisterType<DesktopFileNameService>().As<IFileNameService>();
 
             builder.RegisterModule<OrchestrationModule>();
-            builder.RegisterModule<DataModule>();
+            builder.RegisterModule(new DataModule(_fm36Switch));
             builder.RegisterModule<DesktopReportsModule>();
         }
     }

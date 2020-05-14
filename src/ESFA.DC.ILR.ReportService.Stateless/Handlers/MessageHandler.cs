@@ -25,6 +25,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
     {
         private readonly ILifetimeScope _parentLifeTimeScope;
         private readonly StatelessServiceContext _context;
+        private readonly bool _fm36Switch = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandler"/> class.
@@ -92,7 +93,7 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                 switch (jobContextMessage.KeyValuePairs["CollectionName"].ToString())
                 {
                     case CollectionConstants.IlrCollectionName:
-                        c.RegisterModule<DataModule>();
+                        c.RegisterModule(new DataModule(_fm36Switch));
                         break;
 
                     case CollectionConstants.EasCollectionName:
