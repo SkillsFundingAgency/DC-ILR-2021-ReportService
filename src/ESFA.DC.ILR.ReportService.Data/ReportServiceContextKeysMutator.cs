@@ -27,7 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Data
 
         private async Task AddEasReportingFilename(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData, CancellationToken cancellationToken)
         {
-            var referenceDataEASFile = reportServiceDependentData.Get<ReferenceDataRoot>().MetaDatas.ReferenceDataVersions.EasFileDetails;
+            var referenceDataEASFile = reportServiceDependentData.Get<ReferenceDataRoot>()?.MetaDatas.ReferenceDataVersions.EasFileDetails;
 
             reportServiceContext.EasReportingFilename = referenceDataEASFile?.FileName ?? _defaultEASValue;
             reportServiceContext.LastEasFileUpdate =
