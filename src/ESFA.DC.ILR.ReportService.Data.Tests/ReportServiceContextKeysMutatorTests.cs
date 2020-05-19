@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Data.Tests.Stub;
@@ -33,8 +34,9 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
                 }
             };
 
-            var reportServiceDependentData = new Mock<IReportServiceDependentData>();
+            var reportServiceDependentData = new Mock<IReportServiceDependentData>(MockBehavior.Strict);
             reportServiceDependentData.Setup(x => x.Get<ReferenceDataRoot>()).Returns(refDataModel);
+            reportServiceDependentData.Setup(x => x.Contains<ReferenceDataRoot>()).Returns(true);
 
             IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "ILR-1-2.xml", "ILR-1-2.xml", new DateTime(2020, 8, 2));
 
@@ -47,6 +49,41 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
             contextOut.EasReportingFilename.Should().Be("EAS-1-2.csv");
             contextOut.LastIlrFileUpdate.Should().Be("02/08/2020 00:00:00");
             contextOut.LastEasFileUpdate.Should().Be("01/08/2020 00:00:00");
+        }
+
+        [Fact]
+        public async Task MutateAsync_NoDependentData_ValidationFailReport()
+        {
+            var cancellationToken = CancellationToken.None;
+            var errors = new List<ValidationError>
+            {
+                new ValidationError
+                {
+                    Message = "Message",
+                    RuleName = "Rule1"
+                },
+                new ValidationError
+                {
+                    Message = "Message",
+                    RuleName = "Rule2"
+                }
+            };
+
+            var reportServiceDependentData = new Mock<IReportServiceDependentData>(MockBehavior.Strict);
+            reportServiceDependentData.Setup(x => x.Get<List<ValidationError>>()).Returns(errors);
+            reportServiceDependentData.Setup(x => x.Contains<ReferenceDataRoot>()).Returns(false);
+
+            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "ILR-1-2.xml", "ILR-1-2.xml", new DateTime(2020, 8, 2));
+
+            var mutator = new ReportServiceContextKeysMutator();
+
+
+            var contextOut = await mutator.MutateAsync(contextIn, reportServiceDependentData.Object, cancellationToken);
+
+            contextOut.IlrReportingFilename.Should().Be("ILR-1-2.xml");
+            contextOut.EasReportingFilename.Should().Be("N/A");
+            contextOut.LastIlrFileUpdate.Should().Be("02/08/2020 00:00:00");
+            contextOut.LastEasFileUpdate.Should().Be("N/A");
         }
     }
 }

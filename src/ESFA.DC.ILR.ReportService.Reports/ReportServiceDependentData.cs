@@ -14,6 +14,11 @@ namespace ESFA.DC.ILR.ReportService.Reports
             return (T) Data[typeof(T)];
         }
 
+        public bool Contains<T>()
+        {
+            return Data.ContainsKey(typeof(T));
+        }
+
         public void Set(Type type, object value) 
         {
             Data[type] = value;
