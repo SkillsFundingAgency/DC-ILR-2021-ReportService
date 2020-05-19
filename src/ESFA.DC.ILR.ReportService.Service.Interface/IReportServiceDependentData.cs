@@ -6,6 +6,8 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
     {
         T Get<T>();
 
+        bool Contains<T>();
+
         void Set(Type type, object value);
     }
 }

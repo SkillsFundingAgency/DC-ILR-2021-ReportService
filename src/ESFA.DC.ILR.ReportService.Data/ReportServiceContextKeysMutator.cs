@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Data
@@ -27,7 +28,12 @@ namespace ESFA.DC.ILR.ReportService.Data
 
         private async Task AddEasReportingFilename(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData, CancellationToken cancellationToken)
         {
-            var referenceDataEASFile = reportServiceDependentData.Get<ReferenceDataRoot>()?.MetaDatas.ReferenceDataVersions.EasFileDetails;
+            var referenceDataEASFile = new EasFileDetails();
+
+            if (reportServiceDependentData.Contains<ReferenceDataRoot>())
+            {
+                referenceDataEASFile = reportServiceDependentData.Get<ReferenceDataRoot>()?.MetaDatas.ReferenceDataVersions.EasFileDetails;
+            }
 
             reportServiceContext.EasReportingFilename = referenceDataEASFile?.FileName ?? _defaultEASValue;
             reportServiceContext.LastEasFileUpdate =

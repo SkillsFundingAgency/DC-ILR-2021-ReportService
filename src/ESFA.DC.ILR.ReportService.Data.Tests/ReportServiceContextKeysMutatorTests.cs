@@ -34,8 +34,9 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
                 }
             };
 
-            var reportServiceDependentData = new Mock<IReportServiceDependentData>();
+            var reportServiceDependentData = new Mock<IReportServiceDependentData>(MockBehavior.Strict);
             reportServiceDependentData.Setup(x => x.Get<ReferenceDataRoot>()).Returns(refDataModel);
+            reportServiceDependentData.Setup(x => x.Contains<ReferenceDataRoot>()).Returns(true);
 
             IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "ILR-1-2.xml", "ILR-1-2.xml", new DateTime(2020, 8, 2));
 
@@ -68,8 +69,9 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
                 }
             };
 
-            var reportServiceDependentData = new Mock<IReportServiceDependentData>();
+            var reportServiceDependentData = new Mock<IReportServiceDependentData>(MockBehavior.Strict);
             reportServiceDependentData.Setup(x => x.Get<List<ValidationError>>()).Returns(errors);
+            reportServiceDependentData.Setup(x => x.Contains<ReferenceDataRoot>()).Returns(false);
 
             IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "ILR-1-2.xml", "ILR-1-2.xml", new DateTime(2020, 8, 2));
 
