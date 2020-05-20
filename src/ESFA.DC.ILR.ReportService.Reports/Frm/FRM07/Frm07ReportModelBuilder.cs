@@ -44,7 +44,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
             {
                 var restartDelivery = GetRestartDelivery(delivery.LearningDelivery, delivery.Learner);
 
-                if (restartDelivery != null)
+                if (restartDelivery == null)
                 {
                     continue;
                 }
