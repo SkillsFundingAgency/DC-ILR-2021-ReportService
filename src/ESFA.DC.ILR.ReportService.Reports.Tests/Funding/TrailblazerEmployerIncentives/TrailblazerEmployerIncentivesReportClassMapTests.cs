@@ -70,6 +70,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerInc
                 @"Total 16-18 year-old apprentice incentive (£)",
                 @"Total achievement incentive (£)",
                 @"Grand total (£)",
+                @"OFFICIAL-SENSITIVE",
             };
 
             var input = new List<TrailblazerEmployerIncentivesReportModel>();
@@ -98,7 +99,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerEmployerInc
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(53);
+                        header.Should().HaveCount(54);
                     }
                 }
             }

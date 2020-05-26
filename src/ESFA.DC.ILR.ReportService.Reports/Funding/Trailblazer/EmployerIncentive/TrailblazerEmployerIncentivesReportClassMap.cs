@@ -75,6 +75,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentiv
             Map(m => m.Total1618ApprenticeIncentive).Name(@"Total 16-18 year-old apprentice incentive (£)").Index(++index);
             Map(m => m.TotalAchievementPayment).Name(@"Total achievement incentive (£)").Index(++index);
             Map(m => m.GrandTotal).Name(@"Grand total (£)").Index(++index);
+
+            Map().Name(@"OFFICIAL-SENSITIVE").Constant(string.Empty).Index(++index);
         }
     }
 }
