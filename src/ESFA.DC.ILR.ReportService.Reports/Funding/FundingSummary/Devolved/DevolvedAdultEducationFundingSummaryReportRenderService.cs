@@ -97,7 +97,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
                 { SecurityClassification, ReportingConstants.OfficialSensitive }
             },row,0 );
 
-            ApplyStyleToRows(worksheet, row, 7, _headerStyle);
+            ApplyStyleToRows(worksheet, row, 8, _headerStyle);
 
             return worksheet;
         }
