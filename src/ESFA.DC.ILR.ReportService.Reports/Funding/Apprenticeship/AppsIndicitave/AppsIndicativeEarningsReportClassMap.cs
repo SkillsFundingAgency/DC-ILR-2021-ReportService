@@ -11,6 +11,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
             int i = 0;
             Map(m => m.LearnRefNumber).Index(i++).Name("Learner reference number");
             Map(m => m.Learner.ULN).Index(i++).Name("Unique learner number");
+            Map(m => m.Learner.FamilyName).Index(i++).Name("Family name");
+            Map(m => m.Learner.GivenNames).Index(i++).Name("Given names");
             Map(m => m.Learner.DateOfBirthNullable).Index(i++).Name("Date of birth");
             Map(m => m.Learner.PostcodePrior).Index(i++).Name("Postcode prior to enrolment");
             Map(m => m.Learner.CampId).Index(i++).Name("Campus identifier");
@@ -61,7 +63,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
             Map(m => m.LearningDelivery.PartnerUKPRNNullable).Index(i++).Name("Sub contracted or partnership UKPRN");
             Map(m => m.LearningDelivery.DelLocPostCode).Index(i++).Name("Delivery location postcode");
             Map(m => m.EmploymentStatus.EmpIdNullable).Index(i++).Name("Employer identifier on employment status date");
-            Map(m => m.PriceEpisodeValues.PriceEpisodeAgreeId).Index(i++).Name("Agreement identifier");
             Map(m => m.EmploymentStatus.EmpStat).Index(i++).Name("Employment status");
             Map(m => m.EmploymentStatus.DateEmpStatApp).Index(i++).Name("Employment status date");
             Map(m => m.EmpStatusMonitoringSmallEmployer).Index(i++).Name("Employment status monitoring - small employer");

@@ -23,6 +23,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
             {
                 "Learner reference number",
                 "Unique learner number",
+                "Family name",
+                "Given names",
                 "Date of birth",
                 "Postcode prior to enrolment",
                 "Campus identifier",
@@ -72,7 +74,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
                 "Sub contracted or partnership UKPRN",
                 "Delivery location postcode",
                 "Employer identifier on employment status date",
-                "Agreement identifier",
                 "Employment status",
                 "Employment status date",
                 "Employment status monitoring - small employer",
@@ -301,7 +302,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
                         csvReader.ReadHeader();
                         var header = csvReader.Context.HeaderRecord;
                         header.Should().ContainInOrder(orderedColumns);
-                        header.Should().HaveCount(237);
+                        header.Should().HaveCount(238);
                     }
                 }
             }
@@ -358,9 +359,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
                         var output = csvReader.GetRecords<dynamic>().ToList();
 
                         (output[0] as IDictionary<string, object>).Values.ToArray()[0].Should().Be("Test");
-                        (output[0] as IDictionary<string, object>).Values.ToArray()[2].Should().Be("13/07/2019");
-                        (output[0] as IDictionary<string, object>).Values.ToArray()[22].Should().Be(""); // OriginalLearnStartDate
-                        (output[0] as IDictionary<string, object>).Values.ToArray()[74].Should().Be("1.10000");
+                        (output[0] as IDictionary<string, object>).Values.ToArray()[4].Should().Be("13/07/2019");
+                        (output[0] as IDictionary<string, object>).Values.ToArray()[24].Should().Be(""); // OriginalLearnStartDate
+                        (output[0] as IDictionary<string, object>).Values.ToArray()[75].Should().Be("1.10000");
                     }
                 }
             }
