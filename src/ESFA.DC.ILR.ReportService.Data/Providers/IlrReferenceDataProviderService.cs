@@ -165,8 +165,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
         {
             return new EasFileDetails()
             {
-                FileName = easFileDetails.FileName,
-                UploadDateTime = easFileDetails.UploadDateTime
+                FileName = easFileDetails?.FileName,
+                UploadDateTime = easFileDetails?.UploadDateTime
             };
         }
 
