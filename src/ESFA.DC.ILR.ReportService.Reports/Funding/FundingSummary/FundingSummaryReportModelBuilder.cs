@@ -302,7 +302,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
             var description = "Non-Levy Contracted Apprenticeships";
 
             return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, fundLines, periodisedValues)
-                .WithFundLine($"EAS {ageRange} {description} Training Authorised Claims (£)", new [] { AttributeConstants.EasAuthorisedClaimsTraining })
+                .WithFundLine($"EAS {ageRange} {description} Training exc. Maths/English Authorised Claims (£)", new [] { AttributeConstants.EasAuthorisedClaimsTraining })
+                .WithFundLine($"EAS {ageRange} {description} Maths and English Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsMathsAndEnglish })
                 .WithFundLine($"EAS {ageRange} {description} Additional Payments for Providers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsProvider })
                 .WithFundLine($"EAS {ageRange} {description} Additional Payments for Employers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsEmployer })
                 .WithFundLine($"EAS {ageRange} {description} Excess Learning Support (£)", new [] { AttributeConstants.EasExcessLearningSupport });
@@ -311,7 +312,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
         protected virtual IFundLineGroup BuildEasLevyApprenticeshipsFundLineGroup(string ageRange, string description, int currentPeriod, IEnumerable<string> fundLines, IPeriodisedValuesLookup periodisedValues)
         {
             return new FundLineGroup($"EAS Total {ageRange} {description} Earnings Adjustment (£)", currentPeriod, Funding.FundingDataSources.EAS, fundLines, periodisedValues)
-                .WithFundLine($"EAS {ageRange} {description} - Training Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsTraining })
+                .WithFundLine($"EAS {ageRange} {description} - Training exc. Maths/English Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsTraining })
+                .WithFundLine($"EAS {ageRange} {description} - Maths and English Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsMathsAndEnglish })
                 .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Providers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsProvider })
                 .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Employers Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsEmployer })
                 .WithFundLine($"EAS {ageRange} {description} - Additional Payments for Apprentices Authorised Claims (£)", new[] { AttributeConstants.EasAuthorisedClaimsApprentice })
