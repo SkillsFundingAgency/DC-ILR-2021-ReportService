@@ -74,6 +74,7 @@
         public const string EasAuthorisedClaimsEmployer = "Authorised Claims - Additional payments for employer";
         public const string EasAuthorisedClaimsProvider = "Authorised Claims - Additional payments for provider";
         public const string EasAuthorisedClaimsTraining = "Authorised Claims - Training costs exc Maths/Eng";
+        public const string EasAuthorisedClaimsMathsAndEnglish = "Authorised Claims - Maths and English";
         public const string EasDiscretionaryBursary = "Discretionary Bursary";
         public const string EasExcessLearningSupport = "Excess Learning Support";
         public const string EasFreeMeals = "Free Meals";
