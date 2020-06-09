@@ -21,7 +21,13 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Context
 
         public int Ukprn => int.Parse(_jobContextMessage.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
 
-        public string OriginalFilename => _jobContextMessage.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
+        public string OriginalFilename
+        {
+            get => _jobContextMessage.KeyValuePairs.ContainsKey(ILRContextKeys.OriginalFilename)
+                ? _jobContextMessage.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString()
+                : string.Empty;
+            set => _jobContextMessage.KeyValuePairs[ILRContextKeys.OriginalFilename] = value;
+        }
 
         public string Filename => _jobContextMessage.KeyValuePairs[ILRContextKeys.Filename].ToString();
 
