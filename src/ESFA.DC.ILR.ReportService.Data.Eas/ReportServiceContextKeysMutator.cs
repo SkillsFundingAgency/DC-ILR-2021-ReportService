@@ -44,7 +44,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas
 
         private async Task AddEasReportingFilename(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
-            reportServiceContext.EasReportingFilename = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
+            reportServiceContext.EasReportingFilename = string.IsNullOrWhiteSpace(reportServiceContext.OriginalFilename) ? reportServiceContext.Filename : reportServiceContext.OriginalFilename;
             reportServiceContext.LastEasFileUpdate = reportServiceContext.SubmissionDateTimeUtc.ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat);
         }
     }
