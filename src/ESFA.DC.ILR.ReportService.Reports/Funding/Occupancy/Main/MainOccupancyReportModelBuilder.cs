@@ -19,6 +19,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
         {
         }
 
+        private readonly IEnumerable<string> _ldmLearnDelFamCodes = new HashSet<string>()
+        {
+            LearningDeliveryFAMCodeConstants.LDM_370,
+            LearningDeliveryFAMCodeConstants.LDM_371,
+            LearningDeliveryFAMCodeConstants.LDM_372,
+            LearningDeliveryFAMCodeConstants.LDM_373,
+        };
+
         public IEnumerable<MainOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var message = reportServiceDependentData.Get<IMessage>();
@@ -134,18 +142,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
                     && f.LearnDelFAMCode == LearningDeliveryFAMCodeConstants.SOF_ESFA) == true;
         }
 
-        // Story 99613 - LDM codes still TBC for filter. Followed up on another story.
-        // Return default to allow data through. 
-        // Unit Test updates required when filter is known.
         private bool LdmLearningDeliveryFilter(ILearningDelivery learningDelivery)
         {
-            return false;
-            //return learningDelivery
-            //    .LearningDeliveryFAMs?
-            //    .Any(
-            //        f =>
-            //        f.LearnDelFAMType == LearningDeliveryFAMTypeConstants.LDM
-            //        && f.LearnDelFAMCode == "") == true;
+            return learningDelivery
+                       .LearningDeliveryFAMs?
+                       .Any(
+                           f =>
+                               f.LearnDelFAMType == LearningDeliveryFAMTypeConstants.LDM
+                               && _ldmLearnDelFamCodes.Contains(f.LearnDelFAMCode)) == true;
         }
     }
 }
