@@ -18,5 +18,10 @@
 
         public const string SOF_ESFA = "105";
         public const string SOF_ESFA_1619 = "107";
+
+        public const string LDM_370 = "370";
+        public const string LDM_371 = "371";
+        public const string LDM_372 = "372";
+        public const string LDM_373 = "373";
     }
 }

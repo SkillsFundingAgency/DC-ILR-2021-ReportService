@@ -107,6 +107,71 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
             NewBuilder().FundModelLearningDeliveryFilter(learningDeliveryMock.Object, fundModel).Should().BeTrue();
         }
 
+        [Fact]
+        public void LdmLearningDeliveryFilter_False()
+        {
+            var learningDeliveryMock = new Mock<ILearningDelivery>();
+
+            var fundModel = 25;
+
+            learningDeliveryMock.SetupGet(ld => ld.FundModel).Returns(fundModel);
+
+            var learningDeliveryFamMockSof105 = new Mock<ILearningDeliveryFAM>();
+
+            learningDeliveryFamMockSof105.SetupGet(f => f.LearnDelFAMType).Returns("SOF");
+            learningDeliveryFamMockSof105.SetupGet(f => f.LearnDelFAMCode).Returns("105");
+
+            var learningDeliveryFamMockLdm = new Mock<ILearningDeliveryFAM>();
+
+            learningDeliveryFamMockLdm.SetupGet(f => f.LearnDelFAMType).Returns("LDM");
+            learningDeliveryFamMockLdm.SetupGet(f => f.LearnDelFAMCode).Returns("100");
+
+            var learningDeliveryFams = new List<ILearningDeliveryFAM>()
+            {
+                learningDeliveryFamMockSof105.Object,
+                learningDeliveryFamMockLdm.Object
+            };
+
+            learningDeliveryMock.SetupGet(ld => ld.LearningDeliveryFAMs).Returns(learningDeliveryFams);
+
+            NewBuilder().FundModelLearningDeliveryFilter(learningDeliveryMock.Object, fundModel).Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("370")]
+        [InlineData("371")]
+        [InlineData("372")]
+        [InlineData("373")]
+        public void LdmLearningDeliveryFilter_True(string famCode)
+        {
+            var learningDeliveryMock = new Mock<ILearningDelivery>();
+
+            var fundModel = 25;
+
+            learningDeliveryMock.SetupGet(ld => ld.FundModel).Returns(fundModel);
+
+            var learningDeliveryFamMockSof105 = new Mock<ILearningDeliveryFAM>();
+
+            learningDeliveryFamMockSof105.SetupGet(f => f.LearnDelFAMType).Returns("SOF");
+            learningDeliveryFamMockSof105.SetupGet(f => f.LearnDelFAMCode).Returns("105");
+
+            var learningDeliveryFamMockLdm = new Mock<ILearningDeliveryFAM>();
+
+            learningDeliveryFamMockLdm.SetupGet(f => f.LearnDelFAMType).Returns("LDM");
+            learningDeliveryFamMockLdm.SetupGet(f => f.LearnDelFAMCode).Returns(famCode);
+
+            var learningDeliveryFams = new List<ILearningDeliveryFAM>()
+            {
+                learningDeliveryFamMockSof105.Object,
+                learningDeliveryFamMockLdm.Object
+            };
+
+            learningDeliveryMock.SetupGet(ld => ld.LearningDeliveryFAMs).Returns(learningDeliveryFams);
+
+            NewBuilder().FundModelLearningDeliveryFilter(learningDeliveryMock.Object, fundModel).Should().BeFalse();
+        }
+
+
         private MainOccupancyReportModelBuilder NewBuilder(IIlrModelMapper ilrModelMapper = null)
         {
             return new MainOccupancyReportModelBuilder(ilrModelMapper);
