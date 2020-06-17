@@ -133,6 +133,7 @@
     <Compile Include="Frm\FRM15\Frm15ReportTests.cs" />
     <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
     <Compile Include="Funding\AEBSTFInitiativesOccupancy\AEBSTFInitiativesOccupancyReportModelBuilderTests.cs" />
+    <Compile Include="Funding\AEBSTFInitiativesOccupancy\AEBSTFInitiativesOccupancyReportClassMapTests.cs" />
     <Compile Include="Funding\CommunityLearning\CommunityLearningReportModelBuilderTests.cs" />
     <Compile Include="Funding\CommunityLearning\CommunityLearningReportTests.cs" />
     <Compile Include="Funding\NonContractDevolvedOccupancy\NonContractDevolvedAdultEducationOccupancyReportClassMapTests.cs" />
