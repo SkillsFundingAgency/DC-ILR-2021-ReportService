@@ -125,7 +125,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
         private void RegisterAEBSTFInitiativesOccupancyReport(ContainerBuilder containerBuilder)
         {
             containerBuilder.RegisterType<AEBSTFInitiativesOccupancyReport>().As<IReport>();
-            containerBuilder.RegisterType<AEBSTFInitiativesOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<MainOccupancyReportModel>>>();
+            containerBuilder.RegisterType<AEBSTFInitiativesOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<AEBSTFInitiativesOccupancyReportModel>>>();
         }
 
         private void RegisterAllbOccupancyReport(ContainerBuilder containerBuilder)

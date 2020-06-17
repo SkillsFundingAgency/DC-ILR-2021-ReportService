@@ -11,7 +11,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiativesOccupancy
 {
-    public class AEBSTFInitiativesOccupancyReportModelBuilder : AbstractOccupancyReportModelBuilder, IModelBuilder<IEnumerable<MainOccupancyReportModel>>
+    public class AEBSTFInitiativesOccupancyReportModelBuilder : AbstractOccupancyReportModelBuilder, IModelBuilder<IEnumerable<AEBSTFInitiativesOccupancyReportModel>>
     {
         public AEBSTFInitiativesOccupancyReportModelBuilder(IIlrModelMapper ilrModelMapper)
             : base(ilrModelMapper)
@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiat
             LearningDeliveryFAMCodeConstants.LDM_373,
         };
 
-        public IEnumerable<MainOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
+        public IEnumerable<AEBSTFInitiativesOccupancyReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var message = reportServiceDependentData.Get<IMessage>();
             var fm35 = reportServiceDependentData.Get<FM35Global>();
@@ -35,7 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiat
             var larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
             var fm35LearningDeliveries = BuildFm35LearningDeliveryDictionary(fm35);
 
-            var models = new List<MainOccupancyReportModel>();
+            var models = new List<AEBSTFInitiativesOccupancyReportModel>();
 
             foreach (var learner in message?.Learners?.Where(l => l != null) ?? Enumerable.Empty<ILearner>())
             {
@@ -71,7 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiat
                             LearningStartDate = learningDelivery.LearnStartDate,
                         };
 
-                        models.Add(new MainOccupancyReportModel()
+                        models.Add(new AEBSTFInitiativesOccupancyReportModel()
                         {
                             Learner = learner,
                             ProviderSpecLearnerMonitoring = providerSpecLearnerMonitoring,

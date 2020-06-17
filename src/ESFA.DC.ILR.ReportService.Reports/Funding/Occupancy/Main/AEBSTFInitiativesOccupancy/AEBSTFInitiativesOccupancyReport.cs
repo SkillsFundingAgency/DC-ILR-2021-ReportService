@@ -7,7 +7,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiativesOccupancy
 {
-    public class AEBSTFInitiativesOccupancyReport : AbstractCsvReport<MainOccupancyReportModel, MainOccupancyReportClassMap>, IReport
+    public class AEBSTFInitiativesOccupancyReport : AbstractCsvReport<AEBSTFInitiativesOccupancyReportModel, AEBSTFInitiativesOccupancyReportClassMap>, IReport
     {
         public IEnumerable<Type> DependsOn => new[]
         {
@@ -19,7 +19,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiat
 
         public AEBSTFInitiativesOccupancyReport(
             IFileNameService fileNameService,
-            IModelBuilder<IEnumerable<MainOccupancyReportModel>> modelBuilder,
+            IModelBuilder<IEnumerable<AEBSTFInitiativesOccupancyReportModel>> modelBuilder,
             ICsvFileService csvService)
             : base(fileNameService, modelBuilder, csvService, ReportTaskNameConstants.AEBSTFInitiativesOccupancyReport, ReportNameConstants.AEBSTFInitiativesOccupancy)
         {
