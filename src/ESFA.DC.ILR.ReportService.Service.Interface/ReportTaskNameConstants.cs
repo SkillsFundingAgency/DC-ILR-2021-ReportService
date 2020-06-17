@@ -10,6 +10,7 @@
         public const string SummaryOfFunding1619Report = "TaskGenerateSummaryOfFunding1619Report";
         public const string MathsAndEnglishReport = "TaskGenerateMathsAndEnglishReport";
         public const string MainOccupancyReport = "TaskGenerateMainOccupancyReport";
+        public const string AEBSTFInitiativesOccupancyReport = "TaskGenerateAEBSTFInitiativesOccupancyReport";
         public const string DataMatchReport = "TaskGenerateDataMatchReport";
         public const string AppsAdditionalPaymentsReport = "TaskGenerateAppsAdditionalPaymentsReport";
         public const string AppsMonthlyPaymentReport = "TaskGenerateAppsMonthlyPaymentReport";

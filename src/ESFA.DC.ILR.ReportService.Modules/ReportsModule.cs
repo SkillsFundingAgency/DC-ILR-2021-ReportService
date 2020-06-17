@@ -44,6 +44,7 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiativesOccupancy;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
 
 
@@ -58,6 +59,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterDevolvedAdultEducationOccupancyReport(containerBuilder);
             RegisterNonContractDevolvedAdultEducationOccupancyReport(containerBuilder);
             RegisterMainOccupancyReport(containerBuilder);
+            RegisterAEBSTFInitiativesOccupancyReport(containerBuilder);
             RegisterAllbOccupancyReport(containerBuilder);
 
             RegisterAppsIndicativeEarningsReport(containerBuilder);
@@ -118,6 +120,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<MainOccupancyReport>().As<IReport>();
             containerBuilder.RegisterType<MainOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<MainOccupancyReportModel>>>();
+        }
+
+        private void RegisterAEBSTFInitiativesOccupancyReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<AEBSTFInitiativesOccupancyReport>().As<IReport>();
+            containerBuilder.RegisterType<AEBSTFInitiativesOccupancyReportModelBuilder>().As<IModelBuilder<IEnumerable<MainOccupancyReportModel>>>();
         }
 
         private void RegisterAllbOccupancyReport(ContainerBuilder containerBuilder)
