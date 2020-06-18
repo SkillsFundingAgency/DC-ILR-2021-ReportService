@@ -11,7 +11,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 {
     public class AdultFundingClaimReport : AbstractExcelReport<AdultFundingClaimReportModel>, IReport
     {
-        private const int FisInfoRow = 8;
+        private const int FisInfoRow = 12;
   
         public AdultFundingClaimReport(
            IFileNameService fileNameService,
