@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
@@ -65,6 +66,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
                 DAM6 = damsArray[5]?.LearnDelFAMCode,
                 RES = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.RES, famDictionary),
                 EEF = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EEF, famDictionary),
+                ASL = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.ASL, famDictionary),
+                EII = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EII, famDictionary),
+                HHS1 = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.HHS1, famDictionary),
+                HHS2 = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.HHS2, famDictionary),
             };
         }
 
@@ -72,5 +77,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
         {
             return learningDeliveryFamDictionary.GetValueOrDefault(famType)?.FirstOrDefault()?.LearnDelFAMCode;
         }
+
     }
 }

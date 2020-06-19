@@ -210,6 +210,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 NotionalNVQLevelv2 = larsLearningDelivery.NotionalNVQLevelv2,
                 FrameworkCommonComponent = larsLearningDelivery.FrameworkCommonComponent,
                 SectorSubjectAreaTier2 = larsLearningDelivery.SectorSubjectAreaTier2,
+                SectorSubjectAreaTier2Desc = larsLearningDelivery.SectorSubjectAreaTier2Desc,
                 LARSLearningDeliveryCategories = MapLarsLearningDeliveryCategories(larsLearningDelivery.LARSLearningDeliveryCategories)
             };
         }

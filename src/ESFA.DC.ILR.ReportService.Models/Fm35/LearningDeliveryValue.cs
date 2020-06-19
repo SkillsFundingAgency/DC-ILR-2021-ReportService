@@ -24,6 +24,8 @@ namespace ESFA.DC.ILR.ReportService.Models.Fm35
 
         public string FundLine { get; set; }
 
+        public bool? FundStart { get; set; }
+
         public int? LargeEmployerID { get; set; }
 
         public Decimal? LargeEmployerFM35Fctr { get; set; }

@@ -5,6 +5,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
