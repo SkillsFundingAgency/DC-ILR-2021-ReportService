@@ -11,7 +11,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 {
     public class AdultFundingClaimReport : AbstractExcelReport<AdultFundingClaimReportModel>, IReport
     {
-        private const int FisInfoRow = 12;
+        private const int FisInfoRowIndex = 11;
   
         public AdultFundingClaimReport(
            IFileNameService fileNameService,
@@ -35,7 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 
         public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
-            var filenames = await GenerateExcelAsync(reportServiceContext, reportsDependentData, cancellationToken, DesktopMode == false ? FisInfoRow : (int?)null);
+            var filenames = await GenerateExcelAsync(reportServiceContext, reportsDependentData, cancellationToken, DesktopMode == false ? FisInfoRowIndex : (int?)null);
 
             return filenames;
         }

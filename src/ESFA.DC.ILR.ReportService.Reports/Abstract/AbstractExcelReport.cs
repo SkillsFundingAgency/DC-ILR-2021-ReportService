@@ -31,7 +31,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
 
         public string DataSource { get; }
 
-        public async Task<IEnumerable<string>> GenerateExcelAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken, int? fisInfoRowToDelete = null)
+        public async Task<IEnumerable<string>> GenerateExcelAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken, int? fisInfoRowIndexToDelete = null)
         {
             var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
 
@@ -42,17 +42,17 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
                     model,
                     TemplateFileName,
                     DataSource,
-                    fisInfoRowToDelete,
+                    fisInfoRowIndexToDelete,
                     cancellationToken)
             };
         }
 
-        public virtual void RenderIndicativeMessage(Workbook workbook, int fisInfoRowToDelete)
+        public virtual void RenderIndicativeMessage(Workbook workbook, int fisInfoRowIndexToDelete)
         {
-            workbook.Worksheets[0].Cells.DeleteRow(fisInfoRowToDelete);
+            workbook.Worksheets[0].Cells.DeleteRow(fisInfoRowIndexToDelete);
         }
 
-        private async Task<string> WriteWorkbookAsync(IReportServiceContext reportServiceContext, TModel model, string templateFileName, string dataSource, int? fisInfoRow, CancellationToken cancellationToken)
+        private async Task<string> WriteWorkbookAsync(IReportServiceContext reportServiceContext, TModel model, string templateFileName, string dataSource, int? fisInfoRowIndex, CancellationToken cancellationToken)
         {
             var reportFileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
 
@@ -63,9 +63,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Abstract
             {
                 var workbook = _excelFileService.BindExcelTemplateToWorkbook(model, dataSource, manifestResourceStream);
 
-                if (fisInfoRow.HasValue)
+                if (fisInfoRowIndex.HasValue)
                 {
-                    RenderIndicativeMessage(workbook, fisInfoRow.Value);
+                    RenderIndicativeMessage(workbook, fisInfoRowIndex.Value);
                 }
 
                 await _excelFileService.SaveWorkbookAsync(workbook, reportFileName, reportServiceContext.Container, cancellationToken);
