@@ -71,6 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 CapFactor = fm35LearningDeliveryValue.CapFactor,
                 DisUpFactAdj = fm35LearningDeliveryValue.DisUpFactAdj,
                 FundLine = fm35LearningDeliveryValue.FundLine,
+                FundStart = fm35LearningDeliveryValue.FundStart,
                 LargeEmployerID = fm35LearningDeliveryValue.LargeEmployerID,
                 LargeEmployerFM35Fctr = fm35LearningDeliveryValue.LargeEmployerFM35Fctr,
                 NonGovCont = fm35LearningDeliveryValue.NonGovCont,

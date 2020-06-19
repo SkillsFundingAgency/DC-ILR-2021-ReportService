@@ -43,7 +43,7 @@
     <PackageReference Include="ESFA.DC.ILR.2021.Model" Version="0.1.3-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.2021.Model.Loose" Version="0.1.3-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.2021.ReferenceDataService.Model" Version="0.1.234" />
+    <PackageReference Include="ESFA.DC.ILR.2021.ReferenceDataService.Model" Version="0.1.263" />
     <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.23-beta0001" />
     <PackageReference Include="ESFA.DC.Logging.Interfaces" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.6-beta0001" />
