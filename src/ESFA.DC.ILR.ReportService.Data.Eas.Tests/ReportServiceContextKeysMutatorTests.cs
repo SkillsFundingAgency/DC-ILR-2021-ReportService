@@ -35,7 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Tests
             Func<IILR2021_DataStoreEntities> ilrFunc = () => { return IlrMock.Object; };
 
             var mutator = new ReportServiceContextKeysMutator(ilrFunc);
-            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "EAS-1-2.csv", "EAS-1-2.csv", new DateTime(2020, 8, 1));
+            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "1/EAS-1-2.csv", "1/EAS-1-2.csv", new DateTime(2020, 8, 1));
 
             var contextOut = await mutator.MutateAsync(contextIn, null, cancellationToken);
 
