@@ -41,6 +41,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
             var lsf = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.LSF);
             var alb = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.ALB);
 
+            var hhsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.HHS).ToFixedLengthArray(2);
+
             return new LearningDeliveryFAMsModel()
             {
                 ADL = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.ADL, famDictionary),
@@ -68,8 +70,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
                 EEF = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EEF, famDictionary),
                 ASL = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.ASL, famDictionary),
                 EII = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EII, famDictionary),
-                HHS1 = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.HHS1, famDictionary),
-                HHS2 = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.HHS2, famDictionary),
+                HHS1 = hhsArray[0]?.LearnDelFAMCode,
+                HHS2 = hhsArray[1]?.LearnDelFAMCode
             };
         }
 

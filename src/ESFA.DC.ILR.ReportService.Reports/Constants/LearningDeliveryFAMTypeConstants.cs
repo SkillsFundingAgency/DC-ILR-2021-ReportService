@@ -26,8 +26,6 @@
 
         public const string EII = "EII";
 
-        public const string HHS1 = "HHS1";
-
-        public const string HHS2 = "HHS2";
+        public const string HHS = "HHS";
     }
 }
