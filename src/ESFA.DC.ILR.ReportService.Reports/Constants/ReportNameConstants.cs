@@ -18,6 +18,7 @@
         public const string SummaryOfFM35Funding = "Summary of Funding Model 35 Funding Report";
         public const string TrailblazerEmployerIncentives = "Trailblazer Apprenticeships Employer Incentives Report";
         public const string FundingSummary = "Funding Summary Report";
+        public const string AEBSTFFundingSummary = "AEB Short Term Funding Initiatives Funding Summary Report";
         public const string MathsAndEnglish = "Maths and English Report";
         public const string HighNeedsStudentDetail = "High Needs Students Detail Report";
         public const string SummaryOfFundingByStudent = "16-19 Summary of Funding by Student Report";

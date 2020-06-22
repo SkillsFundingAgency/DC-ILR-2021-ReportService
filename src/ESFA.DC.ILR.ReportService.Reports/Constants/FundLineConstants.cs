@@ -56,5 +56,12 @@
 
         // FM99 FundLines
         public const string AdvancedLearnerLoansBursary = "Advanced Learner Loans Bursary";
+
+        // Short Term Funding Initiative FundLines
+        public const string STFI1 = "Short Term Funding Initiative 1";
+        public const string STFI2 = "Short Term Funding Initiative 2";
+        public const string STFI3 = "Short Term Funding Initiative 3";
+        public const string STFI4 = "Short Term Funding Initiative 4";
+
     }
 }
