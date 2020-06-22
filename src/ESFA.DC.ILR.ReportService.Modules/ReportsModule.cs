@@ -44,6 +44,8 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.AEBSTF;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiativesOccupancy;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
 
@@ -66,6 +68,7 @@ namespace ESFA.DC.ILR.ReportService.Modules
             RegisterNonContractsAppsActivityReport(containerBuilder);
 
             RegisterFundingSummaryReport(containerBuilder);
+            RegisterAEBSTFFundingSummaryReport(containerBuilder);
 
             RegisterSummaryOfFM35FundingReport(containerBuilder);
 
@@ -146,6 +149,12 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
+        }
+
+        protected virtual void RegisterAEBSTFFundingSummaryReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<AEBSTFFundingSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<AEBSTFFundingSummaryReportModelBuilder>().As<IModelBuilder<AEBSTFFundingSummaryReportModel>>();
         }
 
         protected virtual void RegisterCommunityLearningReport(ContainerBuilder containerBuilder)

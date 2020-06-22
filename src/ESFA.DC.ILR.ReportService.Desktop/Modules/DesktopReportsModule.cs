@@ -13,6 +13,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 using System.Collections.Generic;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim.Desktop;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 
 namespace ESFA.DC.ILR.ReportService.Desktop.Modules
 {
@@ -24,6 +25,12 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Modules
             containerBuilder.RegisterType<DesktopFundingSummaryReportModelBuilder>().As<IModelBuilder<IFundingSummaryReport>>();
             containerBuilder.RegisterType<FundingSummaryReportRenderService>().As<IRenderService<IFundingSummaryReport>>();
             containerBuilder.RegisterType<PeriodisedValuesLookupProvider>().As<IPeriodisedValuesLookupProvider>();
+        }
+
+        protected override void RegisterAEBSTFFundingSummaryReport(ContainerBuilder containerBuilder)
+        {
+            containerBuilder.RegisterType<DesktopAEBSTFFundingSummaryReport>().As<IReport>();
+            containerBuilder.RegisterType<DesktopAEBSTFFundingSummaryReportModelBuilder>().As<IModelBuilder<AEBSTFFundingSummaryReportModel>>();
         }
 
         protected override void RegisterDevolvedAdultEducationFundingSummaryReport(ContainerBuilder containerBuilder)

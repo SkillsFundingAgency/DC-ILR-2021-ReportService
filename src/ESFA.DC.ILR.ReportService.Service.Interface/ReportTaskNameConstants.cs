@@ -6,6 +6,7 @@
         public const string ValidationSchemaErrorReport = "TaskGenerateValidationSchemaErrorsReport";
         public const string AllbOccupancyReport = "TaskGenerateAllbOccupancyReport";
         public const string FundingSummaryReport = "TaskGenerateFundingSummaryReport";
+        public const string AEBSTFFundingSummaryReport = "TaskGenerateAEBSTFFundingSummaryReport";
         public const string AdultFundingClaimReport = "TaskGenerateAdultFundingClaimReport";
         public const string SummaryOfFunding1619Report = "TaskGenerateSummaryOfFunding1619Report";
         public const string MathsAndEnglishReport = "TaskGenerateMathsAndEnglishReport";
