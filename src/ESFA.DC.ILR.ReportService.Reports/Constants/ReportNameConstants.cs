@@ -12,7 +12,7 @@
         public const string AllbOccupancy = "ALLB Occupancy Report";
         public const string DevolvedAdultEducationOccupancy = "Devolved Adult Education Occupancy Report";
         public const string MainOccupancy = "Main Occupancy Report";
-        public const string AEBSTFInitiativesOccupancy = "AEB Short Term Funding Initiatives Occupancy Report ";
+        public const string AEBSTFInitiativesOccupancy = "AEB Short Term Funding Initiatives Occupancy Report";
         public const string NonContractDevolvedAdultEducationOccupancy = "Non-Contracted Devolved Adult Education Activity Report";
         public const string TrailblazerOccupancy = "Trailblazer Apprenticeships Occupancy Report";
         public const string SummaryOfFM35Funding = "Summary of Funding Model 35 Funding Report";
