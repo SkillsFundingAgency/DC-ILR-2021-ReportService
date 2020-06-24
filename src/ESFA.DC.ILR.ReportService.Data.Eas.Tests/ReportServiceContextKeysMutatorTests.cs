@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Data.Eas.Tests.Stub;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR2021.DataStore.EF;
@@ -34,15 +35,19 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Tests
 
             Func<IILR2021_DataStoreEntities> ilrFunc = () => { return IlrMock.Object; };
 
-            var mutator = new ReportServiceContextKeysMutator(ilrFunc);
-            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "1/EAS-1-2.csv", "1/EAS-1-2.csv", new DateTime(2020, 8, 1));
+            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "1/EAS-1-2.csv", "1/EAS-1-2.csv", new DateTime(2020, 8, 2, 9, 0, 0));
 
+            var dateTimeProviderMock = new Mock<IDateTimeProvider>();
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(contextIn.SubmissionDateTimeUtc)).Returns(new DateTime(2020, 8, 2, 8, 0, 0));
+
+            var mutator = new ReportServiceContextKeysMutator(ilrFunc, dateTimeProviderMock.Object);
+            
             var contextOut = await mutator.MutateAsync(contextIn, null, cancellationToken);
 
             contextOut.IlrReportingFilename.Should().Be("ILR-1-2.xml");
             contextOut.EasReportingFilename.Should().Be("EAS-1-2.csv");
             contextOut.LastIlrFileUpdate.Should().Be("02/08/2020 00:00:00");
-            contextOut.LastEasFileUpdate.Should().Be("01/08/2020 00:00:00");
+            contextOut.LastEasFileUpdate.Should().Be("02/08/2020 08:00:00");
         }
     }
 }
