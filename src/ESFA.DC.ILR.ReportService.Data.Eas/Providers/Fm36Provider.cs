@@ -42,7 +42,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
                                     PriceEpisodeCappedRemainingTNPAmount = ape.PriceEpisodeCappedRemainingTNPAmount,
                                     PriceEpisodeAimSeqNumber = ape.PriceEpisodeAimSeqNumber,
                                     PriceEpisodeFundLineType = ape.PriceEpisodeFundLineType,
-                                    PriceEpisodeAgreeId = ape.PriceEpisodeAgreeId,
                                 },
                                 PriceEpisodePeriodisedValues = ape.AEC_ApprenticeshipPriceEpisode_PeriodisedValues.Select(apepv => new PriceEpisodePeriodisedValues()
                                 {
