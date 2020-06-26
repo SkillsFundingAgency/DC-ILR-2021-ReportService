@@ -70,7 +70,6 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 PriceEpisodeCappedRemainingTNPAmount = priceEpisodeValues.PriceEpisodeCappedRemainingTNPAmount,
                 PriceEpisodeAimSeqNumber = priceEpisodeValues.PriceEpisodeAimSeqNumber,
                 PriceEpisodeFundLineType = priceEpisodeValues.PriceEpisodeFundLineType,
-                PriceEpisodeAgreeId = priceEpisodeValues.PriceEpisodeAgreeId,
             };
         }
 
