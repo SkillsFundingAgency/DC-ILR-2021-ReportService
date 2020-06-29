@@ -19,6 +19,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
         public async Task MutateAsync()
         {
             var cancellationToken = CancellationToken.None;
+            var easUploadTime = new DateTime(2020, 8, 1, 9, 0, 0);
+
             var refDataModel = new ReferenceDataRoot
             {
                 MetaDatas = new MetaData
@@ -28,7 +30,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
                         EasFileDetails = new EasFileDetails
                         {
                             FileName = "EAS-1-2.csv",
-                            UploadDateTime = new DateTime(2020, 8, 1)
+                            UploadDateTime = easUploadTime
                         }
                     }
 
@@ -44,6 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
 
             var dateTimeProviderMock = new Mock<IDateTimeProvider>();
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(contextIn.SubmissionDateTimeUtc)).Returns(new DateTime(2020, 8, 2, 8, 0, 0));
+            dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(easUploadTime)).Returns(new DateTime(2020, 8, 1, 8, 0, 0));
 
             var mutator = new ReportServiceContextKeysMutator(dateTimeProviderMock.Object);
             
@@ -53,7 +56,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
             contextOut.IlrReportingFilename.Should().Be("ILR-1-2.xml");
             contextOut.EasReportingFilename.Should().Be("EAS-1-2.csv");
             contextOut.LastIlrFileUpdate.Should().Be("02/08/2020 08:00:00");
-            contextOut.LastEasFileUpdate.Should().Be("01/08/2020 00:00:00");
+            contextOut.LastEasFileUpdate.Should().Be("01/08/2020 08:00:00");
         }
 
         [Fact]

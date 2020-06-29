@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
@@ -44,9 +45,19 @@ namespace ESFA.DC.ILR.ReportService.Data
             }
 
             reportServiceContext.EasReportingFilename = referenceDataEASFile?.FileName ?? _defaultEASValue;
-            reportServiceContext.LastEasFileUpdate =
-                referenceDataEASFile?.UploadDateTime != null ?
-                referenceDataEASFile?.UploadDateTime.Value.ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat) : _defaultEASValue;
+
+            if (referenceDataEASFile?.UploadDateTime != null)
+            {
+                var easLastUpdated = (DateTime)referenceDataEASFile?.UploadDateTime.Value;
+
+                reportServiceContext.LastEasFileUpdate = _dateTimeProvider.ConvertUtcToUk(easLastUpdated).ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat);
+            }
+
+            if (referenceDataEASFile?.UploadDateTime == null)
+            {
+
+                reportServiceContext.LastEasFileUpdate = _defaultEASValue;
+            }
         }
     }
 }

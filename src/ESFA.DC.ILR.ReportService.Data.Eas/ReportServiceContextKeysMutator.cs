@@ -39,9 +39,12 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas
                     .FirstOrDefaultAsync(cancellationToken);
 
                 reportServiceContext.IlrReportingFilename = Path.GetFileName(fileDetails?.Filename);
-                reportServiceContext.LastIlrFileUpdate = fileDetails?.SubmittedTime != null
-                    ? fileDetails?.SubmittedTime.Value.ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat)
-                    : null;
+
+                if (fileDetails?.SubmittedTime != null)
+                {
+                    var ilrUploadedTime = (DateTime)fileDetails?.SubmittedTime.Value;
+                    reportServiceContext.LastIlrFileUpdate = _dateTimeProvider.ConvertUtcToUk(ilrUploadedTime).ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat);
+                }   
             }
         }
 
