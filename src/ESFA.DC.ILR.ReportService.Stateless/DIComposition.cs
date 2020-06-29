@@ -4,7 +4,6 @@ using ESFA.DC.FileService;
 using ESFA.DC.FileService.Config;
 using ESFA.DC.FileService.Config.Interface;
 using ESFA.DC.FileService.Interface;
-using ESFA.DC.ILR.ReportService.Data;
 using ESFA.DC.ILR.ReportService.Interface.Configuration;
 using ESFA.DC.ILR.ReportService.Modules;
 using ESFA.DC.ILR.ReportService.Reports.Service;
