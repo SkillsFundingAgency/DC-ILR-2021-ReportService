@@ -211,7 +211,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 FrameworkCommonComponent = larsLearningDelivery.FrameworkCommonComponent,
                 SectorSubjectAreaTier2 = larsLearningDelivery.SectorSubjectAreaTier2,
                 SectorSubjectAreaTier2Desc = larsLearningDelivery.SectorSubjectAreaTier2Desc,
-                LARSLearningDeliveryCategories = MapLarsLearningDeliveryCategories(larsLearningDelivery.LARSLearningDeliveryCategories)
+                LARSLearningDeliveryCategories = MapLarsLearningDeliveryCategories(larsLearningDelivery.LARSLearningDeliveryCategories),
+                LARSFrameworks = MapLarsLearningDeliveryFrameworks(larsLearningDelivery.LARSFrameworks)
             };
         }
 
@@ -229,6 +230,23 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 CategoryRef = larsLearningDeliveryCategory.CategoryRef,
                 EffectiveFrom = larsLearningDeliveryCategory.EffectiveFrom,
                 EffectiveTo = larsLearningDeliveryCategory.EffectiveTo
+            };
+        }
+
+        private IReadOnlyCollection<LARSFramework> MapLarsLearningDeliveryFrameworks(IEnumerable<ReferenceDataService.Model.LARS.LARSFramework> larsFrameworks)
+        {
+            return larsFrameworks?.Select(MapLarsLearningDeliveryFramework).ToList();
+        }
+
+        private LARSFramework MapLarsLearningDeliveryFramework(ReferenceDataService.Model.LARS.LARSFramework larsFramework)
+        {
+            return new LARSFramework()
+            {
+                LARSFrameworkAim = new LARSFrameworkAim()
+                {
+                    LearnAimRef = larsFramework?.LARSFrameworkAim?.LearnAimRef,
+                    FrameworkComponentType = larsFramework?.LARSFrameworkAim?.FrameworkComponentType
+                }
             };
         }
 

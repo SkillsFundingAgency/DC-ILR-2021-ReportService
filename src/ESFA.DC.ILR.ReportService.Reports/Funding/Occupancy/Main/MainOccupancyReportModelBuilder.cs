@@ -4,6 +4,7 @@ using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract;
@@ -48,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
                     { 
                         var fm35LearningDelivery = fm35LearningDeliveries.GetValueOrDefault(learner.LearnRefNumber).GetValueOrDefault(learningDelivery.AimSeqNumber);
                         var larsLearningDelivery = larsLearningDeliveries.GetValueOrDefault(learningDelivery.LearnAimRef);
+                        var larsFrameworkAim = larsLearningDelivery?.LARSFrameworks?.FirstOrDefault(lf => lf.LARSFrameworkAim.LearnAimRef.CaseInsensitiveEquals(learningDelivery.LearnAimRef))?.LARSFrameworkAim ?? new LARSFrameworkAim();
                         var providerSpecLearnerMonitoring = _ilrModelMapper.MapProviderSpecLearnerMonitorings(learner.ProviderSpecLearnerMonitorings);
                         var providerSpecDeliveryMonitoring = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings);
                         var learningDeliveryFams = _ilrModelMapper.MapLearningDeliveryFAMs(learningDelivery.LearningDeliveryFAMs);
@@ -86,7 +88,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
                             PeriodisedValues = periodisedValues,
                             FundModelAgnosticModel = fundModelAgnosticModel,
                             TraineeshipWorkPlacementOrWorkPreparation = traineeshipWorkPlacementOrWorPreparation,
-                            HigherApprenticeshipPrescribedHeAim = higherApprenticeshipPrescribedHeAim
+                            HigherApprenticeshipPrescribedHeAim = higherApprenticeshipPrescribedHeAim,
+                            LarsFrameworkAim = larsFrameworkAim
                         });
                     }
                 }
