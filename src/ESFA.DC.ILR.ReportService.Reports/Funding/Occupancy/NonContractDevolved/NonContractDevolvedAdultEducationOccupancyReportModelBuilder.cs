@@ -101,24 +101,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                     continue;
                 }
 
-                bool learnEndDateCondition = true;
-
-                if (learnActEndDate.HasValue)
-                {
-                    learnEndDateCondition = (!contract.EffectiveTo.HasValue || learnActEndDate <= contract.EffectiveTo);
-                }
-                else
-                {
-                    if (!contract.EffectiveTo.HasValue || contract.EffectiveTo < _academicYearService.YearEnd)
-                    {
-                        learnEndDateCondition = (!contract.EffectiveTo.HasValue || learnPlanEndDate <= contract.EffectiveTo);
-                    }
-                }
-
-                return learnEndDateCondition;
+                return LearnEndDateCondition(learnActEndDate, contract, learnPlanEndDate);
             }
 
             return false;
+        }
+
+        private bool LearnEndDateCondition(DateTime? learnActEndDate, McaDevolvedContract contract, DateTime learnPlanEndDate)
+        {
+            bool learnEndDateCondition = true;
+
+            if (learnActEndDate.HasValue)
+            {
+                learnEndDateCondition = (!contract.EffectiveTo.HasValue || learnActEndDate <= contract.EffectiveTo);
+            }
+            else
+            {
+                if (!contract.EffectiveTo.HasValue || contract.EffectiveTo < _academicYearService.YearEnd)
+                {
+                    learnEndDateCondition = (!contract.EffectiveTo.HasValue
+                                             || learnPlanEndDate <= contract.EffectiveTo)
+                                             || contract.EffectiveTo.Value.DayOfYear >= _academicYearService.YearEnd.DayOfYear && learnPlanEndDate >= contract.EffectiveTo;
+                }
+            }
+
+            return learnEndDateCondition;
         }
 
         public bool LearningDeliveryReportFilter(ILearningDelivery learningDelivery)

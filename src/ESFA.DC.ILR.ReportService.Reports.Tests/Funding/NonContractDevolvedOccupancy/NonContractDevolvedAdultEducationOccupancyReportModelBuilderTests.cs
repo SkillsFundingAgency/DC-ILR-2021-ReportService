@@ -466,6 +466,45 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
             result.Should().BeTrue();
         }
 
+        [Theory]
+        [InlineData("01/12/2021", "11/06/2021")]
+        [InlineData("11/12/2020", "01/12/2022")]
+        [InlineData("10/26/2020", "12/20/2021")]
+        [InlineData("11/15/2020", "06/15/2022")]
+        [InlineData("12/12/2020", "08/15/2021")]
+        [InlineData("03/05/2021", "09/10/2021")]
+        [InlineData("11/12/2020", "09/06/2021")]
+        [InlineData("11/13/2020", "12/13/2021")]
+        [InlineData("11/26/2020", "09/20/2021")]
+        [InlineData("12/14/2020", "09/07/2021")]
+        public void HasValidContractTrue_EffectiveToSameDayAsAcademicYearEnd(string learnStartDate, string learnPlanEndDate)
+        {
+            var learningDelivery = new TestLearningDelivery()
+            {
+                LearnStartDate = DateTime.Parse(learnStartDate),
+                LearnActEndDateNullable = null,
+                LearnPlanEndDate = DateTime.Parse(learnPlanEndDate)
+            };
+
+            var contracts = new List<McaDevolvedContract>()
+            {
+                new McaDevolvedContract()
+                {
+                    Ukprn = 123456789,
+                    McaGlaShortCode = "CPCA",
+                    EffectiveFrom = new DateTime(2019, 08, 01),
+                    EffectiveTo = new DateTime(2021, 07, 31)
+                }
+            };
+
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
+            academicYearServiceMock.Setup(ay => ay.YearEnd).Returns(new DateTime(2021, 7, 31, 23, 59, 59));
+
+            var result = NewBuilder(academicYearService: academicYearServiceMock.Object).HasValidContract(learningDelivery, contracts);
+
+            result.Should().BeTrue();
+        }
+
         [Fact]
         public void HasValidContractFalse_LearnStartDate()
         {
