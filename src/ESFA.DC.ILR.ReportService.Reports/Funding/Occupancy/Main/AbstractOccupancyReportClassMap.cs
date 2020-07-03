@@ -36,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             Map(m => m.LearningDelivery.FworkCodeNullable).Name(@"Framework code").Index(++index);
             Map(m => m.LearningDelivery.PwayCodeNullable).Name(@"Apprenticeship pathway").Index(++index);
             Map(m => m.FundModelAgnosticModel.AimType).Name(@"Aim type").Index(++index);
-            Map(m => m.LarsLearningDelivery.FrameworkCommonComponent).Name(@"Framework component type code").Index(++index);
+            Map(m => m.LarsFrameworkAim.FrameworkComponentType).Name(@"Framework component type code").Index(++index);
             Map(m => m.FundModelAgnosticModel.FundModel).Name(@"Funding model").Index(++index);
             Map(m => m.LearningDelivery.PriorLearnFundAdjNullable).Name(@"Funding adjustment for prior learning").Index(++index);
             Map(m => m.LearningDelivery.OtherFundAdjNullable).Name(@"Other funding adjustment").Index(++index);

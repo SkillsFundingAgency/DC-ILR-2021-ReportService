@@ -23,5 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS
         public string SectorSubjectAreaTier2Desc { get; set; }
 
         public IReadOnlyCollection<LARSLearningDeliveryCategory> LARSLearningDeliveryCategories { get; set; }
+
+        public IReadOnlyCollection<LARSFramework> LARSFrameworks { get; set; }
     }
 }
