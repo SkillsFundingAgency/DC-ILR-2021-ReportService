@@ -72,12 +72,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                         : ReportingConstants.No;
                     var partnerProvider = organisations.GetValueOrDefault(learningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
 
-                    var learnerEmploymentStatus = BuildLearnerEmploymentStatus(learner.LearnerEmploymentStatuses, learningDelivery.LearnStartDate);
+                    var learnerEmploymentStatus = learner.LearnerEmploymentStatuses?.Where(l => l.DateEmpStatApp <= learningDelivery.LearnStartDate).OrderByDescending(d => d.DateEmpStatApp).FirstOrDefault() ?? new MessageLearnerLearnerEmploymentStatus();
+                    var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
 
                     models.Add(new DevolvedAdultEducationOccupancyReportModel()
                     {
                         Learner = learner,
                         LearnerEmploymentStatus = learnerEmploymentStatus,
+                        EmploymentStatusMonitorings = employmentStatusMonitorings,
                         ProviderSpecLearnerMonitoring = providerSpecLearnerMonitoring,
                         LearningDelivery = learningDelivery,
                         ProviderSpecDeliveryMonitoring = providerSpecDeliveryMonitoring,
@@ -95,25 +97,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             return Order(models);
         }
 
-        public MessageLearnerLearnerEmploymentStatus BuildLearnerEmploymentStatus(IReadOnlyCollection<ILearnerEmploymentStatus> learnerEmploymentStatuses, DateTime learnStartDate)
-        {
-            var latestEmpStatus = learnerEmploymentStatuses?.Where(l => l.DateEmpStatApp <= learnStartDate).OrderByDescending(d => d.DateEmpStatApp).FirstOrDefault();
- 
-            if (latestEmpStatus == null)
-            {
-                return new MessageLearnerLearnerEmploymentStatus();
-            }
-
-            return new MessageLearnerLearnerEmploymentStatus
-            {
-                EmpStat = latestEmpStatus.EmpStat,
-                EsmMonitoring = new MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring
-                {
-                    ESMType = ESMTypeConstants.BSI,
-                    ESMCode = latestEmpStatus.EmploymentStatusMonitorings?.FirstOrDefault(esm => esm.ESMType.CaseInsensitiveEquals(ESMTypeConstants.BSI))?.ESMCode
-                }
-            };
-        }
 
         public bool LearningDeliveryReportFilter(ILearningDelivery learningDelivery)
         {

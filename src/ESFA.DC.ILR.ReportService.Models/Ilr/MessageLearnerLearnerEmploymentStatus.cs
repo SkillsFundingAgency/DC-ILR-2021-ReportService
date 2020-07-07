@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
+using ESFA.DC.ILR.Model.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Models.Ilr
 {
-    public class MessageLearnerLearnerEmploymentStatus
+    public class MessageLearnerLearnerEmploymentStatus : ILearnerEmploymentStatus
     {
-        public DateTime DateEmpStatApp { get; set; }
-
         public int EmpStat { get; set; }
 
-        public MessageLearnerLearnerEmploymentStatusEmploymentStatusMonitoring EsmMonitoring { get; set; }
+        public DateTime DateEmpStatApp { get; set; }
+
+        public int? EmpIdNullable { get; set; }
+
+        public IReadOnlyCollection<IEmploymentStatusMonitoring> EmploymentStatusMonitorings { get; set; }
     }
 }

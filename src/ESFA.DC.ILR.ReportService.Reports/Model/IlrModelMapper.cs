@@ -75,6 +75,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
             };
         }
 
+        public EmploymentStatusMonitoringModel MapEmploymentStatusMonitorings(IEnumerable<IEmploymentStatusMonitoring> monitorings)
+        {
+            return new EmploymentStatusMonitoringModel()
+            {
+                EII = monitorings?.FirstOrDefault(m => m.ESMType.CaseInsensitiveEquals(ESMTypeConstants.EII))?.ESMCode,
+                BSI = monitorings?.FirstOrDefault(m => m.ESMType.CaseInsensitiveEquals(ESMTypeConstants.BSI))?.ESMCode,
+            };
+        }
+
         private string GetLearningDeliveryFAMCode(string famType, IDictionary<string, ILearningDeliveryFAM[]> learningDeliveryFamDictionary)
         {
             return learningDeliveryFamDictionary.GetValueOrDefault(famType)?.FirstOrDefault()?.LearnDelFAMCode;

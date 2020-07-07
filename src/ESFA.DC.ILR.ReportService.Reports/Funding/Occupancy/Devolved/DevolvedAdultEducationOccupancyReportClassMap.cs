@@ -75,7 +75,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             Map(m => m.ProviderSpecDeliveryMonitoring.C).Name(@"Provider specified delivery monitoring (C)").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.D).Name(@"Provider specified delivery monitoring (D)").Index(++index);
             Map(m => m.LearnerEmploymentStatus.EmpStat).Name(@"Employment status").Index(++index);
-            Map(m => m.LearnerEmploymentStatus.EsmMonitoring.ESMCode).Name(@"Employment status monitoring type - benefit status indicator").Index(++index);
+            Map(m => m.EmploymentStatusMonitorings.BSI).Name(@"Employment status monitoring type - benefit status indicator").Index(++index);
             Map(m => m.Fm35LearningDelivery.FundLine).Name(@"Funding line type").Index(++index);
             Map(m => m.Fm35LearningDelivery.FundStart).Name(@"Start for funding purposes").Index(++index);
             Map(m => m.Fm35LearningDelivery.PlannedNumOnProgInstalm).Name(@"Planned number of on programme instalments").Index(++index);
