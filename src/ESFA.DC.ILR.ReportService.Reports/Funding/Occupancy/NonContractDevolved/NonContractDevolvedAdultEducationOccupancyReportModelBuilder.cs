@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.Ilr;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MCAGLA;
@@ -16,6 +17,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
 {
     public class NonContractDevolvedAdultEducationOccupancyReportModelBuilder : AbstractOccupancyReportModelBuilder, IModelBuilder<IEnumerable<NonContractDevolvedAdultEducationOccupancyReportModel>>
     {
+        private readonly HashSet<int> _categoryRefs = new HashSet<int> { 37, 38 };
+
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
             LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority,
@@ -45,6 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
 
             var larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
             var fm35LearningDeliveries = BuildFm35LearningDeliveryDictionary(fm35);
+            var organisations = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
 
             var devolvedContracts = referenceData.McaDevolvedContracts?.Where(mdc => mdc.Ukprn == reportServiceContext.Ukprn) ?? Enumerable.Empty<McaDevolvedContract>();
 
@@ -69,7 +73,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                     var providerSpecLearnerMonitoring = _ilrModelMapper.MapProviderSpecLearnerMonitorings(learner.ProviderSpecLearnerMonitorings);
                     var providerSpecDeliveryMonitoring = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings);                   
                     var periodisedValues = BuildFm35PeriodisedValuesModel(fm35LearningDelivery?.LearningDeliveryPeriodisedValues);
-                    
+                    var entitlementValue = larsLearningDelivery.LARSLearningDeliveryCategories.Any(c =>
+                        (c.EffectiveFrom <= learningDelivery.LearnStartDate && (c.EffectiveTo ?? DateTime.MaxValue) >=
+                            learningDelivery.LearnStartDate) && _categoryRefs.Contains(c.CategoryRef))
+                        ? ReportingConstants.Yes
+                        : ReportingConstants.No;
+                    var learnerEmploymentStatus = learner.LearnerEmploymentStatuses?.Where(l => l.DateEmpStatApp <= learningDelivery.LearnStartDate).OrderByDescending(d => d.DateEmpStatApp).FirstOrDefault() ?? new MessageLearnerLearnerEmploymentStatus();
+                    var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
+                    var partnerProvider = organisations.GetValueOrDefault(learningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
+
                     models.Add(new NonContractDevolvedAdultEducationOccupancyReportModel()
                     {
                         Learner = learner,
@@ -81,6 +93,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                         LarsLearningDelivery = larsLearningDelivery,
                         PeriodisedValues = periodisedValues,
                         McaGlaShortCode = mcaGlaShortCode,
+                        EntitlementCategoryLevel2Or3 = entitlementValue,
+                        LearnerEmploymentStatus = learnerEmploymentStatus,
+                        EmploymentStatusMonitorings = employmentStatusMonitorings,
+                        PartnershipProviderName = partnerProvider
                     });
                 }
             }

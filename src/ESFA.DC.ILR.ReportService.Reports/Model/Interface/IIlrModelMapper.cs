@@ -11,5 +11,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model.Interface
 
         LearningDeliveryFAMsModel MapLearningDeliveryFAMs(IEnumerable<ILearningDeliveryFAM> learningDeliveryFams);
 
+        EmploymentStatusMonitoringModel MapEmploymentStatusMonitorings(IEnumerable<IEmploymentStatusMonitoring> monitorings);
     }
 }
