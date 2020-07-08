@@ -137,7 +137,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                 {
                     learnEndDateCondition = (!contract.EffectiveTo.HasValue
                                              || learnPlanEndDate <= contract.EffectiveTo)
-                                             || contract.EffectiveTo.Value.DayOfYear >= _academicYearService.YearEnd.DayOfYear && learnPlanEndDate >= contract.EffectiveTo;
+                                             || contract.EffectiveTo.Value.Year >= _academicYearService.YearEnd.Year 
+                                                     && contract.EffectiveTo.Value.DayOfYear >= _academicYearService.YearEnd.DayOfYear 
+                                                     && learnPlanEndDate >= contract.EffectiveTo;
                 }
             }
 
