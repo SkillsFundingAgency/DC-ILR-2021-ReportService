@@ -532,6 +532,38 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
             result.Should().BeTrue();
         }
 
+        [Theory]
+        [InlineData("10/20/2020", "05/06/2021")]
+        [InlineData("08/12/2020", "06/15/2021")]
+        [InlineData("10/15/2020", "06/15/2021")]
+        public void HasValidContractFalse_LearnPlanEndDateAfterEffective(string learnStartDate, string learnPlanEndDate)
+        {
+            var learningDelivery = new TestLearningDelivery()
+            {
+                LearnStartDate = DateTime.Parse(learnStartDate),
+                LearnActEndDateNullable = null,
+                LearnPlanEndDate = DateTime.Parse(learnPlanEndDate)
+            };
+
+            var contracts = new List<McaDevolvedContract>()
+            {
+                new McaDevolvedContract()
+                {
+                    Ukprn = 123456789,
+                    McaGlaShortCode = "WECA",
+                    EffectiveFrom = new DateTime(2019, 08, 01),
+                    EffectiveTo = new DateTime(2020, 12, 31)
+                }
+            };
+
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
+            academicYearServiceMock.Setup(ay => ay.YearEnd).Returns(new DateTime(2021, 7, 31, 23, 59, 59));
+
+            var result = NewBuilder(academicYearService: academicYearServiceMock.Object).HasValidContract(learningDelivery, contracts);
+
+            result.Should().BeFalse();
+        }
+
         [Fact]
         public void HasValidContractFalse_LearnStartDate()
         {
