@@ -48,6 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
 
             var larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
             var fm35LearningDeliveries = BuildFm35LearningDeliveryDictionary(fm35);
+            var postcodes = BuildPostcodesDictionary(referenceData);
             var organisations = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
 
             var devolvedContracts = referenceData.McaDevolvedContracts?.Where(mdc => mdc.Ukprn == reportServiceContext.Ukprn) ?? Enumerable.Empty<McaDevolvedContract>();
@@ -82,7 +83,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                     var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
                     var partnerProvider = organisations.GetValueOrDefault(learningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
 
-                    var lsdPostcode = referenceData.Postcodes?.FirstOrDefault(p => p.PostCode.CaseInsensitiveEquals(learningDelivery.LSDPostcode));
+                    var lsdPostcode = postcodes.GetValueOrDefault(learningDelivery.LSDPostcode);
                     var localAuthorityCode = lsdPostcode?.ONSData
                         .FirstOrDefault(od => learningDelivery.LearnStartDate >= od.EffectiveFrom && learningDelivery.LearnStartDate <= (od.EffectiveTo ?? DateTime.MaxValue))?
                         .LocalAuthority;

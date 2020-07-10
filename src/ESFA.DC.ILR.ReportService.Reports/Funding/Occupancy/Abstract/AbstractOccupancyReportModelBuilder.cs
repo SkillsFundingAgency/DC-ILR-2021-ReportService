@@ -6,6 +6,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
@@ -352,6 +353,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract
                            },
                            StringComparer.OrdinalIgnoreCase)
                    ?? new Dictionary<string, decimal[]>();
+        }
+
+        protected IDictionary<string, Postcode> BuildPostcodesDictionary(ReferenceDataRoot referenceDataRoot)
+        {
+            return referenceDataRoot?.Postcodes?.ToDictionary(p => p.PostCode, p => p, StringComparer.OrdinalIgnoreCase) ?? new Dictionary<string, Postcode>();
         }
     }
 }
