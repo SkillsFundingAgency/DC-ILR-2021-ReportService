@@ -8,8 +8,4 @@
     <PackageReference Include="ESFA.DC.ILR.2021.Model.Interface" Version="0.1.4-beta0001" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="ReferenceData\Postcodes\" />
-  </ItemGroup>
-
 </Project>

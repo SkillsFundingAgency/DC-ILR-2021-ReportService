@@ -11,6 +11,7 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MCAGLA;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -42,7 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 LARSStandards = MapData(root.LARSStandards),
                 McaDevolvedContracts = MapData(root.McaDevolvedContracts),
                 Organisations = MapData(root.Organisations),
-                DevolvedPostocdes = MapData(root.DevolvedPostcodes)
+                DevolvedPostocdes = MapData(root.DevolvedPostcodes),
+                Postcodes = MapData(root.Postcodes)
             };
         }
 
@@ -328,6 +330,36 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 Ukprn = contract.Ukprn,
                 EffectiveFrom = contract.EffectiveFrom,
                 EffectiveTo = contract.EffectiveTo
+            };
+        }
+
+        //Map Postcodes data
+        private IReadOnlyCollection<Postcode> MapData(IEnumerable<ReferenceDataService.Model.Postcodes.Postcode> postcodes)
+        {
+            return postcodes?.Select(MapPostcode).ToList();
+        }
+
+        private Postcode MapPostcode(ReferenceDataService.Model.Postcodes.Postcode postcode)
+        {
+            return  new Postcode()
+            {
+                PostCode = postcode.PostCode,
+                ONSData = MapONSData(postcode.ONSData)
+            };
+        }
+
+        private List<ONSData> MapONSData(IEnumerable<ReferenceDataService.Model.Postcodes.ONSData> OnsData)
+        {
+            return OnsData?.Select(MapONS).ToList();
+        }
+
+        private ONSData MapONS(ReferenceDataService.Model.Postcodes.ONSData ons)
+        {
+            return new ONSData()
+            {
+                LocalAuthority = ons.LocalAuthority,
+                EffectiveFrom = ons.EffectiveFrom,
+                EffectiveTo = ons.EffectiveTo
             };
         }
     }

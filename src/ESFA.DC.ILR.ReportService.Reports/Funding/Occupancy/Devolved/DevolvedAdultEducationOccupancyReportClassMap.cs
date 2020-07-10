@@ -67,7 +67,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             Map(m => m.LearningDeliveryFAMs.DAM6).Name(@"Learning delivery funding and monitoring type - devolved area monitoring (F)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.RES).Name(@"Learning delivery funding and monitoring type - restart indicator").Index(++index);
             Map(m => m.LearningDeliveryFAMs.ASL).Name(@"Learning delivery funding and monitoring type - Community Learning provision type").Index(++index);
-            Map(m => m.LearningDeliveryFAMs.EII).Name(@"Learning delivery funding and monitoring type - employment intensity indicator").Index(++index);
             Map(m => m.LearningDeliveryFAMs.HHS1).Name(@"Learning delivery funding and monitoring type - household situation (A)").Index(++index);
             Map(m => m.LearningDeliveryFAMs.HHS2).Name(@"Learning delivery funding and monitoring type - household situation (B)").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.A).Name(@"Provider specified delivery monitoring (A)").Index(++index);
@@ -75,6 +74,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
             Map(m => m.ProviderSpecDeliveryMonitoring.C).Name(@"Provider specified delivery monitoring (C)").Index(++index);
             Map(m => m.ProviderSpecDeliveryMonitoring.D).Name(@"Provider specified delivery monitoring (D)").Index(++index);
             Map(m => m.LearnerEmploymentStatus.EmpStat).Name(@"Employment status").Index(++index);
+            Map(m => m.EmploymentStatusMonitorings.EII).Name(@"Employment status monitoring type - employment intensity indicator").Index(++index);
             Map(m => m.EmploymentStatusMonitorings.BSI).Name(@"Employment status monitoring type - benefit status indicator").Index(++index);
             Map(m => m.Fm35LearningDelivery.FundLine).Name(@"Funding line type").Index(++index);
             Map(m => m.Fm35LearningDelivery.FundStart).Name(@"Start for funding purposes").Index(++index);

@@ -75,6 +75,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                     var learnerEmploymentStatus = learner.LearnerEmploymentStatuses?.Where(l => l.DateEmpStatApp <= learningDelivery.LearnStartDate).OrderByDescending(d => d.DateEmpStatApp).FirstOrDefault() ?? new MessageLearnerLearnerEmploymentStatus();
                     var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
 
+                    var lsdPostcode = referenceData.Postcodes?.FirstOrDefault(p => p.PostCode.CaseInsensitiveEquals(learningDelivery.LSDPostcode));
+                    var localAuthorityCode = lsdPostcode?.ONSData
+                        .FirstOrDefault(od =>learningDelivery.LearnStartDate >= od.EffectiveFrom && learningDelivery.LearnStartDate <= (od.EffectiveTo ?? DateTime.MaxValue))?
+                        .LocalAuthority;
+
                     models.Add(new DevolvedAdultEducationOccupancyReportModel()
                     {
                         Learner = learner,
@@ -89,7 +94,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                         PeriodisedValues = periodisedValues,
                         McaGlaShortCode = mcaGlaShortCode,
                         EntitlementCategoryLevel2Or3 = entitlementValue,
-                        PartnershipProviderName =  partnerProvider,
+                        PartnershipProviderName =  partnerProvider, 
+                        LocalAuthorityCode = localAuthorityCode
                     });
                 }
             }

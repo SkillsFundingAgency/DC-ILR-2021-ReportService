@@ -82,6 +82,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                     var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
                     var partnerProvider = organisations.GetValueOrDefault(learningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
 
+                    var lsdPostcode = referenceData.Postcodes?.FirstOrDefault(p => p.PostCode.CaseInsensitiveEquals(learningDelivery.LSDPostcode));
+                    var localAuthorityCode = lsdPostcode?.ONSData
+                        .FirstOrDefault(od => learningDelivery.LearnStartDate >= od.EffectiveFrom && learningDelivery.LearnStartDate <= (od.EffectiveTo ?? DateTime.MaxValue))?
+                        .LocalAuthority;
+
                     models.Add(new NonContractDevolvedAdultEducationOccupancyReportModel()
                     {
                         Learner = learner,
@@ -96,7 +101,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                         EntitlementCategoryLevel2Or3 = entitlementValue,
                         LearnerEmploymentStatus = learnerEmploymentStatus,
                         EmploymentStatusMonitorings = employmentStatusMonitorings,
-                        PartnershipProviderName = partnerProvider
+                        PartnershipProviderName = partnerProvider,
+                        LocalAuthorityCode = localAuthorityCode
                     });
                 }
             }
