@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
             "Learner reference number",
             "Family name",
             "Given names",
-            "TLevelStudent",
+            "T Level student",
             "Date of birth",
             "Campus identifier",
             "Planned learning hours",
