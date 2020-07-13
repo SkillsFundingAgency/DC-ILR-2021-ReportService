@@ -50,6 +50,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
 
             var larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
             var fm35LearningDeliveries = BuildFm35LearningDeliveryDictionary(fm35);
+            var postcodes = BuildPostcodesDictionary(referenceData);
             var organisations = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
 
             var models = new List<DevolvedAdultEducationOccupancyReportModel>();
@@ -75,6 +76,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                     var learnerEmploymentStatus = learner.LearnerEmploymentStatuses?.Where(l => l.DateEmpStatApp <= learningDelivery.LearnStartDate).OrderByDescending(d => d.DateEmpStatApp).FirstOrDefault() ?? new MessageLearnerLearnerEmploymentStatus();
                     var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
 
+                    var lsdPostcode = postcodes.GetValueOrDefault(learningDelivery.LSDPostcode);
+                    var localAuthorityCode = lsdPostcode?.ONSData
+                        .FirstOrDefault(od =>learningDelivery.LearnStartDate >= od.EffectiveFrom && learningDelivery.LearnStartDate <= (od.EffectiveTo ?? DateTime.MaxValue))?
+                        .LocalAuthority;
+
                     models.Add(new DevolvedAdultEducationOccupancyReportModel()
                     {
                         Learner = learner,
@@ -89,7 +95,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                         PeriodisedValues = periodisedValues,
                         McaGlaShortCode = mcaGlaShortCode,
                         EntitlementCategoryLevel2Or3 = entitlementValue,
-                        PartnershipProviderName =  partnerProvider,
+                        PartnershipProviderName =  partnerProvider, 
+                        LocalAuthorityCode = localAuthorityCode
                     });
                 }
             }
