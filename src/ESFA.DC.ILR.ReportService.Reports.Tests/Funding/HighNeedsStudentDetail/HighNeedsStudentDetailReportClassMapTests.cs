@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.HighNeedsStudentDetail
             "Learner reference number",
             "Family name",
             "Given names",
-            "T Level Student",
+            "T Level student",
             "Campus identifier",
             "A - Students with an EHCP",
             "B - Students without an EHCP",

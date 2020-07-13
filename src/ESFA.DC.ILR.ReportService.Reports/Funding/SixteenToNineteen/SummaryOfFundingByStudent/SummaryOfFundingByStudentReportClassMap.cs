@@ -13,7 +13,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfF
             Map(m => m.Learner.LearnRefNumber).Name(@"Learner reference number").Index(++index);
             Map(m => m.Learner.FamilyName).Name(@"Family name").Index(++index);
             Map(m => m.Learner.GivenNames).Name(@"Given names").Index(++index);
-            Map(m => m.FM25Learner.TLevelStudent).Name(@"TLevelStudent").Index(++index).TypeConverter<IlrBooleanConverter>();
+            Map(m => m.FM25Learner.TLevelStudent).Name(@"T Level student").Index(++index).TypeConverter<IlrBooleanConverter>();
             Map(m => m.Learner.DateOfBirthNullable).Name(@"Date of birth").Index(++index);
             Map(m => m.Learner.CampId).Name(@"Campus identifier").Index(++index);
             Map(m => m.Learner.PlanLearnHoursNullable).Name(@"Planned learning hours").Index(++index);
