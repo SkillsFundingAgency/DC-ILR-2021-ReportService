@@ -8,7 +8,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
         public string PMOrgName { get; set; }
 
-        public int DevolvedUKPRN { get; set; }
+        public int? DevolvedUKPRN { get; set; }
 
         public string DevolvedOrgName { get; set; }
 
