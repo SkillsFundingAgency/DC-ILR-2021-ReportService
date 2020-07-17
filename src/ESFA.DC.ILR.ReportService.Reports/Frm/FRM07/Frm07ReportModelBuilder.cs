@@ -4,7 +4,6 @@ using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.MCAGLA;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -25,9 +24,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
             var message = reportServiceDependentData.Get<IMessage>();
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
 
-            var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
-            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x, StringComparer.OrdinalIgnoreCase);
-            var mcaDictionary = referenceData.McaDevolvedContracts.ToDictionary(x => x.McaGlaShortCode, x => x.Ukprn,
+            var organisationNameDictionary = referenceData.Organisations.ToDictionary(k => k.UKPRN, v => v.Name);
+            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(k => k.LearnAimRef, v => v, StringComparer.OrdinalIgnoreCase);
+            var sofCodeDictionary = referenceData.DevolvedPostocdes.McaGlaSofLookups.ToDictionary(k => k.SofCode, v => v.McaGlaShortCode);
+            var mcaDictionary = referenceData.McaDevolvedContracts.ToDictionary(k => k.McaGlaShortCode, v => v.Ukprn,
                 StringComparer.OrdinalIgnoreCase);
 
             var orgName = organisationNameDictionary.GetValueOrDefault(reportServiceContext.Ukprn);
@@ -40,6 +40,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                         && !_excludedFundModel.Contains(ld.FundModel))
                     .Select(ld => new { Learner = l, LearningDelivery = ld }));
 
+            if (pausedDeliveries == null)
+            {
+                return models;
+            }
+
             foreach (var delivery in pausedDeliveries)
             {
                 var restartDelivery = GetRestartDelivery(delivery.LearningDelivery, delivery.Learner);
@@ -51,65 +56,76 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
                 if (delivery.LearningDelivery.LearnPlanEndDate == restartDelivery.LearnPlanEndDate)
                 {
-                    var advancedLoansIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, ADLLearnDelFamType);
-                    var sofCode = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, SOFLearnDelFamType);
-                    var resIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, RESLearnDelFamType);
-
-                    var sofUkprn = mcaDictionary.GetValueOrDefault(sofCode);
-
-                    var partnerOrgName = organisationNameDictionary.GetValueOrDefault(delivery.LearningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
-                    var learningAim = learnAimDictionary.GetValueOrDefault(delivery.LearningDelivery.LearnAimRef);
                     var pmOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PMUKPRNNullable.GetValueOrDefault());
                     var prevOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PrevUKPRNNullable.GetValueOrDefault());
-                    var sofOrgName = organisationNameDictionary.GetValueOrDefault(sofUkprn);
 
+                    models.Add(BuildModelForLearningDelivery(reportServiceContext, delivery.LearningDelivery, delivery.Learner, sofCodeDictionary, mcaDictionary, organisationNameDictionary, learnAimDictionary, returnPeriod, orgName, pmOrgName, prevOrgName));
 
-                    models.Add(new Frm07ReportModel
-                    {
-                        UKPRN = reportServiceContext.Ukprn,
-                        Return = returnPeriod,
-                        OrgName = orgName,
-                        PartnerUKPRN = delivery.LearningDelivery.PartnerUKPRNNullable,
-                        PartnerOrgName = partnerOrgName,
-                        PrevUKPRN = delivery.Learner.PrevUKPRNNullable,
-                        PrevOrgName = prevOrgName,
-                        PMUKPRN = delivery.Learner.PMUKPRNNullable,
-                        PMOrgName = pmOrgName,
-                        DevolvedUKPRN = sofUkprn,
-                        DevolvedOrgName = sofOrgName,
-                        ULN = delivery.Learner.ULN,
-                        LearnRefNumber = delivery.Learner.LearnRefNumber,
-                        PrevLearnRefNumber = delivery.Learner.PrevLearnRefNumber,
-                        LearnAimRef = delivery.LearningDelivery.LearnAimRef,
-                        AimSeqNumber = delivery.LearningDelivery.AimSeqNumber,
-                        AimTypeCode = delivery.LearningDelivery.AimType,
-                        LearnAimTitle = learningAim.LearnAimRefTitle,
-                        LearnAimType = learningAim.LearnAimRefTypeDesc,
-                        StdCode = delivery.LearningDelivery.StdCodeNullable,
-                        FworkCode = delivery.LearningDelivery.FworkCodeNullable,
-                        PwayCode = delivery.LearningDelivery.PwayCodeNullable,
-                        ProgType = delivery.LearningDelivery.ProgTypeNullable,
-                        LearnStartDate = delivery.LearningDelivery.LearnStartDate,
-                        OrigLearnStartDate = delivery.LearningDelivery.OrigLearnStartDateNullable,
-                        LearnPlanEndDate = delivery.LearningDelivery.LearnPlanEndDate,
-                        LearnActEndDate = delivery.LearningDelivery.LearnActEndDateNullable,
-                        CompStatus = delivery.LearningDelivery.CompStatus,
-                        Outcome = delivery.LearningDelivery.OutcomeNullable,
-                        FundModel = delivery.LearningDelivery.FundModel,
-                        SOFCode = sofCode,
-                        AdvancedLoansIndicator = advancedLoansIndicator,
-                        FundingStream = CalculateFundingStream(delivery.LearningDelivery.FundModel, delivery.LearningDelivery.ProgTypeNullable, advancedLoansIndicator, sofCode),
-                        ResIndicator = resIndicator,
-                        SWSupAimId = delivery.LearningDelivery.SWSupAimId,
-                        ProvSpecLearnDelMon = ProviderSpecDeliveryMonitorings(delivery.LearningDelivery.ProviderSpecDeliveryMonitorings),
-                        ProvSpecDelMon = ProviderSpecLearningMonitorings(delivery.Learner.ProviderSpecLearnerMonitorings),
-                        PriorLearnFundAdj = delivery.LearningDelivery.PriorLearnFundAdjNullable,
-                        OtherFundAdj = delivery.LearningDelivery.OtherFundAdjNullable,
-                    });
+                    models.Add(BuildModelForLearningDelivery(reportServiceContext, restartDelivery, delivery.Learner, sofCodeDictionary, mcaDictionary, organisationNameDictionary, learnAimDictionary, returnPeriod, orgName, pmOrgName, prevOrgName));
                 }
             }
 
             return models;
+        }
+
+        private Frm07ReportModel BuildModelForLearningDelivery(IReportServiceContext reportServiceContext, ILearningDelivery learningDelivery, ILearner learner,
+            Dictionary<string, string> sofCodeDictionary, Dictionary<string, int> mcaDictionary, Dictionary<int, string> organisationNameDictionary,
+            Dictionary<string, LARSLearningDelivery> learnAimDictionary, string returnPeriod, string orgName, string pmOrgName, string prevOrgName)
+        {
+            var advancedLoansIndicator = RetrieveFamCodeForType(learningDelivery.LearningDeliveryFAMs, ADLLearnDelFamType);
+            var resIndicator = RetrieveFamCodeForType(learningDelivery.LearningDeliveryFAMs, RESLearnDelFamType);
+
+            var sofCode = RetrieveFamCodeForType(learningDelivery.LearningDeliveryFAMs, SOFLearnDelFamType);
+            var mcaShortCode = sofCodeDictionary.GetValueOrDefault(sofCode);
+            var sofUkprn = mcaDictionary.GetValueOrDefault(mcaShortCode);
+
+            var partnerOrgName = organisationNameDictionary.GetValueOrDefault(learningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
+            var learningAim = learnAimDictionary.GetValueOrDefault(learningDelivery.LearnAimRef);
+
+            var sofOrgName = organisationNameDictionary.GetValueOrDefault(sofUkprn);
+
+            return new Frm07ReportModel
+            {
+                UKPRN = reportServiceContext.Ukprn,
+                Return = returnPeriod,
+                OrgName = orgName,
+                PartnerUKPRN = learningDelivery.PartnerUKPRNNullable,
+                PartnerOrgName = partnerOrgName,
+                PrevUKPRN = learner.PrevUKPRNNullable,
+                PrevOrgName = prevOrgName,
+                PMUKPRN = learner.PMUKPRNNullable,
+                PMOrgName = pmOrgName,
+                DevolvedUKPRN = sofUkprn != 0 ? sofUkprn : (int?)null,
+                DevolvedOrgName = sofOrgName,
+                ULN = learner.ULN,
+                LearnRefNumber = learner.LearnRefNumber,
+                PrevLearnRefNumber = learner.PrevLearnRefNumber,
+                LearnAimRef = learningDelivery.LearnAimRef,
+                AimSeqNumber = learningDelivery.AimSeqNumber,
+                AimTypeCode = learningDelivery.AimType,
+                LearnAimTitle = learningAim.LearnAimRefTitle,
+                LearnAimType = learningAim.LearnAimRefTypeDesc,
+                StdCode = learningDelivery.StdCodeNullable,
+                FworkCode = learningDelivery.FworkCodeNullable,
+                PwayCode = learningDelivery.PwayCodeNullable,
+                ProgType = learningDelivery.ProgTypeNullable,
+                LearnStartDate = learningDelivery.LearnStartDate,
+                OrigLearnStartDate = learningDelivery.OrigLearnStartDateNullable,
+                LearnPlanEndDate = learningDelivery.LearnPlanEndDate,
+                LearnActEndDate = learningDelivery.LearnActEndDateNullable,
+                CompStatus = learningDelivery.CompStatus,
+                Outcome = learningDelivery.OutcomeNullable,
+                FundModel = learningDelivery.FundModel,
+                SOFCode = sofCode,
+                AdvancedLoansIndicator = advancedLoansIndicator,
+                FundingStream = CalculateFundingStream(learningDelivery.FundModel, learningDelivery.ProgTypeNullable, advancedLoansIndicator, sofCode),
+                ResIndicator = resIndicator,
+                SWSupAimId = learningDelivery.SWSupAimId,
+                ProvSpecLearnDelMon = ProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings),
+                ProvSpecDelMon = ProviderSpecLearningMonitorings(learner.ProviderSpecLearnerMonitorings),
+                PriorLearnFundAdj = learningDelivery.PriorLearnFundAdjNullable,
+                OtherFundAdj = learningDelivery.OtherFundAdjNullable,
+            };
         }
 
         private bool ExcludedDelivery(ILearningDelivery learner, IReadOnlyCollection<LARSLearningDelivery> larsLearningDeliveries)
@@ -131,7 +147,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
         private bool HasRestartFAM(IReadOnlyCollection<ILearningDeliveryFAM> learningDeliveryFams)
         {
-            return learningDeliveryFams.Any(f => f.LearnDelFAMType.Equals(RESLearnDelFamType, StringComparison.OrdinalIgnoreCase));
+            return learningDeliveryFams?.Any(f => f.LearnDelFAMType.CaseInsensitiveEquals(RESLearnDelFamType)) ?? false;
         }
 
         private bool WithMatchingStartDates(ILearningDelivery breakLearningDelivery, ILearningDelivery learningDelivery)
@@ -141,8 +157,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                 return false;
             }
 
-            return (learningDelivery.OrigLearnStartDateNullable.Value == breakLearningDelivery.LearnStartDate
-                    || learningDelivery.OrigLearnStartDateNullable.Value == breakLearningDelivery.OrigLearnStartDateNullable)
+            return (learningDelivery.OrigLearnStartDateNullable == breakLearningDelivery.LearnStartDate
+                    || learningDelivery.OrigLearnStartDateNullable == breakLearningDelivery.OrigLearnStartDateNullable)
                    && learningDelivery.LearnStartDate > breakLearningDelivery.LearnActEndDateNullable;
         }
 
