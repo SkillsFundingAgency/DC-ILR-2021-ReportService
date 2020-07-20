@@ -26,7 +26,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
             var organisationNameDictionary = referenceData.Organisations.ToDictionary(k => k.UKPRN, v => v.Name);
             var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(k => k.LearnAimRef, v => v, StringComparer.OrdinalIgnoreCase);
-            var sofCodeDictionary = referenceData.DevolvedPostocdes.McaGlaSofLookups.ToDictionary(k => k.SofCode, v => v.McaGlaShortCode);
+            var sofCodeDictionary = referenceData.DevolvedPostocdes.McaGlaSofLookups.Where(l => DevolvedCodes.Contains(l.SofCode)).ToDictionary(k => k.SofCode, v => v.McaGlaShortCode);
             var mcaDictionary = referenceData.McaDevolvedContracts.ToDictionary(k => k.McaGlaShortCode, v => v.Ukprn,
                 StringComparer.OrdinalIgnoreCase);
 
