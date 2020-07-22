@@ -12,7 +12,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
         protected const string SOFLearnDelFamType = "SOF";
         protected const string RESLearnDelFamType = "RES";
 
-        protected readonly HashSet<string> DevolvedCodes = new HashSet<string> { "110", "111", "112", "113", "114", "115", "116" };
+        protected readonly HashSet<string> DevolvedCodes = new HashSet<string> { "110", "111", "112", "113", "114", "115", "116", "117" };
         private readonly HashSet<int> _apprenticeshipHashSet = new HashSet<int> { 2, 3, 20, 21, 22, 23, 25 };
 
         protected string RetrieveFamCodeForType(IEnumerable<LearningDeliveryFAM> deliveryFams, string learnDelFamType)
