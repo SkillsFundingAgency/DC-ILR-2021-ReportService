@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
                     {
                         EasFileDetails = new EasFileDetails
                         {
-                            FileName = "EAS-1-2.csv",
+                            FileName = "1/EAS-1-2.csv",
                             UploadDateTime = easUploadTime
                         }
                     }
@@ -42,7 +42,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
             reportServiceDependentData.Setup(x => x.Get<ReferenceDataRoot>()).Returns(refDataModel);
             reportServiceDependentData.Setup(x => x.Contains<ReferenceDataRoot>()).Returns(true);
 
-            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "ILR-1-2.xml", "ILR-1-2.xml", new DateTime(2020, 8, 2, 9, 0, 0));
+            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "1/ILR-1-2.xml", "1/ILR-1-2.xml", new DateTime(2020, 8, 2, 9, 0, 0));
 
             var dateTimeProviderMock = new Mock<IDateTimeProvider>();
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(contextIn.SubmissionDateTimeUtc)).Returns(new DateTime(2020, 8, 2, 8, 0, 0));
@@ -81,7 +81,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Tests
             reportServiceDependentData.Setup(x => x.Get<List<ValidationError>>()).Returns(errors);
             reportServiceDependentData.Setup(x => x.Contains<ReferenceDataRoot>()).Returns(false);
 
-            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "ILR-1-2.xml", "ILR-1-2.xml", new DateTime(2020, 8, 2));
+            IReportServiceContext contextIn = new ReportServiceJobContextMessageContextStub(1, "1/ILR-1-2.xml", "1/ILR-1-2.xml", new DateTime(2020, 8, 2));
 
             var dateTimeProviderMock = new Mock<IDateTimeProvider>();
             dateTimeProviderMock.Setup(x => x.ConvertUtcToUk(contextIn.SubmissionDateTimeUtc)).Returns(new DateTime(2020, 8, 2, 8, 0, 0));
