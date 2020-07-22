@@ -45,8 +45,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                 return models;
             }
 
-            foreach (var delivery in pausedDeliveries)
+            var learnerDeliveries = pausedDeliveries.GroupBy(x => x.Learner);
+
+            foreach (var deliverySet in learnerDeliveries)
             {
+                var delivery = deliverySet.OrderByDescending(x => x.LearningDelivery.LearnStartDate).FirstOrDefault();
+
                 var restartDelivery = GetRestartDelivery(delivery.LearningDelivery, delivery.Learner);
 
                 if (restartDelivery == null)
