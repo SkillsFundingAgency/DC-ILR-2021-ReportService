@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.DateTimeProvider.Interface;
@@ -31,7 +32,7 @@ namespace ESFA.DC.ILR.ReportService.Data
             var ilrReportingFilename = reportServiceContext.OriginalFilename ?? reportServiceContext.Filename;
             var ilrDate = _dateTimeProvider.ConvertUtcToUk(reportServiceContext.SubmissionDateTimeUtc);
 
-            reportServiceContext.IlrReportingFilename = ilrReportingFilename;
+            reportServiceContext.IlrReportingFilename = Path.GetFileName(ilrReportingFilename);
             reportServiceContext.LastIlrFileUpdate = ilrDate.ToString(ReportServiceConstants.LastFileUpdateDateTimeFormat);
         }
 
@@ -44,7 +45,8 @@ namespace ESFA.DC.ILR.ReportService.Data
                 referenceDataEASFile = reportServiceDependentData.Get<ReferenceDataRoot>()?.MetaDatas.ReferenceDataVersions.EasFileDetails;
             }
 
-            reportServiceContext.EasReportingFilename = referenceDataEASFile?.FileName ?? _defaultEASValue;
+            var easFileName = !string.IsNullOrWhiteSpace(referenceDataEASFile?.FileName) ? Path.GetFileName(referenceDataEASFile?.FileName) : _defaultEASValue;
+            reportServiceContext.EasReportingFilename = easFileName;
 
             if (referenceDataEASFile?.UploadDateTime != null)
             {
