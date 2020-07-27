@@ -127,6 +127,8 @@
     <Compile Include="FileNameServiceTests.cs" />
     <Compile Include="Frm\FRM06\Frm06ReportRenderServiceTests.cs" />
     <Compile Include="Frm\FRM06\Frm06ReportTests.cs" />
+    <Compile Include="Frm\FRM09\Frm09ReportRenderServiceTests.cs" />
+    <Compile Include="Frm\FRM09\Frm09ReportTests.cs" />
     <Compile Include="Frm\FRM08\Frm08ReportRenderServiceTests.cs" />
     <Compile Include="Frm\FRM08\Frm08ReportTests.cs" />
     <Compile Include="Frm\FRM15\Frm15ReportRenderServiceTests.cs" />
