@@ -78,6 +78,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 PlannedNumOnProgInstalm = fm35LearningDeliveryValue.PlannedNumOnProgInstalm,
                 PlannedNumOnProgInstalmTrans = fm35LearningDeliveryValue.PlannedNumOnProgInstalmTrans,
                 PrscHEAim = fm35LearningDeliveryValue.PrscHEAim,
+                ReservedUpliftRate1 = fm35LearningDeliveryValue.ReservedUpliftRate1,
                 StartPropTrans = fm35LearningDeliveryValue.StartPropTrans,
                 TrnWorkPlaceAim = fm35LearningDeliveryValue.TrnWorkPlaceAim,
                 TrnWorkPrepAim = fm35LearningDeliveryValue.TrnWorkPrepAim,

@@ -88,6 +88,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
                 "Employer identifier",
                 "Large employer factor",
                 "Capping factor",
+                "Reserved Uplift Rate",
                 "Traineeship work placement or work preparation",
                 "Higher apprenticeship prescribed HE aim",
                 "Date used for employment factor lookups",
@@ -187,7 +188,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(139);
+                        header.Should().HaveCount(orderedColumns.Length);
                     }
                 }
             }
