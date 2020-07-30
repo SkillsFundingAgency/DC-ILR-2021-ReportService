@@ -38,6 +38,8 @@ namespace ESFA.DC.ILR.ReportService.Models.Fm35
 
         public bool? PrscHEAim { get; set; }
 
+        public Decimal? ReservedUpliftRate1 { get; set; }
+
         public Decimal? StartPropTrans { get; set; }
 
         public bool? TrnWorkPlaceAim { get; set; }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
@@ -508,9 +509,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
         {
             var learningDelivery = new TestLearningDelivery()
             {
-                LearnStartDate = DateTime.Parse(learnStartDate),
+                LearnStartDate = DateTime.ParseExact(learnStartDate, "MM/dd/yyyy", CultureInfo.CurrentCulture),
                 LearnActEndDateNullable = null,
-                LearnPlanEndDate = DateTime.Parse(learnPlanEndDate)
+                LearnPlanEndDate = DateTime.ParseExact(learnPlanEndDate, "MM/dd/yyyy", CultureInfo.CurrentCulture)
             };
 
             var contracts = new List<McaDevolvedContract>()
@@ -540,9 +541,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
         {
             var learningDelivery = new TestLearningDelivery()
             {
-                LearnStartDate = DateTime.Parse(learnStartDate),
+                LearnStartDate = DateTime.ParseExact(learnStartDate, "MM/dd/yyyy", CultureInfo.CurrentCulture),
                 LearnActEndDateNullable = null,
-                LearnPlanEndDate = DateTime.Parse(learnPlanEndDate)
+                LearnPlanEndDate = DateTime.ParseExact(learnPlanEndDate, "MM/dd/yyyy", CultureInfo.CurrentCulture)
             };
 
             var contracts = new List<McaDevolvedContract>()
