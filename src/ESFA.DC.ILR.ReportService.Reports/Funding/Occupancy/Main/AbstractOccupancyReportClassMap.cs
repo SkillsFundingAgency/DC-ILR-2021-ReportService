@@ -27,6 +27,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             Map(m => m.LarsLearningDelivery.LearnAimRefTitle).Name(@"Learning aim title").Index(++index);
             Map(m => m.LearningDelivery.SWSupAimId).Name(@"Software supplier aim identifier").Index(++index);
             Map(m => m.Fm35LearningDelivery.WeightedRateFromESOL).Name(@"Applicable funding rate from ESOL hours").Index(++index);
+            Map(m => m.Fm35LearningDelivery.ReservedUpliftRate1).Name(@"Reserved Uplift Rate").Index(++index);
             Map(m => m.FundModelAgnosticModel.ApplicableFundingRate).Name(@"Applicable funding rate").Index(++index);
             Map(m => m.Fm35LearningDelivery.ApplicProgWeightFact).Name(@"Applicable programme weighting").Index(++index);
             Map(m => m.Fm35LearningDelivery.AimValue).Name(@"Aim value").Index(++index);
@@ -80,7 +81,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
             Map(m => m.Fm35LearningDelivery.LargeEmployerID).Name(@"Employer identifier").Index(++index);
             Map(m => m.Fm35LearningDelivery.LargeEmployerFM35Fctr).Name(@"Large employer factor").Index(++index);
             Map(m => m.Fm35LearningDelivery.CapFactor).Name(@"Capping factor").Index(++index);
-            Map(m => m.Fm35LearningDelivery.ReservedUpliftRate1).Name(@"Reserved Uplift Rate").Index(++index);
             Map(m => m.TraineeshipWorkPlacementOrWorkPreparation).Name(@"Traineeship work placement or work preparation").Index(++index);
             Map(m => m.HigherApprenticeshipPrescribedHeAim).Name(@"Higher apprenticeship prescribed HE aim").Index(++index);
             Map(m => m.Fm35LearningDelivery.ApplicEmpFactDate).Name(@"Date used for employment factor lookups").Index(++index);
