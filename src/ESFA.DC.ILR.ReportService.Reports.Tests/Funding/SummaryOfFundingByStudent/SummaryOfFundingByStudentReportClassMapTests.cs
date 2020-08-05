@@ -23,6 +23,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
             "Planned learning hours",
             "Planned employability, enrichment and pastoral hours",
             "Total planned hours",
+            "Planned hours (T Level)",
             "Funding band",
             "Qualifies for funding",
             "Total funding",
@@ -43,8 +44,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
                         GivenNames = "GivenNames",
                         DateOfBirthNullable = new System.DateTime(2002, 1, 1),
                         CampId = "123",
-                        PlanLearnHoursNullable = 1,
-                        PlanEEPHoursNullable = 2,                        
                     },
                     FM25Learner = new FM25Learner
                     {
@@ -54,7 +53,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
                         RateBand = "Band",
                         OnProgPayment = 100.2m
                     },
-                    TotalPlannedHours = 3
+                    NonTLevelPlanLearnHours = 1,
+                    NonTLevelPlanEEPHours = 2,
+                    TLevelPlannedHours = 3,
+                    NonTLevelTotalPlannedHours = 4
                 }
             };
 
@@ -69,11 +71,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.SummaryOfFundingByStud
             output[6].Should().Be("123");
             output[7].Should().Be("1");
             output[8].Should().Be("2");
-            output[9].Should().Be("3");
-            output[10].Should().Be("Band");
-            output[11].Should().Be("N");
-            output[12].Should().Be("100.2");
-            output[13].Should().Be(string.Empty);
+            output[9].Should().Be("4");
+            output[10].Should().Be("3");
+            output[11].Should().Be("Band");
+            output[12].Should().Be("N");
+            output[13].Should().Be("100.2");
+            output[14].Should().Be(string.Empty);
         }
     }
 }

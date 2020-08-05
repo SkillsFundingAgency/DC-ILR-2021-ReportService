@@ -16,9 +16,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfF
             Map(m => m.FM25Learner.TLevelStudent).Name(@"T Level student").Index(++index).TypeConverter<IlrBooleanConverter>();
             Map(m => m.Learner.DateOfBirthNullable).Name(@"Date of birth").Index(++index);
             Map(m => m.Learner.CampId).Name(@"Campus identifier").Index(++index);
-            Map(m => m.Learner.PlanLearnHoursNullable).Name(@"Planned learning hours").Index(++index);
-            Map(m => m.Learner.PlanEEPHoursNullable).Name(@"Planned employability, enrichment and pastoral hours").Index(++index);
-            Map(m => m.TotalPlannedHours).Name(@"Total planned hours").Index(++index);
+            Map(m => m.NonTLevelPlanLearnHours).Name(@"Planned learning hours").Index(++index);
+            Map(m => m.NonTLevelPlanEEPHours).Name(@"Planned employability, enrichment and pastoral hours").Index(++index);
+            Map(m => m.NonTLevelTotalPlannedHours).Name(@"Total planned hours").Index(++index);
+            Map(m => m.TLevelPlannedHours).Name(@"Planned hours (T Level)").Index(++index);
             Map(m => m.FM25Learner.RateBand).Name(@"Funding band").Index(++index);
             Map(m => m.FM25Learner.StartFund).Name(@"Qualifies for funding").Index(++index).TypeConverter<IlrBooleanConverter>();
             Map(m => m.FM25Learner.OnProgPayment).Name(@"Total funding").Index(++index);
