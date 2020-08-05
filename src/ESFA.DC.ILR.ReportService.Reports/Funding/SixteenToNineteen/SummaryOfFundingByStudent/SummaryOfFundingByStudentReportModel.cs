@@ -4,6 +4,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfF
 {
     public class SummaryOfFundingByStudentReportModel : AbstractSixteenToNineteenModel
     {
-        public int TotalPlannedHours { get; set; }
+        public int? NonTLevelPlanLearnHours { get; set; }
+
+        public int? NonTLevelPlanEEPHours { get; set; }
+
+        public int? NonTLevelTotalPlannedHours { get; set; }
+
+        public int? TLevelPlannedHours { get; set; }
     }
 }
