@@ -159,11 +159,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                                 .WithFundLineGroup(BuildEasAebFundLineGroup("ESFA", "AEB - Adult Skills (procured from Nov 2017)", reportCurrentPeriod, new [] { FundLineConstants.EasAebAdultSkillsProcuredFromNov2017 }, periodisedValues))
                         },
                         AdultEducationBudgetNote),
-                                        //---------------------------------------------------------------------
-                    // ESFA AEB COVID-19 Skills Offer - Non Procured
-                    //---------------------------------------------------------------------
                     new FundingCategory("ESFA AEB – COVID-19 Skills Offer – Non-procured delivery", reportCurrentPeriod,
-                        new List<FundingSubCategory>
+                        new List<IFundingSubCategory>
                         {
                             new FundingSubCategory("ESFA AEB – COVID-19 Skills Offer (non-procured)", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("ESFA", "AEB – COVID-19 Skills Offer (non-procured)", reportCurrentPeriod, new [] { FundLineConstants.AebCovidSkillsOfferNonProcured }, periodisedValues))
@@ -174,7 +171,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary
                     // ESFA AEB COVID-19 Skills Offer - Procured
                     //---------------------------------------------------------------------
                     new FundingCategory("ESFA AEB – COVID-19 Skills Offer – Procured delivery", reportCurrentPeriod,
-                        new List<FundingSubCategory>
+                        new List<IFundingSubCategory>
                         {
                             new FundingSubCategory("ESFA AEB – COVID-19 Skills Offer (procured)", reportCurrentPeriod)
                                 .WithFundLineGroup(BuildIlrFm35FundLineGroup("ESFA", "AEB – COVID-19 Skills Offer (procured)", reportCurrentPeriod, new [] { FundLineConstants.AebCovidSkillsOfferProcured }, periodisedValues))
