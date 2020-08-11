@@ -11,7 +11,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
         public string PrevOrgName { get; set; }
         public int AimTypeCode { get; set; }
         public DateTime? OrigLearnStartDate { get; set; }
-        public string WithdrawalCode { get; set; }
+        public int? WithdrawalCode { get; set; }
         public int FundModel { get; set; }
         public string LearnAimType { get; set; }
     }
