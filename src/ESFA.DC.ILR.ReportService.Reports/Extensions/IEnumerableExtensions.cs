@@ -21,6 +21,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Extensions
             return enumerable.Select(func).DefaultIfEmpty().Max();
         }
 
+        public static T MinOrDefault<T>(this IEnumerable<T> enumerable)
+        {
+            return enumerable.DefaultIfEmpty().Min();
+        }
+
         public static TResult MinOrDefault<T, TResult>(this IEnumerable<T> enumerable, Func<T, TResult> func)
         {
             return enumerable.Select(func).DefaultIfEmpty().Min();

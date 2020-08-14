@@ -365,7 +365,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
                     (useDeliveryAttributeDate && learningDelivery.LearnStartDate <= x.LearnDelFAMDateToNullable) ||
                     (!useDeliveryAttributeDate && fm36PriceEpisodeAttribute?.PriceEpisodeValues.EpisodeStartDate <= x.LearnDelFAMDateToNullable))
                 .Select(x => x.LearnDelFAMDateToNullable)
-                .MaxOrDefault();
+                .MinOrDefault();
 
             if (model.LearningDeliveryFAMTypeACTDateAppliesTo == null)
             {
