@@ -56,7 +56,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
                     continue;
                 }
 
-                if (DaysBetween(delivery.LearningDelivery.LearnActEndDateNullable.Value, currentReturnEndDate) >= 365)
+                var learnActEndDate = delivery.LearningDelivery.LearnActEndDateNullable;
+
+                if (learnActEndDate.HasValue && DaysBetween(learnActEndDate.Value, currentReturnEndDate) >= 365)
                 {
                     var advancedLoansIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, ADLLearnDelFamType);
                     var devolvedIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, SOFLearnDelFamType);
@@ -107,7 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 
         private ILearningDelivery GetRestartDelivery(ILearningDelivery breakLearningDelivery, ILearner learner)
         {
-            return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef.CaseInsensitiveEquals(breakLearningDelivery.LearnAimRef)
+            return learner?.LearningDeliveries?.FirstOrDefault(ld => ld.LearnAimRef.CaseInsensitiveEquals(breakLearningDelivery.LearnAimRef)
                                                                    && ld.ProgTypeNullable == breakLearningDelivery.ProgTypeNullable
                                                                    && ld.StdCodeNullable == breakLearningDelivery.StdCodeNullable
                                                                    && ld.FworkCodeNullable == breakLearningDelivery.FworkCodeNullable
@@ -117,12 +119,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 
         private bool HasRestartFAM(IReadOnlyCollection<ILearningDeliveryFAM> learningDeliveryFams)
         {
-            return learningDeliveryFams.Any(f => f.LearnDelFAMType.Equals(RESLearnDelFamType, StringComparison.OrdinalIgnoreCase));
+            return learningDeliveryFams?.Any(f => f.LearnDelFAMType.Equals(RESLearnDelFamType, StringComparison.OrdinalIgnoreCase))
+                ?? false;
         }
 
         private bool WithMatchingStartDates(ILearningDelivery breakLearningDelivery, ILearningDelivery learningDelivery)
         {
-            if (learningDelivery.OrigLearnStartDateNullable == null)
+            if (learningDelivery?.OrigLearnStartDateNullable == null)
             {
                 return false;
             }
@@ -134,9 +137,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 
         private bool ExcludedDelivery(ILearningDelivery learner, IReadOnlyCollection<LARSLearningDelivery> larsLearningDeliveries)
         {
-            return larsLearningDeliveries
+            return larsLearningDeliveries?
                 .Any(x => x.LearnAimRef.CaseInsensitiveEquals(learner.LearnAimRef)
-                          && x.LARSLearningDeliveryCategories.Any(ldc => _excludedCategories.Contains(ldc.CategoryRef)));
+                          && x.LARSLearningDeliveryCategories.Any(ldc => _excludedCategories.Contains(ldc.CategoryRef)))
+                ?? false;
         }
 
         public double DaysBetween(DateTime start, DateTime end)
