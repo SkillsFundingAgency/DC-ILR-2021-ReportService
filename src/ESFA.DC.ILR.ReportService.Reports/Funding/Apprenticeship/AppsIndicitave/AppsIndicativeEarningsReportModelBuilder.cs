@@ -160,7 +160,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitav
                     hasPriceEpisodes);
             }
 
-            if (earliestEpisode)
+            if (earliestEpisode || !hasPriceEpisodes)
             {
                 CalculateAppFinTotals(model, learningDelivery);
             }
