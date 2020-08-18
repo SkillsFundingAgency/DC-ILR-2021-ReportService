@@ -45,7 +45,7 @@ namespace ESFA.DC.ILR.ReportService.Data
                 referenceDataEASFile = reportServiceDependentData.Get<ReferenceDataRoot>()?.MetaDatas.ReferenceDataVersions.EasFileDetails;
             }
 
-            var easFileName = !string.IsNullOrWhiteSpace(referenceDataEASFile?.FileName) ? Path.GetFileName(referenceDataEASFile?.FileName) : _defaultEASValue;
+            var easFileName = !string.IsNullOrWhiteSpace(referenceDataEASFile?.FileName) && referenceDataEASFile.FileName != _defaultEASValue ? Path.GetFileName(referenceDataEASFile?.FileName) : _defaultEASValue;
             reportServiceContext.EasReportingFilename = easFileName;
 
             if (referenceDataEASFile?.UploadDateTime != null)
