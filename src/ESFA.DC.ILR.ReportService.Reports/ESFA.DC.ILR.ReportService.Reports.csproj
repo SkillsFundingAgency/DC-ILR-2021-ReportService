@@ -35,9 +35,9 @@
     <PackageReference Include="Aspose.Cells" Version="19.9.0" />
     <PackageReference Include="Autofac" Version="4.9.4" />
     <PackageReference Include="CsvHelper" Version="12.1.3" />
-    <PackageReference Include="ESFA.DC.CsvService" Version="0.1.40-beta0001" />
+    <PackageReference Include="ESFA.DC.CsvService" Version="0.1.41-beta0001" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.ExcelService" Version="0.1.40-beta0001" />
+    <PackageReference Include="ESFA.DC.ExcelService" Version="0.1.41-beta0001" />
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.39-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.2021.Constants" Version="0.1.4-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.2021.Model" Version="0.1.4-beta0001" />
