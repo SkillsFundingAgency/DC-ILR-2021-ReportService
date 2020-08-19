@@ -48,6 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 OrgName = learner.OrgName,
                 LearnRefNumber = learner.LearnRefNumber,
                 LearnAimRef = learner.LearnAimRef,
+                LearnAimTitle = learner.LearningAimTitle,
                 ProgTypeNullable = learner.ProgTypeNullable,
                 StdCodeNullable = learner.StdCodeNullable,
                 FworkCodeNullable = learner.FworkCodeNullable,

@@ -17,6 +17,8 @@ namespace ESFA.DC.ILR.ReportService.Models.FRM
 
         public string LearnAimRef { get; set; }
 
+        public string LearnAimTitle { get; set; }
+
         public int? ProgTypeNullable { get; set; }
 
         public int? StdCodeNullable { get; set; }
