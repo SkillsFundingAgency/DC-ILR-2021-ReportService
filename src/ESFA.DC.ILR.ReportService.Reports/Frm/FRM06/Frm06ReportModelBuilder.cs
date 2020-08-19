@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.FRM;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData;
-using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
@@ -24,12 +21,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 
             var frmLearners = reportServiceDependentData.Get<FrmReferenceData>();
             var message = reportServiceDependentData.Get<IMessage>();
-            var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
 
             var currentLearnersHashSet = BuildCurrentYearLearnerHashSet(message);
-
-            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x.LearnAimRefTitle, StringComparer.OrdinalIgnoreCase);
-
+            
             var returnPeriod = reportServiceContext.ReturnPeriodName;
 
             foreach (var learner in frmLearners?.Frm06Learners ?? Enumerable.Empty<FrmLearner>())
@@ -49,7 +43,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     var advancedLoansIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, ADLLearnDelFamType);
                     var devolvedIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
                     var resIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, RESLearnDelFamType);
-                    var learnAimTitle = learnAimDictionary.GetValueOrDefault(learner.LearnAimRef);
 
                     models.Add(new Frm06ReportModel
                     {
@@ -57,7 +50,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                         Return = returnPeriod,
                         OrgName = learner.OrgName,
                         FworkCode = learner.FworkCodeNullable,
-                        LearnAimTitle = learnAimTitle,
+                        LearnAimTitle = learner.LearnAimTitle,
                         LearnAimRef = learner.LearnAimRef,
                         LearnRefNumber = learner.LearnRefNumber,
                         LearnStartDate = learner.LearnStartDate,
