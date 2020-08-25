@@ -6,6 +6,7 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Model;
@@ -147,6 +148,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             {
                 LearnAimRef = "learnAimRef",
                 AimSeqNumber = 1,
+                LSDPostcode = "Postcode1",
                 LearningDeliveryFAMs = learningDeliveryFams,
                 PartnerUKPRNNullable = 12345678,
                 ProviderSpecDeliveryMonitorings = providerSpecDeliveryMonitorings
@@ -199,6 +201,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 LARSLearningDeliveries = new List<LARSLearningDelivery>()
                 {
                     larsLearningDelivery
+                },
+                Postcodes = new List<Postcode>
+                {
+                    new Postcode
+                    {
+                        PostCode = "Postcode1"
+                    }
                 },
                 DevolvedPostocdes = new DevolvedPostcodes()
                 {

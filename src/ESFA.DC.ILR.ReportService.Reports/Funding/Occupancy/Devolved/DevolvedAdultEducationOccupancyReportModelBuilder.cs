@@ -77,7 +77,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved
                     var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
 
                     var lsdPostcode = postcodes.GetValueOrDefault(learningDelivery.LSDPostcode);
-                    var localAuthorityCode = lsdPostcode?.ONSData
+                    var localAuthorityCode = lsdPostcode?.ONSData?
                         .FirstOrDefault(od =>learningDelivery.LearnStartDate >= od.EffectiveFrom && learningDelivery.LearnStartDate <= (od.EffectiveTo ?? DateTime.MaxValue))?
                         .LocalAuthority;
 
