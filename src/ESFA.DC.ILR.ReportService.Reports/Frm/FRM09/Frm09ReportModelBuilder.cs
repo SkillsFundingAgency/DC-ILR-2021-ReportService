@@ -4,6 +4,7 @@ using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -43,7 +44,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
                         ld.CompStatus == _withdrawnCompStatus
                         && ld.WithdrawReasonNullable == _withdrawnReasonCode
                         && !ExcludedDelivery(ld, referenceData.LARSLearningDeliveries)
-                        && FundModel99Rule(ld))
+                        && FundModel99Rule(ld)
+                        && ld.LearnActEndDateNullable <= ReportingConstants.EndOfYear)
                     .Select(ld => new { Learner = l, LearningDelivery = ld }));
 
             if (withdrawanDeliveries == null)
@@ -136,7 +138,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
 
         private bool FundModel99Rule(ILearningDelivery delivery)
         {
-            return delivery.FundModel != 99 || RetrieveFamCodeForType(delivery.LearningDeliveryFAMs, ADLLearnDelFamType) == "1";
+            return delivery.FundModel != _fundModel99 || RetrieveFamCodeForType(delivery.LearningDeliveryFAMs, ADLLearnDelFamType) == _fundModel99ADLCode;
         }
 
         private bool HasRestartDelivery(ILearningDelivery withdrawnLearningDelivery, ILearner withdrawnLearner, IMessage message)
