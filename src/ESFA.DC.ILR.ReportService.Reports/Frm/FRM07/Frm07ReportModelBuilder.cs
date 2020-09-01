@@ -12,8 +12,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
     public class Frm07ReportModelBuilder : FrmBaseModelBuilder, IModelBuilder<IEnumerable<Frm07ReportModel>>
     {
         private readonly int _pausedCompStatus = 6;
-        private readonly int _excludedAimType = 3;
-        private readonly HashSet<int> _excludedFundModel = new HashSet<int> { 25, 99 };
+        private readonly int _fundModel99 = 99;
+        private readonly string _fundModel99ADLCode = "1";
+
+        private readonly HashSet<int> _excludedFundModel = new HashSet<int> { 25 };
         private readonly HashSet<int> _excludedCategories = new HashSet<int> { 23, 24, 27, 28, 29, 34, 35, 36 };
 
         public IEnumerable<Frm07ReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
@@ -36,7 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                 ?.SelectMany(l => l.LearningDeliveries.Where(ld =>
                         ld.CompStatus == _pausedCompStatus
                         && !ExcludedDelivery(ld, referenceData.LARSLearningDeliveries)
-                        && ld.AimType != _excludedAimType
+                        && FundModel99Rule(ld)
                         && !_excludedFundModel.Contains(ld.FundModel))
                     .Select(ld => new { Learner = l, LearningDelivery = ld }));
 
@@ -90,8 +92,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
             return new Frm07ReportModel
             {
-                UKPRN = reportServiceContext.Ukprn,
                 Return = returnPeriod,
+                UKPRN = reportServiceContext.Ukprn,
                 OrgName = orgName,
                 PartnerUKPRN = learningDelivery.PartnerUKPRNNullable,
                 PartnerOrgName = partnerOrgName,
@@ -104,10 +106,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                 ULN = learner.ULN,
                 LearnRefNumber = learner.LearnRefNumber,
                 PrevLearnRefNumber = learner.PrevLearnRefNumber,
+                SWSupAimId = learningDelivery.SWSupAimId,
                 LearnAimRef = learningDelivery.LearnAimRef,
+                LearnAimTitle = learningAim.LearnAimRefTitle,
                 AimSeqNumber = learningDelivery.AimSeqNumber,
                 AimTypeCode = learningDelivery.AimType,
-                LearnAimTitle = learningAim.LearnAimRefTitle,
                 LearnAimType = learningAim.LearnAimRefTypeDesc,
                 StdCode = learningDelivery.StdCodeNullable,
                 FworkCode = learningDelivery.FworkCodeNullable,
@@ -122,9 +125,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                 FundModel = learningDelivery.FundModel,
                 SOFCode = sofCode,
                 AdvancedLoansIndicator = advancedLoansIndicator,
-                FundingStream = CalculateFundingStream(learningDelivery.FundModel, learningDelivery.ProgTypeNullable, advancedLoansIndicator, sofCode),
                 ResIndicator = resIndicator,
-                SWSupAimId = learningDelivery.SWSupAimId,
                 ProvSpecLearnDelMon = ProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings),
                 ProvSpecDelMon = ProviderSpecLearningMonitorings(learner.ProviderSpecLearnerMonitorings),
                 PriorLearnFundAdj = learningDelivery.PriorLearnFundAdjNullable,
@@ -154,6 +155,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
             return learningDeliveryFams?.Any(f => f.LearnDelFAMType.CaseInsensitiveEquals(RESLearnDelFamType)) ?? false;
         }
 
+        private bool FundModel99Rule(ILearningDelivery delivery)
+        {
+            return delivery.FundModel != _fundModel99 || RetrieveFamCodeForType(delivery.LearningDeliveryFAMs, ADLLearnDelFamType) == _fundModel99ADLCode;
+        }
+
         private bool WithMatchingStartDates(ILearningDelivery breakLearningDelivery, ILearningDelivery learningDelivery)
         {
             if (learningDelivery.OrigLearnStartDateNullable == null)
@@ -163,8 +169,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
             return (learningDelivery.OrigLearnStartDateNullable == breakLearningDelivery.LearnStartDate
                     || learningDelivery.OrigLearnStartDateNullable == breakLearningDelivery.OrigLearnStartDateNullable)
-                   && learningDelivery.LearnStartDate > breakLearningDelivery.LearnActEndDateNullable;
+                   && learningDelivery.LearnStartDate >= breakLearningDelivery.LearnActEndDateNullable;
         }
-
     }
 }

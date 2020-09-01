@@ -4,6 +4,7 @@ using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -14,7 +15,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
         private readonly int _withdrawnCompStatus = 3;
         private readonly int _withdrawnReasonCode = 40;
         private readonly int _excludedAimType = 3;
-        private readonly HashSet<int> _excludedFundModel = new HashSet<int> { 25, 99 };
+        private readonly int _fundModel99 = 99;
+        private readonly string _fundModel99ADLCode = "1";
+
         private readonly HashSet<int> _excludedCategories = new HashSet<int> { 23, 24, 27, 28, 29, 34, 35, 36 };
 
         public IEnumerable<Frm09ReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
@@ -41,8 +44,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
                         ld.CompStatus == _withdrawnCompStatus
                         && ld.WithdrawReasonNullable == _withdrawnReasonCode
                         && !ExcludedDelivery(ld, referenceData.LARSLearningDeliveries)
-                        && ld.AimType != _excludedAimType
-                        && !_excludedFundModel.Contains(ld.FundModel))
+                        && FundModel99Rule(ld)
+                        && ld.LearnActEndDateNullable <= ReportingConstants.EndOfYear)
                     .Select(ld => new { Learner = l, LearningDelivery = ld }));
 
             if (withdrawanDeliveries == null)
@@ -85,8 +88,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
 
             return new Frm09ReportModel
             {
-                UKPRN = reportServiceContext.Ukprn,
                 Return = returnPeriod,
+                UKPRN = reportServiceContext.Ukprn,
                 OrgName = orgName,
                 PartnerUKPRN = learningDelivery.PartnerUKPRNNullable,
                 PartnerOrgName = partnerOrgName,
@@ -94,15 +97,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
                 PrevOrgName = prevOrgName,
                 PMUKPRN = learner.PMUKPRNNullable,
                 PMOrgName = pmOrgName,
-                DAUKPRN = sofUkprn != 0 ? sofUkprn : (int?)null,
-                DAOrgName = sofOrgName,
+                DevolvedUKPRN = sofUkprn != 0 ? sofUkprn : (int?)null,
+                DevolvedOrgName = sofOrgName,
                 ULN = learner.ULN,
                 LearnRefNumber = learner.LearnRefNumber,
-                PrevLearnRefNumber = learner.PrevLearnRefNumber,
+                SWSupAimId = learningDelivery.SWSupAimId,
                 LearnAimRef = learningDelivery.LearnAimRef,
+                LearnAimTitle = learningAim.LearnAimRefTitle,
                 AimSeqNumber = learningDelivery.AimSeqNumber,
                 AimTypeCode = learningDelivery.AimType,
-                LearnAimTitle = learningAim.LearnAimRefTitle,
                 LearnAimType = learningAim.LearnAimRefTypeDesc,
                 StdCode = learningDelivery.StdCodeNullable,
                 FworkCode = learningDelivery.FworkCodeNullable,
@@ -113,14 +116,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
                 LearnPlanEndDate = learningDelivery.LearnPlanEndDate,
                 LearnActEndDate = learningDelivery.LearnActEndDateNullable,
                 CompStatus = learningDelivery.CompStatus,
+                WithdrawalCode = learningDelivery.WithdrawReasonNullable,
                 Outcome = learningDelivery.OutcomeNullable,
                 FundModel = learningDelivery.FundModel,
                 SOFCode = sofCode,
-                WithdrawalCode = learningDelivery.WithdrawReasonNullable,
                 AdvancedLoansIndicator = advancedLoansIndicator,
-                FundingStream = CalculateFundingStream(learningDelivery.FundModel, learningDelivery.ProgTypeNullable, advancedLoansIndicator, sofCode),
                 ResIndicator = resIndicator,
-                SWSupAimId = learningDelivery.SWSupAimId,
                 ProvSpecLearnDelMon = ProviderSpecLearningMonitorings(learner.ProviderSpecLearnerMonitorings),
                 ProvSpecDelMon = ProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings),
                 PriorLearnFundAdj = learningDelivery.PriorLearnFundAdjNullable,
@@ -133,6 +134,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
             return larsLearningDeliveries
                 .Any(x => x.LearnAimRef.CaseInsensitiveEquals(learner.LearnAimRef)
                           && x.LARSLearningDeliveryCategories.Any(ldc => _excludedCategories.Contains(ldc.CategoryRef)));
+        }
+
+        private bool FundModel99Rule(ILearningDelivery delivery)
+        {
+            return delivery.FundModel != _fundModel99 || RetrieveFamCodeForType(delivery.LearningDeliveryFAMs, ADLLearnDelFamType) == _fundModel99ADLCode;
         }
 
         private bool HasRestartDelivery(ILearningDelivery withdrawnLearningDelivery, ILearner withdrawnLearner, IMessage message)
