@@ -6,9 +6,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
     {
         public string PMOrgName { get; set; }
 
-        public int? DAUKPRN { get; set; }
+        public int? DevolvedUKPRN { get; set; }
 
-        public string DAOrgName { get; set; }
+        public string DevolvedOrgName { get; set; }
 
         public string SOFCode { get; set; }
 
