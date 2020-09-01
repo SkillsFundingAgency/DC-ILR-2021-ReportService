@@ -16,7 +16,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
 
         public long? PrevUKPRN { get; set; }
 
+        public string PrevOrgName { get; set; }
+
         public long? PMUKPRN { get; set; }
+
+        public string PMOrgName { get; set; }
 
         public long ULN { get; set; }
 
