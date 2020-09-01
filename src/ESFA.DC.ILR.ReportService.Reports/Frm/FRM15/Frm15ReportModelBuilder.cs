@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
 
             var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
 
-            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x.LearnAimRefTitle, StringComparer.OrdinalIgnoreCase);
+            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x, StringComparer.OrdinalIgnoreCase);
 
             var orgName = organisationNameDictionary.GetValueOrDefault(reportServiceContext.Ukprn);
 
@@ -69,7 +69,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                     var prevOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PrevUKPRNNullable
                             .GetValueOrDefault());
                     var partnerOrgName = organisationNameDictionary.GetValueOrDefault(delivery.LearningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
-                    var learnAimTitle = learnAimDictionary.GetValueOrDefault(delivery.LearningDelivery.LearnAimRef);
+                    var learnAim = learnAimDictionary.GetValueOrDefault(delivery.LearningDelivery.LearnAimRef);
 
                     models.Add(new Frm15ReportModel
                     {
@@ -86,9 +86,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                         LearnRefNumber = delivery.Learner.LearnRefNumber,
                         SWSupAimId = delivery.LearningDelivery.SWSupAimId,
                         LearnAimRef = delivery.LearningDelivery.LearnAimRef,
-                        LearnAimTitle = learnAimTitle,
+                        LearnAimTitle = learnAim.LearnAimRefTitle,
                         AimSeqNumber = delivery.LearningDelivery.AimSeqNumber,
                         AimTypeCode = delivery.LearningDelivery.AimType,
+                        LearnAimType = learnAim.LearnAimRefTypeDesc,
                         StdCode = delivery.LearningDelivery.StdCodeNullable,
                         FworkCode = delivery.LearningDelivery.FworkCodeNullable,
                         PwayCode = delivery.LearningDelivery.PwayCodeNullable,

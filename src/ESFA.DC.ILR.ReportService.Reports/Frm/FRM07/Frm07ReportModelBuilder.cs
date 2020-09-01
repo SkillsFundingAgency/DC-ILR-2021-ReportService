@@ -172,6 +172,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                     || learningDelivery.OrigLearnStartDateNullable == breakLearningDelivery.OrigLearnStartDateNullable)
                    && learningDelivery.LearnStartDate >= breakLearningDelivery.LearnActEndDateNullable;
         }
-
     }
 }
