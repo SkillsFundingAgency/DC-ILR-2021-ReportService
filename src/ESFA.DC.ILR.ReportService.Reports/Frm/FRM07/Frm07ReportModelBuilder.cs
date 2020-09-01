@@ -92,8 +92,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
             return new Frm07ReportModel
             {
-                UKPRN = reportServiceContext.Ukprn,
                 Return = returnPeriod,
+                UKPRN = reportServiceContext.Ukprn,
                 OrgName = orgName,
                 PartnerUKPRN = learningDelivery.PartnerUKPRNNullable,
                 PartnerOrgName = partnerOrgName,
@@ -106,10 +106,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                 ULN = learner.ULN,
                 LearnRefNumber = learner.LearnRefNumber,
                 PrevLearnRefNumber = learner.PrevLearnRefNumber,
+                SWSupAimId = learningDelivery.SWSupAimId,
                 LearnAimRef = learningDelivery.LearnAimRef,
+                LearnAimTitle = learningAim.LearnAimRefTitle,
                 AimSeqNumber = learningDelivery.AimSeqNumber,
                 AimTypeCode = learningDelivery.AimType,
-                LearnAimTitle = learningAim.LearnAimRefTitle,
                 LearnAimType = learningAim.LearnAimRefTypeDesc,
                 StdCode = learningDelivery.StdCodeNullable,
                 FworkCode = learningDelivery.FworkCodeNullable,
@@ -124,9 +125,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
                 FundModel = learningDelivery.FundModel,
                 SOFCode = sofCode,
                 AdvancedLoansIndicator = advancedLoansIndicator,
-                FundingStream = CalculateFundingStream(learningDelivery.FundModel, learningDelivery.ProgTypeNullable, advancedLoansIndicator, sofCode),
                 ResIndicator = resIndicator,
-                SWSupAimId = learningDelivery.SWSupAimId,
                 ProvSpecLearnDelMon = ProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings),
                 ProvSpecDelMon = ProviderSpecLearningMonitorings(learner.ProviderSpecLearnerMonitorings),
                 PriorLearnFundAdj = learningDelivery.PriorLearnFundAdjNullable,
