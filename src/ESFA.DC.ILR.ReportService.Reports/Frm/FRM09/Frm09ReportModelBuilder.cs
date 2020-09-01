@@ -14,7 +14,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
         private readonly int _withdrawnCompStatus = 3;
         private readonly int _withdrawnReasonCode = 40;
         private readonly int _excludedAimType = 3;
-        private readonly HashSet<int> _excludedFundModel = new HashSet<int> { 25, 99 };
+        private readonly int _fundModel99 = 99;
+        private readonly string _fundModel99ADLCode = "1";
+
         private readonly HashSet<int> _excludedCategories = new HashSet<int> { 23, 24, 27, 28, 29, 34, 35, 36 };
 
         public IEnumerable<Frm09ReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
@@ -41,8 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
                         ld.CompStatus == _withdrawnCompStatus
                         && ld.WithdrawReasonNullable == _withdrawnReasonCode
                         && !ExcludedDelivery(ld, referenceData.LARSLearningDeliveries)
-                        && ld.AimType != _excludedAimType
-                        && !_excludedFundModel.Contains(ld.FundModel))
+                        && FundModel99Rule(ld))
                     .Select(ld => new { Learner = l, LearningDelivery = ld }));
 
             if (withdrawanDeliveries == null)
@@ -131,6 +132,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
             return larsLearningDeliveries
                 .Any(x => x.LearnAimRef.CaseInsensitiveEquals(learner.LearnAimRef)
                           && x.LARSLearningDeliveryCategories.Any(ldc => _excludedCategories.Contains(ldc.CategoryRef)));
+        }
+
+        private bool FundModel99Rule(ILearningDelivery delivery)
+        {
+            return delivery.FundModel != 99 || RetrieveFamCodeForType(delivery.LearningDeliveryFAMs, ADLLearnDelFamType) == "1";
         }
 
         private bool HasRestartDelivery(ILearningDelivery withdrawnLearningDelivery, ILearner withdrawnLearner, IMessage message)
