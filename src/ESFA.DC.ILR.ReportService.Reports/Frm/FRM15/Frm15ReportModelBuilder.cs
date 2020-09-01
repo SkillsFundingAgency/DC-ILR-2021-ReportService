@@ -10,6 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
 {
     public class Frm15ReportModelBuilder : FrmBaseModelBuilder, IModelBuilder<IEnumerable<Frm15ReportModel>>
     {
+        private readonly int _includedCompStatus = 1;
         private readonly int _includedAimType = 1;
         private readonly int _includedFundModel = 36;
         private readonly int _includedProgType = 25;
@@ -37,6 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                                             ld.FundModel == _includedFundModel
                                             && ld.ProgTypeNullable == _includedProgType
                                             && ld.AimType == _includedAimType
+                                            && ld.CompStatus == _includedCompStatus
                                             && ld.EPAOrgID == null).Select(ld => new { Learner = l, LearningDelivery = ld }));
 
             var currentReturnEndDate = referenceData.MetaDatas.CollectionDates.ReturnPeriods.FirstOrDefault(d => reportServiceContext.SubmissionDateTimeUtc >= d.Start && reportServiceContext.SubmissionDateTimeUtc <= d.End).End;
