@@ -25,56 +25,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
             return deliveryFams.FirstOrDefault(f => f.LearnDelFAMType == learnDelFamType)?.LearnDelFAMCode ?? string.Empty;
         }
 
-        protected string CalculateFundingStream(int fundModel, int? progTypeNullable, string advancedLearnerLoansIndicator, string devolvedIndicator)
-        {
-            if (DevolvedCodes.Contains(devolvedIndicator))
-            {
-                return FundingStreamConstants.Devolved;
-            }
-
-            if (fundModel == 35 && !progTypeNullable.HasValue)
-            {
-                return FundingStreamConstants.AEB;
-            }
-
-            if ((fundModel == 35 && progTypeNullable.HasValue && _apprenticeshipHashSet.Contains(progTypeNullable.Value)) || fundModel == 81)
-            {
-                return FundingStreamConstants.Apprenticeships;
-            }
-
-            if (fundModel == 25 && progTypeNullable == 24)
-            {
-                return FundingStreamConstants.Traineeships1618;
-            }
-
-            if (fundModel == 35 && progTypeNullable == 24)
-            {
-                return FundingStreamConstants.Traineeships1924;
-            }
-
-            if (fundModel == 25 && progTypeNullable != 24)
-            {
-                return FundingStreamConstants.SixteenToNineteen;
-            }
-
-            if (fundModel == 36)
-            {
-                return FundingStreamConstants.ApprenticeshipsFromMay2017;
-            }
-
-            if (fundModel == 99 && advancedLearnerLoansIndicator == "1")
-            {
-                return FundingStreamConstants.AdvancedLearnerLoans;
-            }
-
-            if (fundModel == 99 && advancedLearnerLoansIndicator != "1")
-            {
-                return FundingStreamConstants.NonFunded;
-            }
-
-            return FundingStreamConstants.Other;
-        }
-
         protected string ProviderSpecDeliveryMonitorings(IReadOnlyCollection<IProviderSpecDeliveryMonitoring> providerSpecDeliveryMonitorings)
         {
             if (providerSpecDeliveryMonitorings == null || !providerSpecDeliveryMonitorings.Any())
