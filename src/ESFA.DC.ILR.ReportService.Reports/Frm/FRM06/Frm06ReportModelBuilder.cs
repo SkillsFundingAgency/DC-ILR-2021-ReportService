@@ -50,8 +50,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     var devolvedIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
                     var resIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, RESLearnDelFamType);
                     var sofCode = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
-                    var pmOrgName = organisationNameDictionary.GetValueOrDefault((int)learner.PMUKPRN);
-                    var prevOrgName = organisationNameDictionary.GetValueOrDefault((int)learner.PrevUKPRN);
+                    var pmOrgName = organisationNameDictionary.GetValueOrDefault(Convert.ToInt32(learner.PMUKPRN.GetValueOrDefault()));
+                    var prevOrgName = organisationNameDictionary.GetValueOrDefault(Convert.ToInt32(learner.PrevUKPRN.GetValueOrDefault()));
                     var learnAim = learnAimDictionary.GetValueOrDefault(learner.LearnAimRef);
 
 
