@@ -4,7 +4,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 {
     public class Frm06ReportRenderService : FrmBaseRenderService<Frm06ReportModel>
     {
-        private const string ReportId = "FRM09";
+        private const string ReportId = "FRM06";
 
         public Frm06ReportRenderService()
             : base(ReportId)
