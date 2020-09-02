@@ -62,6 +62,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 Outcome = learner.Outcome,
                 AimSeqNumber = learner.AimSeqNumber,
                 LearnPlanEndDate = learner.LearnPlanEndDate,
+                OrigLearnStartDate = learner.OrigLearnStartDate,
                 PMUKPRN = learner.PMUKPRN,
                 PartnerUKPRN = learner.PartnerUKPRN,
                 PartnerOrgName = learner.PartnerOrgName,

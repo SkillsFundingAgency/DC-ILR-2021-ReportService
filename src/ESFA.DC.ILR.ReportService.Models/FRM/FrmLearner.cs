@@ -49,6 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Models.FRM
 
         public DateTime? LearnActEndDate { get; set; }
 
+        public DateTime? OrigLearnStartDate { get; set; }
         public int? PriorLearnFundAdj { get; set; }
 
         public int? OtherFundAdj { get; set; }

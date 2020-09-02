@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Models.FRM;
+using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
@@ -21,6 +24,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
 
             var frmLearners = reportServiceDependentData.Get<FrmReferenceData>();
             var message = reportServiceDependentData.Get<IMessage>();
+            var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
+            var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
+            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x, StringComparer.OrdinalIgnoreCase);
+
 
             var currentLearnersHashSet = BuildCurrentYearLearnerHashSet(message);
             
@@ -34,8 +41,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     LearnAimRef = learner.LearnAimRef,
                     LearnRefNumber = learner.LearnRefNumber,
                     LearnStartDate = learner.LearnStartDate,
-                    ProgTypeNullable = learner.ProgTypeNullable,
-                    StdCodeNullable = learner.StdCodeNullable
+                    ProgTypeNullable = learner.ProgTypeNullable
                 };
 
                 if (!currentLearnersHashSet.Contains(key))
@@ -43,10 +49,22 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     var advancedLoansIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, ADLLearnDelFamType);
                     var devolvedIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
                     var resIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, RESLearnDelFamType);
+                    var sofCode = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
+                    var pmOrgName = organisationNameDictionary.GetValueOrDefault((int)learner.PMUKPRN);
+                    var prevOrgName = organisationNameDictionary.GetValueOrDefault((int)learner.PrevUKPRN);
+                    var learnAim = learnAimDictionary.GetValueOrDefault(learner.LearnAimRef);
+
 
                     models.Add(new Frm06ReportModel
                     {
                         UKPRN = learner.UKPRN,
+                        PrevOrgName = prevOrgName,
+                        PMOrgName = pmOrgName,
+                        AimTypeCode = learner.AimType,
+                        LearningAimType = learnAim.LearnAimRef,
+                        FundingModel = learner.FundModel,
+                        OrigLearnStartDate = learner.OrigLearnStartDate,
+                        SOFCode = sofCode,
                         Return = returnPeriod,
                         OrgName = learner.OrgName,
                         FworkCode = learner.FworkCodeNullable,
@@ -68,14 +86,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                         PartnerUKPRN = learner.PartnerUKPRN,
                         PartnerOrgName = learner.PartnerOrgName,
                         PriorLearnFundAdj = learner.PriorLearnFundAdj,
-                        PrevLearnRefNumber = learner.PrevLearnRefNumber,
                         PrevUKPRN = learner.PrevUKPRN,
                         PwayCode = learner.PwayCodeNullable,
                         ResIndicator = resIndicator,
                         SWSupAimId = learner.SWSupAimId,
                         ProvSpecLearnDelMon = string.Join(";", learner.ProvSpecDeliveryMonitorings.Select(x => x.ProvSpecDelMon)),
                         ProvSpecDelMon = string.Join(";", learner.ProviderSpecLearnerMonitorings.Select(x => x.ProvSpecLearnMon)),
-                        FundingStream = CalculateFundingStream(learner.FundModel, learner.ProgTypeNullable, advancedLoansIndicator, devolvedIndicator)
                     });
                 }
             }
@@ -93,8 +109,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     LearnAimRef = ld.LearnAimRef,
                     LearnRefNumber = l.LearnRefNumber,
                     LearnStartDate = ld.LearnStartDate,
-                    ProgTypeNullable = ld.ProgTypeNullable,
-                    StdCodeNullable = ld.StdCodeNullable
+                    ProgTypeNullable = ld.ProgTypeNullable
                 })) ?? Enumerable.Empty<FrmLearnerKey>(), _frmEqualityComparer);
         }
     }
