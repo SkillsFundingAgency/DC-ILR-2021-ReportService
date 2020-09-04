@@ -51,23 +51,18 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
             foreach (var deliverySet in learnerDeliveries)
             {
-                var delivery = deliverySet.OrderByDescending(x => x.LearningDelivery.LearnStartDate).FirstOrDefault();
-
-                var restartDelivery = GetRestartDelivery(delivery.LearningDelivery, delivery.Learner);
-
-                if (restartDelivery == null)
+                foreach(var delivery in deliverySet.OrderByDescending(x => x.LearningDelivery.LearnStartDate))
                 {
-                    continue;
-                }
+                    var restartDelivery = GetRestartDelivery(delivery.LearningDelivery, delivery.Learner);
 
-                if (delivery.LearningDelivery.LearnPlanEndDate == restartDelivery.LearnPlanEndDate)
-                {
-                    var pmOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PMUKPRNNullable.GetValueOrDefault());
-                    var prevOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PrevUKPRNNullable.GetValueOrDefault());
+                    if (restartDelivery != null)
+                    {
+                        var pmOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PMUKPRNNullable.GetValueOrDefault());
+                        var prevOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PrevUKPRNNullable.GetValueOrDefault());
 
-                    models.Add(BuildModelForLearningDelivery(reportServiceContext, delivery.LearningDelivery, delivery.Learner, sofCodeDictionary, mcaDictionary, organisationNameDictionary, learnAimDictionary, returnPeriod, orgName, pmOrgName, prevOrgName));
+                        models.Add(BuildModelForLearningDelivery(reportServiceContext, restartDelivery, delivery.Learner, sofCodeDictionary, mcaDictionary, organisationNameDictionary, learnAimDictionary, returnPeriod, orgName, pmOrgName, prevOrgName));
+                    }
 
-                    models.Add(BuildModelForLearningDelivery(reportServiceContext, restartDelivery, delivery.Learner, sofCodeDictionary, mcaDictionary, organisationNameDictionary, learnAimDictionary, returnPeriod, orgName, pmOrgName, prevOrgName));
                 }
             }
 
@@ -142,12 +137,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM07
 
         private ILearningDelivery GetRestartDelivery(ILearningDelivery breakLearningDelivery, ILearner learner)
         {
-            return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnAimRef.CaseInsensitiveEquals(breakLearningDelivery.LearnAimRef)
-                                                                   && ld.ProgTypeNullable == breakLearningDelivery.ProgTypeNullable
-                                                                   && ld.StdCodeNullable == breakLearningDelivery.StdCodeNullable
-                                                                   && ld.FworkCodeNullable == breakLearningDelivery.FworkCodeNullable
-                                                                   && HasRestartFAM(ld.LearningDeliveryFAMs)
-                                                                   && WithMatchingStartDates(breakLearningDelivery, ld));
+            return learner.LearningDeliveries.FirstOrDefault(ld => ld.LearnPlanEndDate == breakLearningDelivery.LearnPlanEndDate
+                                                             && ld.LearnAimRef.CaseInsensitiveEquals(breakLearningDelivery.LearnAimRef)
+                                                             && ld.ProgTypeNullable == breakLearningDelivery.ProgTypeNullable
+                                                             && ld.StdCodeNullable == breakLearningDelivery.StdCodeNullable
+                                                             && ld.FworkCodeNullable == breakLearningDelivery.FworkCodeNullable
+                                                             && HasRestartFAM(ld.LearningDeliveryFAMs)
+                                                             && WithMatchingStartDates(breakLearningDelivery, ld));
         }
 
         private bool HasRestartFAM(IReadOnlyCollection<ILearningDeliveryFAM> learningDeliveryFams)
