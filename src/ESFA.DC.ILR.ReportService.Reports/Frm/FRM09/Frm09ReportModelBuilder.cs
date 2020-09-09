@@ -147,8 +147,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
                     (l.LearnRefNumber == withdrawnLearner.LearnRefNumber) ||
                     (l.PrevLearnRefNumber == withdrawnLearner.LearnRefNumber))
                 .SelectMany(l => l.LearningDeliveries.Where(ld =>
-                    ld.LearnAimRef.CaseInsensitiveEquals(withdrawnLearningDelivery.LearnAimRef)
-                    && ld.ProgTypeNullable == withdrawnLearningDelivery.ProgTypeNullable
+                    ld.ProgTypeNullable == withdrawnLearningDelivery.ProgTypeNullable
                     && ld.StdCodeNullable == withdrawnLearningDelivery.StdCodeNullable
                     && ld.FworkCodeNullable == withdrawnLearningDelivery.FworkCodeNullable
                     && ld.LearnStartDate >= withdrawnLearningDelivery.LearnActEndDateNullable)).Any();
