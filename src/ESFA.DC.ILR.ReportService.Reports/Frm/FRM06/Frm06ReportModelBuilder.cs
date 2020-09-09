@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
-using ESFA.DC.ILR.ReferenceDataService.Model;
 using ESFA.DC.ILR.ReportService.Models.FRM;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -27,7 +27,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             var referenceData = reportServiceDependentData.Get<ReferenceDataRoot>();
             var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
             var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x, StringComparer.OrdinalIgnoreCase);
-
 
             var currentLearnersHashSet = BuildCurrentYearLearnerHashSet(message);
             
@@ -61,7 +60,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                         PrevOrgName = prevOrgName,
                         PMOrgName = pmOrgName,
                         AimTypeCode = learner.AimType,
-                        LearningAimType = learnAim.LearnAimRef,
+                        LearningAimType = learnAim?.LearnAimRef,
                         FundingModel = learner.FundModel,
                         OrigLearnStartDate = learner.OrigLearnStartDate,
                         SOFCode = sofCode,
