@@ -62,20 +62,20 @@
     <Reference Include="ESFA.DC.ILR.Desktop.Interface, Version=0.1.0.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.2021.Desktop.Interface.0.1.0.1\lib\netstandard2.0\ESFA.DC.ILR.Desktop.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model, Version=0.1.115.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM70.FundingOutput.Model.0.1.115\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model, Version=0.1.138.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM70.FundingOutput.Model.0.1.138\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Model, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Model, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Interface.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Loose.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Loose.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Tests.Model, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.2021.Tests.Model.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Tests.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Tests.Model, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Tests.Model.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Tests.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
