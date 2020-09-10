@@ -39,9 +39,9 @@
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.ExcelService" Version="0.1.41-beta0001" />
     <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.39-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.2021.Constants" Version="0.1.4-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.2021.Model" Version="0.1.4-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.2021.Model.Loose" Version="0.1.4-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Constants" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Model" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Model.Loose" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.2021.ReferenceDataService.Model" Version="0.3.21" />
     <PackageReference Include="ESFA.DC.Jobs.Model" Version="0.2.76-beta0001" />
