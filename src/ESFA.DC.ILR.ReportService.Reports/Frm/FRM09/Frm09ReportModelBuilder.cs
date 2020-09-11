@@ -36,8 +36,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM09
 
             var orgName = organisationNameDictionary.GetValueOrDefault(reportServiceContext.Ukprn);
 
-            var currentReturnEndDate = referenceData.MetaDatas.CollectionDates.ReturnPeriods.FirstOrDefault(d =>
-                reportServiceContext.SubmissionDateTimeUtc >= d.Start && reportServiceContext.SubmissionDateTimeUtc <= d.End).End;
+            var currentReturnEndDate = referenceData.MetaDatas.CollectionDates.ReturnPeriods
+                .FirstOrDefault(d => d.Period == reportServiceContext.ReturnPeriod).End;
 
             var withdrawanDeliveries = message.Learners
                 ?.SelectMany(l => l.LearningDeliveries.Where(ld =>
