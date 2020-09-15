@@ -98,16 +98,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             return models;
         }
 
-        public bool LearnerMatch(FrmLearnerKey lastYearLearner, HashSet<FrmLearnerKey> currentLearners) =>
-            currentLearners.Where(l => l.FworkCodeNullable == lastYearLearner.FworkCodeNullable
-                && l.LearnAimRef == lastYearLearner.LearnAimRef.ToLowerInvariant()
+        public bool LearnerMatch(FrmLearnerKey lastYearLearner, List<FrmLearnerKey> currentLearners) =>
+            currentLearners.Any(l => l.FworkCodeNullable == lastYearLearner.FworkCodeNullable
+                && l.LearnAimRef == lastYearLearner.LearnAimRef
                 && l.LearnStartDate == lastYearLearner.LearnStartDate
                 && (l.LearnRefNumber == lastYearLearner.LearnRefNumber || l.PrevLearnRefNumber == lastYearLearner.LearnRefNumber)
-                && l.ProgTypeNullable == lastYearLearner.ProgTypeNullable).Any();
+                && l.ProgTypeNullable == lastYearLearner.ProgTypeNullable);
         
-        private HashSet<FrmLearnerKey> BuildCurrentYearLearnerHashSet(IMessage message)
+        private List<FrmLearnerKey> BuildCurrentYearLearnerHashSet(IMessage message)
         {
-            return new HashSet<FrmLearnerKey>(message.Learners?
+            return message.Learners?
                 .SelectMany(l => l?.LearningDeliveries
                 .Select(ld => new FrmLearnerKey
                 {
@@ -117,7 +117,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     PrevLearnRefNumber = l.PrevLearnRefNumber,
                     LearnStartDate = ld.LearnStartDate,
                     ProgTypeNullable = ld.ProgTypeNullable
-                })) ?? Enumerable.Empty<FrmLearnerKey>(), _frmEqualityComparer);
+                })).ToList();
         }
     }
 }
