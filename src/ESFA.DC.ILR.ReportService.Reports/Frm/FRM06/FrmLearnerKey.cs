@@ -6,8 +6,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
     {
         public string LearnRefNumber { get; set; }
         
-        public string PrevLearnRefNumber { get; set; }
-
         public string LearnAimRef { get; set; }
 
         public int? ProgTypeNullable { get; set; }
