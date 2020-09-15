@@ -106,7 +106,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                 {
                     FworkCodeNullable = ld.FworkCodeNullable,
                     LearnAimRef = ld.LearnAimRef,
-                    LearnRefNumber = l.LearnRefNumber,
+                    LearnRefNumber = l.PrevLearnRefNumber ?? l.LearnRefNumber,
                     LearnStartDate = ld.LearnStartDate,
                     ProgTypeNullable = ld.ProgTypeNullable
                 })) ?? Enumerable.Empty<FrmLearnerKey>(), _frmEqualityComparer);
