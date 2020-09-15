@@ -28,8 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
             var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x, StringComparer.OrdinalIgnoreCase);
 
-            var currentLearnersHashSetPrevLearnRefNum = BuildCurrentYearLearnerHashSet(message, true);
-            var currentLearnersHashSetLearnRefNum = BuildCurrentYearLearnerHashSet(message, false);
+            var currentLearnersHashSet = BuildCurrentYearLearnerHashSet(message);
 
             var returnPeriod = reportServiceContext.ReturnPeriodName;
 
@@ -44,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     ProgTypeNullable = learner.ProgTypeNullable
                 };
 
-                if (!currentLearnersHashSetLearnRefNum.Contains(key) && !currentLearnersHashSetPrevLearnRefNum.Contains(key))
+                if (!currentLearnersHashSet.Contains(key))
                 {
                     var advancedLoansIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, ADLLearnDelFamType);
                     var devolvedIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
@@ -99,18 +98,31 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             return models;
         }
 
-        private HashSet<FrmLearnerKey> BuildCurrentYearLearnerHashSet(IMessage message, bool previousLearnRef)
+        private HashSet<FrmLearnerKey> BuildCurrentYearLearnerHashSet(IMessage message)
         {
-            return new HashSet<FrmLearnerKey>(message.Learners?
-                .SelectMany(l => l?.LearningDeliveries
-                .Select(ld => new FrmLearnerKey
-                {
-                    FworkCodeNullable = ld.FworkCodeNullable,
-                    LearnAimRef = ld.LearnAimRef,
-                    LearnRefNumber = previousLearnRef ? l.PrevLearnRefNumber : l.LearnRefNumber,
-                    LearnStartDate = ld.LearnStartDate,
-                    ProgTypeNullable = ld.ProgTypeNullable
-                })) ?? Enumerable.Empty<FrmLearnerKey>(), _frmEqualityComparer);
+            HashSet<FrmLearnerKey> learnerKeys = new HashSet<FrmLearnerKey>(_frmEqualityComparer);
+            learnerKeys.UnionWith(message.Learners?
+               .SelectMany(l => l?.LearningDeliveries
+               .Select(ld => new FrmLearnerKey
+               {
+                   FworkCodeNullable = ld.FworkCodeNullable,
+                   LearnAimRef = ld.LearnAimRef,
+                   LearnRefNumber = l.LearnRefNumber,
+                   LearnStartDate = ld.LearnStartDate,
+                   ProgTypeNullable = ld.ProgTypeNullable
+               })) ?? Enumerable.Empty<FrmLearnerKey>());
+            learnerKeys.UnionWith(message.Learners?
+               .SelectMany(l => l?.LearningDeliveries
+               .Select(ld => new FrmLearnerKey
+               {
+                   FworkCodeNullable = ld.FworkCodeNullable,
+                   LearnAimRef = ld.LearnAimRef,
+                   LearnRefNumber = l.PrevLearnRefNumber,
+                   LearnStartDate = ld.LearnStartDate,
+                   ProgTypeNullable = ld.ProgTypeNullable
+               })) ?? Enumerable.Empty<FrmLearnerKey>());
+            return learnerKeys;
+
         }
     }
 }
