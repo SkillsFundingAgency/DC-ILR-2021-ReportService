@@ -5,6 +5,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
     public class FrmLearnerKey
     {
         public string LearnRefNumber { get; set; }
+        
+        public string PrevLearnRefNumber { get; set; }
 
         public string LearnAimRef { get; set; }
 

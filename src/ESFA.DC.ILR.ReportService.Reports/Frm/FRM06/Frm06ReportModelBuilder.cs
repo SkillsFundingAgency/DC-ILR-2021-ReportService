@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x, StringComparer.OrdinalIgnoreCase);
 
             var currentLearnersHashSet = BuildCurrentYearLearnerHashSet(message);
-            
+
             var returnPeriod = reportServiceContext.ReturnPeriodName;
 
             foreach (var learner in frmLearners?.Frm06Learners ?? Enumerable.Empty<FrmLearner>())
@@ -43,7 +43,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     ProgTypeNullable = learner.ProgTypeNullable
                 };
 
-                if (!currentLearnersHashSet.Contains(key))
+                if (!LearnerMatch(key, currentLearnersHashSet))
                 {
                     var advancedLoansIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, ADLLearnDelFamType);
                     var devolvedIndicator = RetrieveFamCodeForType(learner.LearningDeliveryFAMs, SOFLearnDelFamType);
@@ -98,6 +98,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             return models;
         }
 
+        public bool LearnerMatch(FrmLearnerKey lastYearLearner, HashSet<FrmLearnerKey> currentLearners)
+        {
+            return currentLearners.Where(l => l.FworkCodeNullable == lastYearLearner.FworkCodeNullable
+                && l.LearnAimRef == lastYearLearner.LearnAimRef.ToLowerInvariant()
+                && l.LearnStartDate == lastYearLearner.LearnStartDate
+                && (l.LearnRefNumber == lastYearLearner.LearnRefNumber || l.PrevLearnRefNumber == lastYearLearner.LearnRefNumber)
+                && l.ProgTypeNullable == lastYearLearner.ProgTypeNullable).Any();
+        }
         private HashSet<FrmLearnerKey> BuildCurrentYearLearnerHashSet(IMessage message)
         {
             return new HashSet<FrmLearnerKey>(message.Learners?
@@ -106,7 +114,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                 {
                     FworkCodeNullable = ld.FworkCodeNullable,
                     LearnAimRef = ld.LearnAimRef,
-                    LearnRefNumber = l.PrevLearnRefNumber ?? l.LearnRefNumber,
+                    LearnRefNumber = l.LearnRefNumber,
+                    PrevLearnRefNumber = l.PrevLearnRefNumber,
                     LearnStartDate = ld.LearnStartDate,
                     ProgTypeNullable = ld.ProgTypeNullable
                 })) ?? Enumerable.Empty<FrmLearnerKey>(), _frmEqualityComparer);
