@@ -98,14 +98,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
             return models;
         }
 
-        public bool LearnerMatch(FrmLearnerKey lastYearLearner, HashSet<FrmLearnerKey> currentLearners)
-        {
-            return currentLearners.Where(l => l.FworkCodeNullable == lastYearLearner.FworkCodeNullable
+        public bool LearnerMatch(FrmLearnerKey lastYearLearner, HashSet<FrmLearnerKey> currentLearners) =>
+            currentLearners.Where(l => l.FworkCodeNullable == lastYearLearner.FworkCodeNullable
                 && l.LearnAimRef == lastYearLearner.LearnAimRef.ToLowerInvariant()
                 && l.LearnStartDate == lastYearLearner.LearnStartDate
                 && (l.LearnRefNumber == lastYearLearner.LearnRefNumber || l.PrevLearnRefNumber == lastYearLearner.LearnRefNumber)
                 && l.ProgTypeNullable == lastYearLearner.ProgTypeNullable).Any();
-        }
+        
         private HashSet<FrmLearnerKey> BuildCurrentYearLearnerHashSet(IMessage message)
         {
             return new HashSet<FrmLearnerKey>(message.Learners?
