@@ -102,7 +102,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
         {
             HashSet<FrmLearnerKey> learnerKeys = new HashSet<FrmLearnerKey>(_frmEqualityComparer);
             learnerKeys.UnionWith(message.Learners?
-               .SelectMany(l => l?.LearningDeliveries
+               .SelectMany(l => l?.LearningDeliveries?
                .Select(ld => new FrmLearnerKey
                {
                    FworkCodeNullable = ld.FworkCodeNullable,
@@ -113,7 +113,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                })) ?? Enumerable.Empty<FrmLearnerKey>());
             learnerKeys.UnionWith(message.Learners?
                .Where(l => !string.IsNullOrEmpty(l.PrevLearnRefNumber))
-               .SelectMany(l => l?.LearningDeliveries
+               .SelectMany(l => l?.LearningDeliveries?
                .Select(ld => new FrmLearnerKey
                {
                    FworkCodeNullable = ld.FworkCodeNullable,
