@@ -22,5 +22,11 @@
         public decimal Band3TotalFunding { get; set; }
         public decimal Band2TotalFunding { get; set; }
         public decimal Band1TotalFunding { get; set; }
+
+        public decimal Band1To5TotalFunding => Band1TotalFunding + Band2TotalFunding + Band3TotalFunding +
+                                               Band4aTotalFunding + Band4bTotalFunding + Band5TotalFunding;
+
+        public int Band1To5StudentNumbers => Band1StudentNumbers + Band2StudentNumbers + Band3StudentNumbers +
+                                             Band4aStudentNumbers + Band4bStudentNumbers + Band5StudentNumbers;
     }
 }
