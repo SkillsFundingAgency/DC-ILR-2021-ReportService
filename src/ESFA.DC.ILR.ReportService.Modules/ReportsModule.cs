@@ -49,7 +49,7 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.AEBSTF;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiativesOccupancy;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
-
+using ESFA.DC.ILR.ReportService.Reports.Frm.Summary;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -227,6 +227,10 @@ namespace ESFA.DC.ILR.ReportService.Modules
         {
             containerBuilder.RegisterType<FrmReport>().As<IReport>();
             containerBuilder.RegisterType<FrmLearnerComparer>().As<IEqualityComparer<FrmLearnerKey>>();
+
+            containerBuilder.RegisterType<FrmSummaryReport>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<FrmSummaryReportModelBuilder>().As<IModelBuilder<FrmSummaryReportModel>>();
+            containerBuilder.RegisterType<FrmSummaryReportRenderService>().As<IRenderService<FrmSummaryReportModel>>();
 
             containerBuilder.RegisterType<Frm06Report>().As<IWorksheetReport>();
             containerBuilder.RegisterType<Frm06ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm06ReportModel>>>();

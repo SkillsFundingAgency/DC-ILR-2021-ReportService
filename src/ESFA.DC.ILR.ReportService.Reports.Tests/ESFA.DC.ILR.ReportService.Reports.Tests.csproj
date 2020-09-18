@@ -133,6 +133,7 @@
     <Compile Include="Frm\FRM08\Frm08ReportTests.cs" />
     <Compile Include="Frm\FRM15\Frm15ReportRenderServiceTests.cs" />
     <Compile Include="Frm\FRM15\Frm15ReportTests.cs" />
+    <Compile Include="Frm\Summary\FrmSummaryReportTests.cs" />
     <Compile Include="Funding\AdultFundingClaim\AdultFundingClaimReportModelBuilderTests.cs" />
     <Compile Include="Funding\AEBSTFInitiativesOccupancy\AEBSTFInitiativesOccupancyReportModelBuilderTests.cs" />
     <Compile Include="Funding\AEBSTFInitiativesOccupancy\AEBSTFInitiativesOccupancyReportClassMapTests.cs" />

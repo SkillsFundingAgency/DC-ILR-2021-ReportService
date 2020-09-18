@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Frm.Summary;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
@@ -16,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
         private readonly IFileNameService _fileNameService;
         private readonly IList<IWorksheetReport> _frmReports;
 
-        public FrmReport(IList<IWorksheetReport> frmReports, IFileNameService fileNameService, IExcelFileService excelService) 
+        public FrmReport(IList<IWorksheetReport> frmReports, IFileNameService fileNameService, IExcelFileService excelService)
             : base("TaskGenerateFundingRulesMonitoringReport", "Funding Rules Monitoring Report")
         {
             _frmReports = frmReports;
@@ -36,16 +37,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
             using (var workbook = _excelService.NewWorkbook())
             {
                 workbook.Worksheets.Clear();
+                // provision Summary sheet
 
-                foreach (var frmReport in reportsToBeGenerated)
+                foreach (var frmReport in reportsToBeGenerated.Skip(1))
                 {
                     frmReport.Generate(workbook, reportServiceContext, reportsDependentData, cancellationToken);
                 }
 
-                if (!workbook.Worksheets.Any())
-                {
-                    return Enumerable.Empty<string>();
-                }
+                var summary = reportsToBeGenerated.First();
+                summary.Generate(workbook, reportServiceContext, reportsDependentData, cancellationToken);
 
                 await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
             }
