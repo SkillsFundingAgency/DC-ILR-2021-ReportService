@@ -149,6 +149,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.DirectFundingStudents.Band7StudentNumbers.Should().Be(0);
             result.DirectFundingStudents.Band8StudentNumbers.Should().Be(0);
             result.DirectFundingStudents.Band9StudentNumbers.Should().Be(0);
+            result.DirectFundingStudents.Band1To5StudentNumbers.Should().Be(2);
 
 
             result.StudentsIncludingHNS.Band1StudentNumbers.Should().Be(0);
@@ -171,6 +172,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.StudentsIncludingHNS.Band8TotalFunding.Should().Be(0);
             result.StudentsIncludingHNS.Band9StudentNumbers.Should().Be(0);
             result.StudentsIncludingHNS.Band9TotalFunding.Should().Be(0);
+            result.StudentsIncludingHNS.Band1To5StudentNumbers.Should().Be(2);
+            result.StudentsIncludingHNS.Band1To5TotalFunding.Should().Be((decimal)2615730.86);
 
             result.StudentsWithEHCPlan.Band1StudentNumbers.Should().Be(1);
             result.StudentsWithEHCPlan.Band1TotalFunding.Should().Be((decimal)125.67);
@@ -192,6 +195,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.StudentsWithEHCPlan.Band8TotalFunding.Should().Be(0);
             result.StudentsWithEHCPlan.Band9StudentNumbers.Should().Be(0);
             result.StudentsWithEHCPlan.Band9TotalFunding.Should().Be(0);
+            result.StudentsWithEHCPlan.Band1To5StudentNumbers.Should().Be(2);
+            result.StudentsWithEHCPlan.Band1To5TotalFunding.Should().Be((decimal)680.79);
 
             result.ContinuingStudentsExcludingEHCPlan.Band1StudentNumbers.Should().Be(0);
             result.ContinuingStudentsExcludingEHCPlan.Band1TotalFunding.Should().Be(0);
@@ -213,6 +218,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.ContinuingStudentsExcludingEHCPlan.Band8TotalFunding.Should().Be((decimal)56425.99);
             result.ContinuingStudentsExcludingEHCPlan.Band9StudentNumbers.Should().Be(1);
             result.ContinuingStudentsExcludingEHCPlan.Band9TotalFunding.Should().Be((decimal)855.55);
+            result.ContinuingStudentsExcludingEHCPlan.Band1To5StudentNumbers.Should().Be(2);
+            result.ContinuingStudentsExcludingEHCPlan.Band1To5TotalFunding.Should().Be((decimal)57281.54);
         }
 
         [Fact]
