@@ -16,6 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
             {
                 "Report",
                 "Title",
+                "",
                 "Number Of Queries"
             };
 
@@ -37,24 +38,29 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
         };
 
         private readonly Style _headerStyle;
+        private readonly Style _tableTitleStyle;
         private readonly Style _tableHeaderStyle;
         private readonly Style _tableTotalStyle;
+        private readonly Style _tableRowStyle;
 
         public FrmSummaryReportRenderService()
         {
             var cellsFactory = new CellsFactory();
 
             _headerStyle = cellsFactory.CreateStyle();
+            _tableTitleStyle = cellsFactory.CreateStyle();
             _tableHeaderStyle = cellsFactory.CreateStyle();
             _tableTotalStyle = cellsFactory.CreateStyle();
+            _tableRowStyle = cellsFactory.CreateStyle();
             ConfigureStyles();
         }
 
         public Worksheet Render(FrmSummaryReportModel model, Worksheet worksheet)
         {
+            worksheet.Cells.StandardHeight = 15;
             GenerateSummaryHeader(worksheet, model, 0, 0);
             GenerateSummaryTable(worksheet, model.FundingRulesMonitoring, 8);
-            worksheet.AutoFitRows();
+            worksheet.AutoFitColumns(0, 1);
             return worksheet;
         }
 
@@ -72,42 +78,41 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
 
             ApplyStyleToRow(worksheet, row, column, HeaderRows.Length, 2, _headerStyle);
             worksheet.Cells["A7"].PutValue(TableHeading);
+            ApplyStyleToRow(worksheet, 6, 0, 1, 1, _tableTitleStyle);
             return worksheet;
         }
 
         public Worksheet GenerateSummaryTable(Worksheet worksheet, List<FrmSummaryReportTableRow> frmSummaryReportTableRows, int row)
         {
             GenerateSummaryTableHeader(worksheet, row);
-            foreach (var tableRow in frmSummaryReportTableRows)
-            {
-                GenerateSummaryTableRow(worksheet, tableRow, ++row);
-            }
+
+            GenerateSummaryTableRow(worksheet, frmSummaryReportTableRows, row+1);
+
             return worksheet;
         }
 
         public Worksheet GenerateSummaryTableHeader(Worksheet worksheet, int row)
         {
-            // MergeCells(worksheet, row);
-            ApplyStyleToRow(worksheet, row, 0, 1, TableColumnNames.Length, _tableHeaderStyle);
+            worksheet.Cells.Merge(row, 1, 1, 2);
+            worksheet.Cells.Merge(row, 3, 1, 4);
             worksheet.Cells.ImportObjectArray(TableColumnNames, row, 0, false);
+            ApplyStyleToRow(worksheet, row, 0, 1, TableColumnNames.Length, _tableHeaderStyle);
             return worksheet;
         }
 
-        public Worksheet GenerateSummaryTableRow(Worksheet worksheet, FrmSummaryReportTableRow frmSummaryReportTableRow, int row)
-        {
-            //MergeCells(worksheet, row);
-            worksheet.Cells.ImportObjectArray(new object[]
-                {
-                    frmSummaryReportTableRow.Report,
-                    frmSummaryReportTableRow.Title,
-                    frmSummaryReportTableRow.NumberOfQueries
-                }, row, 0, false);
-            return worksheet;
-        }
-
-        public Worksheet MergeCells(Worksheet worksheet, int row)
+        public Worksheet GenerateSummaryTableRow(Worksheet worksheet, List<FrmSummaryReportTableRow> frmSummaryReportTableRows, int row)
         {
             worksheet.Cells.Merge(row, 1, 1, 2);
+            worksheet.Cells.Merge(row, 3, 1, 4);
+
+            ImportTableOptions tableOptions = new ImportTableOptions();
+            tableOptions.CheckMergedCells = true;
+            tableOptions.IsFieldNameShown = false;
+
+            worksheet.Cells.ImportCustomObjects(frmSummaryReportTableRows, row, 0, tableOptions);
+
+            ApplyStyleToRow(worksheet, row, 0, frmSummaryReportTableRows.Count, 7, _tableRowStyle);
+            ApplyStyleToRow(worksheet, row + frmSummaryReportTableRows.Count - 1 , 0, 1, 7, _tableTotalStyle);
             return worksheet;
         }
 
@@ -120,19 +125,42 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
         private void ConfigureStyles()
         {
 
-            _headerStyle.Font.Size = 11;
+            _headerStyle.Font.Size = 10;
             _headerStyle.Font.IsBold = true;
             _headerStyle.Font.Name = "Arial";
+            
 
-            _tableHeaderStyle.Font.Size = 11;
+            _tableTitleStyle.Font.Size = 12;
+            _tableTitleStyle.Font.IsBold = true;
+            _tableTitleStyle.Font.Name = "Arial";
+
+
+            _tableHeaderStyle.Font.Size = 9;
             _tableHeaderStyle.Font.IsBold = true;
             _tableHeaderStyle.Font.Name = "Arial";
             _tableHeaderStyle.HorizontalAlignment = TextAlignmentType.Center;
-            _tableHeaderStyle.BackgroundColor = Color.FromArgb(242, 242, 242);
+            _tableHeaderStyle.Pattern = BackgroundType.Solid;
+            _tableHeaderStyle.Font.Color = Color.White;
+            _tableHeaderStyle.ForegroundColor = Color.FromArgb(16, 78, 117);
+            _tableHeaderStyle.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black);
+            _tableHeaderStyle.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black);
+            _tableHeaderStyle.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black);
+            _tableHeaderStyle.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black);
 
-            _tableTotalStyle.Font.Size = 11;
+            _tableRowStyle.Font.Size = 9;
+            _tableRowStyle.Font.Name = "Arial";
+            _tableRowStyle.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black);
+            _tableRowStyle.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black);
+            _tableRowStyle.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black);
+            _tableRowStyle.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black);
+
+            _tableTotalStyle.Font.Size = 9;
             _tableTotalStyle.Font.IsBold = true;
             _tableTotalStyle.Font.Name = "Arial";
+            _tableTotalStyle.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black);
+            _tableTotalStyle.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black);
+            _tableTotalStyle.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black);
+            _tableTotalStyle.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black);
         }
     }
 }

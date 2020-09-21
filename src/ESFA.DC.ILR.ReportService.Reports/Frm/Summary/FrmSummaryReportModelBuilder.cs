@@ -17,7 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
             return new FrmSummaryReportModel()
             {
                 UKPRN = reportServiceContext.Ukprn,
-                ILRFileName = reportServiceContext.OriginalFilename,
+                ILRFileName = reportServiceContext.OriginalFilename.Split('/').Last(),
                 LastFileUpdate = reportServiceContext.LastIlrFileUpdate,
                 ProviderName = orgName,
                 SecurityClassification = message.HeaderEntity.SourceEntity.ProtectiveMarkingString
