@@ -40,6 +40,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                 "Original Learning Start Date",
                 "Learning Planned End Date",
                 "Learning Actual End Date",
+                "Completion Status Code",
                 "Learning Outcome Code",
                 "Funding Model",
                 "Source of Funding Code",
