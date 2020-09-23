@@ -4,6 +4,7 @@ using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.FRM;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -53,14 +54,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                     var prevOrgName = organisationNameDictionary.GetValueOrDefault(Convert.ToInt32(learner.PrevUKPRN.GetValueOrDefault()));
                     var learnAim = learnAimDictionary.GetValueOrDefault(learner.LearnAimRef);
 
-
                     models.Add(new Frm06ReportModel
                     {
                         UKPRN = learner.UKPRN,
                         PrevOrgName = prevOrgName,
                         PMOrgName = pmOrgName,
                         AimTypeCode = learner.AimType,
-                        LearningAimType = learnAim?.LearnAimRef,
+                        LearningAimType = learnAim?.LearnAimRefTypeDesc,
                         FundingModel = learner.FundModel,
                         OrigLearnStartDate = learner.OrigLearnStartDate,
                         SOFCode = sofCode,
@@ -89,13 +89,33 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM06
                         PwayCode = learner.PwayCodeNullable,
                         ResIndicator = resIndicator,
                         SWSupAimId = learner.SWSupAimId,
-                        ProvSpecLearnDelMon = string.Join(";", learner.ProvSpecDeliveryMonitorings.Select(x => x.ProvSpecDelMon)),
-                        ProvSpecDelMon = string.Join(";", learner.ProviderSpecLearnerMonitorings.Select(x => x.ProvSpecLearnMon)),
+                        ProvSpecLearnDelMon = BuildProvSpecLearnDelMons(learner?.ProvSpecDeliveryMonitorings),
+                        ProvSpecDelMon = BuildProvSpecLearnDelMons(learner?.ProviderSpecLearnerMonitorings)
                     });
                 }
             }
 
-            return models;
+            return models?.Where(LearningDeliveryFilter);
+        }
+
+        public bool LearningDeliveryFilter(Frm06ReportModel model)
+        {
+            if (model.FundingModel != FundModelConstants.FM99)
+            {
+                return true;
+            }
+
+            return model.FundingModel == FundModelConstants.FM99 && model.AdvancedLoansIndicator == LearningDeliveryFAMCodeConstants.ADL_1 ? true : false;
+        }
+
+        private string BuildProvSpecLearnDelMons(IEnumerable<ProviderSpecDeliveryMonitoring> monitorings)
+        {
+            return monitorings == null ? null : string.Join(";", monitorings?.Select(x => x.ProvSpecDelMon));
+        }
+
+        private string BuildProvSpecLearnDelMons(IEnumerable<ProviderSpecLearnerMonitoring> monitorings)
+        {
+            return monitorings == null ? null : string.Join(";", monitorings?.Select(x => x.ProvSpecLearnMon));
         }
 
         private HashSet<FrmLearnerKey> BuildCurrentYearLearnerHashSet(IMessage message)

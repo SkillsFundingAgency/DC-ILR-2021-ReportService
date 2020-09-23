@@ -2,6 +2,8 @@
 {
     public class LearningDeliveryFAMCodeConstants
     {
+        public const string ADL_1 = "1";
+
         public const string ASL_Personal = "1";
         public const string ASL_Neighbour = "2";
         public const string ASL_FamilyEnglishMathsLanguage = "3";
