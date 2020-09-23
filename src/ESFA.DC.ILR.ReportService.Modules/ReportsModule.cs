@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Autofac;
+﻿using Autofac;
 using ESFA.DC.CsvService;
 using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ExcelService;
@@ -11,22 +10,26 @@ using ESFA.DC.ILR.ReportService.Reports.Frm.FRM07;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM08;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM09;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM15;
+using ESFA.DC.ILR.ReportService.Reports.Frm.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.AppsIndicitave;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning;
+using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.AEBSTF;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
+using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.ALLB;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiativesOccupancy;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsStudentDetail;
@@ -35,6 +38,8 @@ using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglis
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfFundingByStudent;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SummaryOfFM35Funding.Model;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive;
+using ESFA.DC.ILR.ReportService.Reports.Funding.Trailblazer.EmployerIncentive.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Service;
@@ -42,14 +47,9 @@ using ESFA.DC.ILR.ReportService.Reports.Validation.Detail;
 using ESFA.DC.ILR.ReportService.Reports.Validation.FrontEnd;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Schema;
-using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Summary;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.AEBSTF;
-using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main.AEBSTFInitiativesOccupancy;
-using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
-
+using ESFA.DC.ILR.ReportService.Service.Interface;
+using System.Collections.Generic;
 
 namespace ESFA.DC.ILR.ReportService.Modules
 {
@@ -228,23 +228,26 @@ namespace ESFA.DC.ILR.ReportService.Modules
             containerBuilder.RegisterType<FrmReport>().As<IReport>();
             containerBuilder.RegisterType<FrmLearnerComparer>().As<IEqualityComparer<FrmLearnerKey>>();
 
-            containerBuilder.RegisterType<Frm06Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<FrmReportModelBuilder>().As<IModelBuilder<IFrmSummaryReport>>();
+            containerBuilder.RegisterType<FrmReportRenderService>().As<IRenderService<IFrmSummaryReport>>();
+
+            containerBuilder.RegisterType<Frm06Report>().As<IFrmWorksheetReport>();
             containerBuilder.RegisterType<Frm06ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm06ReportModel>>>();
             containerBuilder.RegisterType<Frm06ReportRenderService>().As<IRenderService<IEnumerable<Frm06ReportModel>>>();
 
-            containerBuilder.RegisterType<Frm07Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm07Report>().As<IFrmWorksheetReport>();
             containerBuilder.RegisterType<Frm07ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm07ReportModel>>>();
             containerBuilder.RegisterType<Frm07ReportRenderService>().As<IRenderService<IEnumerable<Frm07ReportModel>>>();
 
-            containerBuilder.RegisterType<Frm08Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm08Report>().As<IFrmWorksheetReport>();
             containerBuilder.RegisterType<Frm08ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm08ReportModel>>>();
             containerBuilder.RegisterType<Frm08ReportRenderService>().As<IRenderService<IEnumerable<Frm08ReportModel>>>();
 
-            containerBuilder.RegisterType<Frm09Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm09Report>().As<IFrmWorksheetReport>();
             containerBuilder.RegisterType<Frm09ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm09ReportModel>>>();
             containerBuilder.RegisterType<Frm09ReportRenderService>().As<IRenderService<IEnumerable<Frm09ReportModel>>>();
 
-            containerBuilder.RegisterType<Frm15Report>().As<IWorksheetReport>();
+            containerBuilder.RegisterType<Frm15Report>().As<IFrmWorksheetReport>();
             containerBuilder.RegisterType<Frm15ReportModelBuilder>().As<IModelBuilder<IEnumerable<Frm15ReportModel>>>();
             containerBuilder.RegisterType<Frm15ReportRenderService>().As<IRenderService<IEnumerable<Frm15ReportModel>>>();
         }

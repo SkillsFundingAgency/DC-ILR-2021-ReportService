@@ -5,11 +5,11 @@ using Aspose.Cells;
 
 namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
-    public interface IWorksheetReport
+    public interface IFrmWorksheetReport
     {
         string TaskName { get; }
 
-        void Generate(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken);
+        IFrmSummary Generate(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken);
 
         IEnumerable<Type> DependsOn { get; }
     }

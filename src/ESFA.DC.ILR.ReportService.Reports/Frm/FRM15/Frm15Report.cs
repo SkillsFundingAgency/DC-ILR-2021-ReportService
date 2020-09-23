@@ -5,7 +5,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
 {
-    public class Frm15Report : AbstractFundingRulesMonitoringReport<Frm15ReportModel>, IWorksheetReport
+    public class Frm15Report : AbstractFundingRulesMonitoringReport<Frm15ReportModel>, IFrmWorksheetReport
     {
         public Frm15Report(
             IExcelFileService excelService,
@@ -15,7 +15,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                 fundingMonitoring06ModelBuilder,
                 fundingReportMonitoringRenderService,
                 "TaskGenerateFundingRulesMonitoring15Report",
-                "FRM15")
+                "FRM15",
+                "End Point Assessment Organisations")
         {
         }
 

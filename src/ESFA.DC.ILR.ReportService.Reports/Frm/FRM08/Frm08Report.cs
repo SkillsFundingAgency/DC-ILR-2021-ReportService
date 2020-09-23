@@ -5,7 +5,7 @@ using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
 {
-    public class Frm08Report : AbstractFundingRulesMonitoringReport<Frm08ReportModel>, IWorksheetReport
+    public class Frm08Report : AbstractFundingRulesMonitoringReport<Frm08ReportModel>, IFrmWorksheetReport
     {
         public Frm08Report(
             IExcelFileService excelService,
@@ -15,7 +15,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM08
                 fundingRulesMonitoringModelBuilder,
                 fundingRulesMonitoringRenderService,
                 "TaskGenerateFundingRulesMonitoring08Report",
-                "FRM08")
+                "FRM08",
+                "Breaks In Learning: Duration")
         {
         }
 
