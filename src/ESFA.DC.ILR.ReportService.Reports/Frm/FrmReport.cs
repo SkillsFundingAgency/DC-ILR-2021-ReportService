@@ -43,7 +43,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
             using (var workbook = _excelService.NewWorkbook())
             {
                 workbook.Worksheets.Clear();
-                // provision Summary sheet
                 List<IFrmSummary> rows = new List<IFrmSummary>();
                 var summaryWorksheet = _excelService.GetWorksheetFromWorkbook(workbook, SummaryName);
 
