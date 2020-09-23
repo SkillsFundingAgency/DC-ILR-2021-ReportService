@@ -9,7 +9,7 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
     {
         string TaskName { get; }
 
-        IFrmSummary Generate(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken, IList<IFrmSummary> tableRows = null);
+        IFrmSummary Generate(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken);
 
         IEnumerable<Type> DependsOn { get; }
     }
