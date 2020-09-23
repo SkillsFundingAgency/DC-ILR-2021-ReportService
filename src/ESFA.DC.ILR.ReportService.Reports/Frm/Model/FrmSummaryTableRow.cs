@@ -5,7 +5,7 @@ using System.Text;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Frm.Model
 {
-    public class FrmSummaryTableRow : IFrmSummaryTableRow
+    public class FrmSummaryTableRow : IFrmSummary
     {
         public string Report { get; set; }
         public string Title { get; set; }

@@ -33,7 +33,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
             _title = title;
         }
 
-        public virtual IFrmSummaryTableRow Generate(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken, IList<IFrmSummaryTableRow> tableRows = null)
+        public virtual IFrmSummary Generate(Workbook workbook, IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken, IList<IFrmSummary> tableRows = null)
         {
             var fundingReportMonitoringModels = _fundingRuleMonitoringReportModelBuilder.Build(reportServiceContext, reportsDependentData).ToList();
 

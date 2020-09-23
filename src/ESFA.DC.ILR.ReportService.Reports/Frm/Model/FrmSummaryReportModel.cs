@@ -15,7 +15,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
         }
         public IDictionary<string, string> HeaderData { get; }
 
-        public IList<IFrmSummaryTableRow> SummaryTable { get; set; }
+        public IList<IFrmSummary> SummaryTable { get; set; }
 
         public int TotalRowCount => SummaryTable.Sum(x => x.NumberOfQueries);
     }

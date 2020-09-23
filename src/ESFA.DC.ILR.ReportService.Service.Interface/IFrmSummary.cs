@@ -4,7 +4,7 @@ using System.Text;
 
 namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
-    public interface IFrmSummaryTableRow
+    public interface IFrmSummary
     {
         string Report { get; }
         string Title { get; }
