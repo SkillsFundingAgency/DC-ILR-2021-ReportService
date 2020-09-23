@@ -1,5 +1,7 @@
 ﻿using Aspose.Cells;
 using Aspose.Cells.Tables;
+using ESFA.DC.ILR.ReportService.Reports.Frm.Model;
+using ESFA.DC.ILR.ReportService.Reports.Frm.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using System;
 using System.Collections.Generic;
@@ -7,9 +9,9 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 
-namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
+namespace ESFA.DC.ILR.ReportService.Reports.Frm
 {
-    public class FrmSummaryReportRenderService : IRenderService<FrmSummaryReportModel>
+    public class FrmReportRenderService : IRenderService<IFrmSummaryReport>
     {
         public string[] TableColumnNames =>
             new string[]
@@ -20,15 +22,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
                 "Number Of Queries"
             };
 
-        public object[] HeaderRows =>
-            new object[]
-            {
-                "Provider Name:",
-                "UKPRN:",
-                "ILR File:",
-                "Last ILR File Update:",
-                "Security Classification"
-            };
 
         private string TableHeading = "Funding Rules Monitoring";
 
@@ -43,7 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
         private readonly Style _tableTotalStyle;
         private readonly Style _tableRowStyle;
 
-        public FrmSummaryReportRenderService()
+        public FrmReportRenderService()
         {
             var cellsFactory = new CellsFactory();
 
@@ -55,38 +48,39 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
             ConfigureStyles();
         }
 
-        public Worksheet Render(FrmSummaryReportModel model, Worksheet worksheet)
+        public Worksheet Render(IFrmSummaryReport model, Worksheet worksheet)
         {
             worksheet.Cells.StandardHeight = 15;
-            GenerateSummaryHeader(worksheet, model, 0, 0);
-            GenerateSummaryTable(worksheet, model.FundingRulesMonitoring, 8);
+            GenerateSummaryHeader(worksheet, model.HeaderData, 0, 0);
+            GenerateSummaryTable(worksheet, model, 8);
             worksheet.AutoFitColumns(0, 1);
             return worksheet;
         }
 
-        public Worksheet GenerateSummaryHeader(Worksheet worksheet, FrmSummaryReportModel frmSummaryReportModel, int row, int column)
+        public Worksheet GenerateSummaryHeader(Worksheet worksheet, IDictionary<string, string> frmSummaryReportModel, int row, int column)
         {
-            worksheet.Cells.ImportObjectArray(HeaderRows, row, column, true);
-            worksheet.Cells.ImportObjectArray(new object[]
+            foreach (var entry in frmSummaryReportModel)
+            {
+                worksheet.Cells.ImportTwoDimensionArray(new object[,]
                 {
-                    frmSummaryReportModel.ProviderName,
-                    frmSummaryReportModel.UKPRN,
-                    frmSummaryReportModel.ILRFileName,
-                    frmSummaryReportModel.LastFileUpdate,
-                    frmSummaryReportModel.SecurityClassification
-                }, row, column + 1, true);
+                    { entry.Key, entry.Value }
+                }, row, 0);
 
-            ApplyStyleToRow(worksheet, row, column, HeaderRows.Length, 2, _headerStyle);
+                ApplyStyleToRow(worksheet, row, column, 1, 2, _headerStyle);
+
+                row++;
+            }
             worksheet.Cells["A7"].PutValue(TableHeading);
             ApplyStyleToRow(worksheet, 6, 0, 1, 1, _tableTitleStyle);
             return worksheet;
         }
 
-        public Worksheet GenerateSummaryTable(Worksheet worksheet, List<FrmSummaryReportTableRow> frmSummaryReportTableRows, int row)
+
+        public Worksheet GenerateSummaryTable(Worksheet worksheet, IFrmSummaryReport frmSummaryReport, int row)
         {
             GenerateSummaryTableHeader(worksheet, row);
 
-            GenerateSummaryTableRow(worksheet, frmSummaryReportTableRows, row+1);
+            GenerateSummaryTableRow(worksheet, frmSummaryReport, row + 1);
 
             return worksheet;
         }
@@ -100,7 +94,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
             return worksheet;
         }
 
-        public Worksheet GenerateSummaryTableRow(Worksheet worksheet, List<FrmSummaryReportTableRow> frmSummaryReportTableRows, int row)
+        public Worksheet GenerateSummaryTableRow(Worksheet worksheet, IFrmSummaryReport frmSummaryReport, int row)
         {
             worksheet.Cells.Merge(row, 1, 1, 2);
             worksheet.Cells.Merge(row, 3, 1, 4);
@@ -109,10 +103,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
             tableOptions.CheckMergedCells = true;
             tableOptions.IsFieldNameShown = false;
 
-            worksheet.Cells.ImportCustomObjects(frmSummaryReportTableRows, row, 0, tableOptions);
+            worksheet.Cells.ImportCustomObjects(frmSummaryReport.SummaryTable.ToList(), row, 0, tableOptions);
+            worksheet.Cells.ImportObjectArray(new object[] {
+                "Total",
+                "All Records",
+                "",
+                frmSummaryReport.TotalRowCount
+            }, row + frmSummaryReport.SummaryTable.Count , 0, false);
 
-            ApplyStyleToRow(worksheet, row, 0, frmSummaryReportTableRows.Count, 7, _tableRowStyle);
-            ApplyStyleToRow(worksheet, row + frmSummaryReportTableRows.Count - 1 , 0, 1, 7, _tableTotalStyle);
+            ApplyStyleToRow(worksheet, row, 0, frmSummaryReport.SummaryTable.Count, 7, _tableRowStyle);
+            ApplyStyleToRow(worksheet, row + frmSummaryReport.SummaryTable.Count, 0, 1, 7, _tableTotalStyle);
             return worksheet;
         }
 
@@ -128,7 +128,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
             _headerStyle.Font.Size = 10;
             _headerStyle.Font.IsBold = true;
             _headerStyle.Font.Name = "Arial";
-            
+
 
             _tableTitleStyle.Font.Size = 12;
             _tableTitleStyle.Font.IsBold = true;
@@ -162,5 +162,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.Summary
             _tableTotalStyle.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black);
             _tableTotalStyle.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black);
         }
+
     }
 }
