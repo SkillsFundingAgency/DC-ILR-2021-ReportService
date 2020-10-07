@@ -7,7 +7,7 @@
   <ItemGroup>
     <PackageReference Include="autofac" Version="4.9.4" />
     <PackageReference Include="ESFA.DC.CsvService" Version="0.1.41-beta0001" />
-    <PackageReference Include="ESFA.DC.ExcelService" Version="0.1.41-beta0001" />
+    <PackageReference Include="ESFA.DC.ExcelService" Version="0.1.42-beta0001" />
   </ItemGroup>
 
   <ItemGroup>
