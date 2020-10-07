@@ -93,8 +93,8 @@
     <Reference Include="ESFA.DC.EAS2021.EF, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.EAS2021.EF.0.1.12\lib\netstandard2.0\ESFA.DC.EAS2021.EF.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ExcelService, Version=0.1.41.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ExcelService.0.1.41-beta0001\lib\netstandard2.0\ESFA.DC.ExcelService.dll</HintPath>
+    <Reference Include="ESFA.DC.ExcelService, Version=0.1.42.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ExcelService.0.1.42-beta0001\lib\netstandard2.0\ESFA.DC.ExcelService.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.FileService, Version=0.1.41.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.FileService.0.1.41-beta0001\lib\netstandard2.0\ESFA.DC.FileService.dll</HintPath>
