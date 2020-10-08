@@ -172,8 +172,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.FundingClaim1619
             result.StudentsIncludingHNS.Band8TotalFunding.Should().Be(0);
             result.StudentsIncludingHNS.Band9StudentNumbers.Should().Be(0);
             result.StudentsIncludingHNS.Band9TotalFunding.Should().Be(0);
-            result.StudentsIncludingHNS.Band1To5StudentNumbersTLevel.Should().Be(1);
-            result.StudentsIncludingHNS.Band1To5TotalFundingTLevel.Should().Be((decimal)25815.43);
+            result.StudentsIncludingHNS.Band1To5StudentNumbersTLevel.Should().Be(0);
+            result.StudentsIncludingHNS.Band1To5TotalFundingTLevel.Should().Be(0);
 
             result.StudentsWithEHCPlan.Band1StudentNumbers.Should().Be(1);
             result.StudentsWithEHCPlan.Band1TotalFunding.Should().Be((decimal)125.67);
