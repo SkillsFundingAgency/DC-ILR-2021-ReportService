@@ -111,10 +111,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
                 var validTLevelLearnersForFundlineA = filteredFm25Learners?.Where(x => TLevelPredicate(x) && x.FundLine == FundLineConstants.DirectFundedStudents1416).ToList();
                 model.DirectFundingStudents = BuildFundlineReprtingBandModelForProgrammes(validProgrammeLearnersForFundlineA, validTLevelLearnersForFundlineA);
 
-                var validProgrammeLearnersForFundlineB = filteredFm25Learners?.Where(x => StudyProgrammePredicate(x) && x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
-                                                                                   x.FundLine == FundLineConstants.HighNeedsStudents1619).ToList();
-                var validTLevelLearnersForFundlineB = filteredFm25Learners?.Where(x => TLevelPredicate(x) && x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
-                                                                                   x.FundLine == FundLineConstants.HighNeedsStudents1619).ToList();
+                var validProgrammeLearnersForFundlineB = filteredFm25Learners?.Where(x => StudyProgrammePredicate(x) && (x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
+                                                                                   x.FundLine == FundLineConstants.HighNeedsStudents1619)).ToList();
+                var validTLevelLearnersForFundlineB = filteredFm25Learners?.Where(x => TLevelPredicate(x) && (x.FundLine == FundLineConstants.StudentsExcludingHighNeeds1619 ||
+                                                                                   x.FundLine == FundLineConstants.HighNeedsStudents1619)).ToList();
                 model.StudentsIncludingHNS = BuildFundlineReprtingBandModelForProgrammes(validProgrammeLearnersForFundlineB, validTLevelLearnersForFundlineB);
 
                 var validProgrammeLearnersForFundlineC = filteredFm25Learners?.Where(x => StudyProgrammePredicate(x) && x.FundLine == FundLineConstants.StudentsWithEHCP1924).ToList();
