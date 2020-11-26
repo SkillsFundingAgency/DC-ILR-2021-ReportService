@@ -1,10 +1,15 @@
 ﻿using System.Collections.Generic;
 using Autofac;
+using ESFA.DC.CsvService;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.ExcelService;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.FileService;
 using ESFA.DC.FileService.Interface;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Data;
 using ESFA.DC.ILR.ReportService.Data.Providers;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Desktop.Tests.Stubs;
@@ -31,6 +36,7 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             var builder = new ContainerBuilder();
             builder.RegisterType<EntryPoint>().As<IEntryPoint>();
             builder.RegisterType<ReportServiceJobContextDesktopContext>().As<IReportServiceContext>();
+            builder.RegisterType<ReportServiceContextKeysMutator>().As<IReportServiceContextKeysMutator>();
             builder.RegisterType<ReportServiceContextFactory>().As<IReportServiceContextFactory<IDesktopContext>>();
             builder.RegisterType<FileSystemFileService>().As<IFileService>();
             
@@ -63,13 +69,12 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
 
             //Reports
             builder.RegisterType<ValidationErrorsDetailReport>().As<IReport>();
-            builder.RegisterType<ValidationErrorsDetailReportV2>().As<IReport>();
             builder.RegisterType<ValidationSchemaErrorsReport>().As<IReport>();
 
             builder.RegisterType<FrontEndValidationReport>().As<IFrontEndValidationReport>();
 
-            builder.RegisterType<CsvService>().As<ICsvService>();
-            builder.RegisterType<ExcelService>().As<IExcelService>();
+            builder.RegisterType<CsvFileService>().As<ICsvFileService>();
+            builder.RegisterType<ExcelFileService>().As<IExcelFileService>();
             builder.RegisterType<CreateZipService>().As<IZipService>();
 
             return builder;

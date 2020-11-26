@@ -104,9 +104,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
             {
                 { FundLineConstants.ApprenticeshipEmployerOnAppService1618, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
                 { FundLineConstants.ApprenticeshipEmployerOnAppService19Plus, new string[] { ContractsConstants.Levy1799, ContractsConstants.NonLevy1799 } },
-                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps1920 } },
+                { FundLineConstants.NonLevyApprenticeship1618NonProcured, new string[] { ContractsConstants.Apps2021 } },
                 { FundLineConstants.NonLevyApprenticeship1618Procured, new string[] { ContractsConstants.C1618nlap2018 } },
-                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps1920 } },
+                { FundLineConstants.NonLevyApprenticeship19PlusNonProcured, new string[] { ContractsConstants.Apps2021 } },
                 { FundLineConstants.NonLevyApprenticeship19PlusProcured, new string[] { ContractsConstants.Anlap2018 } }
             };
 
@@ -721,15 +721,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [InlineData(2020, 07, 1)]
         public void PriceEpisodeFilter_True(int year, int month, int aimSeqNumber)
         {
-            var academicYearService = new AcademicYearService();
-
             var priceEpisode = new PriceEpisodeValues
             {
                 PriceEpisodeAimSeqNumber = aimSeqNumber,
                 EpisodeStartDate = new DateTime(year, month, 01)
             };
 
-            NewBuilder(academicYearService).PriceEpisodeFilter(priceEpisode, 1).Should().BeTrue();
+            NewBuilder().PriceEpisodeFilter(priceEpisode, 1).Should().BeTrue();
         }
 
         [Theory]
@@ -738,15 +736,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         [InlineData(2019, 03, 1)]
         public void PriceEpisodeFilter_False(int year, int month, int aimSeqNumber)
         {
-            var academicYearService = new AcademicYearService();
-
             var priceEpisode = new PriceEpisodeValues
             {
                 PriceEpisodeAimSeqNumber = aimSeqNumber,
                 EpisodeStartDate = new DateTime(year, month, 01)
             };
 
-            NewBuilder(academicYearService).PriceEpisodeFilter(priceEpisode, 1).Should().BeFalse();
+            NewBuilder().PriceEpisodeFilter(priceEpisode, 1).Should().BeFalse();
         }
 
         [Fact]
@@ -1121,7 +1117,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                 }
             };
 
-            NewBuilder(new AcademicYearService(), new IlrModelMapper()).BuildFm36Learners(message, global, fspCodes).Should().BeEquivalentTo(expectedModel);
+            NewBuilder(new IlrModelMapper()).BuildFm36Learners(message, global, fspCodes).Should().BeEquivalentTo(expectedModel);
         }
 
         [Fact]
@@ -1136,7 +1132,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
 
             var expectedModel = new FM36LearnerData[]{};
 
-            NewBuilder(new AcademicYearService(), new IlrModelMapper()).BuildFm36Learners(message, new FM36Global(), fspCodes).Should().BeEquivalentTo(expectedModel);
+            NewBuilder(new IlrModelMapper()).BuildFm36Learners(message, new FM36Global(), fspCodes).Should().BeEquivalentTo(expectedModel);
         }
 
         [Fact]
@@ -2057,7 +2053,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
             dependentDataMock.Setup(d => d.Get<FM36Global>()).Returns(global);
             dependentDataMock.Setup(d => d.Get<IMessage>()).Returns(message);
 
-            NewBuilder(new AcademicYearService(), new IlrModelMapper()).Build(new Mock<IReportServiceContext>().Object, dependentDataMock.Object).Should().BeEquivalentTo(expectedModels);
+            NewBuilder(new IlrModelMapper()).Build(new Mock<IReportServiceContext>().Object, dependentDataMock.Object).Should().BeEquivalentTo(expectedModels);
         }
 
         private List<CensusDate> CensusDates() => new List<CensusDate>
@@ -2077,9 +2073,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
         };
 
 
-        private NonContractedAppsActivityReportModelBuilder NewBuilder(IAcademicYearService academicYearService = null, IIlrModelMapper ilrModelMapper = null)
+        private NonContractedAppsActivityReportModelBuilder NewBuilder(IIlrModelMapper ilrModelMapper = null, IAcademicYearService academicYearService = null)
         {
-            return new NonContractedAppsActivityReportModelBuilder(academicYearService, ilrModelMapper);
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
+            academicYearServiceMock.Setup(y => y.YearStart).Returns(new DateTime(2019, 8, 1));
+            academicYearServiceMock.Setup(y => y.YearEnd).Returns(new DateTime(2020, 7, 31, 23, 59, 59));
+
+            return new NonContractedAppsActivityReportModelBuilder(academicYearService ?? academicYearServiceMock.Object, ilrModelMapper);
         }
     }
 }

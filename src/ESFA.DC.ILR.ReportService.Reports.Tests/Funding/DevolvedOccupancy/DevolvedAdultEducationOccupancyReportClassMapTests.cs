@@ -22,7 +22,13 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             {
                 "Learner reference number",
                 "Unique learner number",
+                "Family name",
+                "Given names",
                 "Date of birth",
+                "Ethnicity",
+                "Sex",
+                "LLDD and health problem",
+                "Prior attainment",
                 "Postcode prior to enrolment",
                 "Pre-merger UKPRN",
                 "Campus identifier",
@@ -37,7 +43,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Applicable programme weighting",
                 "Aim value",
                 "Notional NVQ level",
+                "Entitlement category (level 2 or 3)",
                 "Tier 2 sector subject area",
+                "Tier 2 sector subject area name",
                 "Funding model",
                 "Funding adjustment for prior learning",
                 "Other funding adjustment",
@@ -46,9 +54,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Learning planned end date",
                 "Completion status",
                 "Learning actual end date",
+                "Withdrawal reason",
                 "Outcome",
                 "Additional delivery hours",
                 "Learning start date postcode",
+                "Local authority code",
                 "Applicable area from source of funding",
                 "Learning delivery funding and monitoring type - source of funding",
                 "Learning delivery funding and monitoring type - full or co funding indicator ",
@@ -65,18 +75,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 "Learning delivery funding and monitoring type - devolved area monitoring (B)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (C)",
                 "Learning delivery funding and monitoring type - devolved area monitoring (D)",
+                "Learning delivery funding and monitoring type - devolved area monitoring (E)",
+                "Learning delivery funding and monitoring type - devolved area monitoring (F)",
                 "Learning delivery funding and monitoring type - restart indicator",
+                "Learning delivery funding and monitoring type - Community Learning provision type",
+                "Learning delivery funding and monitoring type - household situation (A)",
+                "Learning delivery funding and monitoring type - household situation (B)",
                 "Provider specified delivery monitoring (A)",
                 "Provider specified delivery monitoring (B)",
                 "Provider specified delivery monitoring (C)",
                 "Provider specified delivery monitoring (D)",
+                "Employment status",
+                "Employment status monitoring type - employment intensity indicator",
+                "Employment status monitoring type - benefit status indicator",
                 "Funding line type",
+                "Start for funding purposes",
                 "Planned number of on programme instalments",
                 "Achievement element (potential or actual earned cash)",
                 "Achievement percentage (aggregated maximum value)",
                 "Non-public-funded contribution",
                 "Capping factor",
                 "Sub contracted or partnership UKPRN",
+                "Sub contracted or partnership UKPRN name",
                 "Delivery location postcode",
                 "Area uplift",
                 "Disadvantage uplift",
@@ -176,7 +196,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(128);
+                        header.Should().HaveCount(148);
                     }
                 }
             }

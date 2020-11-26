@@ -2,10 +2,10 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning;
 using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model;
-using ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using FluentAssertions;
@@ -46,9 +46,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             Workbook workbook = new Workbook();
             Worksheet worksheet = workbook.Worksheets.Add(sheetName);
 
-            var excelServiceMock = new Mock<IExcelService>();
-
-            excelServiceMock.Setup(s => s.BindExcelTemplateToWorkbook(communityLearningReportModel, ReportTemplateConstants.CommunityLearningTemplateName, ReportTemplateConstants.CommunityLearningDataSource)).Returns(workbook);
+            var excelServiceMock = new Mock<IExcelFileService>();
 
             var fileNameServiceMock = new Mock<IFileNameService>();
 
@@ -60,14 +58,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.CommunityLearning
             var cancellationToken = CancellationToken.None;
 
             await report.GenerateAsync(reportServiceContextMock.Object, reportServiceDependentData, cancellationToken);
-            
-            excelServiceMock.Verify(s => s.SaveWorkbookAsync(workbook, fileName, container, cancellationToken));
+
+            excelServiceMock.VerifyAll();
         }
 
         private CommunityLearningReport NewReport(
             IFileNameService fileNameService = null,
             IModelBuilder<CommunityLearningReportModel> communityLearningReportModelBuilder = null,
-            IExcelService excelService = null)
+            IExcelFileService excelService = null)
         {
             return new CommunityLearningReport(fileNameService, communityLearningReportModelBuilder, excelService);
         }

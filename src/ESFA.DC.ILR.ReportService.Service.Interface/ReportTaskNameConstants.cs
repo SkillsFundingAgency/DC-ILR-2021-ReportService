@@ -3,14 +3,15 @@
     public static class ReportTaskNameConstants
     {
         public const string ValidationReport = "TaskGenerateValidationReport";
-        public const string ValidationReportV2 = "TaskGenerateValidationReportV2";
         public const string ValidationSchemaErrorReport = "TaskGenerateValidationSchemaErrorsReport";
         public const string AllbOccupancyReport = "TaskGenerateAllbOccupancyReport";
         public const string FundingSummaryReport = "TaskGenerateFundingSummaryReport";
+        public const string AEBSTFFundingSummaryReport = "TaskGenerateAEBSTFFundingSummaryReport";
         public const string AdultFundingClaimReport = "TaskGenerateAdultFundingClaimReport";
         public const string SummaryOfFunding1619Report = "TaskGenerateSummaryOfFunding1619Report";
         public const string MathsAndEnglishReport = "TaskGenerateMathsAndEnglishReport";
         public const string MainOccupancyReport = "TaskGenerateMainOccupancyReport";
+        public const string AEBSTFInitiativesOccupancyReport = "TaskGenerateAEBSTFInitiativesOccupancyReport";
         public const string DataMatchReport = "TaskGenerateDataMatchReport";
         public const string AppsAdditionalPaymentsReport = "TaskGenerateAppsAdditionalPaymentsReport";
         public const string AppsMonthlyPaymentReport = "TaskGenerateAppsMonthlyPaymentReport";

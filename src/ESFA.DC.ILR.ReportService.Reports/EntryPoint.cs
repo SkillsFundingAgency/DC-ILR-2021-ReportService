@@ -5,31 +5,39 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
+using System.Reflection;
 
 namespace ESFA.DC.ILR.ReportService.Reports
 {
     public class EntryPoint : IEntryPoint
     {
+        private const string LicenseResource = "ESFA.DC.ILR.ReportService.Reports.Resources.Aspose.Cells.lic";
+
         private readonly ILogger _logger;
-        private readonly IExcelService _excelService;
+        private readonly IExcelFileService _excelService;
         private readonly IReportsDependentDataPopulationService _reportsDependentDataPopulationService;
         private readonly IZipService _zipService;
         private readonly IList<IReport> _reports;
+        private readonly IReportServiceContextKeysMutator _reportServiceContextKeysMutator;
 
         public EntryPoint(
             ILogger logger,
-            IExcelService excelService,
+            IExcelFileService excelService,
             IReportsDependentDataPopulationService reportsDependentDataPopulationService,
             IZipService zipService,
-            IList<IReport> reports)
+            IList<IReport> reports,
+            IReportServiceContextKeysMutator reportServiceContextKeysMutator)
         {
             _logger = logger;
             _excelService = excelService;
             _reportsDependentDataPopulationService = reportsDependentDataPopulationService;
             _zipService = zipService;
             _reports = reports;
+            _reportServiceContextKeysMutator = reportServiceContextKeysMutator;
         }
+
         public async Task<List<string>> Callback(IReportServiceContext reportServiceContext, CancellationToken cancellationToken)
         {
             List<string> reportOutputFilenames = new List<string>();
@@ -43,7 +51,7 @@ namespace ESFA.DC.ILR.ReportService.Reports
 
             try
             {
-                _excelService.ApplyLicense();
+                _excelService.ApplyLicense(Assembly.GetExecutingAssembly().GetManifestResourceStream(LicenseResource));
 
                 if (cancellationToken.IsCancellationRequested)
                 {
@@ -63,6 +71,8 @@ namespace ESFA.DC.ILR.ReportService.Reports
 
                 var reportsDependsOn = reportsToBeGenerated.SelectMany(x => x.DependsOn).Distinct().ToList();
                 var reportsDependentData = await _reportsDependentDataPopulationService.PopulateAsync(reportServiceContext, reportsDependsOn, cancellationToken);
+
+                await _reportServiceContextKeysMutator.MutateAsync(reportServiceContext, reportsDependentData, cancellationToken);
 
                 _logger.LogInfo("Finishing External Data");
 

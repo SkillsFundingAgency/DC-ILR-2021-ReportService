@@ -74,6 +74,7 @@
         public const string EasAuthorisedClaimsEmployer = "Authorised Claims - Additional payments for employer";
         public const string EasAuthorisedClaimsProvider = "Authorised Claims - Additional payments for provider";
         public const string EasAuthorisedClaimsTraining = "Authorised Claims - Training costs exc Maths/Eng";
+        public const string EasAuthorisedClaimsMathsAndEnglish = "Authorised Claims - Maths and English";
         public const string EasDiscretionaryBursary = "Discretionary Bursary";
         public const string EasExcessLearningSupport = "Excess Learning Support";
         public const string EasFreeMeals = "Free Meals";
@@ -83,5 +84,8 @@
         public const string EasMcaGlaDefinedAdjustment1 = "MCA/GLA Defined Adjustment 1";
         public const string EasMcaGlaDefinedAdjustment2 = "MCA/GLA Defined Adjustment 2";
         public const string EasMcaGlaDefinedAdjustment3 = "MCA/GLA Defined Adjustment 3";
+        public const string EasMcaGlaDefinedAdjustment4 = "MCA/GLA Defined Adjustment 4";
+        public const string EasMcaGlaDefinedAdjustment5 = "MCA/GLA Defined Adjustment 5";
+        public const string EasMcaGlaDefinedAdjustment6 = "MCA/GLA Defined Adjustment 6";
     }
 }

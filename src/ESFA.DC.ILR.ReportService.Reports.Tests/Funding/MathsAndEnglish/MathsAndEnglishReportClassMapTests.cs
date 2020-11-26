@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.ReportService.Models.Fm25;
-using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen;
 using ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.MathsAndEnglish;
 using ESFA.DC.ILR.ReportService.Reports.Tests.Abstract;
 using ESFA.DC.ILR.Tests.Model;
@@ -18,6 +17,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MathsAndEnglish
             "Learner reference number",
             "Family name",
             "Given names",
+            "T Level student",
             "Date of birth",
             "Campus identifier",
             "Maths GCSE status",

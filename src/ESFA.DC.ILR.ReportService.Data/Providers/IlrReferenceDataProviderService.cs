@@ -11,6 +11,7 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MCAGLA;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.Serialization.Interfaces;
 
@@ -42,7 +43,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 LARSStandards = MapData(root.LARSStandards),
                 McaDevolvedContracts = MapData(root.McaDevolvedContracts),
                 Organisations = MapData(root.Organisations),
-                DevolvedPostocdes = MapData(root.DevolvedPostocdes)
+                DevolvedPostocdes = MapData(root.DevolvedPostcodes),
+                Postcodes = MapData(root.Postcodes)
             };
         }
 
@@ -68,7 +70,8 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 LarsVersion = MapLarsVersion(metaDataReferenceDataVersions.LarsVersion),
                 OrganisationsVersion = MapOrganisationsVersion(metaDataReferenceDataVersions.OrganisationsVersion),
                 PostcodesVersion = MapPostcodesVersion(metaDataReferenceDataVersions.PostcodesVersion),
-                EasUploadDateTime = MapEas(metaDataReferenceDataVersions.EasUploadDateTime)
+                EasFileDetails = MapEas(metaDataReferenceDataVersions.EasFileDetails),
+                DevolvedPostcodesVersion = MapDevolvedPostcodesVersion(metaDataReferenceDataVersions.DevolvedPostcodesVersion)
             };
         }
 
@@ -160,11 +163,20 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
             };
         }
 
-        private EasUploadDateTime MapEas(ReferenceDataService.Model.MetaData.ReferenceDataVersions.EasUploadDateTime easUploadDateTime)
+        private EasFileDetails MapEas(ReferenceDataService.Model.MetaData.ReferenceDataVersions.EasFileDetails easFileDetails)
         {
-            return new EasUploadDateTime()
+            return new EasFileDetails()
             {
-                UploadDateTime = easUploadDateTime.UploadDateTime
+                FileName = easFileDetails?.FileName,
+                UploadDateTime = easFileDetails?.UploadDateTime
+            };
+        }
+
+        private DevolvedPostcodesVersion MapDevolvedPostcodesVersion(ReferenceDataService.Model.MetaData.ReferenceDataVersions.DevolvedPostcodesVersion devolvedPostcodesVersion)
+        {
+            return new DevolvedPostcodesVersion()
+            {
+                Version = devolvedPostcodesVersion.Version
             };
         }
 
@@ -195,11 +207,14 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
             {
                 LearnAimRef = larsLearningDelivery.LearnAimRef,
                 LearnAimRefTitle = larsLearningDelivery.LearnAimRefTitle,
+                LearnAimRefTypeDesc = larsLearningDelivery.LearnAimRefTypeDesc,
                 NotionalNVQLevel = larsLearningDelivery.NotionalNVQLevel,
                 NotionalNVQLevelv2 = larsLearningDelivery.NotionalNVQLevelv2,
                 FrameworkCommonComponent = larsLearningDelivery.FrameworkCommonComponent,
                 SectorSubjectAreaTier2 = larsLearningDelivery.SectorSubjectAreaTier2,
-                LARSLearningDeliveryCategories = MapLarsLearningDeliveryCategories(larsLearningDelivery.LARSLearningDeliveryCategories)
+                SectorSubjectAreaTier2Desc = larsLearningDelivery.SectorSubjectAreaTier2Desc,
+                LARSLearningDeliveryCategories = MapLarsLearningDeliveryCategories(larsLearningDelivery.LARSLearningDeliveryCategories),
+                LARSFrameworks = MapLarsLearningDeliveryFrameworks(larsLearningDelivery.LARSFrameworks)
             };
         }
 
@@ -217,6 +232,23 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 CategoryRef = larsLearningDeliveryCategory.CategoryRef,
                 EffectiveFrom = larsLearningDeliveryCategory.EffectiveFrom,
                 EffectiveTo = larsLearningDeliveryCategory.EffectiveTo
+            };
+        }
+
+        private IReadOnlyCollection<LARSFramework> MapLarsLearningDeliveryFrameworks(IEnumerable<ReferenceDataService.Model.LARS.LARSFramework> larsFrameworks)
+        {
+            return larsFrameworks?.Select(MapLarsLearningDeliveryFramework).ToList();
+        }
+
+        private LARSFramework MapLarsLearningDeliveryFramework(ReferenceDataService.Model.LARS.LARSFramework larsFramework)
+        {
+            return new LARSFramework()
+            {
+                LARSFrameworkAim = new LARSFrameworkAim()
+                {
+                    LearnAimRef = larsFramework?.LARSFrameworkAim?.LearnAimRef,
+                    FrameworkComponentType = larsFramework?.LARSFrameworkAim?.FrameworkComponentType
+                }
             };
         }
 
@@ -298,6 +330,36 @@ namespace ESFA.DC.ILR.ReportService.Data.Providers
                 Ukprn = contract.Ukprn,
                 EffectiveFrom = contract.EffectiveFrom,
                 EffectiveTo = contract.EffectiveTo
+            };
+        }
+
+        //Map Postcodes data
+        private IReadOnlyCollection<Postcode> MapData(IEnumerable<ReferenceDataService.Model.Postcodes.Postcode> postcodes)
+        {
+            return postcodes?.Select(MapPostcode).ToList();
+        }
+
+        private Postcode MapPostcode(ReferenceDataService.Model.Postcodes.Postcode postcode)
+        {
+            return  new Postcode()
+            {
+                PostCode = postcode.PostCode,
+                ONSData = MapONSData(postcode.ONSData)
+            };
+        }
+
+        private List<ONSData> MapONSData(IEnumerable<ReferenceDataService.Model.Postcodes.ONSData> OnsData)
+        {
+            return OnsData?.Select(MapONS).ToList();
+        }
+
+        private ONSData MapONS(ReferenceDataService.Model.Postcodes.ONSData ons)
+        {
+            return new ONSData()
+            {
+                LocalAuthority = ons.LocalAuthority,
+                EffectiveFrom = ons.EffectiveFrom,
+                EffectiveTo = ons.EffectiveTo
             };
         }
     }

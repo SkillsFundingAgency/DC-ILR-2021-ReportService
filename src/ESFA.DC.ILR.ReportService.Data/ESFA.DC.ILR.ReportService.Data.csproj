@@ -5,18 +5,20 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Constants" Version="0.2.0-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model" Version="0.0.245" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model" Version="0.0.245" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model" Version="0.0.245" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM36.FundingOutput.Model" Version="0.0.245" />
-    <PackageReference Include="ESFA.DC.ILR.1920.FundingService.FM81.FundingOutput.Model" Version="0.0.245" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Model" Version="0.1.8-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Model.Loose" Version="0.1.8-beta0001" />
+    <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.EAS2021.EF" Version="0.1.12" />
+    <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.39-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Constants" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.FundingService.ALB.FundingOutput.Model" Version="0.1.138" />
+    <PackageReference Include="ESFA.DC.ILR.2021.FundingService.FM25.FundingOutput.Model" Version="0.1.138" />
+    <PackageReference Include="ESFA.DC.ILR.2021.FundingService.FM35.FundingOutput.Model" Version="0.1.138" />
+    <PackageReference Include="ESFA.DC.ILR.2021.FundingService.FM36.FundingOutput.Model" Version="0.1.138" />
+    <PackageReference Include="ESFA.DC.ILR.2021.FundingService.FM81.FundingOutput.Model" Version="0.1.138" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Model" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Model.Loose" Version="0.1.6-beta0001" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR1920.ReferenceDataService.Model" Version="0.1.19" />
-    <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.ReferenceDataService.Model" Version="0.3.21" />
+    <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.39-beta0001" />
   </ItemGroup>
 
   <ItemGroup>

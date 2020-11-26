@@ -99,7 +99,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
                 Ukprn = headerData[SummaryPageConstants.UKPRN],
                 IlrFile = headerData[SummaryPageConstants.ILRFile],
                 FilePreparationDate = footerData[SummaryPageConstants.FilePreparationDate],
-                ApplicationVersion = footerData[SummaryPageConstants.ApplicationVersion],
                 LarsData = footerData[SummaryPageConstants.LARSVersion],
                 OrganisationData = footerData[SummaryPageConstants.OrganisationVersion],
                 PostcodeData = footerData[SummaryPageConstants.PostcodeVersion],
@@ -190,7 +189,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.CommunityLearning
 
             return new Dictionary<string, string>()
             {
-                {SummaryPageConstants.ApplicationVersion, reportServiceContext.ServiceReleaseVersion},
                 {SummaryPageConstants.FilePreparationDate, filePreparationDate},
                 {SummaryPageConstants.LARSVersion, larsVersion},
                 {SummaryPageConstants.PostcodeVersion, postcodesVersion},

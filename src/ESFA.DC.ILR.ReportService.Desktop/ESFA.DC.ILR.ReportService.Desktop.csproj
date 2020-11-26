@@ -3,24 +3,24 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>ESFA.DC.ILR.1920.ReportService.Desktop</PackageId>
-    <Version>0.0.1</Version>
+    <PackageId>ESFA.DC.ILR.2021.ReportService.Desktop</PackageId>
+    <Version>0.1.6</Version>
     <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);CopyProjectReferencesToPackage</TargetsForTfmSpecificBuildOutput>
     <Authors>DC</Authors>
     <Company>ESFA</Company>
-    <Product>ESFA.DC.ILR.1920.ReportService.Desktop</Product>
+    <Product>ESFA.DC.ILR.2021.ReportService.Desktop</Product>
     <PackageTags>report</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac" Version="4.9.4" />
-    <PackageReference Include="CsvHelper" Version="12.1.2" />
+    <PackageReference Include="CsvHelper" Version="12.1.3" />
     <PackageReference Include="ESFA.DC.DateTimeProvider.Interface" Version="0.1.6-beta0001" />
-    <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.18-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Constants" Version="0.2.0-beta0001" />
-    <PackageReference Include="ESFA.DC.ILR.1920.Desktop.Interface" Version="1.0.4.8" />
+    <PackageReference Include="ESFA.DC.FileService.Interface" Version="0.1.39-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Constants" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.ILR.2021.Desktop.Interface" Version="0.1.0.1" />
     <PackageReference Include="ESFA.DC.ILR.ValidationErrors.Interface" Version="0.1.5-beta0001" />
-    <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.6-beta0001" />
+    <PackageReference Include="ESFA.DC.Serialization.Interfaces" Version="0.1.39-beta0001" />
   </ItemGroup>
 
   <ItemGroup>

@@ -17,6 +17,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
             {
                 "Learner reference number",
                 "Unique learner number",
+                "Family name",
+                "Given names",
                 "Date of birth",
                 "Campus identifier",
                 "Provider specified learner monitoring (A)",
@@ -88,7 +90,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractedAppsActiv
                         csvReader.ReadHeader();
                         var header = csvReader.Context.HeaderRecord;
                         header.Should().ContainInOrder(orderedColumns);
-                        header.Should().HaveCount(47);
+                        header.Should().HaveCount(49);
                     }
                 }
             }

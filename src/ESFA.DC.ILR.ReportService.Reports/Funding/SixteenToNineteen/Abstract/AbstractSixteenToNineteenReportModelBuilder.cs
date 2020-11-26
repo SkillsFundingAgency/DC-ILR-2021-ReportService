@@ -6,6 +6,7 @@ using ESFA.DC.ILR.ReportService.Models.Fm25;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
+using ESFA.DC.ILR.ReportService.Service.Interface;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
 {
@@ -32,6 +33,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
         public bool FilterStartFund(bool? startFund) => startFund == true;
 
         public bool FilterFundLine(string fundLine) => fundLine != null && _fundModelDictionary.ContainsKey(fundLine);
+
+        public bool StudyProgrammePredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent == false;
+        public bool TLevelPredicate(FM25Learner fM25Learner) => fM25Learner.TLevelStudent == true;
 
         public bool FilterSOF(ILearningDeliveryFAM learningDeliveryFam)
             => learningDeliveryFam?.LearnDelFAMType.CaseInsensitiveEquals(LearningDeliveryFAMTypeConstants.SOF) == true

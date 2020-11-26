@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
@@ -7,6 +8,7 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MCAGLA;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolved;
 using ESFA.DC.ILR.ReportService.Reports.Model;
@@ -179,7 +181,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
 
             var larsLearningDelivery = new LARSLearningDelivery()
             {
-                LearnAimRef = "learnAimRef"
+                LearnAimRef = "learnAimRef",
+                LARSLearningDeliveryCategories = new HashSet<LARSLearningDeliveryCategory>
+                {
+                    new LARSLearningDeliveryCategory
+                    {
+                        CategoryRef = 123
+                    }
+                }
             };
 
             var mcaGlaSofLookup = new McaGlaSofLookup()
@@ -213,6 +222,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
                 McaDevolvedContracts = new List<McaDevolvedContract>()
                 {
                     mcaDevolvedContract
+                },
+                Organisations = new List<Organisation>()
+                {
+                    new Organisation(){UKPRN = 12345678, Name = "Partner Provider"}
                 }
             };
 
@@ -254,6 +267,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
 
             var providerSpecDeliveryMonitoringModel = new ProviderSpecDeliveryMonitoringModel();
             var providerSpecLearnerMonitoringModel = new ProviderSpecLearnerMonitoringModel();
+            var employmentStatusMonitoring = new EmploymentStatusMonitoringModel();
             var learningDeliveryFamsModel = new LearningDeliveryFAMsModel()
             {
                 SOF = "110"
@@ -265,6 +279,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
             ilrModelMapperMock.Setup(m => m.MapLearningDeliveryFAMs(learningDeliveryFams)).Returns(learningDeliveryFamsModel);
             ilrModelMapperMock.Setup(m => m.MapProviderSpecDeliveryMonitorings(providerSpecDeliveryMonitorings)).Returns(providerSpecDeliveryMonitoringModel);
             ilrModelMapperMock.Setup(m => m.MapProviderSpecLearnerMonitorings(providerSpecLearnerMonitorings)).Returns(providerSpecLearnerMonitoringModel);
+            ilrModelMapperMock.Setup(m => m.MapEmploymentStatusMonitorings(It.IsAny<IEnumerable<IEmploymentStatusMonitoring>>())).Returns(employmentStatusMonitoring);
 
             var result = NewBuilder(ilrModelMapperMock.Object, academicYearServiceMock.Object).Build(reportServiceContext.Object, dependentDataMock.Object).ToList();   
 
@@ -297,10 +312,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
             var providerSpecDeliveryMonitoring = new ProviderSpecDeliveryMonitoringModel();
             var providerSpecLearnMonitoring = new ProviderSpecLearnerMonitoringModel();
             var famModel = new LearningDeliveryFAMsModel();
+            var employmentStatusMonitoring = new EmploymentStatusMonitoringModel();
 
             ilrModelMapperMock.Setup(m => m.MapProviderSpecDeliveryMonitorings(It.IsAny<IEnumerable<IProviderSpecDeliveryMonitoring>>())).Returns(providerSpecDeliveryMonitoring);
             ilrModelMapperMock.Setup(m => m.MapProviderSpecLearnerMonitorings(It.IsAny<IEnumerable<IProviderSpecLearnerMonitoring>>())).Returns(providerSpecLearnMonitoring);
             ilrModelMapperMock.Setup(m => m.MapLearningDeliveryFAMs(It.IsAny<IEnumerable<ILearningDeliveryFAM>>())).Returns(famModel);
+            ilrModelMapperMock.Setup(m => m.MapEmploymentStatusMonitorings(It.IsAny<IEnumerable<IEmploymentStatusMonitoring>>())).Returns(employmentStatusMonitoring);
 
             var learnerCount = 50000;
             
@@ -340,17 +357,28 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
             var referenceDataRoot = new ReferenceDataRoot()
             {
                 LARSLearningDeliveries = Enumerable.Range(0, learnerCount)
-                    .Select(ld => 
-                    new LARSLearningDelivery()
-                    {
-                        LearnAimRef = "learnAimRef" + ld
-                    }).ToList(),
+                    .Select(ld =>
+                        new LARSLearningDelivery()
+                        {
+                            LearnAimRef = "learnAimRef" + ld,
+                            LARSLearningDeliveryCategories = new HashSet<LARSLearningDeliveryCategory>
+                            {
+                                new LARSLearningDeliveryCategory
+                                {
+                                    CategoryRef = 123
+                                }
+                            },
+                        }).ToList(),
                 DevolvedPostocdes = new DevolvedPostcodes
                 {
                     McaGlaSofLookups = new List<McaGlaSofLookup>
                     {
                         mcaGlaSofLookup
                     }
+                },
+                Organisations = new List<Organisation>()
+                {
+                    new Organisation(){UKPRN = 12345678, Name = "Partner Provider"}
                 }
             };
             
@@ -464,6 +492,77 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.NonContractDevolvedOcc
             var result = NewBuilder(academicYearService: academicYearServiceMock.Object).HasValidContract(learningDelivery, contracts);
 
             result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("01/12/2021", "11/06/2021")]
+        [InlineData("11/12/2020", "01/12/2022")]
+        [InlineData("10/26/2020", "12/20/2021")]
+        [InlineData("11/15/2020", "06/15/2022")]
+        [InlineData("12/12/2020", "08/15/2021")]
+        [InlineData("03/05/2021", "09/10/2021")]
+        [InlineData("11/12/2020", "09/06/2021")]
+        [InlineData("11/13/2020", "12/13/2021")]
+        [InlineData("11/26/2020", "09/20/2021")]
+        [InlineData("12/14/2020", "09/07/2021")]
+        public void HasValidContractTrue_EffectiveToSameDayAsAcademicYearEnd(string learnStartDate, string learnPlanEndDate)
+        {
+            var learningDelivery = new TestLearningDelivery()
+            {
+                LearnStartDate = DateTime.ParseExact(learnStartDate, "MM/dd/yyyy", CultureInfo.CurrentCulture),
+                LearnActEndDateNullable = null,
+                LearnPlanEndDate = DateTime.ParseExact(learnPlanEndDate, "MM/dd/yyyy", CultureInfo.CurrentCulture)
+            };
+
+            var contracts = new List<McaDevolvedContract>()
+            {
+                new McaDevolvedContract()
+                {
+                    Ukprn = 123456789,
+                    McaGlaShortCode = "CPCA",
+                    EffectiveFrom = new DateTime(2019, 08, 01),
+                    EffectiveTo = new DateTime(2021, 07, 31)
+                }
+            };
+
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
+            academicYearServiceMock.Setup(ay => ay.YearEnd).Returns(new DateTime(2021, 7, 31, 23, 59, 59));
+
+            var result = NewBuilder(academicYearService: academicYearServiceMock.Object).HasValidContract(learningDelivery, contracts);
+
+            result.Should().BeTrue();
+        }
+
+        [Theory]
+        [InlineData("10/20/2020", "05/06/2021")]
+        [InlineData("08/12/2020", "06/15/2021")]
+        [InlineData("10/15/2020", "06/15/2021")]
+        public void HasValidContractFalse_LearnPlanEndDateAfterEffective(string learnStartDate, string learnPlanEndDate)
+        {
+            var learningDelivery = new TestLearningDelivery()
+            {
+                LearnStartDate = DateTime.ParseExact(learnStartDate, "MM/dd/yyyy", CultureInfo.CurrentCulture),
+                LearnActEndDateNullable = null,
+                LearnPlanEndDate = DateTime.ParseExact(learnPlanEndDate, "MM/dd/yyyy", CultureInfo.CurrentCulture)
+            };
+
+            var contracts = new List<McaDevolvedContract>()
+            {
+                new McaDevolvedContract()
+                {
+                    Ukprn = 123456789,
+                    McaGlaShortCode = "WECA",
+                    EffectiveFrom = new DateTime(2019, 08, 01),
+                    EffectiveTo = new DateTime(2020, 12, 31)
+                }
+            };
+
+            var academicYearServiceMock = new Mock<IAcademicYearService>();
+            academicYearServiceMock.Setup(ay => ay.YearEnd).Returns(new DateTime(2021, 7, 31, 23, 59, 59));
+
+            var result = NewBuilder(academicYearService: academicYearServiceMock.Object).HasValidContract(learningDelivery, contracts);
+
+            result.Should().BeFalse();
         }
 
         [Fact]

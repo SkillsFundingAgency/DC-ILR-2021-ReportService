@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using Aspose.Cells;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.Model;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
@@ -11,11 +12,9 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using ESFA.DC.ILR.ReportService.Reports.Frm.FRM15;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using FluentAssertions;
 using Moq;
 using Xunit;
-using Xunit.Sdk;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM15
 {
@@ -35,9 +34,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM15
         [Fact]
         public void GenerateAsync()
         {
-            var container = "Container";
             var sheetName = "FRM15";
-            var fileName = "fileName";
             
             var cancellationToken = CancellationToken.None;
 
@@ -53,7 +50,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM15
 
             frm15ReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData)).Returns(reportModels);
 
-            var excelServiceMock = new Mock<IExcelService>();
+            var excelServiceMock = new Mock<IExcelFileService>();
 
             excelServiceMock.Setup(s => s.NewWorkbook()).Returns(workbook);
             excelServiceMock.Setup(s => s.GetWorksheetFromWorkbook(workbook, sheetName)).Returns(worksheet);
@@ -138,7 +135,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Frm.FRM15
         }
 
         private Frm15Report NewReport(
-            IExcelService excelService = null,
+            IExcelFileService excelService = null,
             IModelBuilder<IEnumerable<Frm15ReportModel>> frm15ReportModelBuilder = null,
             IRenderService<IEnumerable<Frm15ReportModel>> frm15ReportRenderService = null)
         {

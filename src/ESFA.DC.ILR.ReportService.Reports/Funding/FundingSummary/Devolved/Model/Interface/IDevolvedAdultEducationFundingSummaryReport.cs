@@ -14,9 +14,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
 
         string IlrFile { get; }
 
-        string LastSubmittedIlrFileName { get; }
+        string LastIlrFileUpdate { get; }
 
-        string EasLastUpdated { get; }
+        string EasFile { get; }
+
+        string LastEasFileUpdate { get; }
 
         DateTime? FilePreparationDate { get; }
 

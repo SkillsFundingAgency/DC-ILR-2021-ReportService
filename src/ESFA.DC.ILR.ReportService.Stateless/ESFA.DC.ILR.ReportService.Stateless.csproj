@@ -7,7 +7,7 @@
     <ProjectGuid>{920FC933-1FD0-47A2-854E-4D49990B3942}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <RootNamespace>ESFA.DC.ILR.ReportService.Stateless</RootNamespace>
-    <AssemblyName>ESFA.DC.ILR1920.ReportService.Stateless</AssemblyName>
+    <AssemblyName>ESFA.DC.ILR2021.ReportService.Stateless</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -73,10 +73,16 @@
       <HintPath>..\packages\Castle.Core.4.4.0\lib\net45\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="CsvHelper, Version=12.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
-      <HintPath>..\packages\CsvHelper.12.1.2\lib\net45\CsvHelper.dll</HintPath>
+      <HintPath>..\packages\CsvHelper.12.1.3\lib\net45\CsvHelper.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetZip, Version=1.13.4.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetZip.1.13.4\lib\net40\DotNetZip.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Auditing.Interface, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Auditing.Interface.0.2.0-beta0001\lib\netstandard2.0\ESFA.DC.Auditing.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.CsvService, Version=0.1.41.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.CsvService.0.1.41-beta0001\lib\netstandard2.0\ESFA.DC.CsvService.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.DateTimeProvider, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.DateTimeProvider.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.dll</HintPath>
@@ -84,86 +90,89 @@
     <Reference Include="ESFA.DC.DateTimeProvider.Interface, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.DateTimeProvider.Interface.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.DateTimeProvider.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.EAS1920.EF, Version=0.0.91.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.EAS1920.EF.0.0.91\lib\netstandard2.0\ESFA.DC.EAS1920.EF.dll</HintPath>
+    <Reference Include="ESFA.DC.EAS2021.EF, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.EAS2021.EF.0.1.12\lib\netstandard2.0\ESFA.DC.EAS2021.EF.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.FileService, Version=0.1.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.FileService.0.1.19-beta0001\lib\netstandard2.0\ESFA.DC.FileService.dll</HintPath>
+    <Reference Include="ESFA.DC.ExcelService, Version=0.1.42.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ExcelService.0.1.42-beta0001\lib\netstandard2.0\ESFA.DC.ExcelService.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.FileService.Interface, Version=0.1.18.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.FileService.Interface.0.1.18-beta0001\lib\netstandard2.0\ESFA.DC.FileService.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.FileService, Version=0.1.41.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.FileService.0.1.41-beta0001\lib\netstandard2.0\ESFA.DC.FileService.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Constants, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.Constants.0.2.0-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Constants.dll</HintPath>
+    <Reference Include="ESFA.DC.FileService.Interface, Version=0.1.39.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.FileService.Interface.0.1.39-beta0001\lib\netstandard2.0\ESFA.DC.FileService.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.ALB.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.2021.Database.EF, Version=0.1.154.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.154\lib\netstandard2.0\ESFA.DC.ILR.2021.Database.EF.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM25.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Constants, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Constants.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Constants.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM35.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model, Version=0.1.138.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.ALB.FundingOutput.Model.0.1.138\lib\netstandard2.0\ESFA.DC.ILR.FundingService.ALB.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM36.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM25.Model, Version=0.1.138.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM25.FundingOutput.Model.0.1.138\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM25.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model, Version=0.1.446.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model.0.1.446\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model, Version=0.1.138.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM35.FundingOutput.Model.0.1.138\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM35.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model, Version=0.0.245.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.FundingService.FM81.FundingOutput.Model.0.0.245\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model, Version=0.1.138.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM36.FundingOutput.Model.0.1.138\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM36.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Model, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model, Version=0.1.138.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM70.FundingOutput.Model.0.1.138\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM70.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Interface.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model, Version=0.1.138.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.FundingService.FM81.FundingOutput.Model.0.1.138\lib\netstandard2.0\ESFA.DC.ILR.FundingService.FM81.FundingOutput.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR.1920.Model.Loose.0.1.8-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Model, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.1.19.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.ReferenceDataService.Model.0.1.19\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR.Model.Interface, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Interface.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Interface.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.Model.Loose, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Model.Loose.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.ILR.Model.Loose.dll</HintPath>
+    </Reference>
+    <Reference Include="ESFA.DC.ILR.ReferenceDataService.Model, Version=0.3.21.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.ReferenceDataService.Model.0.3.21\lib\netstandard2.0\ESFA.DC.ILR.ReferenceDataService.Model.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ILR.ValidationErrors.Interface, Version=0.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ILR.ValidationErrors.Interface.0.1.5-beta0001\lib\netstandard2.0\ESFA.DC.ILR.ValidationErrors.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.Database.EF, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.Database.EF.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR2021.DataStore.EF, Version=0.1.154.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.154\lib\netstandard2.0\ESFA.DC.ILR2021.DataStore.EF.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.DataStore.EF, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.DataStore.EF.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR2021.DataStore.EF.Invalid, Version=0.1.154.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.154\lib\netstandard2.0\ESFA.DC.ILR2021.DataStore.EF.Invalid.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.DataStore.EF.Invalid, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.DataStore.EF.Invalid.dll</HintPath>
+    <Reference Include="ESFA.DC.ILR2021.DataStore.EF.StoredProc, Version=0.1.154.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ILR.2021.Database.EF.0.1.154\lib\netstandard2.0\ESFA.DC.ILR2021.DataStore.EF.StoredProc.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ILR1920.DataStore.EF.Valid, Version=0.0.454.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ILR1920.Database.EF.0.0.454\lib\netstandard2.0\ESFA.DC.ILR1920.DataStore.EF.Valid.dll</HintPath>
+    <Reference Include="ESFA.DC.IO.AzureStorage, Version=0.1.40.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.IO.AzureStorage.0.1.40-beta0001\lib\netstandard2.0\ESFA.DC.IO.AzureStorage.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.IO.AzureStorage, Version=0.1.14.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.IO.AzureStorage.0.1.14-beta0001\lib\netstandard2.0\ESFA.DC.IO.AzureStorage.dll</HintPath>
+    <Reference Include="ESFA.DC.IO.Interfaces, Version=0.1.39.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.IO.Interfaces.0.1.39-beta0001\lib\netstandard2.0\ESFA.DC.IO.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.IO.Interfaces, Version=0.1.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.IO.Interfaces.0.1.12-beta0001\lib\netstandard2.0\ESFA.DC.IO.Interfaces.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContext.Interface, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobContext.Interface.0.2.8-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContext.Interface, Version=0.2.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobContext.Interface.0.2.4-beta0001\lib\netstandard2.0\ESFA.DC.JobContext.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.JobContextManager, Version=0.2.11.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobContextManager.0.2.11-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobContextManager, Version=0.2.9.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobContextManager.0.2.9-beta0001\lib\netstandard2.0\ESFA.DC.JobContextManager.dll</HintPath>
+    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.76.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.76-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Jobs.Model, Version=0.2.23.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Jobs.Model.0.2.23-beta0001\lib\netstandard2.0\ESFA.DC.Jobs.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.8-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.JobStatus.Interface, Version=0.2.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.JobStatus.Interface.0.2.4-beta0001\lib\netstandard2.0\ESFA.DC.JobStatus.Interface.dll</HintPath>
+    <Reference Include="ESFA.DC.Logging, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.0.1.10-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Logging, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Logging.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.dll</HintPath>
-    </Reference>
-    <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.4.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.4-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
+    <Reference Include="ESFA.DC.Logging.Interfaces, Version=0.1.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Logging.Interfaces.0.1.10-beta0001\lib\netstandard2.0\ESFA.DC.Logging.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.Mapping.Interface, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Mapping.Interface.0.1.0-beta0001\lib\netstandard2.0\ESFA.DC.Mapping.Interface.dll</HintPath>
@@ -174,17 +183,17 @@
     <Reference Include="ESFA.DC.Queueing.Interface, Version=0.1.14.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.Queueing.Interface.0.1.14-beta0001\lib\netstandard2.0\ESFA.DC.Queueing.Interface.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.ReferenceData.Postcodes.Model, Version=0.2.210.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.ReferenceData.Postcodes.Model.0.2.210\lib\netstandard2.0\ESFA.DC.ReferenceData.Postcodes.Model.dll</HintPath>
+    <Reference Include="ESFA.DC.ReferenceData.Postcodes.Model, Version=0.2.877.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.ReferenceData.Postcodes.Model.0.2.877\lib\netstandard2.0\ESFA.DC.ReferenceData.Postcodes.Model.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
+    <Reference Include="ESFA.DC.Serialization.Interfaces, Version=0.1.39.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Serialization.Interfaces.0.1.39-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Serialization.Json, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Serialization.Json.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Json.dll</HintPath>
+    <Reference Include="ESFA.DC.Serialization.Json, Version=0.1.40.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Serialization.Json.0.1.40-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Json.dll</HintPath>
     </Reference>
-    <Reference Include="ESFA.DC.Serialization.Xml, Version=0.1.6.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\ESFA.DC.Serialization.Xml.0.1.6-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Xml.dll</HintPath>
+    <Reference Include="ESFA.DC.Serialization.Xml, Version=0.1.40.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ESFA.DC.Serialization.Xml.0.1.40-beta0001\lib\netstandard2.0\ESFA.DC.Serialization.Xml.dll</HintPath>
     </Reference>
     <Reference Include="ESFA.DC.ServiceFabric.Common, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ESFA.DC.ServiceFabric.Common.0.1.1-beta0001\lib\netstandard2.0\ESFA.DC.ServiceFabric.Common.dll</HintPath>
@@ -200,6 +209,12 @@
     </Reference>
     <Reference Include="Microsoft.Azure.Services.AppAuthentication, Version=1.0.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Azure.Services.AppAuthentication.1.0.3\lib\net452\Microsoft.Azure.Services.AppAuthentication.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.Storage.Blob, Version=11.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Storage.Blob.11.1.1\lib\net452\Microsoft.Azure.Storage.Blob.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Azure.Storage.Common, Version=11.1.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Azure.Storage.Common.11.1.1\lib\net452\Microsoft.Azure.Storage.Common.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=1.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.1.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
@@ -316,25 +331,28 @@
       <HintPath>..\packages\Remotion.Linq.2.2.0\lib\net45\Remotion.Linq.dll</HintPath>
     </Reference>
     <Reference Include="Serilog, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.2.6.0\lib\net46\Serilog.dll</HintPath>
+      <HintPath>..\packages\Serilog.2.9.0\lib\net46\Serilog.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Enrichers.Environment, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Enrichers.Environment.2.1.2\lib\net45\Serilog.Enrichers.Environment.dll</HintPath>
+      <HintPath>..\packages\Serilog.Enrichers.Environment.2.1.3\lib\net45\Serilog.Enrichers.Environment.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Enrichers.Process, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Enrichers.Process.2.0.1\lib\net45\Serilog.Enrichers.Process.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Enrichers.Thread, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Enrichers.Thread.3.0.0\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
+      <HintPath>..\packages\Serilog.Enrichers.Thread.3.1.0\lib\net45\Serilog.Enrichers.Thread.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.Console, Version=3.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.Console.3.1.1\lib\net45\Serilog.Sinks.Console.dll</HintPath>
+    </Reference>
+    <Reference Include="Serilog.Sinks.File, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
+      <HintPath>..\packages\Serilog.Sinks.File.4.1.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.MSSqlServer, Version=5.1.1.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.MSSqlServer.5.1.1\lib\net452\Serilog.Sinks.MSSqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.1.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
+      <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.2.0\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -445,7 +463,6 @@
     <Compile Include="Configuration\AzureStorageOptions.cs" />
     <Compile Include="Configuration\DatabaseConfiguration.cs" />
     <Compile Include="Configuration\Interface\IAzureStorageOptions.cs" />
-    <Compile Include="Configuration\Interface\IVersionInfo.cs" />
     <Compile Include="Configuration\VersionInfo.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContext.cs" />
     <Compile Include="Context\ReportServiceJobContextMessageContextFactory.cs" />

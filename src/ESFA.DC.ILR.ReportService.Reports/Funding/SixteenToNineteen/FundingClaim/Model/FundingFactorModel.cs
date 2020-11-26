@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim.Model
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingClaim.Model
 {
     public class FundingFactorModel
     {
@@ -15,5 +11,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.FundingCla
         public string PrvDisadvPropnHist { get; set; }
 
         public string PrvHistLrgProgPropn { get; set; }
+
+        public string PrvHistL3ProgMathEngProp { get; set; }
     }
 }

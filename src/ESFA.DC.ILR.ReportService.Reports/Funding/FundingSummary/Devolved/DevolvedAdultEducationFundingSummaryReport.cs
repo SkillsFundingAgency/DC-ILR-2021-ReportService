@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
+using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface;
@@ -14,15 +16,15 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved
     {
         private readonly IFileNameService _fileNameService;
         private readonly IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> _devolvedFundingSummaryReportBuilder;
-        private readonly IExcelService _excelService;
+        private readonly IExcelFileService _excelService;
         private readonly IRenderService<IDevolvedAdultEducationFundingSummaryReport> _devolvedFundingSummaryReportRenderService;
 
         public DevolvedAdultEducationFundingSummaryReport(
             IFileNameService fileNameService,
             IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder,
-            IExcelService excelService,
+            IExcelFileService excelService,
             IRenderService<IDevolvedAdultEducationFundingSummaryReport> devolvedFundingSummaryReportRenderService) 
-            : base(ReportTaskNameConstants.DevolvedAdultEducationFundingSummaryReport, "Devolved Adult Education Funding Summary Report")
+            : base(ReportTaskNameConstants.DevolvedAdultEducationFundingSummaryReport, ReportNameConstants.DevolvedAdultEducationFundingSummary)
         {
             _fileNameService = fileNameService;
             _devolvedFundingSummaryReportBuilder = devolvedFundingSummaryReportBuilder;

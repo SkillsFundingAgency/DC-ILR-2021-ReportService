@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using ESFA.DC.ILR.Model.Interface;
+using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Reports.Model.Interface;
@@ -36,10 +36,12 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
             var famDictionary = learningDeliveryFams.GroupBy(fam => fam.LearnDelFAMType).ToDictionary(g => g.Key, g => g.ToArray(), StringComparer.OrdinalIgnoreCase);
 
             var ldmsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.LDM).ToFixedLengthArray(6);
-            var damsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.DAM).ToFixedLengthArray(4);
+            var damsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.DAM).ToFixedLengthArray(6);
 
             var lsf = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.LSF);
             var alb = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.ALB);
+
+            var hhsArray = famDictionary.GetValueOrDefault(LearningDeliveryFAMTypeConstants.HHS).ToFixedLengthArray(2);
 
             return new LearningDeliveryFAMsModel()
             {
@@ -62,8 +64,23 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
                 DAM2 = damsArray[1]?.LearnDelFAMCode,
                 DAM3 = damsArray[2]?.LearnDelFAMCode,
                 DAM4 = damsArray[3]?.LearnDelFAMCode,
+                DAM5 = damsArray[4]?.LearnDelFAMCode,
+                DAM6 = damsArray[5]?.LearnDelFAMCode,
                 RES = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.RES, famDictionary),
                 EEF = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EEF, famDictionary),
+                ASL = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.ASL, famDictionary),
+                EII = GetLearningDeliveryFAMCode(LearningDeliveryFAMTypeConstants.EII, famDictionary),
+                HHS1 = hhsArray[0]?.LearnDelFAMCode,
+                HHS2 = hhsArray[1]?.LearnDelFAMCode
+            };
+        }
+
+        public EmploymentStatusMonitoringModel MapEmploymentStatusMonitorings(IEnumerable<IEmploymentStatusMonitoring> monitorings)
+        {
+            return new EmploymentStatusMonitoringModel()
+            {
+                EII = monitorings?.FirstOrDefault(m => m.ESMType.CaseInsensitiveEquals(ESMTypeConstants.EII))?.ESMCode,
+                BSI = monitorings?.FirstOrDefault(m => m.ESMType.CaseInsensitiveEquals(ESMTypeConstants.BSI))?.ESMCode,
             };
         }
 
@@ -71,5 +88,6 @@ namespace ESFA.DC.ILR.ReportService.Reports.Model
         {
             return learningDeliveryFamDictionary.GetValueOrDefault(famType)?.FirstOrDefault()?.LearnDelFAMCode;
         }
+
     }
 }

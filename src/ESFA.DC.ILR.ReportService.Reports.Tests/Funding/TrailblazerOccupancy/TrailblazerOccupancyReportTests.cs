@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Trailblazer;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
@@ -34,11 +35,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerOccupancy
 
             modelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData)).Returns(model);
 
-            var csvServiceMock = new Mock<ICsvService>();
+            var csvServiceMock = new Mock<ICsvFileService>();
 
             var result = await NewReport(fileNameServiceMock.Object, modelBuilderMock.Object, csvServiceMock.Object).GenerateAsync(reportServiceContextMock.Object, reportServiceDependentData, cancellationToken);
 
-            csvServiceMock.Verify(s => s.WriteAsync<TrailblazerOccupancyReportModel, TrailblazerOccupancyReportClassMap>(model, fileName, container, cancellationToken));
+            csvServiceMock.Verify(s => s.WriteAsync<TrailblazerOccupancyReportModel, TrailblazerOccupancyReportClassMap>(model, fileName, container, cancellationToken, null, null));
 
             result.First().Should().Be(fileName);
             result.Should().HaveCount(1);
@@ -47,7 +48,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerOccupancy
         private TrailblazerOccupancyReport NewReport(
             IFileNameService fileNameService = null,
             IModelBuilder<IEnumerable<TrailblazerOccupancyReportModel>> modelBuilder = null,
-            ICsvService csvService = null)
+            ICsvFileService csvService = null)
         {
             return new TrailblazerOccupancyReport(fileNameService, modelBuilder, csvService);
         }

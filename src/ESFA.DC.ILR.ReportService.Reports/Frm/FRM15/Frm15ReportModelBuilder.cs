@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
-using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Extensions;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 
@@ -11,6 +10,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
 {
     public class Frm15ReportModelBuilder : FrmBaseModelBuilder, IModelBuilder<IEnumerable<Frm15ReportModel>>
     {
+        private readonly int _includedCompStatus = 1;
         private readonly int _includedAimType = 1;
         private readonly int _includedFundModel = 36;
         private readonly int _includedProgType = 25;
@@ -29,7 +29,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
 
             var organisationNameDictionary = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
 
-            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x.LearnAimRefTitle, StringComparer.OrdinalIgnoreCase);
+            var learnAimDictionary = referenceData.LARSLearningDeliveries.ToDictionary(x => x.LearnAimRef, x => x, StringComparer.OrdinalIgnoreCase);
 
             var orgName = organisationNameDictionary.GetValueOrDefault(reportServiceContext.Ukprn);
 
@@ -38,6 +38,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                                             ld.FundModel == _includedFundModel
                                             && ld.ProgTypeNullable == _includedProgType
                                             && ld.AimType == _includedAimType
+                                            && ld.CompStatus == _includedCompStatus
                                             && ld.EPAOrgID == null).Select(ld => new { Learner = l, LearningDelivery = ld }));
 
             var currentReturnEndDate = referenceData.MetaDatas.CollectionDates.ReturnPeriods.FirstOrDefault(d => reportServiceContext.SubmissionDateTimeUtc >= d.Start && reportServiceContext.SubmissionDateTimeUtc <= d.End).End;
@@ -61,43 +62,53 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm.FRM15
                     var advancedLoansIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, ADLLearnDelFamType);
                     var devolvedIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, SOFLearnDelFamType);
                     var resIndicator = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, RESLearnDelFamType);
+                    var sofCode = RetrieveFamCodeForType(delivery.LearningDelivery.LearningDeliveryFAMs, SOFLearnDelFamType);
 
+                    var pmOrgName = organisationNameDictionary.GetValueOrDefault(
+                            delivery.Learner.PMUKPRNNullable.GetValueOrDefault());
+                    var prevOrgName = organisationNameDictionary.GetValueOrDefault(delivery.Learner.PrevUKPRNNullable
+                            .GetValueOrDefault());
                     var partnerOrgName = organisationNameDictionary.GetValueOrDefault(delivery.LearningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
-                    var learnAimTitle = learnAimDictionary.GetValueOrDefault(delivery.LearningDelivery.LearnAimRef);
+                    var learnAim = learnAimDictionary.GetValueOrDefault(delivery.LearningDelivery.LearnAimRef);
 
                     models.Add(new Frm15ReportModel
                     {
-                        UKPRN = reportServiceContext.Ukprn,
                         Return = returnPeriod,
+                        UKPRN = reportServiceContext.Ukprn,
                         OrgName = orgName,
-                        FworkCode = delivery.LearningDelivery.FworkCodeNullable,
-                        LearnAimRef = delivery.LearningDelivery.LearnAimRef,
-                        LearnAimTitle = learnAimTitle,
-                        LearnRefNumber = delivery.Learner.LearnRefNumber,
-                        LearnStartDate = delivery.LearningDelivery.LearnStartDate,
-                        ProgType = delivery.LearningDelivery.ProgTypeNullable,
-                        StdCode = delivery.LearningDelivery.StdCodeNullable,
-                        ULN = delivery.Learner.ULN,
-                        AdvancedLoansIndicator = advancedLoansIndicator,
-                        AimSeqNumber = delivery.LearningDelivery.AimSeqNumber,
-                        CompStatus = delivery.LearningDelivery.CompStatus,
-                        LearnActEndDate = delivery.LearningDelivery.LearnActEndDateNullable,
-                        LearnPlanEndDate = delivery.LearningDelivery.LearnPlanEndDate,
-                        OtherFundAdj = delivery.LearningDelivery.OtherFundAdjNullable,
-                        Outcome = delivery.LearningDelivery.OutcomeNullable,
-                        PMUKPRN = delivery.Learner.PMUKPRNNullable,
                         PartnerUKPRN = delivery.LearningDelivery.PartnerUKPRNNullable,
                         PartnerOrgName = partnerOrgName,
-                        PriorLearnFundAdj = delivery.LearningDelivery.PriorLearnFundAdjNullable,
-                        PrevLearnRefNumber = delivery.Learner.PrevLearnRefNumber,
                         PrevUKPRN = delivery.Learner.PrevUKPRNNullable,
-                        PwayCode = delivery.LearningDelivery.PwayCodeNullable,
-                        ResIndicator = resIndicator,
-                        EPAOrgId = delivery.LearningDelivery.EPAOrgID,
+                        PrevOrgName = prevOrgName,
+                        PMUKPRN = delivery.Learner.PMUKPRNNullable,
+                        PMOrgName = pmOrgName,
+                        ULN = delivery.Learner.ULN,
+                        LearnRefNumber = delivery.Learner.LearnRefNumber,
                         SWSupAimId = delivery.LearningDelivery.SWSupAimId,
+                        LearnAimRef = delivery.LearningDelivery.LearnAimRef,
+                        LearnAimTitle = learnAim.LearnAimRefTitle,
+                        AimSeqNumber = delivery.LearningDelivery.AimSeqNumber,
+                        AimTypeCode = delivery.LearningDelivery.AimType,
+                        LearnAimType = learnAim.LearnAimRefTypeDesc,
+                        StdCode = delivery.LearningDelivery.StdCodeNullable,
+                        FworkCode = delivery.LearningDelivery.FworkCodeNullable,
+                        PwayCode = delivery.LearningDelivery.PwayCodeNullable,
+                        ProgType = delivery.LearningDelivery.ProgTypeNullable,
+                        LearnStartDate = delivery.LearningDelivery.LearnStartDate,
+                        OrigLearnStartDate = delivery.LearningDelivery.OrigLearnStartDateNullable,
+                        LearnPlanEndDate = delivery.LearningDelivery.LearnPlanEndDate,
+                        LearnActEndDate = delivery.LearningDelivery.LearnActEndDateNullable,
+                        CompStatus = delivery.LearningDelivery.CompStatus,
+                        Outcome = delivery.LearningDelivery.OutcomeNullable,
+                        FundModel = delivery.LearningDelivery.FundModel,
+                        SOFCode = sofCode,
+                        AdvancedLoansIndicator = advancedLoansIndicator,
+                        ResIndicator = resIndicator,
                         ProvSpecLearnDelMon = ProviderSpecDeliveryMonitorings(delivery.LearningDelivery.ProviderSpecDeliveryMonitorings),
                         ProvSpecDelMon = ProviderSpecLearningMonitorings(delivery.Learner.ProviderSpecLearnerMonitorings),
-                        FundingStream = CalculateFundingStream(delivery.LearningDelivery.FundModel, delivery.LearningDelivery.ProgTypeNullable, advancedLoansIndicator, devolvedIndicator),
+                        PriorLearnFundAdj = delivery.LearningDelivery.PriorLearnFundAdjNullable,
+                        OtherFundAdj = delivery.LearningDelivery.OtherFundAdjNullable,
+                        EPAOrgId = delivery.LearningDelivery.EPAOrgID,
                         TotalNegotiatedAssessmentPrice = aFinAmount,
                         AssessmentPaymentReceived = paymentsReceived
                     });

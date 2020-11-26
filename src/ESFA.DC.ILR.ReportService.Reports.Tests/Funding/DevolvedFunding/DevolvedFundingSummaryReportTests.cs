@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Aspose.Cells;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Model;
@@ -45,7 +46,24 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
             reportServiceContextMock.Setup(c => c.Container).Returns(container);
 
             var reportServiceDependentData = Mock.Of<IReportServiceDependentData>();
-            var devolvedFundingSummaryReportModel = new List<DevolvedAdultEducationFundingSummaryReportModel> { new DevolvedAdultEducationFundingSummaryReportModel(sofLookup, 1000000, "Provider ABC", "ILR-10000000-1920-20191204-164917-01.xml", "ILR-10000000-1920-20191204-164916-01.xml", DateTime.Now, "EasVersion","OrgVersion", "LarsVersion", "PostcodeVersion", "EmployersVersion", "ApplicationVersion", "ReportGeneratedAt", new List<IDevolvedAdultEducationFundingCategory>())};
+            var devolvedFundingSummaryReportModel = new List<DevolvedAdultEducationFundingSummaryReportModel>
+            {
+                new DevolvedAdultEducationFundingSummaryReportModel(
+                    sofLookup,
+                    1000000,
+                    "Provider ABC",
+                    "ILR-10000000-1920-20191204-164916-01.xml",
+                    "01/01/2020 09:00:00",
+                    DateTime.Now,
+                    "easVersion",
+                    "01/01/2020 09:00:00",
+                    "OrgVersion",
+                    "LarsVersion",
+                    "PostcodeVersion",
+                    "EmployersVersion",
+                    "ApplicationVersion",
+                    "ReportGeneratedAt",
+                    new List<IDevolvedAdultEducationFundingCategory>())};
 
             devolvedFundingSummaryReportModelBuilderMock.Setup(b => b.Build(reportServiceContextMock.Object, reportServiceDependentData))
                 .Returns(devolvedFundingSummaryReportModel);
@@ -53,7 +71,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
             Worksheet worksheet = null;
             Workbook workbook = new Workbook();
 
-            var excelServiceMock = new Mock<IExcelService>();
+            var excelServiceMock = new Mock<IExcelFileService>();
 
             excelServiceMock.Setup(s => s.NewWorkbook()).Returns(workbook);
             excelServiceMock.Setup(s => s.GetWorksheetFromWorkbook(workbook, 0)).Returns(worksheet);
@@ -78,7 +96,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedFunding
         private DevolvedAdultEducationFundingSummaryReport NewReport(
             IFileNameService fileNameService = null,
             IModelBuilder<IEnumerable<DevolvedAdultEducationFundingSummaryReportModel>> devolvedFundingSummaryReportBuilder = null,
-            IExcelService excelService = null,
+            IExcelFileService excelService = null,
             IRenderService<IDevolvedAdultEducationFundingSummaryReport> devolvedFundingSummaryReportRenderService = null)
         {
             return new DevolvedAdultEducationFundingSummaryReport(fileNameService, devolvedFundingSummaryReportBuilder, excelService, devolvedFundingSummaryReportRenderService);

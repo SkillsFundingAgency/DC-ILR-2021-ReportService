@@ -12,9 +12,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
             int ukprn, 
             string providerName, 
             string ilrFile, 
-            string lastSubmittedIlrFileName, 
+            string lastIlrFileUpdate,
             DateTime? filePreparationDate,
-            string easLastUpdated,
+            string lastEasFileUpdate,
+            string easFile,
             string organisationVersion,
             string larsVersion,
             string postcodeVersion,
@@ -27,8 +28,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
             Ukprn = ukprn;
             ProviderName = providerName;
             IlrFile = ilrFile;
-            LastSubmittedIlrFileName = lastSubmittedIlrFileName;
-            EasLastUpdated = easLastUpdated;
+            EasFile = easFile;
+            LastIlrFileUpdate = lastIlrFileUpdate;
+            LastEasFileUpdate = lastEasFileUpdate;
             FilePreparationDate = filePreparationDate;
             OrganisationVersion = organisationVersion;
             LARSVersion = larsVersion;
@@ -47,9 +49,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.FundingSummary.Devolved.Mode
 
         public string IlrFile { get; }
 
-        public string LastSubmittedIlrFileName { get; }
+        public string LastIlrFileUpdate { get; }
 
-        public string EasLastUpdated { get; }
+        public string EasFile { get; }
+
+        public string LastEasFileUpdate { get; }
 
         public DateTime? FilePreparationDate { get; }
 

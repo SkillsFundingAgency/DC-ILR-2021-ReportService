@@ -8,7 +8,7 @@ using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MetaData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR1920.DataStore.EF.Interface;
+using ESFA.DC.ILR2021.DataStore.EF.Interface;
 using ESFA.DC.ReferenceData.Postcodes.Model.Interface;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +16,10 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
 {
     public class IlrReferenceDataProvider : IExternalDataProvider
     {
-        private readonly Func<IILR1920_DataStoreEntities> _ilrContext;
+        private readonly Func<IILR2021_DataStoreEntities> _ilrContext;
         private readonly Func<IPostcodesContext> _postcodesContext;
 
-        public IlrReferenceDataProvider(Func<IILR1920_DataStoreEntities> ilrContext, Func<IPostcodesContext> postcodesContext)
+        public IlrReferenceDataProvider(Func<IILR2021_DataStoreEntities> ilrContext, Func<IPostcodesContext> postcodesContext)
         {
             _ilrContext = ilrContext;
             _postcodesContext = postcodesContext;
@@ -60,7 +60,7 @@ namespace ESFA.DC.ILR.ReportService.Data.Eas.Providers
                             {
                                 Version = latestFileDetails?.PostcodesVersion
                             },
-                            EasUploadDateTime = new EasUploadDateTime()
+                            EasFileDetails = new EasFileDetails()
                             {
                                 UploadDateTime = latestFileDetails?.EasUploadDateTime
                             }

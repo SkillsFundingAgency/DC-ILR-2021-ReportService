@@ -1,4 +1,5 @@
 ﻿using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Abstract.Model;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
@@ -12,5 +13,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Main
         public string TraineeshipWorkPlacementOrWorkPreparation { get; set; }
 
         public string HigherApprenticeshipPrescribedHeAim { get; set; }
+
+        public LARSFrameworkAim LarsFrameworkAim { get; set; }
     }
 }

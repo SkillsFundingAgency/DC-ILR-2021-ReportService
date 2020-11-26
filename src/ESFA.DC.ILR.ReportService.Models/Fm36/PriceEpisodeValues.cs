@@ -21,7 +21,5 @@ namespace ESFA.DC.ILR.ReportService.Models.Fm36
         public int? PriceEpisodeAimSeqNumber { get; set; }
 
         public string PriceEpisodeFundLineType { get; set; }
-
-        public string PriceEpisodeAgreeId { get; set; }
     }
 }

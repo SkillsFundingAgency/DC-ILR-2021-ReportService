@@ -99,91 +99,91 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.TrailblazerOccupancy
                 {
                     AFinType = "PMR",
                     AFinCode = 1,
-                    AFinDate = new DateTime(2018, 09, 01),
+                    AFinDate = new DateTime(2019, 09, 01),
                     AFinAmount = 50
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 2,
-                    AFinDate = new DateTime(2018, 10, 01),
+                    AFinDate = new DateTime(2019, 10, 01),
                     AFinAmount = 100
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 3,
-                    AFinDate = new DateTime(2018, 11, 01),
+                    AFinDate = new DateTime(2019, 11, 01),
                     AFinAmount = 100
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 1,
-                    AFinDate = new DateTime(2019, 08, 01),
+                    AFinDate = new DateTime(2020, 08, 01),
                     AFinAmount = 50
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 2,
-                    AFinDate = new DateTime(2019, 08, 01),
+                    AFinDate = new DateTime(2020, 08, 01),
                     AFinAmount = 100
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 3,
-                    AFinDate = new DateTime(2019, 08, 01),
+                    AFinDate = new DateTime(2020, 08, 01),
                     AFinAmount = 50
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 1,
-                    AFinDate = new DateTime(2020, 07, 01),
+                    AFinDate = new DateTime(2021, 07, 01),
                     AFinAmount = 50
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 2,
-                    AFinDate = new DateTime(2020, 07, 01),
+                    AFinDate = new DateTime(2021, 07, 01),
                     AFinAmount = 100
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "PMR",
                     AFinCode = 3,
-                    AFinDate = new DateTime(2020, 07, 01),
+                    AFinDate = new DateTime(2021, 07, 01),
                     AFinAmount = 50
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "TNP",
                     AFinCode = 1,
-                    AFinDate = new DateTime(2019, 10, 01),
+                    AFinDate = new DateTime(2020, 10, 01),
                     AFinAmount = 200
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "TNP",
                     AFinCode = 1,
-                    AFinDate = new DateTime(2019, 11, 01),
+                    AFinDate = new DateTime(2020, 11, 01),
                     AFinAmount = 300
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "TNP",
                     AFinCode = 2,
-                    AFinDate = new DateTime(2019, 11, 01),
+                    AFinDate = new DateTime(2020, 11, 01),
                     AFinAmount = 400
                 },
                 new TestAppFinRecord()
                 {
                     AFinType = "TNP",
                     AFinCode = 2,
-                    AFinDate = new DateTime(2019, 12, 01),
+                    AFinDate = new DateTime(2020, 12, 01),
                     AFinAmount = 500
                 },
             };

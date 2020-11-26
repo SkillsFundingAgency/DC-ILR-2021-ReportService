@@ -28,10 +28,10 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MessageHandler"/> class.
-        /// Simple constructor for use by AutoFac testing, don't want to have to fake a @see StatelessServiceContext
+        /// Simple constructor for use by AutoFac testing, don't want to have to fake a @see StatelessServiceContext.
         /// </summary>
-        /// <param name="parentLifeTimeScope">AutoFac scope</param>
-        /// <param name="jobContextMessageKeysMutator">jobContextMessageKeysMutator</param>
+        /// <param name="parentLifeTimeScope">AutoFac scope.</param>
+        /// <param name="jobContextMessageKeysMutator">jobContextMessageKeysMutator.</param>
         public MessageHandler(ILifetimeScope parentLifeTimeScope)
         {
             _parentLifeTimeScope = parentLifeTimeScope;
@@ -58,9 +58,6 @@ namespace ESFA.DC.ILR.ReportService.Stateless.Handlers
                     logger.LogDebug("Started Report Service");
 
                     var entryPoint = childLifeTimeScope.Resolve<IEntryPoint>();
-
-                    var mutator = childLifeTimeScope.Resolve<IJobContextMessageKeysMutator>();
-                    await mutator.MutateAsync(jobContextMessage.KeyValuePairs, cancellationToken);
 
                     var result = await entryPoint.Callback(new ReportServiceJobContextMessageContext(jobContextMessage, versionInfo), cancellationToken);
 

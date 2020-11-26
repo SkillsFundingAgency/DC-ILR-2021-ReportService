@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.EAS1920.EF.Interface;
+using ESFA.DC.EAS2021.EF.Interface;
 using ESFA.DC.ILR.ReportService.Models.EAS;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using Microsoft.EntityFrameworkCore;

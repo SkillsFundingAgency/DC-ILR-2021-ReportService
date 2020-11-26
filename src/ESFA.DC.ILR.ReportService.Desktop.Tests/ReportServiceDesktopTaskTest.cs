@@ -7,6 +7,7 @@ using Autofac;
 using ESFA.DC.ILR.Desktop.Interface;
 using ESFA.DC.ILR.ReportService.Desktop.Context;
 using ESFA.DC.ILR.ReportService.Service.Interface;
+using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using FluentAssertions;
 using Moq;
 using Xunit;
@@ -20,16 +21,24 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
         {
             var cancellationToken = CancellationToken.None;
 
+            var builder = new ContainerBuilder();
+            builder.RegisterCommonServiceStubs();
+
             var desktopContextMock = new Mock<IDesktopContext>();
+
             var reportServiceContextFactoryMock = new Mock<IReportServiceContextFactory<IDesktopContext>>();
             var reportServiceContextMock = new Mock<IReportServiceContext>();
-            var entryPointMock = new Mock<IEntryPoint>();
-
             reportServiceContextFactoryMock.Setup(f => f.Build(desktopContextMock.Object)).Returns(reportServiceContextMock.Object);
 
+            var entryPointMock = new Mock<IEntryPoint>();
             entryPointMock.Setup(s => s.Callback(reportServiceContextMock.Object, cancellationToken)).Returns(Task.FromResult(new List<string>())).Verifiable();
 
-            var result = await NewTask(entryPointMock.Object, reportServiceContextFactoryMock.Object).ExecuteAsync(desktopContextMock.Object, cancellationToken);
+            builder.RegisterInstance(entryPointMock.Object).As<IEntryPoint>();            
+            var container = builder.Build();
+
+            var lifetimeScope = container.Resolve<ILifetimeScope>();         
+
+            var result = await NewTask(lifetimeScope, reportServiceContextFactoryMock.Object).ExecuteAsync(desktopContextMock.Object, cancellationToken);
 
             result.Should().BeSameAs(desktopContextMock.Object);
 
@@ -82,9 +91,26 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Tests
             reportServiceJobContextDesktopContext.ReportOutputFileNames.Split('|').ToArray().Length.Should().Be(1);
         }
 
-        private ReportServiceDesktopTask NewTask(IEntryPoint entryPoint = null, IReportServiceContextFactory<IDesktopContext> reportServiceContextFactory = null)
+        private ContainerBuilder BuildContainer()
         {
-            return new ReportServiceDesktopTask(reportServiceContextFactory ?? new Mock<IReportServiceContextFactory<IDesktopContext>>().Object, entryPoint ?? Mock.Of<IEntryPoint>());
+            var builder = new ContainerBuilder();
+            builder.RegisterCommonServiceStubs();
+            //builder.RegisterModule<ReportServiceDesktopModule>();
+
+            var zipServiceMock = new Mock<IZipService>();
+            zipServiceMock.Setup(x => x.CreateZipAsync(
+                It.IsAny<IReportServiceContext>(),
+                It.IsAny<IEnumerable<string>>(),
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>()))
+                .Returns(Task.CompletedTask);
+
+            return builder;
+        }
+
+        private ReportServiceDesktopTask NewTask(ILifetimeScope lifetimeScope = null, IReportServiceContextFactory<IDesktopContext> reportServiceContextFactory = null)
+        {
+            return new ReportServiceDesktopTask(lifetimeScope ?? Mock.Of<ILifetimeScope>(), reportServiceContextFactory ?? new Mock<IReportServiceContextFactory<IDesktopContext>>().Object);
         }
     }
 }

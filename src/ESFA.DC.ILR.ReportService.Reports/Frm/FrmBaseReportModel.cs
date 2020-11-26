@@ -16,7 +16,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
 
         public long? PrevUKPRN { get; set; }
 
+        public string PrevOrgName { get; set; }
+
         public long? PMUKPRN { get; set; }
+
+        public string PMOrgName { get; set; }
 
         public long ULN { get; set; }
 
@@ -57,6 +61,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Frm
         public int? PriorLearnFundAdj { get; set; }
 
         public int? OtherFundAdj { get; set; }
+
+        public int? OtjActHours { get; set; }
 
         public int CompStatus { get; set; }
 

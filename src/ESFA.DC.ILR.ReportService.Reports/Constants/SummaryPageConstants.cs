@@ -12,7 +12,9 @@
 
         public const string LastILRFileUpdate = "Last ILR File Update:";
 
-        public const string LastEASUpdate = "Last EAS Update:";
+        public const string EASFile = "EAS File:";
+
+        public const string LastEASFileUpdate = "Last EAS File Update:";
 
         public const string SecurityClassification = "Security Classification:";
 

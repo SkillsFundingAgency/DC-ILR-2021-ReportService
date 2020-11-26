@@ -13,6 +13,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.HighNeedsS
             Map(m => m.Learner.LearnRefNumber).Name(@"Learner reference number").Index(++index);
             Map(m => m.Learner.FamilyName).Name(@"Family name").Index(++index);
             Map(m => m.Learner.GivenNames).Name(@"Given names").Index(++index);
+            Map(m => m.FM25Learner.TLevelStudent).Name(@"T Level student").Index(++index).TypeConverter<IlrBooleanConverter>();
             Map(m => m.Learner.CampId).Name(@"Campus identifier").Index(++index);
             Map(m => m.StudentsWithAnEhcp).Name(@"A - Students with an EHCP").Index(++index).TypeConverter<IlrBooleanConverter>();
             Map(m => m.StudentsWithoutAnEhcp).Name(@"B - Students without an EHCP").Index(++index).TypeConverter<IlrBooleanConverter>();

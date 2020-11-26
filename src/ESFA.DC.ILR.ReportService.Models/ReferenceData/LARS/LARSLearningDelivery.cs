@@ -10,6 +10,8 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS
 
         public string LearnAimRefTitle { get; set; }
 
+        public string LearnAimRefTypeDesc { get; set; }
+
         public string NotionalNVQLevel { get; set; }
 
         public string NotionalNVQLevelv2 { get; set; }
@@ -18,6 +20,10 @@ namespace ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS
 
         public Decimal? SectorSubjectAreaTier2 { get; set; }
 
+        public string SectorSubjectAreaTier2Desc { get; set; }
+
         public IReadOnlyCollection<LARSLearningDeliveryCategory> LARSLearningDeliveryCategories { get; set; }
+
+        public IReadOnlyCollection<LARSFramework> LARSFrameworks { get; set; }
     }
 }

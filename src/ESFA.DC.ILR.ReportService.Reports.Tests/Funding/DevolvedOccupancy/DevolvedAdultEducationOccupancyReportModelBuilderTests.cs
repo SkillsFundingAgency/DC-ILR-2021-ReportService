@@ -5,6 +5,8 @@ using ESFA.DC.ILR.ReportService.Models.Fm35;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.LARS;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Organisations;
+using ESFA.DC.ILR.ReportService.Models.ReferenceData.Postcodes;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.Devolved;
 using ESFA.DC.ILR.ReportService.Reports.Model;
@@ -146,7 +148,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
             {
                 LearnAimRef = "learnAimRef",
                 AimSeqNumber = 1,
+                LSDPostcode = "Postcode1",
                 LearningDeliveryFAMs = learningDeliveryFams,
+                PartnerUKPRNNullable = 12345678,
                 ProviderSpecDeliveryMonitorings = providerSpecDeliveryMonitorings
             };
 
@@ -175,7 +179,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
 
             var larsLearningDelivery = new LARSLearningDelivery()
             {
-                LearnAimRef = "learnAimRef"
+                LearnAimRef = "learnAimRef",
+                LARSLearningDeliveryCategories = new HashSet<LARSLearningDeliveryCategory>
+                {
+                    new LARSLearningDeliveryCategory
+                    {
+                        CategoryRef = 123
+                    }
+                }
             };
 
             var mcaGlaSofLookup = new McaGlaSofLookup()
@@ -191,12 +202,23 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                 {
                     larsLearningDelivery
                 },
+                Postcodes = new List<Postcode>
+                {
+                    new Postcode
+                    {
+                        PostCode = "Postcode1"
+                    }
+                },
                 DevolvedPostocdes = new DevolvedPostcodes()
                 {
                     McaGlaSofLookups = new List<McaGlaSofLookup>()
                     {
                         mcaGlaSofLookup
                     }
+                },
+                Organisations = new List<Organisation>()
+                {
+                    new Organisation(){UKPRN = 12345678, Name = "Partner Provider"}
                 }
             };
 
@@ -327,7 +349,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                     .Select(ld => 
                     new LARSLearningDelivery()
                     {
-                        LearnAimRef = "learnAimRef" + ld
+                        LearnAimRef = "learnAimRef" + ld,
+                        LARSLearningDeliveryCategories = new HashSet<LARSLearningDeliveryCategory>
+                        {
+                            new LARSLearningDeliveryCategory
+                            {
+                                CategoryRef = 123
+                            }
+                        },
                     }).ToList(),
                 DevolvedPostocdes = new DevolvedPostcodes
                 {
@@ -335,6 +364,10 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.DevolvedOccupancy
                     {
                         mcaGlaSofLookup
                     }
+                },
+                Organisations = new List<Organisation>()
+                {
+                    new Organisation(){UKPRN = 12345678, Name = "Partner Provider"}
                 }
             };
             

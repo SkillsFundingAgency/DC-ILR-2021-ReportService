@@ -108,7 +108,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.AppsIndicativeEarnings
 
             var priceEpisodeValues = new PriceEpisodeValues()
             {
-                EpisodeStartDate = new DateTime(2019, 08, 08),
+                EpisodeStartDate = new DateTime(2020, 08, 08),
                 PriceEpisodeAimSeqNumber = 1
             };
 

@@ -49,9 +49,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Abstract
         }
         
         protected IEnumerable<dynamic> WriteAndReadModel(IEnumerable<TModel> models)
-        {
-            
-
+        {        
             using (var stream = new MemoryStream())
             {
                 using (var streamWriter = new StreamWriter(stream, Encoding.UTF8, 8096, true))
@@ -59,6 +57,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Abstract
                     using (var csvWriter = new CsvWriter(streamWriter))
                     {
                         csvWriter.Configuration.RegisterClassMap<TClassMap>();
+                        csvWriter.Configuration.TypeConverterOptionsCache.GetOptions<System.DateTime?>().Formats = new[] { "dd/MM/yyyy" };
+                        csvWriter.Configuration.TypeConverterOptionsCache.GetOptions<System.DateTime>().Formats = new[] { "dd/MM/yyyy" };
 
                         csvWriter.WriteRecords(models);
                     }

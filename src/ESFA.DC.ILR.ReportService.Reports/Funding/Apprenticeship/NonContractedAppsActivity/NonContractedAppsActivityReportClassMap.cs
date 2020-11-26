@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using CsvHelper.Configuration;
+﻿using CsvHelper.Configuration;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContractedAppsActivity
 {
@@ -14,6 +11,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Apprenticeship.NonContracted
             int i = 0;
             Map(m => m.LearnRefNumber).Index(i++).Name("Learner reference number");
             Map(m => m.Learner.ULN).Index(i++).Name("Unique learner number");
+            Map(m => m.Learner.FamilyName).Index(i++).Name("Family name");
+            Map(m => m.Learner.GivenNames).Index(i++).Name("Given names");
             Map(m => m.Learner.DateOfBirthNullable).Index(i++).Name("Date of birth");
             Map(m => m.Learner.CampId).Index(i++).Name("Campus identifier");
             Map(m => m.ProviderSpecLearnerMonitoring.A).Index(i++).Name("Provider specified learner monitoring (A)");

@@ -2,42 +2,42 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using Aspose.Cells;
+using ESFA.DC.ExcelService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Constants;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
 {
-    public class AdultFundingClaimReport : AbstractReport, IReport
+    public class AdultFundingClaimReport : AbstractExcelReport<AdultFundingClaimReportModel>, IReport
     {
-        private readonly IFileNameService _fileNameService;
-        private readonly IModelBuilder<AdultFundingClaimReportModel> _modelBuilder;
-        private readonly IExcelService _excelService;
-        private const int FisInfoRow = 8;
-
+        private const int FisInfoRowIndex = 11;
+  
         public AdultFundingClaimReport(
-            IFileNameService fileNameService,
-            IModelBuilder<AdultFundingClaimReportModel> modelBuilder,
-            IExcelService excelService
-        )
-            : base(ReportTaskNameConstants.AdultFundingClaimReport, "Adult Funding Claim Report")
+           IFileNameService fileNameService,
+           IModelBuilder<AdultFundingClaimReportModel> modelBuilder,
+           IExcelFileService excelService,
+           bool desktopMode = false
+          )
+           : base(
+                 fileNameService,
+                 modelBuilder,
+                 excelService,
+                 ReportTemplateConstants.AdultFundingClaimTemplateName,
+                 ReportTemplateConstants.AdultFundingClaimDataSource,
+                 ReportTaskNameConstants.AdultFundingClaimReport,
+                 ReportNameConstants.AdultFundingClaim)
         {
-            _fileNameService = fileNameService;
-            _modelBuilder = modelBuilder;
-            _excelService = excelService;
+            DesktopMode = desktopMode;
         }
 
-        public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData,
-            CancellationToken cancellationToken)
+        public bool DesktopMode { get; }
+
+        public async Task<IEnumerable<string>> GenerateAsync(IReportServiceContext reportServiceContext, IReportServiceDependentData reportsDependentData, CancellationToken cancellationToken)
         {
-            var fileName = _fileNameService.GetFilename(reportServiceContext, ReportName, OutputTypes.Excel);
-            var model = _modelBuilder.Build(reportServiceContext, reportsDependentData);
-            var workbook = _excelService.BindExcelTemplateToWorkbook(model, ReportTemplateConstants.AdultFundingClaimTemplateName, ReportTemplateConstants.AdultFundingClaimDataSource);
-            RenderIndicativeMessage(workbook);
-            await _excelService.SaveWorkbookAsync(workbook, fileName, reportServiceContext.Container, cancellationToken);
-            return new[] { fileName };
+            var filenames = await GenerateExcelAsync(reportServiceContext, reportsDependentData, cancellationToken, DesktopMode == false ? FisInfoRowIndex : (int?)null);
+
+            return filenames;
         }
 
         public virtual IEnumerable<Type> DependsOn
@@ -49,9 +49,5 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.AdultFundingClaim
                 DependentDataCatalog.ReferenceData
             };
 
-        public virtual void RenderIndicativeMessage(Workbook workbook)
-        {
-            workbook.Worksheets[0].Cells.DeleteRow(FisInfoRow);
-        }
     }
 }

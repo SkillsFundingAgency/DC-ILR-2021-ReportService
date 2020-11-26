@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
 using ESFA.DC.ILR.Model.Interface;
 using ESFA.DC.ILR.ReportService.Models.Fm35;
+using ESFA.DC.ILR.ReportService.Models.Ilr;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.DevolvedPostcodes;
 using ESFA.DC.ILR.ReportService.Models.ReferenceData.MCAGLA;
@@ -18,6 +17,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
 {
     public class NonContractDevolvedAdultEducationOccupancyReportModelBuilder : AbstractOccupancyReportModelBuilder, IModelBuilder<IEnumerable<NonContractDevolvedAdultEducationOccupancyReportModel>>
     {
+        private readonly HashSet<int> _categoryRefs = new HashSet<int> { 37, 38 };
+
         private readonly IEnumerable<string> _sofLearnDelFamCodes = new HashSet<string>()
         {
             LearningDeliveryFAMCodeConstants.SOF_GreaterManchesterCombinedAuthority,
@@ -27,6 +28,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
             LearningDeliveryFAMCodeConstants.SOF_TeesValleyCombinedAuthority,
             LearningDeliveryFAMCodeConstants.SOF_CambridgeshireAndPeterboroughCombinedAuthority,
             LearningDeliveryFAMCodeConstants.SOF_GreaterLondonAuthority,
+            LearningDeliveryFAMCodeConstants.SOF_NorthOfTyneCombinedAuhority,
         };
 
         private readonly IAcademicYearService _academicYearService;
@@ -46,6 +48,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
 
             var larsLearningDeliveries = BuildLarsLearningDeliveryDictionary(referenceData);
             var fm35LearningDeliveries = BuildFm35LearningDeliveryDictionary(fm35);
+            var postcodes = BuildPostcodesDictionary(referenceData);
+            var organisations = referenceData.Organisations.ToDictionary(x => x.UKPRN, x => x.Name);
 
             var devolvedContracts = referenceData.McaDevolvedContracts?.Where(mdc => mdc.Ukprn == reportServiceContext.Ukprn) ?? Enumerable.Empty<McaDevolvedContract>();
 
@@ -70,7 +74,20 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                     var providerSpecLearnerMonitoring = _ilrModelMapper.MapProviderSpecLearnerMonitorings(learner.ProviderSpecLearnerMonitorings);
                     var providerSpecDeliveryMonitoring = _ilrModelMapper.MapProviderSpecDeliveryMonitorings(learningDelivery.ProviderSpecDeliveryMonitorings);                   
                     var periodisedValues = BuildFm35PeriodisedValuesModel(fm35LearningDelivery?.LearningDeliveryPeriodisedValues);
-                    
+                    var entitlementValue = larsLearningDelivery.LARSLearningDeliveryCategories.Any(c =>
+                        (c.EffectiveFrom <= learningDelivery.LearnStartDate && (c.EffectiveTo ?? DateTime.MaxValue) >=
+                            learningDelivery.LearnStartDate) && _categoryRefs.Contains(c.CategoryRef))
+                        ? ReportingConstants.Yes
+                        : ReportingConstants.No;
+                    var learnerEmploymentStatus = learner.LearnerEmploymentStatuses?.Where(l => l.DateEmpStatApp <= learningDelivery.LearnStartDate).OrderByDescending(d => d.DateEmpStatApp).FirstOrDefault() ?? new MessageLearnerLearnerEmploymentStatus();
+                    var employmentStatusMonitorings = _ilrModelMapper.MapEmploymentStatusMonitorings(learnerEmploymentStatus.EmploymentStatusMonitorings);
+                    var partnerProvider = organisations.GetValueOrDefault(learningDelivery.PartnerUKPRNNullable.GetValueOrDefault());
+
+                    var lsdPostcode = postcodes.GetValueOrDefault(learningDelivery.LSDPostcode);
+                    var localAuthorityCode = lsdPostcode?.ONSData
+                        .FirstOrDefault(od => learningDelivery.LearnStartDate >= od.EffectiveFrom && learningDelivery.LearnStartDate <= (od.EffectiveTo ?? DateTime.MaxValue))?
+                        .LocalAuthority;
+
                     models.Add(new NonContractDevolvedAdultEducationOccupancyReportModel()
                     {
                         Learner = learner,
@@ -82,6 +99,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                         LarsLearningDelivery = larsLearningDelivery,
                         PeriodisedValues = periodisedValues,
                         McaGlaShortCode = mcaGlaShortCode,
+                        EntitlementCategoryLevel2Or3 = entitlementValue,
+                        LearnerEmploymentStatus = learnerEmploymentStatus,
+                        EmploymentStatusMonitorings = employmentStatusMonitorings,
+                        PartnershipProviderName = partnerProvider,
+                        LocalAuthorityCode = localAuthorityCode
                     });
                 }
             }
@@ -102,24 +124,33 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.Occupancy.NonContractDevolve
                     continue;
                 }
 
-                bool learnEndDateCondition = true;
-
-                if (learnActEndDate.HasValue)
-                {
-                    learnEndDateCondition = (!contract.EffectiveTo.HasValue || learnActEndDate <= contract.EffectiveTo);
-                }
-                else
-                {
-                    if (!contract.EffectiveTo.HasValue || contract.EffectiveTo < _academicYearService.YearEnd)
-                    {
-                        learnEndDateCondition = (!contract.EffectiveTo.HasValue || learnPlanEndDate <= contract.EffectiveTo);
-                    }
-                }
-
-                return learnEndDateCondition;
+                return LearnEndDateCondition(learnActEndDate, contract, learnPlanEndDate);
             }
 
             return false;
+        }
+
+        private bool LearnEndDateCondition(DateTime? learnActEndDate, McaDevolvedContract contract, DateTime learnPlanEndDate)
+        {
+            bool learnEndDateCondition = true;
+
+            if (learnActEndDate.HasValue)
+            {
+                learnEndDateCondition = (!contract.EffectiveTo.HasValue || learnActEndDate <= contract.EffectiveTo);
+            }
+            else
+            {
+                if (!contract.EffectiveTo.HasValue || contract.EffectiveTo < _academicYearService.YearEnd)
+                {
+                    learnEndDateCondition = (!contract.EffectiveTo.HasValue
+                                             || learnPlanEndDate <= contract.EffectiveTo)
+                                             || contract.EffectiveTo.Value.Year >= _academicYearService.YearEnd.Year 
+                                                     && contract.EffectiveTo.Value.DayOfYear >= _academicYearService.YearEnd.DayOfYear 
+                                                     && learnPlanEndDate >= contract.EffectiveTo;
+                }
+            }
+
+            return learnEndDateCondition;
         }
 
         public bool LearningDeliveryReportFilter(ILearningDelivery learningDelivery)

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using CsvHelper.Configuration;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Service.Interface;
-using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
 {
@@ -16,7 +16,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.Abstract
             DependentDataCatalog.Fm25,
         };
 
-        public AbstractSixteenToNineteenReport(IFileNameService fileNameService, IModelBuilder<IEnumerable<TModel>> modelBuilder, ICsvService csvService, string taskName, string fileName)
+        public AbstractSixteenToNineteenReport(IFileNameService fileNameService, IModelBuilder<IEnumerable<TModel>> modelBuilder, ICsvFileService csvService, string taskName, string fileName)
             : base(fileNameService, modelBuilder, csvService, taskName, fileName)
         {
         }

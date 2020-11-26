@@ -2,28 +2,27 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using ESFA.DC.DateTimeProvider.Interface;
+using ESFA.DC.CsvService.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Abstract;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Interface;
 using ESFA.DC.ILR.ReportService.Reports.Validation.Model;
 using ESFA.DC.ILR.ReportService.Service.Interface;
 using ESFA.DC.ILR.ReportService.Service.Interface.Output;
 using ESFA.DC.ILR.ValidationErrors.Interface.Models;
-using ESFA.DC.Logging.Interfaces;
 
 namespace ESFA.DC.ILR.ReportService.Reports.Validation.Schema
 {
     public sealed class ValidationSchemaErrorsReport : AbstractReport, IReport
     {
         private readonly IValidationSchemaErrorsReportBuilder _validationSchemaErrorsReportBuilder;
-        private readonly ICsvService _csvService;
+        private readonly ICsvFileService _csvService;
         private readonly IFileNameService _fileNameService;
         private readonly IFrontEndValidationReport _frontEndValidationReport;
 
 
         public ValidationSchemaErrorsReport(
             IValidationSchemaErrorsReportBuilder validationSchemaErrorsReportBuilder,
-            ICsvService csvService,
+            ICsvFileService csvService,
             IFileNameService fileNameService,
             IFrontEndValidationReport frontEndValidationReport)
         : base(ReportTaskNameConstants.ValidationSchemaErrorReport, "Rule Violation Report")

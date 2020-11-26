@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Constants
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Constants
 {
     public static class FundLineConstants
     {
@@ -26,10 +22,16 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string EasTraineeships1924NonProcured = "19-24 Traineeships (non-procured)";
         public const string Traineeship1924ProcuredFromNov2017 = "19-24 Traineeship (procured from Nov 2017)";
         public const string EasTraineeships1924ProcuredFromNov2017 = "19-24 Traineeships (procured from Nov 2017)";
+        public const string Traineeship19242020Procurement = "19-24 Traineeship (2020 procurement)";
+        public const string EasTraineeship19242020Procurement = "19-24 Traineeship (2020 procurement)";
         public const string AebOtherLearningNonProcured = "ESFA AEB - Adult Skills (non-procured)";
         public const string AebOtherLearningProcuredFromNov2017 = "ESFA AEB - Adult Skills (procured from Nov 2017)";
         public const string EasAebAdultSkillsNonProcured = "ESFA AEB - Adult Skills (non-procured)";
         public const string EasAebAdultSkillsProcuredFromNov2017 = "ESFA AEB - Adult Skills (procured from Nov 2017)";
+        public const string AebCovidSkillsOfferNonProcured = "ESFA AEB - COVID-19 Skills Offer (non-procured)";
+        public const string EasAebCovidSkillsOfferNonProcured = "ESFA AEB - COVID-19 Skills Offer (non-procured)";
+        public const string AebCovidSkillsOfferProcured = "ESFA AEB - COVID-19 Skills Offer (procured)";
+        public const string EasAebCovidSkillsOfferProcured = "ESFA AEB - COVID-19 Skills Offer (procured)";
         public const string AdultEducationEligibleMCAGLANonProcured = "Adult Education - Eligible for MCA/GLA funding (non-procured)";
         public const string AdultEducationEligibleMCAGLAProcured = "Adult Education - Eligible for MCA/GLA funding (procured)";
         public const string EasApprenticeship1618 = "16-18 Apprenticeships";
@@ -60,5 +62,11 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
 
         // FM99 FundLines
         public const string AdvancedLearnerLoansBursary = "Advanced Learner Loans Bursary";
+
+        // Short Term Funding Initiative FundLines
+        public const string STFI1 = "Short Term Funding Initiative 1";
+        public const string STFI2 = "Short Term Funding Initiative 2";
+        public const string STFI3 = "Short Term Funding Initiative 3";
+        public const string STFI4 = "Short Term Funding Initiative 4";
     }
 }

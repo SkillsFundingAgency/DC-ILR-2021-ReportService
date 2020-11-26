@@ -22,6 +22,8 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
             {
                 "Learner reference number",
                 "Unique learner number",
+                "Family name",
+                "Given names",
                 "Date of birth",
                 "Postcode prior to enrolment",
                 "Pre-merger UKPRN",
@@ -33,6 +35,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
                 "Learning aim title",
                 "Software supplier aim identifier",
                 "Applicable funding rate from ESOL hours",
+                "Reserved Uplift Rate",
                 "Applicable funding rate",
                 "Applicable programme weighting",
                 "Aim value",
@@ -185,7 +188,7 @@ namespace ESFA.DC.ILR.ReportService.Reports.Tests.Funding.MainOccupancy
                         
                         header.Should().ContainInOrder(orderedColumns);
                         
-                        header.Should().HaveCount(137);
+                        header.Should().HaveCount(orderedColumns.Length);
                     }
                 }
             }

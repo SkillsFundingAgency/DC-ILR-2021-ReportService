@@ -19,9 +19,18 @@ namespace ESFA.DC.ILR.ReportService.Desktop.Context
 
         public long JobId { get; }
         public int Ukprn => int.Parse(_desktopContext.KeyValuePairs[ILRContextKeys.Ukprn].ToString());
+
         public string Filename => _desktopContext.KeyValuePairs[ILRContextKeys.Filename].ToString();
-        
-        public string IlrReportingFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
+
+        public string OriginalFilename => _desktopContext.KeyValuePairs[ILRContextKeys.OriginalFilename].ToString();
+
+        public string IlrReportingFilename { get; set; }
+
+        public string LastIlrFileUpdate { get; set; }
+
+        public string EasReportingFilename { get; set; }
+
+        public string LastEasFileUpdate { get; set; }
 
         public string Container => _desktopContext.KeyValuePairs[ILRContextKeys.Container].ToString();
 

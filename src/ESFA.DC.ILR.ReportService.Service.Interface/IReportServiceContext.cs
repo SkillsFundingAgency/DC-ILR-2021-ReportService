@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ESFA.DC.ILR.ReportService.Service.Interface
 {
@@ -12,7 +11,15 @@ namespace ESFA.DC.ILR.ReportService.Service.Interface
 
         string Filename { get; }
 
-        string IlrReportingFilename { get; }
+        string OriginalFilename { get; }
+
+        string IlrReportingFilename { get; set; }
+
+        string LastIlrFileUpdate { get; set; }
+
+        string EasReportingFilename { get; set; }
+
+        string LastEasFileUpdate { get; set; }
 
         string Container { get; }
 

@@ -24,6 +24,8 @@ namespace ESFA.DC.ILR.ReportService.Models.Fm35
 
         public string FundLine { get; set; }
 
+        public bool? FundStart { get; set; }
+
         public int? LargeEmployerID { get; set; }
 
         public Decimal? LargeEmployerFM35Fctr { get; set; }
@@ -35,6 +37,8 @@ namespace ESFA.DC.ILR.ReportService.Models.Fm35
         public int? PlannedNumOnProgInstalmTrans { get; set; }
 
         public bool? PrscHEAim { get; set; }
+
+        public Decimal? ReservedUpliftRate1 { get; set; }
 
         public Decimal? StartPropTrans { get; set; }
 

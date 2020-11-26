@@ -11,6 +11,9 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfF
 {
     public class SummaryOfFundingByStudentModelBuilder : AbstractSixteenToNineteenReportModelBuilder, IModelBuilder<IEnumerable<SummaryOfFundingByStudentReportModel>>
     {
+        private readonly int ProgrammeAim = 1;
+        private readonly int TLevel = 31;
+
         public IEnumerable<SummaryOfFundingByStudentReportModel> Build(IReportServiceContext reportServiceContext, IReportServiceDependentData reportServiceDependentData)
         {
             var message = reportServiceDependentData.Get<IMessage>();
@@ -26,18 +29,44 @@ namespace ESFA.DC.ILR.ReportService.Reports.Funding.SixteenToNineteen.SummaryOfF
 
                 if (Filter(learner, fm25Learner))
                 {
-                    var totalPlannedHours = (learner.PlanLearnHoursNullable ?? 0) + (learner.PlanEEPHoursNullable ?? 0);
+                    int? nonTLevelPlanLearnHours = null;
+                    int? nonTLevelPlanEEPHours = null;
+                    int? nonTLeveltotalPlannedHours = null;
+                    int? tLevelPlannedHours = null;
+
+                    if (fm25Learner.TLevelStudent ?? false)
+                    {
+                        tLevelPlannedHours = TLevelPlannedHours(learner);
+                    }
+                    else
+                    {
+                        nonTLevelPlanLearnHours = learner.PlanLearnHoursNullable;
+                        nonTLevelPlanEEPHours = learner.PlanEEPHoursNullable;
+                        nonTLeveltotalPlannedHours = (learner.PlanLearnHoursNullable ?? 0) + (learner.PlanEEPHoursNullable ?? 0);
+                    }
 
                     models.Add(new SummaryOfFundingByStudentReportModel()
                     {
                         Learner = learner,
                         FM25Learner = fm25Learner,
-                        TotalPlannedHours = totalPlannedHours,
+                        NonTLevelPlanLearnHours = nonTLevelPlanLearnHours,
+                        NonTLevelPlanEEPHours = nonTLevelPlanEEPHours,
+                        NonTLevelTotalPlannedHours = nonTLeveltotalPlannedHours,
+                        TLevelPlannedHours = tLevelPlannedHours
                     });
                 }
             }
 
             return Order(models);
+        }
+
+        private int TLevelPlannedHours(ILearner learner)
+        {
+            return learner.LearningDeliveries?
+                .Where(ld => ld.AimType == ProgrammeAim && ld.ProgTypeNullable == TLevel)
+                .OrderByDescending(ld => ld.LearnStartDate)
+                .FirstOrDefault()
+                ?.PHoursNullable ?? 0;
         }
 
         public override bool Filter(ILearner learner, FM25Learner fm25Learner)

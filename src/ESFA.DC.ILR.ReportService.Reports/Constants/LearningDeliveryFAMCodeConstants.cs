@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ESFA.DC.ILR.ReportService.Reports.Constants
+﻿namespace ESFA.DC.ILR.ReportService.Reports.Constants
 {
     public class LearningDeliveryFAMCodeConstants
     {
+        public const string ADL_1 = "1";
+
         public const string ASL_Personal = "1";
         public const string ASL_Neighbour = "2";
         public const string ASL_FamilyEnglishMathsLanguage = "3";
@@ -18,8 +16,14 @@ namespace ESFA.DC.ILR.ReportService.Reports.Constants
         public const string SOF_TeesValleyCombinedAuthority = "114";
         public const string SOF_CambridgeshireAndPeterboroughCombinedAuthority = "115";
         public const string SOF_GreaterLondonAuthority = "116";
+        public const string SOF_NorthOfTyneCombinedAuhority = "117";
 
         public const string SOF_ESFA = "105";
         public const string SOF_ESFA_1619 = "107";
+
+        public const string LDM_370 = "370";
+        public const string LDM_371 = "371";
+        public const string LDM_372 = "372";
+        public const string LDM_373 = "373";
     }
 }

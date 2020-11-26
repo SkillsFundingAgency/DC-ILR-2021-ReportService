@@ -46,6 +46,8 @@ namespace ESFA.DC.ILR.ReportService.Models.Ilr
 
         public int? OtherFundAdjNullable => throw new NotImplementedException();
 
+        public int? OtjActHoursNullable => throw new NotImplementedException();
+
         public int? OutcomeNullable => throw new NotImplementedException();
 
         public string OutGrade => throw new NotImplementedException();
